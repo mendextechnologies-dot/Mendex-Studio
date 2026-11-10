@@ -40,7 +40,7 @@ class StudioService:
                 self.plugin_status.append({"path": str(manifest), "status": "rejected", "diagnostic": str(exc)})
         with self.connection() as db:
             version = db.execute("PRAGMA user_version").fetchone()[0]
-            if version > 3:
+            if version > 4:
                 raise StudioError("STORAGE_ERROR", "Database is newer than this application")
             if version == 0:
                 db.executescript('''
@@ -68,6 +68,11 @@ class StudioService:
                     PRAGMA user_version=3;
                     COMMIT;
                 ''')
+            if version < 4:
+                from .integration_store import migrate
+                migrate(db)
+        from .integration_service import IntegrationService
+        self.integrations = IntegrationService(self)
 
     @contextmanager
     def connection(self):

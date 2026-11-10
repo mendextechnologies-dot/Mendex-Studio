@@ -1,5 +1,7 @@
 # Mendex Engineering Studio v0.1.0 — foundation
 
+**Codex v1.5 workstream:** this review branch extends the released foundation with an 18-entry Tool Center, generic synthetic job queue, logs/evidence previews, reports and dataset-provenance UI. Frozen Agent 1/Agent 2 interface: `12b56c3` / `contracts/v1.5.0`. See [implementation status](docs/IMPLEMENTATION_STATUS.md), [integration usage](docs/INTEGRATIONS.md) and [Agent 2 handoff](docs/AGENT2_HANDOFF.md). Native connector code is not merged or automatically trusted, and this branch is not a full-v1.5 release.
+
 Local Python/PySide6 desktop with SQLite products, typed specifications, immutable previous revisions, filesystem workspaces, native-tool discovery, manual evidence records and draft reports. No engineering calculations or simulation results are produced by the application.
 
 ## Install and run (PowerShell)

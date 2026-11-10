@@ -14,3 +14,11 @@
 - JSON plugin manifests load discovery/rule definitions without executing Python or approving results. Arbitrary executable plugins are unavailable. Simulation requests persist as NOT_SUPPORTED; solver execution remains disabled. The AI provider is unavailable; only its read-only extension contract is implemented, as required by the foundation scope.
 - Automated unit launch tests use mocks. A separate primary-workstation check actually opened VS Code, File Explorer and a native text document and observed their window titles. This does not qualify a CAD solver or an independent workstation.
 - Source/wheel distributions are supported. A signed bundled desktop executable is optional future packaging; no signing identity is configured. Independent-engineer/clean-machine pilot qualification is not claimed by the foundation tag.
+
+## Codex v1.5 review branch
+
+- The full 18-entry inventory and Codex application workflow are present, but no unreviewed Agent 2 connector is imported or enabled automatically. The synthetic adapter is a software fixture, not an engineering solver.
+- Queue cancellation/deadlines are cooperative. Native process isolation, executable allowlists, process-tree cancellation and actual installed-tool smoke tests belong to Agent 2 and remain unmerged. Cross-process cancellation and crash recovery are not claimed.
+- Dataset registration stores metadata and optionally opaque local bytes/hashes; actual dataset schema parsing, licensing qualification and research model interpretation remain Agent 2 work. Every record stays NOT_REVIEWED.
+- SQLite v4 is additive; back up matching database/files before upgrading. The original released app cannot open a v4 database. No shared dependency manifests or Agent 2-owned code were changed by Codex.
+- This branch is provided for review/handoff, not a complete v1.5 release, owner sign-off, product-specific result or manufacturing approval.

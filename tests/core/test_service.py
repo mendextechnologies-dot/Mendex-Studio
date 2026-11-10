@@ -63,6 +63,6 @@ def test_workspace_failure_rolls_back(tmp_path, monkeypatch):
 def test_newer_database_rejected(tmp_path):
     service = StudioService(tmp_path)
     with sqlite3.connect(service.database) as db:
-        db.execute("PRAGMA user_version=4")
+        db.execute("PRAGMA user_version=5")
     with pytest.raises(StudioError, match="newer"):
         StudioService(tmp_path)

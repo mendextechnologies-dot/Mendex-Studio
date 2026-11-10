@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 from mendex_core.models import Category, Specification
 from mendex_core.knowledge import GUIDELINES, GUIDELINES_REVISION
 from .panels import ToolPanel, ValidationPanel, ReportsPanel, SimulationPanel, KnowledgePanel
+from .integration_panels import ToolCenter, JobsPanel, DatasetPanel
 
 
 class ProductDialog(QDialog):
@@ -126,6 +127,12 @@ class StudioWindow(QMainWindow):
             self.pages.addWidget(panel)
         self.knowledge_panel = KnowledgePanel(service, self.guarded)
         self.pages.addWidget(self.knowledge_panel)
+        self.tool_center = ToolCenter(service, self.guarded)
+        self.jobs_panel = JobsPanel(service, self.guarded)
+        self.dataset_panel = DatasetPanel(service, self.guarded)
+        for title, panel in [("Tools & Integrations", self.tool_center), ("Jobs & Results", self.jobs_panel), ("Dataset Catalog", self.dataset_panel)]:
+            nav.addItem(title)
+            self.pages.addWidget(panel)
         nav.currentRowChanged.connect(self.pages.setCurrentIndex)
         nav.setCurrentRow(0)
         self.setStyleSheet("QMainWindow {background:#f3f6fa;} QListWidget {background:#142639;color:#ecf1f8;border:0;padding:10px;} QListWidget::item {padding:12px;} QListWidget::item:selected {background:#29628c;} QPushButton {padding:9px;} QTextEdit,QLineEdit,QComboBox {background:white;padding:6px;} QLabel {color:#172e44;}")
@@ -137,6 +144,11 @@ class StudioWindow(QMainWindow):
             callback()
         except Exception as exc:
             QMessageBox.warning(self, "Action could not be completed", str(exc))
+
+    def closeEvent(self, event):
+        self.jobs_panel.timer.stop()
+        self.service.integrations.shutdown()
+        super().closeEvent(event)
 
     def refresh(self):
         selected = self.product.product_id if self.product else None

@@ -51,3 +51,13 @@ Windows-native Qt smoke captures show the product editor, review/export/handoff 
 The release wheel was installed in the separate local verification environment, where all 28 tests and a Windows-native installed desktop launch passed. Packaged tool/rule JSON resources were exercised by those installed-package tests. The regular developer environment was refreshed using the documented editable install. No native EDA executables or hardware were run during these checks.
 
 The final addendum's foundation release gate is primary-machine clean installation, repeatable smoke, no invented results, green tests and documented issues. Those checks are complete; independent-engineer pilot qualification is still external and unperformed. Manual packaging produces source/wheel artifacts and checksums, without CI/CD, deployment, bundled EDA tools or manufacturing approval.
+
+## v1.5 plan — Codex branch verification (10 November 2026, Asia/Calcutta)
+
+Baseline at 2055673: 28 passed. Contract-freeze commit 12b56c3: 8 additional contract tests passed. Final Codex suite: **49 passed**, using the existing Python 3.13.7 environment with PYTHONPATH explicitly targeting `C:/Mendex studio codex-v1.5/src`; no dependency manifest changes were made.
+
+Checks cover the frozen interface/fixture, 18-entry catalog and optional-tool startup, local settings, additive v3→v4 migration, queued/running synthetic cancellation, timeout, deliberate execution failure, malformed output, missing input, refused unverified native operations, version/operation proof requirements, retry/new IDs, reopening records, staged-input/output/manifest tampering, hashed report evidence, opaque dataset metadata with required review reference, CLI and a product-free UI end-to-end demo. All legacy regressions still pass.
+
+`scripts/v15_codex_smoke.py` passed. Offscreen screenshots of Tool Center, Jobs, Logs, Evidence and Dataset Catalog were inspected; layout gaps were corrected and primary controls remain visible. Synthetic outputs are prominently labelled and engineering remains NOT_EVALUATED. Windows newline translation was accounted for by hashing/writing the same manifest bytes. Final source dependency manifests and Agent 2-exclusive paths are unchanged by Codex.
+
+No native EDA operation, commercial tool, real upstream dataset interpretation or subprocess/process-tree test is claimed here. Agent 2's original worktree/branch was inspected read-only and kept untouched; uncommitted adapter/evidence assertions are not treated as reviewed PR evidence. See docs/AGENT2_HANDOFF.md for integration review prerequisites. Full-v1.5 owner acceptance remains external.
