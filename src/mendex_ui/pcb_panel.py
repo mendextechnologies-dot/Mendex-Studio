@@ -1,5 +1,6 @@
 """PCB workspace presentation; all file/check operations belong to the core."""
 import json
+from datetime import datetime
 
 from PySide6.QtCore import QThread, Signal, Qt
 from PySide6.QtWidgets import (
@@ -63,6 +64,7 @@ class PCBWorkspacePanel(QWidget):
         split = QSplitter(Qt.Vertical)
         split.addWidget(self.files)
         tabs = QTabWidget()
+        self.tabs = tabs
         history = QWidget()
         history_layout = QVBoxLayout(history)
         self.history = QTableWidget(0, 5)
@@ -71,8 +73,14 @@ class PCBWorkspacePanel(QWidget):
         self.history.setSelectionMode(QAbstractItemView.SingleSelection)
         self.history.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.history.horizontalHeader().setSectionResizeMode(2,QHeaderView.Stretch)
+        for column in (0,1,3,4):
+            self.history.horizontalHeader().setSectionResizeMode(column,QHeaderView.ResizeToContents)
         self.history.itemSelectionChanged.connect(self.show_check)
         history_layout.addWidget(self.history)
+        self.evidence_button = QPushButton("Open selected check evidence")
+        self.evidence_button.setEnabled(False)
+        self.evidence_button.clicked.connect(lambda:self.guarded(self.open_check_evidence))
+        history_layout.addWidget(self.evidence_button)
         self.details = QTextEdit()
         self.details.setReadOnly(True)
         history_layout.addWidget(self.details)
@@ -139,7 +147,9 @@ class PCBWorkspacePanel(QWidget):
         checks = sorted(self.snapshot["checks"],key=lambda x:x.get("started_at",""),reverse=True)
         for i, check in enumerate(checks):
             self.history.insertRow(i)
-            values = [check.get("started_at","Unknown"), check.get("operation",""),check.get("source",""),
+            timestamp = check.get("started_at")
+            started = datetime.fromisoformat(timestamp).astimezone().strftime("%d %b %Y %H:%M:%S %z") if timestamp else "Unknown"
+            values = [started, check.get("operation",""),check.get("source",""),
                       check["effective_status"], "Changed/missing" if not check["integrity"] else ("Stale inputs" if check["stale"] else "Hash verified")]
             for col,value in enumerate(values):
                 item=QTableWidgetItem(value)
@@ -209,6 +219,14 @@ class PCBWorkspacePanel(QWidget):
 
     def show_check(self):
         item=self.history.item(self.history.currentRow(),0)
+        self.evidence_button.setEnabled(bool(item))
         if item and self.revision:
             result=self.service.pcb.read_check(self.revision.revision_id,item.data(Qt.UserRole))
             self.details.setPlainText(json.dumps(result,indent=2))
+        else:
+            self.details.clear()
+
+    def open_check_evidence(self):
+        item=self.history.item(self.history.currentRow(),0)
+        if item and self.revision:
+            self.service.pcb.open_check_evidence(self.revision.revision_id,item.data(Qt.UserRole))

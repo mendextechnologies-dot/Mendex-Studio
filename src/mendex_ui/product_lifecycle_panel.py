@@ -33,14 +33,15 @@ from .waveform_viewer import WaveformViewerWidget
 
 
 def _safe_open_path(target_path: Path):
-    """Safely opens a file or directory using Windows default application or explorer."""
+    """Safely opens a file or directory using the dedicated engineering tool or system default."""
     try:
-        if os.name == "nt":
-            os.startfile(str(target_path))
-        else:
-            subprocess.Popen(["xdg-open", str(target_path)])
+        from mendex_core.launch import open_native
+        open_native(Path(target_path))
     except Exception:
-        QDesktopServices.openUrl(QUrl.fromLocalFile(str(target_path)))
+        try:
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(target_path)))
+        except Exception:
+            pass
 
 
 class StageCardWidget(QFrame):

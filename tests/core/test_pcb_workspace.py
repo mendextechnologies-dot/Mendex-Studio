@@ -66,6 +66,10 @@ def test_snapshot_persistence_and_context_changes(studio,monkeypatch):
     assert (pcb/"test.kicad_sch").read_bytes()==original
     run=Path(result["evidence_folder"])
     assert (run/"inputs/test.kicad_sch").read_bytes()==original
+    opened=[]
+    monkeypatch.setattr("mendex_core.launch.open_native",lambda path:opened.append(path))
+    assert Path(service.pcb.open_check_evidence(revision.revision_id,result["run_id"]))==run
+    assert opened==[run]
     assert not list(pcb.glob("*erc*.json"))
     service2=StudioService(service.root)
     assert service2.pcb.list_checks(revision.revision_id)[0]["effective_status"]=="CLEAR"

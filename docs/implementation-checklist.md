@@ -293,3 +293,15 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Run relevant core + UI lifecycle tests: 7 passed in 2.75 s; check report links, arithmetic, source preservation and render.
 - [ ] Complete dimensioned insulated winding construction, exact magnetic/component selection and full circuit model before new product simulation.
 - [ ] Correct lifecycle evidence/approval binding in a reviewed software change; current ready badge is not accepted as independent compact prototype verification.
+
+## PCB workspace implementation - 11 November 2026
+
+- [x] Replace navigation Page 5 placeholder with revision-aware native KiCad file listing, draft import/opening and background ERC/DRC checks.
+- [x] Use shared StudioService.pcb from UI and CLI; preserve originals, frozen revisions and historic evidence.
+- [x] Add input/context/specification snapshots, unique evidence folders, logs/version, checksum integrity and stale-result handling. Empty or malformed CAD/report, missing tools/evidence remain NOT_EVALUATED.
+- [x] Add immutable draft planning notes and check evidence opening without granting engineering or manufacturing approval.
+- [x] Harden KiCad JSON parsing for nested sheets, disconnected items and parity; prevent previous report overwrite.
+- [x] Verify native KiCad 10.0.7 against disposable clean/failing schematic and unrouted board fixtures: 0 / 2 / 3 issues, including one disconnected board connection.
+- [x] Pass full local suite: 159 tests in 81.74 s, including 15 new PCB tests. Preserve source hashes and native results under .mendex/qa/pcb-workspace-implementation-20261111/.
+- [x] Render and inspect final desktop dark/light, notes and archived views under .mendex/qa/pcb-workspace-ui-20261111-final/; update architecture, contracts and docs/PCB_WORKSPACE.md.
+- [ ] Complete actual SV-1000 transformer/circuit/layout engineering and resolve pre-existing lifecycle approval/evidence mismatch. This software milestone does not establish compact prototype readiness.

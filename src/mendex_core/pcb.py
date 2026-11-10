@@ -286,3 +286,16 @@ class PCBWorkspaceService:
             return []
         return [self.read_check(revision_id, p.name) for p in sorted(folder.iterdir(), reverse=True)
                 if p.is_dir() and re.fullmatch(r"[0-9a-f-]{36}", p.name)]
+
+    def open_check_evidence(self, revision_id, run_id):
+        from .launch import open_native
+        revision, _, _ = self._revision(revision_id)
+        self.read_check(revision_id, run_id)  # validates identifier and existence
+        folder = (self._runs(revision) / str(UUID(str(run_id)))).resolve()
+        if not folder.is_relative_to(self._runs(revision)):
+            raise StudioError("INVALID_INPUT", "Evidence folder escapes check storage")
+        try:
+            open_native(folder)
+        except OSError as exc:
+            raise StudioError("LAUNCH_ERROR", str(exc)) from exc
+        return str(folder)

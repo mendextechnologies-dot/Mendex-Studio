@@ -47,6 +47,9 @@ def main():
     assert window.pages.currentIndex()==5 and panel.files.rowCount()==2
     app.processEvents()
     assert window.grab().save(str(args.output/"pcb-workspace-dark.png"))
+    panel.tabs.setCurrentIndex(1);app.processEvents()
+    assert window.grab().save(str(args.output/"pcb-workspace-notes.png"))
+    panel.tabs.setCurrentIndex(0)
     window.toggle_theme();app.processEvents()
     assert window.grab().save(str(args.output/"pcb-workspace-light.png"))
     service.create_revision(product.product_id,"NEXT")
