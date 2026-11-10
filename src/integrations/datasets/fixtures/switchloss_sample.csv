@@ -1,0 +1,10 @@
+part_number,manufacturer,device_type,v_ds_rated_v,i_d_rated_a,r_ds_on_mohm,e_on_uj,e_off_uj,v_test_v,i_test_a,t_j_c
+C3M0065090D,Wolfspeed,SiC,900.0,36.0,65.0,85.0,22.0,600.0,20.0,25.0
+C3M0065090D_HOT,Wolfspeed,SiC,900.0,24.0,90.0,95.0,26.0,600.0,20.0,125.0
+NVHL080N120SC1,onsemi,SiC,1200.0,28.0,80.0,120.0,35.0,800.0,20.0,25.0
+NVHL020N120SC1,onsemi,SiC,1200.0,103.0,20.0,310.0,85.0,800.0,80.0,25.0
+IMW120R045M1,Infineon,SiC,1200.0,52.0,45.0,140.0,42.0,800.0,30.0,25.0
+EPC2050,EPC,GaN,350.0,6.3,65.0,8.5,3.2,200.0,5.0,25.0
+GS66508T,GaN Systems,GaN,650.0,30.0,50.0,45.0,12.0,400.0,15.0,25.0
+IRFB4110,Infineon,MOSFET,100.0,180.0,3.7,15.0,10.0,60.0,100.0,25.0
+STW48N60M2,STMicroelectronics,MOSFET,650.0,42.0,70.0,72.0,28.0,400.0,20.0,25.0

@@ -30,6 +30,19 @@ def test_switchloss_db_ingestion_and_query(tmp_path):
     assert {d.part_number for d in hv_devices} == {"C3M0065090D", "NVHL080N120SC1"}
 
 
+def test_switchloss_canonical_fixture():
+    fixture_path = Path(__file__).parents[2] / "src" / "integrations" / "datasets" / "fixtures" / "switchloss_sample.csv"
+    assert fixture_path.exists()
+
+    db = SwitchLossDB()
+    count = db.load_csv(fixture_path)
+    assert count >= 8
+
+    # Ensure 1200V SiC devices are indexed
+    sic_1200v = db.find_devices(min_voltage=1200.0)
+    assert len(sic_1200v) >= 3
+
+
 def test_magnet_dataset_ingestion_and_query(tmp_path):
     data = {
         "dataset": "MagNet Core Loss",
@@ -64,6 +77,19 @@ def test_magnet_dataset_ingestion_and_query(tmp_path):
     n87_records = magnet.query(material="N87", max_freq_hz=150000.0)
     assert len(n87_records) == 1
     assert n87_records[0].volumetric_loss_w_m3 == 45000.0
+
+
+def test_magnet_canonical_fixture():
+    fixture_path = Path(__file__).parents[2] / "src" / "integrations" / "datasets" / "fixtures" / "magnet_sample.json"
+    assert fixture_path.exists()
+
+    magnet = MagNetDataset()
+    count = magnet.load_json(fixture_path)
+    assert count >= 6
+
+    # Query N87 at high frequency
+    n87 = magnet.query(material="N87", max_freq_hz=250000.0)
+    assert len(n87) >= 3
 
 
 def test_dataset_checksum_mismatch(tmp_path):
