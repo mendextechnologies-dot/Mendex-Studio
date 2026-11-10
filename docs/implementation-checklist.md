@@ -101,3 +101,8 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Verified critical failure, timeout, cancellation, tampering, and recovery modes in [docs/v1.6/RESILIENCE_TEST_REPORT.md](v1.6/RESILIENCE_TEST_REPORT.md) (Gate D: PASS; missing exe rejection, timeout process tree cleanup, cooperative cancel, SHA-256 tampering detection, restart persistence).
 - [x] Preserved raw evidence artifacts in [docs/v1.6/evidence/](v1.6/evidence/) with cryptographically verifiable SHA-256 hashes.
 - [x] Added automated integration test suites `test_v16_workflow.py` and `test_v16_resilience.py`; all **97 tests** pass cleanly in pytest.
+- [x] Completed Open-Source Integration Audit in [docs/audits/AGENT2_OPEN_SOURCE_INTEGRATION_AUDIT.md](audits/AGENT2_OPEN_SOURCE_INTEGRATION_AUDIT.md).
+- [x] Unblocked GAP-OSS-04: Installed NumPy (v2.5.4) and SciPy (v1.18.1) in `.venv`; implemented vectorized raw waveform parsing and signal metrics (RMS, peak-to-peak, min, max, mean) in `ltspice_parser.py`.
+- [x] Unblocked GAP-OSS-03: Integrated FreeCAD 1.1.4 3D STEP generation action directly into PySide6 `TransformerWorkspacePanel`.
+- [x] Unblocked GAP-OSS-06: Implemented `NgspiceAdapter` (BSD 3-Clause) with batch simulation and argument generation.
+- [x] 101 automated tests passing across adapters, contracts, UI, calculations, resilience, and parsers.

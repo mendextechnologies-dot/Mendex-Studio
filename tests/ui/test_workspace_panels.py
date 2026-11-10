@@ -41,6 +41,13 @@ def test_transformer_workspace_panel(tmp_path):
     assert fc_path.exists()
     assert "Part.makeCylinder" in fc_script
 
+    # 3b. Generate FreeCAD 3D STEP
+    step_target = tmp_path / "panel_bobbin.step"
+    generated_step = panel.generate_freecad_step(target_path=step_target)
+    if generated_step:
+        assert step_target.exists()
+        assert step_target.stat().st_size > 0
+
     # 4. set_revision test
     product = service.create_product("TX-001", "Transformer Test", "transformer", "Engineer")
     revision = service.get_revision(product.active_revision_id)

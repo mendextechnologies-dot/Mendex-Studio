@@ -1,6 +1,8 @@
 """Interactive engineering workspace panels for Transformer, DC-DC, Semiconductors, and PCB."""
 from pathlib import Path
 import json
+import shutil
+import subprocess
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -61,6 +63,10 @@ class TransformerWorkspacePanel(QWidget):
         freecad_btn = QPushButton("Export FreeCAD Bobbin Script")
         freecad_btn.clicked.connect(self.export_freecad_script)
         btn_layout.addWidget(freecad_btn)
+
+        step_btn = QPushButton("Generate FreeCAD 3D STEP")
+        step_btn.clicked.connect(self.generate_freecad_step)
+        btn_layout.addWidget(step_btn)
 
         form.addRow(btn_layout)
 
@@ -174,6 +180,64 @@ class TransformerWorkspacePanel(QWidget):
         except Exception as e:
             if not target_path and not getattr(self, "_suppress_dialogs", False):
                 QMessageBox.warning(self, "Export Failed", str(e))
+            raise
+
+
+    def generate_freecad_step(self, target_path=None):
+        """Executes headless FreeCAD to generate a 3D STEP solid model of the transformer bobbin."""
+        try:
+            freecad_exe = Path(r"C:\Program Files\FreeCAD 1.1\bin\freecadcmd.exe")
+            if not freecad_exe.exists():
+                which = shutil.which("freecadcmd.exe") or shutil.which("freecadcmd")
+                freecad_exe = Path(which) if which else None
+
+            if not freecad_exe or not freecad_exe.exists():
+                msg = "FreeCAD executable (freecadcmd.exe) not found on workstation."
+                if not target_path and not getattr(self, "_suppress_dialogs", False):
+                    QMessageBox.warning(self, "FreeCAD Not Found", msg)
+                return None
+
+            file_path = str(target_path) if target_path else None
+            if not file_path:
+                file_path, _ = QFileDialog.getSaveFileName(self, "Export 3D Bobbin STEP", "bobbin.step", "STEP Files (*.step *.stp)")
+            if not file_path:
+                return None
+
+            step_path = Path(file_path).resolve()
+            temp_script = step_path.parent / f"_gen_bobbin_{step_path.stem}.py"
+            script_content = generate_freecad_bobbin_script(
+                flange_od_mm=32.0,
+                core_id_mm=16.0,
+                height_mm=25.0,
+                wall_thickness_mm=1.5,
+                output_step_path=str(step_path),
+            )
+            temp_script.write_text(script_content, encoding="utf-8")
+
+            res = subprocess.run([str(freecad_exe), str(temp_script)], capture_output=True, text=True, timeout=30)
+            if temp_script.exists():
+                try:
+                    temp_script.unlink()
+                except OSError:
+                    pass
+
+            if res.returncode == 0 and step_path.exists():
+                if not target_path and not getattr(self, "_suppress_dialogs", False):
+                    size_b = step_path.stat().st_size
+                    QMessageBox.information(
+                        self,
+                        "3D Export Complete",
+                        f"3D Bobbin STEP model successfully generated via FreeCAD 1.1.4:\n{step_path}\n({size_b} bytes)",
+                    )
+                return step_path
+            else:
+                err_msg = res.stderr or res.stdout or "FreeCAD execution failed"
+                if not target_path and not getattr(self, "_suppress_dialogs", False):
+                    QMessageBox.warning(self, "FreeCAD STEP Generation Failed", err_msg)
+                return None
+        except Exception as e:
+            if not target_path and not getattr(self, "_suppress_dialogs", False):
+                QMessageBox.warning(self, "FreeCAD Error", str(e))
             raise
 
 

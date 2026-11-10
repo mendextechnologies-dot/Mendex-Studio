@@ -7,6 +7,7 @@ from .kicad import KiCadAdapter
 from .femm import FEMMAdapter
 from .freecad import FreeCADAdapter
 from .qucs_s import QucsSAdapter
+from .ngspice import NgspiceAdapter
 from .openmodelica import OpenModelicaAdapter
 from .python_runtime import PythonRuntimeAdapter
 from .jupyter import JupyterAdapter

@@ -2,6 +2,12 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from typing import Any
+
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 
 class LTspiceLogMetrics:
@@ -76,3 +82,70 @@ def parse_ascii_raw_header(raw_path: Path) -> dict[str, str | int]:
                 else:
                     info[k] = v
     return info
+
+
+def parse_ascii_raw_waveforms(raw_path: Path) -> dict[str, Any]:
+    """Vectorized parser for ASCII LTspice .raw files returning dict of NumPy arrays."""
+    if not raw_path.exists():
+        raise FileNotFoundError(f"Raw file not found: {raw_path}")
+    if np is None:
+        raise ImportError("NumPy is required for vectorized raw waveform parsing")
+
+    with open(raw_path, "r", encoding="utf-8", errors="replace") as f:
+        lines = f.readlines()
+
+    vars_start = False
+    vals_start = False
+    var_names: list[str] = []
+    data_lines: list[str] = []
+
+    for line in lines:
+        s = line.strip()
+        if s.startswith("Variables:"):
+            vars_start = True
+            continue
+        if s.startswith("Values:"):
+            vars_start = False
+            vals_start = True
+            continue
+        if vars_start:
+            parts = s.split()
+            if len(parts) >= 2:
+                var_names.append(parts[1])
+        elif vals_start:
+            data_lines.append(s)
+
+    if not var_names or not data_lines:
+        return {}
+
+    n_vars = len(var_names)
+    all_floats: list[float] = []
+    for l in data_lines:
+        parts = l.split()
+        if len(parts) == 2:
+            all_floats.append(float(parts[1]))
+        elif len(parts) == 1:
+            all_floats.append(float(parts[0]))
+
+    arr = np.array(all_floats, dtype=np.float64).reshape(-1, n_vars)
+    return {name: arr[:, i] for i, name in enumerate(var_names)}
+
+
+def calculate_waveform_metrics(waveforms: dict[str, Any]) -> dict[str, dict[str, float]]:
+    """Calculates RMS, Peak-to-Peak, Mean, Min, and Max metrics for all waveform channels."""
+    if np is None:
+        raise ImportError("NumPy is required for waveform metrics calculation")
+
+    metrics: dict[str, dict[str, float]] = {}
+    for name, signal in waveforms.items():
+        if name.lower() == "time":
+            continue
+        if isinstance(signal, np.ndarray) and len(signal) > 0:
+            metrics[name] = {
+                "rms": float(np.sqrt(np.mean(signal**2))),
+                "p2p": float(np.ptp(signal)),
+                "mean": float(np.mean(signal)),
+                "min": float(np.min(signal)),
+                "max": float(np.max(signal)),
+            }
+    return metrics

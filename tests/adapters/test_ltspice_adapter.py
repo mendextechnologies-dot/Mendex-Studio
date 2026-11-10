@@ -3,7 +3,12 @@ import pytest
 
 from integrations.adapters.ltspice import LTspiceAdapter
 from integrations.contracts import JobRequest, JobState, ToolState
-from integrations.parsers.ltspice_parser import parse_ltspice_log, parse_ascii_raw_header
+from integrations.parsers.ltspice_parser import (
+    parse_ltspice_log,
+    parse_ascii_raw_header,
+    parse_ascii_raw_waveforms,
+    calculate_waveform_metrics,
+)
 
 
 def test_ltspice_smoke_run(tmp_path):
@@ -88,3 +93,38 @@ def test_ltspice_parser_with_sample_log(tmp_path):
     assert parsed.metrics["error_count"] == 0.0
     assert parsed.operating_points["V(out)"] == 9.999
     assert parsed.operating_points["V(in)"] == 10.0
+
+
+def test_ltspice_numpy_waveforms_parser(tmp_path):
+    sample_raw = (
+        "Title: Sample Transient\n"
+        "Date: Tue Nov 10 2026\n"
+        "Plotname: Transient Analysis\n"
+        "Flags: real forward\n"
+        "No. Variables: 3\n"
+        "No. Points: 2\n"
+        "Variables:\n"
+        "\t0\ttime\ttime\n"
+        "\t1\tV(in)\tvoltage\n"
+        "\t2\tV(out)\tvoltage\n"
+        "Values:\n"
+        "0\t0.0\n"
+        "\t10.0\n"
+        "\t0.0\n"
+        "1\t1e-3\n"
+        "\t10.0\n"
+        "\t5.0\n"
+    )
+    raw_file = tmp_path / "sample.raw"
+    raw_file.write_text(sample_raw, encoding="utf-8")
+
+    waveforms = parse_ascii_raw_waveforms(raw_file)
+    assert "time" in waveforms
+    assert "V(in)" in waveforms
+    assert "V(out)" in waveforms
+    assert len(waveforms["time"]) == 2
+    assert waveforms["V(in)"][0] == 10.0
+
+    metrics = calculate_waveform_metrics(waveforms)
+    assert metrics["V(in)"]["mean"] == 10.0
+    assert metrics["V(out)"]["p2p"] == 5.0
