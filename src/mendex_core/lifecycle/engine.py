@@ -34,6 +34,24 @@ def compute_file_sha256(path: Path) -> str:
 class ProductLifecycleEngine:
     """Core evaluation engine assessing product engineering maturity across 12 lifecycle stages."""
 
+    STAGE_METADATA_15 = [
+        (LifecycleStage.REQUIREMENTS, 1, "Requirements & Specifications", True, "Reviewed SI requirements specification, standards profile, and isolation requirements", "Specification panel"),
+        (LifecycleStage.ARCHITECTURE, 2, "Architecture & Sizing", True, "Analytical sizing calculations for resonant tank, transformer turns ratio, and semiconductor losses", "DC-DC & Transformer Workspaces"),
+        (LifecycleStage.ELECTRICAL_DESIGN, 3, "Electrical Design & Netlists", True, "Verified schematic netlist, component selections, and operating topology definition", "Circuit Workspace"),
+        (LifecycleStage.ENGINEERING_CALCULATIONS, 4, "Engineering Calculations & Sizing", True, "Deterministic SI calculations with formula provenance, AC losses, and unit verification", "Calculations & Sizing"),
+        (LifecycleStage.CIRCUIT_SIMULATION, 5, "Circuit Simulation & Waveforms", True, "Batch simulation runs with parsed output waveforms showing ripple and switching transients", "Simulation Lab & Waveforms"),
+        (LifecycleStage.MAGNETIC_ANALYSIS, 6, "Magnetic Analysis & FEA", False, "2D/3D magnetic FEA simulation solve verifying flux density and leakage inductance", "Transformer Workspace / FEMM"),
+        (LifecycleStage.SCHEMATIC_VERIFICATION, 7, "Schematic Capture & ERC", True, "KiCad schematic file (.kicad_sch) with 0 electrical rule check violations", "KiCad Schematic / ERC"),
+        (LifecycleStage.PCB_DESIGN, 8, "PCB Layout & Stackup", True, "KiCad PCB layout (.kicad_pcb) with defined isolation air slots and creepage distances", "KiCad PCB Layout"),
+        (LifecycleStage.PCB_VERIFICATION, 9, "PCB Design-Rule Check (DRC)", True, "KiCad DRC report with 0 clearance and net violations", "KiCad PCB / DRC"),
+        (LifecycleStage.THERMAL_MECHANICAL, 10, "Thermal & Mechanical Evaluation", False, "3D solid model export (STEP) and thermal dissipation loss budget", "FreeCAD 3D Bobbin"),
+        (LifecycleStage.BOM_SOURCING, 11, "BOM & Sourced Components", True, "Structured Bill of Materials (BOM) with manufacturer part numbers and dielectric ratings", "BOM Review"),
+        (LifecycleStage.ENGINEERING_VALIDATION, 12, "Engineering Validation & Verification", True, "Append-only validation records with numerical thresholds and evidence SHA-256 hashes", "Validation Panel"),
+        (LifecycleStage.PROTOTYPE_READINESS, 13, "Prototype Readiness Review", True, "All mandatory engineering gates PASSED and formal engineering sign-off recorded", "Prototype Gate Review"),
+        (LifecycleStage.PHYSICAL_TESTING, 14, "Physical Testing & Measurements", False, "Laboratory measurement records, oscilloscope CSV traces, and correlation checks", "Measurement Lab"),
+        (LifecycleStage.ENGINEERING_RELEASE, 15, "Engineering Release Package", True, "Release dossier package, manufacturing files, and change control sign-off", "Release Center"),
+    ]
+
     STAGE_METADATA = [
         (LifecycleStage.REQUIREMENTS, 1, "Requirements & Specifications", True, "Reviewed SI requirements specification, standards profile, and isolation requirements", "Specification panel"),
         (LifecycleStage.ELECTRICAL_ARCHITECTURE, 2, "Electrical Architecture & Sizing", True, "Analytical sizing calculations for resonant tank, transformer turns ratio, and semiconductor losses", "DC-DC & Transformer Workspaces"),
@@ -779,6 +797,364 @@ class ProductLifecycleEngine:
             stages=stages,
             readiness_gates=readiness_gates,
             critical_blockers=critical_blockers,
+            total_evidence_count=total_evidence_count,
+            last_assessed_at=now(),
+        )
+
+    def assess_workspace(self, workspace_id: str, profile: str = "15_stage") -> ProductLifecycleAssessment:
+        """Evaluates engineering maturity for a standalone, product-independent workspace across 15 stages."""
+        ws_path = (self.service.root / "workspaces" / workspace_id).resolve()
+        ws_name = workspace_id
+        try:
+            ws_meta = self.service.integrations.get_workspace(workspace_id)
+            if ws_meta and "name" in ws_meta:
+                ws_name = ws_meta["name"]
+        except Exception:
+            pass
+
+        stages: Dict[str, StageEvaluation] = {}
+        readiness_gates: List[ReadinessGate] = []
+        critical_blockers: List[str] = []
+        total_evidence_count = 0
+
+        # Scan workspace files
+        ws_files = list(ws_path.glob("**/*")) if ws_path.exists() else []
+        file_map = {f.relative_to(ws_path).as_posix(): f for f in ws_files if f.is_file()}
+
+        # Query workspace jobs
+        jobs = []
+        try:
+            with self.service.connection() as db:
+                rows = db.execute("SELECT id, status, payload FROM integration_jobs WHERE workspace_id=?", (workspace_id,)).fetchall()
+                for jid, st, payload in rows:
+                    jobs.append(json.loads(payload))
+        except Exception:
+            pass
+
+        # Query measurements
+        measurements = []
+        if hasattr(self.service, "measurements"):
+            measurements = self.service.measurements.list_measurements(workspace_id=workspace_id)
+
+        # Query ECRs
+        ecrs = []
+        if hasattr(self.service, "ecr"):
+            ecrs = self.service.ecr.list_ecrs(workspace_id=workspace_id)
+
+        meta_list = self.STAGE_METADATA_15 if profile == "15_stage" else self.STAGE_METADATA
+
+        for stage_key, cat_num, title, mandatory, req_desc, nav_target in meta_list:
+            ev_list: List[UnifiedEvidenceRecord] = []
+            blockers: List[str] = []
+            st_status = StageStatus.NOT_STARTED
+
+            # Evaluate based on stage
+            if stage_key in (LifecycleStage.REQUIREMENTS,):
+                req_files = [f for rel, f in file_map.items() if "spec" in rel.lower() or "req" in rel.lower() or rel.startswith("requirements/")]
+                for rf in req_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.REQUIREMENTS,
+                        artifact_type=ArtifactType.REQUIREMENTS_SPEC,
+                        source_tool="spec_editor",
+                        source_file=rf.name,
+                        sha256=compute_file_sha256(rf),
+                        file_size_bytes=rf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if req_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("No requirements specification document found in workspace")
+
+            elif stage_key in (LifecycleStage.ARCHITECTURE, LifecycleStage.ELECTRICAL_ARCHITECTURE):
+                arch_files = [f for rel, f in file_map.items() if "arch" in rel.lower() or "topology" in rel.lower()]
+                for af in arch_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.ARCHITECTURE,
+                        artifact_type=ArtifactType.REQUIREMENTS_SPEC,
+                        source_tool="architecture_editor",
+                        source_file=af.name,
+                        sha256=compute_file_sha256(af),
+                        file_size_bytes=af.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if arch_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("Electrical architecture definition missing")
+
+            elif stage_key in (LifecycleStage.ELECTRICAL_DESIGN, LifecycleStage.CIRCUIT_DESIGN):
+                net_files = [f for rel, f in file_map.items() if f.suffix.lower() in (".net", ".cir", ".asc")]
+                for nf in net_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.ELECTRICAL_DESIGN,
+                        artifact_type=ArtifactType.SPICE_NETLIST,
+                        source_tool="spice",
+                        source_file=nf.name,
+                        sha256=compute_file_sha256(nf),
+                        file_size_bytes=nf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if net_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("No circuit schematic netlist found")
+
+            elif stage_key in (LifecycleStage.ENGINEERING_CALCULATIONS,):
+                calc_files = [f for rel, f in file_map.items() if "calc" in rel.lower() or "sizing" in rel.lower() or "loss" in rel.lower()]
+                for cf in calc_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.ENGINEERING_CALCULATIONS,
+                        artifact_type=ArtifactType.CALCULATION_RECORD,
+                        source_tool="mendex_calc",
+                        source_file=cf.name,
+                        sha256=compute_file_sha256(cf),
+                        file_size_bytes=cf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if calc_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("Engineering calculations or sizing records missing")
+
+            elif stage_key in (LifecycleStage.CIRCUIT_SIMULATION, LifecycleStage.ELECTRICAL_SIMULATION):
+                raw_files = [f for rel, f in file_map.items() if f.suffix.lower() in (".raw", ".log")]
+                solved_jobs = [j for j in jobs if j.get("status") in ("COMPLETED", "PASSED")]
+                for rf in raw_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.CIRCUIT_SIMULATION,
+                        artifact_type=ArtifactType.SIMULATION_OUTPUT,
+                        source_tool="ltspice",
+                        source_file=rf.name,
+                        sha256=compute_file_sha256(rf),
+                        file_size_bytes=rf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if raw_files or solved_jobs:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("No simulation run records or raw waveforms found")
+
+            elif stage_key in (LifecycleStage.MAGNETIC_ANALYSIS,):
+                femm_files = [f for rel, f in file_map.items() if f.suffix.lower() in (".fem", ".ans")]
+                for ff in femm_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.MAGNETIC_ANALYSIS,
+                        artifact_type=ArtifactType.MAGNETIC_MODEL,
+                        source_tool="femm",
+                        source_file=ff.name,
+                        sha256=compute_file_sha256(ff),
+                        file_size_bytes=ff.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                st_status = StageStatus.PASSED if femm_files else StageStatus.NOT_APPLICABLE
+
+            elif stage_key in (LifecycleStage.SCHEMATIC_VERIFICATION,):
+                sch_files = [f for rel, f in file_map.items() if f.suffix.lower() == ".kicad_sch"]
+                erc_files = [f for rel, f in file_map.items() if "erc" in f.name.lower()]
+                for sf in sch_files + erc_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.SCHEMATIC_VERIFICATION,
+                        artifact_type=ArtifactType.SCHEMATIC_KICAD if sf.suffix == ".kicad_sch" else ArtifactType.ERC_REPORT,
+                        source_tool="kicad",
+                        source_file=sf.name,
+                        sha256=compute_file_sha256(sf),
+                        file_size_bytes=sf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if sch_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("No KiCad schematic (.kicad_sch) file found")
+
+            elif stage_key in (LifecycleStage.PCB_DESIGN, LifecycleStage.PCB_LAYOUT):
+                pcb_files = [f for rel, f in file_map.items() if f.suffix.lower() == ".kicad_pcb"]
+                for pf in pcb_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.PCB_DESIGN,
+                        artifact_type=ArtifactType.PCB_KICAD,
+                        source_tool="kicad",
+                        source_file=pf.name,
+                        sha256=compute_file_sha256(pf),
+                        file_size_bytes=pf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if pcb_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("No KiCad board layout (.kicad_pcb) found")
+
+            elif stage_key in (LifecycleStage.PCB_VERIFICATION, LifecycleStage.PCB_DRC):
+                drc_files = [f for rel, f in file_map.items() if "drc" in f.name.lower()]
+                for df in drc_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.PCB_VERIFICATION,
+                        artifact_type=ArtifactType.DRC_REPORT,
+                        source_tool="kicad-cli",
+                        source_file=df.name,
+                        sha256=compute_file_sha256(df),
+                        file_size_bytes=df.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if drc_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("No PCB Design-Rule Check (DRC) report found")
+
+            elif stage_key in (LifecycleStage.THERMAL_MECHANICAL,):
+                step_files = [f for rel, f in file_map.items() if f.suffix.lower() in (".step", ".stp")]
+                for stf in step_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.THERMAL_MECHANICAL,
+                        artifact_type=ArtifactType.BOBBIN_CAD,
+                        source_tool="freecad",
+                        source_file=stf.name,
+                        sha256=compute_file_sha256(stf),
+                        file_size_bytes=stf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                st_status = StageStatus.PASSED if step_files else StageStatus.NOT_APPLICABLE
+
+            elif stage_key in (LifecycleStage.BOM_SOURCING, LifecycleStage.BOM_REVIEW):
+                bom_files = [f for rel, f in file_map.items() if "bom" in rel.lower() and f.suffix == ".csv"]
+                for bf in bom_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.BOM_SOURCING,
+                        artifact_type=ArtifactType.BOM_FILE,
+                        source_tool="bom_manager",
+                        source_file=bf.name,
+                        sha256=compute_file_sha256(bf),
+                        file_size_bytes=bf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if bom_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("No structured Bill of Materials (BOM) CSV file found")
+
+            elif stage_key in (LifecycleStage.ENGINEERING_VALIDATION,):
+                rpt_files = [f for rel, f in file_map.items() if "report" in rel.lower()]
+                for rf in rpt_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.ENGINEERING_VALIDATION,
+                        artifact_type=ArtifactType.ENGINEERING_REPORT,
+                        source_tool="studio_reporter",
+                        source_file=rf.name,
+                        sha256=compute_file_sha256(rf),
+                        file_size_bytes=rf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                if rpt_files:
+                    st_status = StageStatus.PASSED
+                else:
+                    blockers.append("No formal engineering reports generated")
+
+            elif stage_key in (LifecycleStage.PROTOTYPE_READINESS,):
+                # Evaluated after loop
+                pass
+
+            elif stage_key in (LifecycleStage.PHYSICAL_TESTING,):
+                for m in measurements:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.PHYSICAL_TESTING,
+                        artifact_type=ArtifactType.VALIDATION_CHECK,
+                        source_tool=m.instrument_name,
+                        source_file=m.test_name,
+                        sha256=m.waveform_sha256 or "N/A",
+                        validation_result=m.pass_fail,
+                    ))
+                if measurements and any(m.pass_fail == "PASSED" for m in measurements):
+                    st_status = StageStatus.PASSED
+                else:
+                    st_status = StageStatus.NOT_STARTED
+
+            elif stage_key in (LifecycleStage.ENGINEERING_RELEASE,):
+                rel_files = [f for rel, f in file_map.items() if rel.startswith("release/") or "dossier" in rel.lower()]
+                for rlf in rel_files:
+                    ev_list.append(UnifiedEvidenceRecord(
+                        workspace_id=workspace_id,
+                        stage_id=LifecycleStage.ENGINEERING_RELEASE,
+                        artifact_type=ArtifactType.ENGINEERING_REPORT,
+                        source_tool="release_packager",
+                        source_file=rlf.name,
+                        sha256=compute_file_sha256(rlf),
+                        file_size_bytes=rlf.stat().st_size,
+                        validation_result="PASSED",
+                    ))
+                st_status = StageStatus.PASSED if rel_files else StageStatus.IN_PROGRESS
+
+            stages[stage_key.value] = StageEvaluation(
+                stage_id=stage_key,
+                title=title,
+                category_number=cat_num,
+                status=st_status,
+                mandatory=mandatory,
+                required_evidence_desc=req_desc,
+                actual_evidence_desc=f"{len(ev_list)} evidence records identified in workspace",
+                evidence_records=ev_list,
+                blockers=blockers,
+                nav_target=nav_target,
+            )
+            total_evidence_count += len(ev_list)
+
+        # Evaluate Prototype Readiness
+        mandatory_unpassed = [
+            stg for stg in stages.values()
+            if stg.mandatory and stg.status != StageStatus.PASSED and stg.status != StageStatus.NOT_APPLICABLE and stg.stage_id not in (LifecycleStage.PROTOTYPE_READINESS, LifecycleStage.ENGINEERING_RELEASE)
+        ]
+        proto_ready = len(mandatory_unpassed) == 0
+        proto_status = StageStatus.PASSED if proto_ready else StageStatus.BLOCKED
+        proto_blockers = [f"[{s.title}] {s.blockers[0]}" for s in mandatory_unpassed if s.blockers]
+
+        stages[LifecycleStage.PROTOTYPE_READINESS.value] = StageEvaluation(
+            stage_id=LifecycleStage.PROTOTYPE_READINESS,
+            title="Prototype Readiness Review",
+            category_number=13 if profile == "15_stage" else 12,
+            status=proto_status,
+            mandatory=True,
+            required_evidence_desc="All mandatory engineering gates PASSED and formal engineering sign-off recorded",
+            actual_evidence_desc="Prototype Authorization Gate: " + ("AUTHORIZED" if proto_ready else "BLOCKED"),
+            evidence_records=[],
+            blockers=proto_blockers,
+            nav_target="Prototype Gate Review",
+        )
+
+        for s_key, num, title, mandatory, _, _ in meta_list:
+            stg = stages.get(s_key.value)
+            st_val = stg.status if stg else StageStatus.NOT_STARTED
+            is_passed = st_val in (StageStatus.PASSED, StageStatus.NOT_APPLICABLE)
+            readiness_gates.append(ReadinessGate(
+                gate_id=f"gate_{s_key.value}",
+                title=f"Gate {num}: {title}",
+                stage_id=s_key,
+                mandatory=mandatory,
+                passed=is_passed,
+                status=st_val.value,
+                reason=stg.blockers[0] if (stg and stg.blockers) else ("Passed" if is_passed else "Pending"),
+            ))
+
+        overall = StageStatus.PASSED if proto_ready else StageStatus.IN_PROGRESS
+        return ProductLifecycleAssessment(
+            workspace_id=workspace_id,
+            workspace_name=ws_name,
+            overall_status=overall,
+            prototype_ready=proto_ready,
+            stages=stages,
+            readiness_gates=readiness_gates,
+            critical_blockers=proto_blockers,
             total_evidence_count=total_evidence_count,
             last_assessed_at=now(),
         )

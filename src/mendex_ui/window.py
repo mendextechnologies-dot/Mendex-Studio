@@ -25,6 +25,8 @@ from .v17_panels import EnterpriseDashboardPanel
 from .workflow_canvas import WorkflowStudioPanel
 from .product_lifecycle_panel import ProductEngineeringOverviewPanel
 from .pcb_panel import PCBWorkspacePanel
+from .command_palette import CommandPaletteDialog
+from .notification_center import NotificationCenterDialog
 
 
 class ProductDialog(QDialog):
@@ -51,10 +53,15 @@ class StudioWindow(QMainWindow):
         self.service = service
         self.product = None
         self.revision = None
-        self.setWindowTitle("Mendex Engineering Studio v1.9 · Enterprise Edition")
+        self.setWindowTitle("Mendex Engineering Studio v2.0 · Enterprise Edition")
         if ICON_PATH.exists():
             self.setWindowIcon(QIcon(str(ICON_PATH)))
         self.resize(1380, 880)
+
+        # Initialize Command Palette & Notification Center
+        self.command_palette = CommandPaletteDialog(self)
+        self.notification_center = NotificationCenterDialog(self)
+        self._init_command_palette_actions()
 
         # Central Root Container
         root_container = QWidget()
@@ -77,7 +84,7 @@ class StudioWindow(QMainWindow):
             logo_label.setToolTip("Mendex Technologies — Engineering Studio")
             header_layout.addWidget(logo_label)
 
-        brand_title = QLabel("MENDEX STUDIO v1.9")
+        brand_title = QLabel("MENDEX STUDIO v2.0")
         brand_title.setStyleSheet("font-weight: 700; font-size: 13px; color: #89b4fa; letter-spacing: 0.5px;")
         header_layout.addWidget(brand_title)
 
@@ -96,13 +103,15 @@ class StudioWindow(QMainWindow):
 
         self.search_box = QLineEdit()
         self.search_box.setPlaceholderText("Search tools, activities, waveforms, jobs... (Ctrl+K)")
-        self.search_box.setMinimumWidth(260)
+        self.search_box.setMinimumWidth(240)
         header_layout.addWidget(self.search_box)
 
-        # Command Palette / Shortcut
+        # Global Command Palette Shortcuts (Ctrl+K and Ctrl+P)
         self.search_shortcut = QShortcut(QKeySequence("Ctrl+K"), self)
-        self.search_shortcut.activated.connect(self._focus_search)
-        self.search_box.returnPressed.connect(self._on_search_submitted)
+        self.search_shortcut.activated.connect(self.command_palette.show_palette)
+        self.search_shortcut_p = QShortcut(QKeySequence("Ctrl+P"), self)
+        self.search_shortcut_p.activated.connect(self.command_palette.show_palette)
+        self.search_box.returnPressed.connect(self.command_palette.show_palette)
         self._init_search_completer()
 
         self.solver_badge = QLabel("● Solvers Status Loading...")
@@ -110,6 +119,11 @@ class StudioWindow(QMainWindow):
         header_layout.addWidget(self.solver_badge)
 
         header_layout.addStretch()
+
+        self.btn_notices = QPushButton("🔔 Notices")
+        self.btn_notices.setStyleSheet("font-weight: 600; color: #89b4fa;")
+        self.btn_notices.clicked.connect(self.notification_center.exec)
+        header_layout.addWidget(self.btn_notices)
 
         self._dark_theme = True
         self.btn_theme_toggle = QPushButton("🌙 Dark")
@@ -325,6 +339,22 @@ class StudioWindow(QMainWindow):
             except Exception:
                 pass
         self.solver_badge.setText(f"● {ready_solvers} Solvers READY · {total_solvers} Catalog")
+
+    def _init_command_palette_actions(self):
+        cp = self.command_palette
+        cp.register_command("Run LTspice Batch Simulation", "simulation", "Ctrl+Shift+S", lambda: self.pages.setCurrentIndex(5), "⚡")
+        cp.register_command("Run KiCad Schematic ERC", "pcb", "Ctrl+Shift+E", lambda: self.product_lifecycle._run_kicad_erc(), "⚡")
+        cp.register_command("Run KiCad PCB DRC", "pcb", "Ctrl+Shift+D", lambda: self.product_lifecycle._run_kicad_drc(), "🛡️")
+        cp.register_command("Export Manufacturing Gerbers", "pcb", "", lambda: self.product_lifecycle._export_gerbers(), "📦")
+        cp.register_command("Export Engineering Verification Dossier", "reports", "Ctrl+Shift+P", lambda: self.product_lifecycle._generate_dossier(), "📄")
+        cp.register_command("Open FreeCAD 3D Bobbin Solid", "cad", "", lambda: self.product_lifecycle._open_step_model(), "📐")
+        cp.register_command("Open Sizing & Calculations Inspector", "analysis", "", lambda: self.product_lifecycle.detail_tabs.setCurrentIndex(3), "🔬")
+        cp.register_command("Open Bill of Materials (BOM)", "bom", "", lambda: self.product_lifecycle.detail_tabs.setCurrentIndex(2), "📋")
+        cp.register_command("Open PCB Workspace", "view", "", lambda: self.pages.setCurrentIndex(4), "📐")
+        cp.register_command("Open Visual Workflow Studio", "view", "", lambda: self.pages.setCurrentIndex(13), "🔄")
+        cp.register_command("Toggle Dark / Light Theme", "view", "Ctrl+T", self.toggle_theme, "🌓")
+        cp.register_command("Open Workspace Folder in Explorer", "workspace", "", lambda: self.product_lifecycle._open_workspace_folder(), "📂")
+        cp.register_command("Re-Assess Engineering Lifecycle", "lifecycle", "F5", lambda: self.product_lifecycle.refresh_assessment(), "🔄")
 
     def _focus_search(self):
         self.search_box.setFocus()

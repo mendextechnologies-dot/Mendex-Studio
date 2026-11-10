@@ -85,6 +85,10 @@ class StudioService:
         self.workflow_engine = WorkflowExecutionEngine(self, self.workflows)
         from .lifecycle import ProductLifecycleEngine
         self.lifecycle = ProductLifecycleEngine(self)
+        from .lifecycle.ecr import ECRService
+        self.ecr = ECRService(self)
+        from .measurements import MeasurementService
+        self.measurements = MeasurementService(self)
         from .pcb import PCBWorkspaceService
         self.pcb = PCBWorkspaceService(self)
 

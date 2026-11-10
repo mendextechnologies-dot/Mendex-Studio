@@ -305,3 +305,46 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Pass full local suite: 159 tests in 81.74 s, including 15 new PCB tests. Preserve source hashes and native results under .mendex/qa/pcb-workspace-implementation-20261111/.
 - [x] Render and inspect final desktop dark/light, notes and archived views under .mendex/qa/pcb-workspace-ui-20261111-final/; update architecture, contracts and docs/PCB_WORKSPACE.md.
 - [ ] Complete actual SV-1000 transformer/circuit/layout engineering and resolve pre-existing lifecycle approval/evidence mismatch. This software milestone does not establish compact prototype readiness.
+
+## Mendex Engineering Studio v2.0 — Final Platform Completion (11 November 2026)
+
+- [x] Phase 1: Complete Architecture & Requirements Audit (`docs/v2.0/V20_PLATFORM_GAP_ASSESSMENT.md`).
+- [x] Phase 2: Enterprise Desktop Experience:
+  - [x] Implemented global Command Palette (`Ctrl+K` / `Ctrl+P`) for instant navigation and action execution.
+  - [x] Implemented Notification Center with event log and status alert dialog.
+  - [x] Added First-Run Configuration Wizard (`FirstRunWizardDialog`) for workspace location and tool sentinel.
+  - [x] High-DPI support, enterprise branding, and desktop shortcuts (`Ctrl+Shift+E`, `Ctrl+Shift+D`, `Ctrl+Shift+S`, `Ctrl+Shift+P`, `Ctrl+T`, `F5`).
+- [x] Phase 3: Complete Engineering Tool Ecosystem (`docs/v2.0/V20_ENGINEERING_INTEGRATION_MATRIX.md`):
+  - [x] Audited full 18-resource inventory + ngspice.
+  - [x] Real executable discovery for KiCad, FreeCAD, Python, Git.
+  - [x] Honest commercial tool stubs for PLECS, MATLAB/Simulink, Ansys Maxwell, Ansys Icepak, SolidWorks.
+- [x] Phase 4: Integrated Engineering Design & Simulation:
+  - [x] Subprocess execution of KiCad 9 ERC and DRC with structured JSON parsing.
+  - [x] Headless FreeCAD 1.1 3D bobbin generation and ISO 10303 STEP export.
+  - [x] Correct native CAD/CAE application routing for `.step`, `.kicad_sch`, `.kicad_pcb`, `.raw`, `.fem`.
+- [x] Phase 5 & 6: Configurable 15-Stage Engineering Lifecycle & Change Control (`docs/v2.0/V20_ENGINEERING_LIFECYCLE.md`):
+  - [x] Expanded lifecycle to 15 discrete stages with `PENDING_REVIEW` status.
+  - [x] Added product-independent workspace lifecycle assessment (`assess_workspace`).
+  - [x] Implemented Engineering Change Request (ECR) service with automated downstream impact analysis.
+- [x] Phase 7: Visual Workflow Studio v1.9 Consolidation:
+  - [x] Verified DAG execution engine with safe AST expression evaluation and unit conversion.
+- [x] Phase 8: Physical Test & Measurement Subsystem (`src/mendex_core/measurements/`):
+  - [x] Laboratory oscilloscope waveform CSV ingestion with SHA-256 integrity hashing.
+  - [x] Instrument calibration tracking and metadata registration.
+  - [x] Automated simulation vs measurement correlation (RMSE, MAE, peak-to-peak error).
+- [x] Phase 9: Engineering Intelligence & Calculations (`docs/v2.0/V20_INTELLIGENCE_READINESS.md`):
+  - [x] Deterministic Steinmetz core loss, Dowell AC resistance factor, and area-product transformer sizing.
+- [x] Phase 10: Application Packaging & Installer (`scripts/build_windows_installer.ps1`):
+  - [x] Generated standalone desktop installer script `dist/MendexStudio-v2.0-Setup.bat` with desktop shortcut and SHA-256 verification.
+- [x] Phase 11: Comprehensive Acceptance & Verification (`docs/v2.0/V20_ENGINEERING_ACCEPTANCE.md`):
+  - [x] All 14 mandatory acceptance scenarios (A through N) passed in `tests/integration/test_v20_acceptance.py`.
+  - [x] Full test suite: **173 passed, 2 skipped, 0 failed** in 44.90s.
+- [x] Phase 12: Documentation & Governance Suite (`docs/v2.0/`):
+  - [x] `V20_PLATFORM_GAP_ASSESSMENT.md`
+  - [x] `V20_FINAL_ARCHITECTURE.md`
+  - [x] `V20_ENGINEERING_INTEGRATION_MATRIX.md`
+  - [x] `V20_ENGINEERING_LIFECYCLE.md`
+  - [x] `V20_INTELLIGENCE_READINESS.md`
+  - [x] `V20_ENGINEERING_ACCEPTANCE.md`
+  - [x] `V20_RELEASE_READINESS.md`
+  - [x] `V20_FINAL_COMPLETION_REPORT.md`

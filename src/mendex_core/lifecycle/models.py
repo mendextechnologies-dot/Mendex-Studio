@@ -24,24 +24,37 @@ class Model(BaseModel):
 
 
 class LifecycleStage(StrEnum):
+    # Core 15 Stages (v2.0)
     REQUIREMENTS = "requirements"
+    ARCHITECTURE = "architecture"
+    ELECTRICAL_DESIGN = "electrical_design"
+    ENGINEERING_CALCULATIONS = "engineering_calculations"
+    CIRCUIT_SIMULATION = "circuit_simulation"
+    MAGNETIC_ANALYSIS = "magnetic_analysis"
+    SCHEMATIC_VERIFICATION = "schematic_verification"
+    PCB_DESIGN = "pcb_design"
+    PCB_VERIFICATION = "pcb_verification"
+    THERMAL_MECHANICAL = "thermal_mechanical"
+    BOM_SOURCING = "bom_sourcing"
+    ENGINEERING_VALIDATION = "engineering_validation"
+    PROTOTYPE_READINESS = "prototype_readiness"
+    PHYSICAL_TESTING = "physical_testing"
+    ENGINEERING_RELEASE = "engineering_release"
+
+    # Backward-compatibility aliases for v1.9 tests and artifacts
     ELECTRICAL_ARCHITECTURE = "electrical_architecture"
     CIRCUIT_DESIGN = "circuit_design"
     ELECTRICAL_SIMULATION = "electrical_simulation"
-    MAGNETIC_ANALYSIS = "magnetic_analysis"
-    SCHEMATIC_VERIFICATION = "schematic_verification"
     PCB_LAYOUT = "pcb_layout"
     PCB_DRC = "pcb_drc"
-    THERMAL_MECHANICAL = "thermal_mechanical"
     BOM_REVIEW = "bom_review"
-    ENGINEERING_VALIDATION = "engineering_validation"
-    PROTOTYPE_READINESS = "prototype_readiness"
 
 
 class StageStatus(StrEnum):
     NOT_STARTED = "NOT STARTED"
     IN_PROGRESS = "IN PROGRESS"
-    PENDING_VERIFICATION = "PENDING VERIFICATION"
+    PENDING_REVIEW = "PENDING REVIEW"
+    PENDING_VERIFICATION = "PENDING REVIEW"
     PASSED = "PASSED"
     FAILED = "FAILED"
     BLOCKED = "BLOCKED"
@@ -116,10 +129,12 @@ class ReadinessGate(Model):
 
 
 class ProductLifecycleAssessment(Model):
-    product_id: UUID
-    product_code: str
-    revision_id: UUID
-    revision_label: str
+    product_id: Optional[UUID] = None
+    product_code: Optional[str] = None
+    revision_id: Optional[UUID] = None
+    revision_label: Optional[str] = None
+    workspace_id: Optional[str] = None
+    workspace_name: Optional[str] = None
     overall_status: StageStatus
     prototype_ready: bool
     stages: Dict[str, StageEvaluation] = Field(default_factory=dict)
