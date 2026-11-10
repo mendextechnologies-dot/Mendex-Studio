@@ -1,0 +1,6 @@
+COMMAND: "C:\Mendex studio\.venv\Scripts\python.exe" -m pytest -q -p no:cacheprovider --basetemp C:\Users\Sagar\AppData\Local\Temp\fv-oytiv0ub\tests
+CWD: C:\Mendex studio\.mendex\qa\final-verification-20261110-01\released
+PYTHONPATH: C:\Mendex studio\.mendex\qa\final-verification-20261110-01\released\src
+
+............................                                             [100%]
+28 passed in 2.56s

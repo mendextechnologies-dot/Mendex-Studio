@@ -1,0 +1,7 @@
+COMMAND: "C:\Mendex studio\.venv\Scripts\python.exe" -m pytest -q -p no:cacheprovider --basetemp C:\Users\Sagar\AppData\Local\Temp\fv-ihn_8rui\tests
+CWD: C:\Mendex studio\.mendex\qa\final-verification-20261110-01\main
+PYTHONPATH: C:\Mendex studio\.mendex\qa\final-verification-20261110-01\main\src
+
+........................................................................ [ 83%]
+..............                                                           [100%]
+86 passed in 15.85s

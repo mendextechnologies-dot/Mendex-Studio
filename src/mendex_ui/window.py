@@ -12,6 +12,11 @@ from mendex_core.models import Category, Specification
 from mendex_core.knowledge import GUIDELINES, GUIDELINES_REVISION
 from .panels import ToolPanel, ValidationPanel, ReportsPanel, SimulationPanel, KnowledgePanel
 from .integration_panels import ToolCenter, JobsPanel, DatasetPanel
+from .workspace_panels import (
+    TransformerWorkspacePanel,
+    DCDCWorkspacePanel,
+    SemiconductorWorkspacePanel,
+)
 
 
 class ProductDialog(QDialog):
@@ -112,12 +117,21 @@ class StudioWindow(QMainWindow):
         pane.addWidget(split)
         self.pages.addWidget(products)
         self.module_pages = []
+        labels = {}
         for title in ("Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace"):
             label = QLabel(f"{title}\n\nImplementation: NOT IMPLEMENTED\nProduct evaluation: NOT_EVALUATED\n\nFoundation workspace only. No calculation, tool execution or result is available.")
-            label.setMargin(30)
+            label.setMargin(15)
             label.setAlignment(Qt.AlignTop)
-            self.pages.addWidget(label)
             self.module_pages.append(label)
+            labels[title] = label
+
+        self.transformer_ws = TransformerWorkspacePanel(service, self.guarded, labels["Transformer"])
+        self.dcdc_ws = DCDCWorkspacePanel(service, self.guarded, labels["DC–DC Converter"])
+        self.semiconductor_ws = SemiconductorWorkspacePanel(service, self.guarded, labels["Switching Devices"])
+        self.pcb_ws = labels["PCB Workspace"]
+
+        for ws in (self.transformer_ws, self.dcdc_ws, self.semiconductor_ws, self.pcb_ws):
+            self.pages.addWidget(ws)
         self.simulation_panel = SimulationPanel(service, self.guarded)
         self.pages.addWidget(self.simulation_panel)
         self.validation_panel = ValidationPanel(service, self.guarded)
@@ -202,6 +216,12 @@ class StudioWindow(QMainWindow):
             self.reports_panel.set_revision(self.revision)
             self.simulation_panel.set_revision(self.revision)
             self.knowledge_panel.set_revision(self.revision)
+            if hasattr(self, "transformer_ws"):
+                self.transformer_ws.set_revision(self.revision)
+            if hasattr(self, "dcdc_ws"):
+                self.dcdc_ws.set_revision(self.revision)
+            if hasattr(self, "semiconductor_ws"):
+                self.semiconductor_ws.set_revision(self.revision)
             locations = ["magnetics", "circuit", "circuit", "pcb", "simulations"]
             requirements = ["Core geometry and material sources, winding construction, Bmax, duty limits and insulation requirements.", "Topology, input/output range, switching frequency, control mode, ripple and efficiency targets.", "MOSFET/IGBT/BJT datasheet, voltage/current/SOA ratings, gate drive and thermal assumptions.", "Native KiCad files, ERC/DRC evidence, clearance assumptions and qualified HV isolation review.", "Verified tool version, model inputs, solver logs, raw outputs and independently checked reference case."]
             for label, folder, requirement in zip(self.module_pages, locations, requirements):

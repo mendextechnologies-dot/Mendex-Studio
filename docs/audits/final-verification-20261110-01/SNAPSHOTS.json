@@ -1,0 +1,32 @@
+{
+  "frozen_at_utc": "2026-11-10T08:33:09.986341+00:00",
+  "snapshots": [
+    {
+      "name": "main",
+      "worktree": "C:\\Mendex studio",
+      "commit": "7230079d972e34b504f09cf90c166f87bdf0a43a",
+      "snapshot": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\main",
+      "worktree_status": "?? src/mendex_ui/workspace_panels.py\n"
+    },
+    {
+      "name": "codex",
+      "worktree": "C:\\Mendex studio codex-v1.5",
+      "commit": "f2be079d3eb89625d2ae45778958fceb57d1d75f",
+      "snapshot": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\codex",
+      "worktree_status": ""
+    },
+    {
+      "name": "released",
+      "worktree": "C:\\Mendex studio",
+      "commit": "205567373799444b74c68d04c8eb4435de3cac05",
+      "snapshot": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\released",
+      "worktree_status": "?? src/mendex_ui/workspace_panels.py\n"
+    },
+    {
+      "name": "untracked-not-in-acceptance",
+      "path": "C:\\Mendex studio\\src\\mendex_ui\\workspace_panels.py",
+      "sha256": "fea84a9cc73af26f99d979107c2524e6895ed9b5c55015cdf683bf0a9149741b",
+      "bytes": 12559
+    }
+  ]
+}

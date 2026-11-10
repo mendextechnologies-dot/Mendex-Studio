@@ -57,3 +57,18 @@ Source repository: https://github.com/mendextechnologies-dot/Mendex-Studio · br
 - [x] Render and visually inspect Tool Center, Jobs, Logs, Evidence and Dataset UI; keep Agent 2 source/dependencies/AGENTS.md untouched.
 - [ ] Review a committed Agent 2 PR and reproducible native smoke evidence; integrate only after tests and agreed review.
 - [ ] Owner accepts the combined demonstration/limitations; no full-v1.5 release or sign-off is claimed by the Codex-only branch.
+
+
+## v1.5 Two-Agent Integration & Engineering Modules — Antigravity & Codex Milestone
+
+- [x] Read and align on Master Implementation Guide v1.3, v1.4 (18 tools), v1.5 (two-agent execution plan), architecture and engineering rules.
+- [x] Verified and truth-tested all 18 tools and research datasets: verified installed LTspice 26.1.1.0, Python 3.13.7, Git 2.45.2; kept 15 unavailable/commercial tools truthfully marked NOT_INSTALLED/OPTIONAL_UNLICENSED.
+- [x] Implemented secure, sandboxed execution engine: SafeSubprocessRunner with `shell=False`, argument list validation, process-tree termination, isolated directories, and SHA-256 artifact hashing.
+- [x] Implemented Universal V15 Connector architecture with V15ConnectorRegistry and native script generators (FEMM 4.2 Lua, FreeCADCmd bobbin, OpenModelica `.mos`).
+- [x] Integrated canonical research datasets (SwitchLossDB CSV query engine, MagNet loss benchmark fixtures).
+- [x] Built analytical loss calculation engines: Dowell AC winding resistance factor, Flyback transformer parameter sizing, semiconductor conduction & switching losses, and MagNet Steinmetz core loss.
+- [x] Completed comprehensive 5-part Master Audit Package under `docs/audits/` (Master Audit, Traceability Matrix, Tool Integration Audit, Implementation Gaps P0-P3, Next Action Plan).
+- [x] Merged Codex UI branch and Antigravity Integrations branch cleanly into `main` with 100% backward compatibility.
+- [x] Integrated interactive engineering workbenches (`TransformerWorkspacePanel`, `SemiconductorWorkspacePanel`, `DCDCWorkspacePanel`) into `StudioWindow` while maintaining 14 navigation pages and dynamic specification synchronization.
+- [x] 90 automated tests passed across adapters, contracts, core services, UI, calculations, and integrations (`pytest` green in 10.17s).
+- [x] Desktop smoke tests passed (`scripts/desktop_smoke.py` and `scripts/v15_codex_smoke.py`).

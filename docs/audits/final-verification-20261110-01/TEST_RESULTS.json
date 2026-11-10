@@ -1,0 +1,94 @@
+[
+  {
+    "label": "main-short",
+    "commit_snapshot": "main",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fv-ihn_8rui\\tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\main",
+    "exit_code": 0,
+    "elapsed_s": 16.406,
+    "log": "main-short.txt",
+    "tail": [
+      "........................................................................ [ 83%]",
+      "..............                                                           [100%]",
+      "86 passed in 15.85s"
+    ]
+  },
+  {
+    "label": "main-deep",
+    "commit_snapshot": "main",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\main\\.audit-tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\main",
+    "exit_code": 1,
+    "elapsed_s": 16.793,
+    "log": "main-deep.txt",
+    "tail": [
+      "FAILED tests/integration/test_day3.py::test_launch_paths_and_missing_editor",
+      "FAILED tests/integration/test_restore.py::test_closed_database_and_evidence_backup_restore",
+      "FAILED tests/ui/test_window.py::test_real_service_editor_roundtrip_and_restart",
+      "13 failed, 73 passed in 16.19s"
+    ]
+  },
+  {
+    "label": "codex-short",
+    "commit_snapshot": "codex",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fv-4tahw_77\\tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\codex",
+    "exit_code": 0,
+    "elapsed_s": 18.566,
+    "log": "codex-short.txt",
+    "tail": [
+      "........................................................................ [ 75%]",
+      "........................                                                 [100%]",
+      "96 passed in 18.02s"
+    ]
+  },
+  {
+    "label": "released-short",
+    "commit_snapshot": "released",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fv-oytiv0ub\\tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\released",
+    "exit_code": 0,
+    "elapsed_s": 2.998,
+    "log": "released-short.txt",
+    "tail": [
+      "............................                                             [100%]",
+      "28 passed in 2.56s"
+    ]
+  }
+]

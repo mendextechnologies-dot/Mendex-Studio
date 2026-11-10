@@ -1,0 +1,54 @@
+[
+  {
+    "snapshot": "main",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "mendex_ui",
+      "--root",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvu-7j14g7pe",
+      "--smoke-test"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "snapshot": "codex",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "mendex_ui",
+      "--root",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvu-8oir7trf",
+      "--smoke-test"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "snapshot": "released",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "mendex_ui",
+      "--root",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvu-pq8bojx8",
+      "--smoke-test"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "snapshot": "main",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "scripts/v15_codex_smoke.py"
+    ],
+    "exit_code": 0,
+    "stdout": "Codex v1.5 synthetic UI smoke passed; screenshots under .mendex/qa/v15-codex\n",
+    "stderr": ""
+  }
+]

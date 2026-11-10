@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.5.0",
+  "job_id": "52f2b6b9-2df7-4d76-9a83-8094788f4d92",
+  "workspace_id": "28f86495-41f2-4c42-b06a-33bf7f9d9d4b",
+  "tool_id": "ltspice",
+  "operation": "batch_simulate",
+  "input_paths": [
+    "inputs\\b3d4cdfcd0a4.net"
+  ],
+  "parameters": {},
+  "timeout_s": 15.0,
+  "provenance": "Existing generic RC software test fixture; no engineering qualification"
+}

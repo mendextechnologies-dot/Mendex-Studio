@@ -1,0 +1,1992 @@
+[
+  {
+    "snapshot": "main",
+    "path": ".gitignore",
+    "sha256": "372eb0091dce11a055de2e41475bd279e8e62105b78bb68121bf46fa669950b8"
+  },
+  {
+    "snapshot": "main",
+    "path": ".vscode/tasks.json",
+    "sha256": "6c90eeaeb9d4480056ef7010bc60bde40cc7dc86a27d551cfaafd720f273df02"
+  },
+  {
+    "snapshot": "main",
+    "path": "AGENTS.md",
+    "sha256": "eecc5902805b273eeb38f8a91c19b614a11473b9e199b4855a35606504e2e83c"
+  },
+  {
+    "snapshot": "main",
+    "path": "config/README.md",
+    "sha256": "614c4390c17c7298475ab6eace87ffca40fb2de24d82bc46fc3528fcb635d185"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/AdapterCapabilities.schema.json",
+    "sha256": "b4cd5cf7676984bc7b67ad09e7b18bf8060a2118e6cd2c4b497a2edc0ab1c028"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/AdapterCheck.schema.json",
+    "sha256": "2b63a4c203d50d2e662fa5cd9349c80466c1bb6af1511bfe58541a9d47f93521"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/AdapterDefinition.schema.json",
+    "sha256": "ec9aab9b8200a833bd21123c3d41955250a0007d16112f69902f2d0cdc86bcbd"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/AIRequest.schema.json",
+    "sha256": "c5965fa455076c871575f3049c749355eedc7a765771c0289f52e3a8f12263d9"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/AIResponse.schema.json",
+    "sha256": "16d860ad5980d7cc0c4a57215e90238cd928f04bff7ce6f0302e4be89cbf107d"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/EngineeringRule.schema.json",
+    "sha256": "2089408a331102932416e36f1a7dd539d6282171f90d7259c0419246f409aad4"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/ManualCheck.schema.json",
+    "sha256": "8eb4c427ce87ecd39e6eefb482c092b1562b08b60c2b4fa29806487bdf5aa628"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/PluginManifest.schema.json",
+    "sha256": "10eb25520c6b22c23649765455f3a1e3c80fc6424072f36944da078d4af59b32"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/PreparedJob.schema.json",
+    "sha256": "467660faf14a609a3060b5109b0dadae158ab762dfef8fe76bdadc6968696281"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/Product.schema.json",
+    "sha256": "cb80e5329ed95a2554247a55ba291ad4e1117dd45e85993ff4fb79de0ef26416"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/README.md",
+    "sha256": "8e25bb3a8440bd760e651ba55ce456f57effec1293e4342bafa894fc8b5d5c5e"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/Report.schema.json",
+    "sha256": "934430b14fe91eebcdfc9583019f735876b87be712aa442e644f7111f58166c3"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/ResultBundle.schema.json",
+    "sha256": "e6e7d9a8da70ef509b75e02f39e8e9dae30a0255cb902587e34bc285dd646d69"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/Revision.schema.json",
+    "sha256": "33f7e7b85ea457df592e5dff60e58e8cd6639c920679947a9b2f35b789602800"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/RuleAssessment.schema.json",
+    "sha256": "06be19bd350faa65c3871835bd401b83d39769072c269fcf63e728aec13152df"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/SimulationRun.schema.json",
+    "sha256": "93a934478d18b86ca94d983109e5047a16fafc0489c98b726511180356a348c4"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/specification.example.json",
+    "sha256": "dc3cfec27334912332a1e1f24c9b26838b96ddb0479285eabac7808c61e50045"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/Specification.schema.json",
+    "sha256": "6f0fa2032882bf1d40d7d125389a9fdb72013306ad6cdd6fbdbd636fa0e554d1"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/ToolStatus.schema.json",
+    "sha256": "5c423b743d35781379e9bf193cb70d487a15430765964a5327ef79c6b8ac03a3"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/ArtifactManifest.schema.json",
+    "sha256": "1a775ce85b49466a8a46bb3e25372db51b21577c305168f6e16f80077db455be"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/Capability.schema.json",
+    "sha256": "76a7a2a319d6adc569b18321bbcd0c8996c3165c4a45021a7f007bea49e85a90"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/EvidenceManifest.schema.json",
+    "sha256": "912556bb34f45c724a208e862b9d24abd2677587d7b50c342005d3f2ca3324a8"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/job-request.example.json",
+    "sha256": "7f01399eb80ef857ff52d00e2c8e0895b5a5684cd663924ea188d74e158e294a"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/JobRecord.schema.json",
+    "sha256": "adf3bcebbac821d810e84fa8b27f48c1799bf03e1318f7810083d51574a0420b"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/JobRequest.schema.json",
+    "sha256": "f31396262a782e27a1d1818b079d5c727c1a64bc8e13d9cf249de1ac09304229"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/JobResult.schema.json",
+    "sha256": "535c4b44c0c6d4c2cd937cad2365533cea0834e9c704540d980b593caead1d59"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/ToolConfiguration.schema.json",
+    "sha256": "a0e85030e8c31c33e9b6ebcb1e09a936e51e2f18455694a6b636c7039a3d6523"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/ToolDescriptor.schema.json",
+    "sha256": "e70e31da8205a878adfc78cc0b8dbcaa34bad910f8a56819399f9544b109e1fa"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/v1.5.0/ToolHealth.schema.json",
+    "sha256": "b134f52e9520838fd86f1b647351ca55ca521ff8eb1b6579f49ec5c29f9bfce2"
+  },
+  {
+    "snapshot": "main",
+    "path": "contracts/ValidationRecord.schema.json",
+    "sha256": "a4cd76c2b1bf5d96454057eeeabb659c1832336c0e661d902f1adfde9bfccfd8"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/ADAPTER_TEST_EVIDENCE.md",
+    "sha256": "43913c6e9cec50c56bb5952aefb001ebc8a2dff88c9f0b9a467a2a3de0287c47"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/AGENT2_HANDOFF.md",
+    "sha256": "a0d3424dcac2037b2cc44178c54b902c5a7e09d83ecb7be9c9dac24814e8356e"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/architecture.md",
+    "sha256": "e266f65778547114d2b4e46d7eda4b48f693aa79add87fc41268001b2ce39d1f"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/audits/IMPLEMENTATION_GAPS.md",
+    "sha256": "ebbd29c35fedf34df0921c502d4d3b2c57c783f82aad86cf185aa53fd79b7e51"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/audits/MASTER_IMPLEMENTATION_AUDIT.md",
+    "sha256": "b6cab4b98a114b4aee7035fdaec7787c78efc680fc001d8d7fed4d16f026cd8b"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/audits/NEXT_ACTION_PLAN.md",
+    "sha256": "24e4ff76f341bc60f8ffafc8cc3a5cea05ed1610830d545c1372e2fd04ecd7ae"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/audits/REQUIREMENTS_TRACEABILITY_MATRIX.md",
+    "sha256": "7a12ac54870c812222a6fd7984ad8e98bf32a033423e24e0d1c57aad89dd3221"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/audits/TOOL_INTEGRATION_AUDIT.md",
+    "sha256": "a94773c4eac71463b933194c1f408f229e7fed5d39355821f0c386148c612880"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/CONTRACTS.md",
+    "sha256": "aa11ef6060fefdf87a70cc6de0d85ebcb432a8b4cc249232d3c03a55c1a7aca9"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/DECISIONS.md",
+    "sha256": "ed7924af4ca0f428f4cc3657867df604e49631d6800513a1120649bf36c336e9"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/DEPENDENCY_REQUESTS.md",
+    "sha256": "7da195c411477f43621a900ef0d85a1f4bfdc54681316b3b1ab4a3afcb2bef9b"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/engineering-rules.md",
+    "sha256": "3213fcc5b490df3be2e679df6215eda78755a7955f5b8452e5217511864a6808"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/implementation-checklist.md",
+    "sha256": "a5f7bc8ce0c463dc64c27d4ca1c594fe4640f7914eb941e1c0996af73bdc3cb6"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/IMPLEMENTATION_STATUS.md",
+    "sha256": "f32c6131e1a17fad12a75dfb7fc882a09e49fe69193f67da70cacd42daffd933"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/INTEGRATIONS.md",
+    "sha256": "734b0a948bc1d549a253a0793b62044b871ac2f2db9b2e91adb5205fc7ac096f"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/known-limitations.md",
+    "sha256": "897f28e95f88ba21d9927d4e3f4a3ec00a278947b05bea8dc6e2c81fde81edac"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/local-test-log.md",
+    "sha256": "0690ad1cdab59d2c6b3041d295449338da6ceda1367e1da1c2e02929ce19f93d"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/manual-acceptance.md",
+    "sha256": "97f3a3d69c11b85245b4ef8626f487d2683212d08dc7fde62a6c3c669ae6dfec"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/Mendex_Engineering_Validation_Platform_Master_Guide_v1_3.docx",
+    "sha256": "d7a29b4896f98a1c8262d6c6ec682b6efcfecd22430036a5f3f7de30f1a21130"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/OWNERSHIP_V1_5.md",
+    "sha256": "0255afea5cfda7f6b59dd895c82a8efce685130178781510bf192e95b0ad2733"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/release-notes-v0.1.0.md",
+    "sha256": "a8c63812cda2ffe96dfa10571e8023e76bdaa54c5da0108d029aba52f5eb6481"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/requirements-matrix.md",
+    "sha256": "fced99e4d22ae34e31b983bf4e19c413fa3a864b4b62cc701000bafd6d1483b2"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/source-guide.txt",
+    "sha256": "ea485f45ec11be7729e5fec5158a6126d3b44fc2e25a19cad42c243f271dff8a"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/TOOL_COMPATIBILITY.md",
+    "sha256": "63334823372b96d33195c7870ca0c18b75727c346f78db149fb9c9a348c17126"
+  },
+  {
+    "snapshot": "main",
+    "path": "docs/V15_INTEGRATION_HANDOFF.md",
+    "sha256": "286b93cb6aadba7d841e2d4eeb96c64298f6287404892993947eaabe69ff9144"
+  },
+  {
+    "snapshot": "main",
+    "path": "mendex-studio.code-workspace",
+    "sha256": "1b41af6d0b689f271d3c6cba65cff4e57e3003e35369619a1176d3fa8e9c6be2"
+  },
+  {
+    "snapshot": "main",
+    "path": "packaging/README.md",
+    "sha256": "b3684f124849db56fc6023cd4de749885fc6e68102ec166c0ded4e366d21f50d"
+  },
+  {
+    "snapshot": "main",
+    "path": "pyproject.toml",
+    "sha256": "3b01074d9e849190220d380eb6dba2be281fc9bbcdb0947381c1235f30108c55"
+  },
+  {
+    "snapshot": "main",
+    "path": "README.md",
+    "sha256": "b7fc89eb83155b3fd134344154e66fc20f19a0cb46057dac81a5c82ef2b03a03"
+  },
+  {
+    "snapshot": "main",
+    "path": "requirements-lock.txt",
+    "sha256": "d4e5b717c7a8663b310c3557838f3f8b988fdcba3b313f22db4457f238482d82"
+  },
+  {
+    "snapshot": "main",
+    "path": "scripts/bootstrap.ps1",
+    "sha256": "9678973388e7be7534b77e027f5e52681c6e0f9488cc6bfd4a840d50a8bb300e"
+  },
+  {
+    "snapshot": "main",
+    "path": "scripts/desktop_smoke.py",
+    "sha256": "5b41d893aae1920a4fcaa2cd50b892645539f8f179d857e2456be3bd6ba11275"
+  },
+  {
+    "snapshot": "main",
+    "path": "scripts/export_contracts.py",
+    "sha256": "5c53d1cdd213b8d1aba985e32e7b823dd5808cbd8ad0655cd634bad380d16d40"
+  },
+  {
+    "snapshot": "main",
+    "path": "scripts/export_v15_contracts.py",
+    "sha256": "3c162b86b6ceb85490a485d62725bff361708669360a4848ab57870f852e2735"
+  },
+  {
+    "snapshot": "main",
+    "path": "scripts/interactive_acceptance.py",
+    "sha256": "eeaa3a17852cafb632939f57ce8a853b7a4e745da479b265940b75c90444e397"
+  },
+  {
+    "snapshot": "main",
+    "path": "scripts/package.ps1",
+    "sha256": "8c3ad3a74fb2b179a4777d17def55757c98bc4b19f7e486a3a3ad267ece930ab"
+  },
+  {
+    "snapshot": "main",
+    "path": "scripts/v15_codex_smoke.py",
+    "sha256": "5028d9f52cc840d94dc4289dd2537973a6f091605d6b56ad0e01cda7f47d1478"
+  },
+  {
+    "snapshot": "main",
+    "path": "scripts/verify_install.ps1",
+    "sha256": "d10db9502e241a3b3519b842616e34cfdf57573e9e6460a02109076babc0f619"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/__init__.py",
+    "sha256": "f403a9359b9c568012dd301765664560e48dda66c8e3b2e455e58829fc28e617"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/__init__.py",
+    "sha256": "26df8ee33cd9ba336bfc2a64526a8bfd6e3eeb0b3d06a97cad58e38b2c893aeb"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/base.py",
+    "sha256": "18a67c09bf00267030caaa6ad0f5a11ab6dadee8fa7187ea0938daf579c31ee0"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/commercial_stubs.py",
+    "sha256": "78200cad1a68e1937df8321f45995907069f46e600c69715dfe31dfe540c704a"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/femm.py",
+    "sha256": "214a5d8a6df87668f81f65c4888ad6eb4abf619114e5c54d4482f649cef40ac3"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/freecad.py",
+    "sha256": "b69f8867d8a55268d845367d1deef79f1586ed7ae7ae69d3bb55c24f237a0e36"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/git_adapter.py",
+    "sha256": "ddf21d8065a0d5deef00dc32aa02c7666b3b5b07c7ef2142e3e246907400a10a"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/jupyter.py",
+    "sha256": "50d4bc88f643039c41ca91ca721a69087b14ca0fed338aae184b7015dc36380d"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/kicad.py",
+    "sha256": "2b8f04ea7adfccd38959d6e94aaefb1854cc1469c146ef8c2155f72e88896d4d"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/ltspice.py",
+    "sha256": "f0a31f5f9b926705b99f27a5191cfc3be27fcc4197065aa2d2aa7601aff837c6"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/openmodelica.py",
+    "sha256": "bd75fbd4c11ffe727d015100d02c44eb2b8f1fa07575caedab1a20e4e6d8dfd4"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/python_runtime.py",
+    "sha256": "bd14c668616764d474af0351060bd87196300f13abbc83d79734b350a7f186d1"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/qucs_s.py",
+    "sha256": "192379c194d262265e7883f9f0c17b2dc33ac92175f9e579123d7f24872c22b9"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/registry.py",
+    "sha256": "50c897f30237a92760f4560d468aa43d52cffe0fe68276472d95f169e31fe84b"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/adapters/research_adapters.py",
+    "sha256": "3e72aa1574bf1c116923ee80ca642ae6df72083f8ba5c616edbe3ecd11b60c5d"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/calculations/__init__.py",
+    "sha256": "bda645b09153cc4c9f820a6428f97c95217efc77e4ec361d75ab6635a74900dd"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/calculations/power_losses.py",
+    "sha256": "425540ae889051ff8eac2ff8302330e8d60e438654a45ba9d8400d3d95c9dbe9"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/calculations/transformer_design.py",
+    "sha256": "cab520933177dac161e196f1832db1ce77ef3ff561a73e1cc02e42be1905d378"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/calculations/winding_losses.py",
+    "sha256": "eba4f393573a8ce14fb61145a66bec674e24ccb78bd29d97205e496f44131693"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/contracts.py",
+    "sha256": "f142d9a49d8ac9c2617d962bb09c513b50bf3e1bc7039ede5ac7961b61d66238"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/datasets/__init__.py",
+    "sha256": "7d0c3357f91b7d0358b5f2148908ddaa8ed0e648cfa2e0af32161ee3f8f4a81b"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/datasets/fixtures/magnet_sample.json",
+    "sha256": "b01663d71dd6a064b20cde73f542bb694df6484fa09722871eea47b6fdf8019a"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/datasets/fixtures/switchloss_sample.csv",
+    "sha256": "2bdf725767e44e3ac2e0e7bb0bd5dc85c696d480dfbac4d72fbb974d706c9c74"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/datasets/magnet_dataset.py",
+    "sha256": "c54e37fda636b9717fc7ee96fc91de5c3842e1aa63631585cd423810650e0aa7"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/datasets/provenance.py",
+    "sha256": "4fc6bb226d6223ea6cb2714bcbfd498e223658d3b2b6211ae1f5429350bf480c"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/datasets/switchloss_db.py",
+    "sha256": "5bc568c25ccdda8e0ebf2170ce89c83e03ddbbd8224dc7edc28099061917ee1d"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/generators/__init__.py",
+    "sha256": "d95014742866bd44ba1b12dbf054f2130bf8edf9455b685e61455ef0fd3be7b6"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/generators/femm_generator.py",
+    "sha256": "e9c56b8ae32ba93a444224a36423b03ed9b404503a471179c633868b0f79dfd9"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/generators/freecad_generator.py",
+    "sha256": "dad93b9278a802414ca77ebfa3a0f8d00ceb8da6b1e286f1d460a396fa923e66"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/generators/modelica_generator.py",
+    "sha256": "167102be93117008222e842b8223f15c00c86c98fdd03d084bb309df5bb79d89"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/parsers/__init__.py",
+    "sha256": "94ff448ea22a4ef3df209d301084a690cb84e9c3dc779e7dddfe2a54fe1afb5f"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/parsers/kicad_parser.py",
+    "sha256": "f0950816e7eab0d0e5b81531f95fb67358df9775c4c065f1e7ad1bed66ea699c"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/parsers/ltspice_parser.py",
+    "sha256": "48721994b9ae6b4c2bc7cbfed35a85563b66a99eccded098a134e81017ca69c7"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/runners/__init__.py",
+    "sha256": "4c584b86029d821e657e852e0c06d7c3df4bbda388e6aee0c85e2f3d72d00174"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/runners/safe_runner.py",
+    "sha256": "dbee86dca18af0ad740e353e531775560e3a4bf3bd0df153efd4d22482eb4d7c"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/integrations/v15_connector.py",
+    "sha256": "31963f4bd8ad6b2e7c1b2d2f5d432ea3cbab86948dc7a418778d13a378d65e25"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/__init__.py",
+    "sha256": "b6905a7af6883043552c9bc8f1b7f9f23cb0cc7b3ff96aa89184d4b1c5b303c7"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/adapters/__init__.py",
+    "sha256": "9855711e4081595cab90833d718bbeca6679eeb2db4bdbd4d8df37cadd9b5a7c"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/adapters/contracts.py",
+    "sha256": "e046071dce2bbd0cbc71548d4592728854eb7759875575b45aed9adf8c80b850"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/adapters/registry.py",
+    "sha256": "19eabeaa1c294efdded9f1e639a28b2f20ad875914d953d0462c41b4ed445b14"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/adapters/version.py",
+    "sha256": "5ea880868bcaad97e687bee625c4ccd36ac67433a3de54a81f64c0a2dc2c5c08"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/ai.py",
+    "sha256": "ed6e1391dba207230700af14bbf474fd7a6b5c347ed86a9cb536c1b5dfe12e4e"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/catalog.py",
+    "sha256": "e033d6ca98100b97eb560d6248674fe5647d8109184031937d93b93b81cbffce"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/cli.py",
+    "sha256": "af7640d4e2dc5b0cb7cad42d0423f94b96cf98bf9b4d820160123e43c23d50e7"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/config/__init__.py",
+    "sha256": "9d118125a50aed5a0e209cfde7c386a191bb2af4cfb9563a3b3ef5b016451189"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/config/engineering-rules.json",
+    "sha256": "9deb696a48df2c2b491f83d8976c7ef8b5fa5f9a15695ead45b6d53e9c2ac72e"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/config/integration_catalog.json",
+    "sha256": "d25710df952a6828f4bb0bc2af05cc40b9c09fc78cc97740d320a65a5405c535"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/config/tools.json",
+    "sha256": "dcacfc712a5ae00a04a6c2f51f949813e2e2cdc4bf2061140bcefe22b0f47e51"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/demo_adapter.py",
+    "sha256": "e94291fe9a7abf8b7be4deab1f7ea5c872078cc6244754fb3e8013b55e29b088"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/diagnostics.py",
+    "sha256": "4623d62152e882dfd4292be757a85475b87e63a91f710bf1ae509fbcf14de5da"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/doctor.py",
+    "sha256": "00609bc232b25e246a226745509b028636c2b39a28856be6c521af35aa0089a8"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/evidence.py",
+    "sha256": "1f8bfc5366fd0b86664eaa7ecd39ce01fd259f65cb979396fd2f15316888bb00"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/integration_cli.py",
+    "sha256": "ba6fe341cbb035a619b376357b5fdcbde54e9ce0a538307582213e80434e64fd"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/integration_contracts.py",
+    "sha256": "a761c1981823668abd36303f6420b7fe013c014f7f7020c31931a1c635c39fb1"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/integration_service.py",
+    "sha256": "d50360855390f356560b15159f813d35fdd020bdbbe3d0eb5b543588fabbbf4a"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/integration_store.py",
+    "sha256": "b51741cb897a550dcb705c193673b561bdbdbde4a32aca88a5bd5ce64684b1f0"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/knowledge.py",
+    "sha256": "6c828db927320e188d485a4606a1ab0eeae7a1f4143b6cf40f5eb94a89a482f7"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/launch.py",
+    "sha256": "351a3bb2bef358e586d717c1716dda7d10cb979c1209119a0054a95ac920bd10"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/models.py",
+    "sha256": "ec8b01734b8fda9d059fca22ef8e4307b0a80330b7535e713c6b930e305d230f"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/plugins.py",
+    "sha256": "f7f4e5b88e4ec649883bcb4793fe765df63a8ca5f56736b19601d6c69eb6b361"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/rules.py",
+    "sha256": "4f65d0de8791c3a1dd26cd5272b9871748a5cc6bf42fbbd35226da76217a2323"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_core/service.py",
+    "sha256": "05fc0f514d0429ab78c7db34a9c422127682102011a818ca51313145f517228b"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_ui/__init__.py",
+    "sha256": "0ab5e29a1f566d59271ab23f0d4d26ef241de076b1e9471664385f7dd43b2f5a"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_ui/__main__.py",
+    "sha256": "723c5ae5b3d68a26694fabde479180abc5ebd1aa203fe6ea2ac4347797087ad9"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_ui/integration_panels.py",
+    "sha256": "14681e71924e442632f092f2728282aaad39cc31db2dc6fecee20896b4cbdc9e"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_ui/panels.py",
+    "sha256": "b799dc8758d3558ad57191a34914f5246ab3cd02081766530c199d91f50d2551"
+  },
+  {
+    "snapshot": "main",
+    "path": "src/mendex_ui/window.py",
+    "sha256": "27c5517483aa7d793b067fc3479475f9c785e90389769e3d2962433081043f16"
+  },
+  {
+    "snapshot": "main",
+    "path": "templates/plugins/example-discovery.json",
+    "sha256": "9fd5aa4a119fbb4f44d4a3ab6e5831296308ab70ac2d7536e1e1606d4694fd4e"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_calculations.py",
+    "sha256": "e57ae3d744427f611d1410c65fcc2510d8d6f9be4f4f1c3a95eebf6da93c70ec"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_commercial_stubs.py",
+    "sha256": "b3f3515ee50e7c8014515960d1aa3dbc979c3aa64ce3c717c73237a65f1efc46"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_datasets.py",
+    "sha256": "2b41c8d3992d5dfa6ccc5516e04658fa5088a884655e8d1f7f2a2366d5a3382a"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_generators.py",
+    "sha256": "e299572524e1b464f520c85262fbee518107bd1ab88ba27eabfb87547f7dd736"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_ltspice_adapter.py",
+    "sha256": "9b19b75f820d9e1612317375b840d53d0276180a7060e19f9bcc88ae5d6fd3fd"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_magnetics.py",
+    "sha256": "dd0d9b7e49c2d414ffda04c3cac3e8550162a5dbbfa76cd054074a55b99761e7"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_safe_runner.py",
+    "sha256": "027243e0d426546c5562cb214dcfef4d99a75a8f603108f4b5e2b5c68fd9ec52"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_security_and_limits.py",
+    "sha256": "1b403463785a6b1f739aec8ac4dd963b4fffd8dbbbb78c5a93339d86170cb640"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_tool_detection.py",
+    "sha256": "07c196aca623bc33a6eac3101d311f647678e75bd14f20c1efd99a1857fb8db4"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/adapters/test_v15_connector.py",
+    "sha256": "9cd92769e614506e91ffb404fdc64850b059cd8f714d750dd066808c1e3a25ec"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/contracts/test_v15_contracts.py",
+    "sha256": "88bdcddc6554eeefc1c162e86e79e12e415c9e281008746a7f65346714e1160f"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/core/test_completion.py",
+    "sha256": "3fe8bcf6cf2cdde63a8f33efdab5b9cec1b26a9e57da3ab9a8b64a0326b59170"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/core/test_day2.py",
+    "sha256": "fc4e764e85334ff7b8de3e5d7bcd22abf0af3cb3a3133f0f21ee747d4f6c4788"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/core/test_service.py",
+    "sha256": "4a9431672c24ab0c62f23374dc3d5717815164e74b5313dabf32713b6c10bebd"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/integration/test_day3.py",
+    "sha256": "717bb6a13aab93deb9154872b905a6912eac8da9e8e19044575d1c207561fff6"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/integration/test_restore.py",
+    "sha256": "2c932b370887b4854bc203a81f33414b07d18f9576a707c0ec7f2440502bd2fc"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/integration/test_v15_integration_hook.py",
+    "sha256": "23698930f7afb07b28911f9347c8fd8d389a80cae30abe981eff4a1b032f86fc"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/integration/test_v15_jobs.py",
+    "sha256": "f56b992effb68127958e5377d31568627048cb553a0a90e7ba15ca24160555c5"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/ui/test_v15_panels.py",
+    "sha256": "f762f114f142635ca7648eb682bd3417d15e736ebf003be2be1f8188e29b3b71"
+  },
+  {
+    "snapshot": "main",
+    "path": "tests/ui/test_window.py",
+    "sha256": "bccbd576fcb9c8b50b5804be701328ab1abdc367bdcd68e570270ad167b645aa"
+  },
+  {
+    "snapshot": "codex",
+    "path": ".gitignore",
+    "sha256": "372eb0091dce11a055de2e41475bd279e8e62105b78bb68121bf46fa669950b8"
+  },
+  {
+    "snapshot": "codex",
+    "path": ".vscode/tasks.json",
+    "sha256": "6c90eeaeb9d4480056ef7010bc60bde40cc7dc86a27d551cfaafd720f273df02"
+  },
+  {
+    "snapshot": "codex",
+    "path": "AGENTS.md",
+    "sha256": "eecc5902805b273eeb38f8a91c19b614a11473b9e199b4855a35606504e2e83c"
+  },
+  {
+    "snapshot": "codex",
+    "path": "config/README.md",
+    "sha256": "614c4390c17c7298475ab6eace87ffca40fb2de24d82bc46fc3528fcb635d185"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/AdapterCapabilities.schema.json",
+    "sha256": "b4cd5cf7676984bc7b67ad09e7b18bf8060a2118e6cd2c4b497a2edc0ab1c028"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/AdapterCheck.schema.json",
+    "sha256": "2b63a4c203d50d2e662fa5cd9349c80466c1bb6af1511bfe58541a9d47f93521"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/AdapterDefinition.schema.json",
+    "sha256": "ec9aab9b8200a833bd21123c3d41955250a0007d16112f69902f2d0cdc86bcbd"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/AIRequest.schema.json",
+    "sha256": "c5965fa455076c871575f3049c749355eedc7a765771c0289f52e3a8f12263d9"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/AIResponse.schema.json",
+    "sha256": "16d860ad5980d7cc0c4a57215e90238cd928f04bff7ce6f0302e4be89cbf107d"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/EngineeringRule.schema.json",
+    "sha256": "2089408a331102932416e36f1a7dd539d6282171f90d7259c0419246f409aad4"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/ManualCheck.schema.json",
+    "sha256": "8eb4c427ce87ecd39e6eefb482c092b1562b08b60c2b4fa29806487bdf5aa628"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/PluginManifest.schema.json",
+    "sha256": "10eb25520c6b22c23649765455f3a1e3c80fc6424072f36944da078d4af59b32"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/PreparedJob.schema.json",
+    "sha256": "467660faf14a609a3060b5109b0dadae158ab762dfef8fe76bdadc6968696281"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/Product.schema.json",
+    "sha256": "cb80e5329ed95a2554247a55ba291ad4e1117dd45e85993ff4fb79de0ef26416"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/README.md",
+    "sha256": "8e25bb3a8440bd760e651ba55ce456f57effec1293e4342bafa894fc8b5d5c5e"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/Report.schema.json",
+    "sha256": "934430b14fe91eebcdfc9583019f735876b87be712aa442e644f7111f58166c3"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/ResultBundle.schema.json",
+    "sha256": "e6e7d9a8da70ef509b75e02f39e8e9dae30a0255cb902587e34bc285dd646d69"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/Revision.schema.json",
+    "sha256": "33f7e7b85ea457df592e5dff60e58e8cd6639c920679947a9b2f35b789602800"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/RuleAssessment.schema.json",
+    "sha256": "06be19bd350faa65c3871835bd401b83d39769072c269fcf63e728aec13152df"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/SimulationRun.schema.json",
+    "sha256": "93a934478d18b86ca94d983109e5047a16fafc0489c98b726511180356a348c4"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/specification.example.json",
+    "sha256": "dc3cfec27334912332a1e1f24c9b26838b96ddb0479285eabac7808c61e50045"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/Specification.schema.json",
+    "sha256": "6f0fa2032882bf1d40d7d125389a9fdb72013306ad6cdd6fbdbd636fa0e554d1"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/ToolStatus.schema.json",
+    "sha256": "5c423b743d35781379e9bf193cb70d487a15430765964a5327ef79c6b8ac03a3"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/ArtifactManifest.schema.json",
+    "sha256": "1a775ce85b49466a8a46bb3e25372db51b21577c305168f6e16f80077db455be"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/Capability.schema.json",
+    "sha256": "76a7a2a319d6adc569b18321bbcd0c8996c3165c4a45021a7f007bea49e85a90"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/EvidenceManifest.schema.json",
+    "sha256": "912556bb34f45c724a208e862b9d24abd2677587d7b50c342005d3f2ca3324a8"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/job-request.example.json",
+    "sha256": "7f01399eb80ef857ff52d00e2c8e0895b5a5684cd663924ea188d74e158e294a"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/JobRecord.schema.json",
+    "sha256": "adf3bcebbac821d810e84fa8b27f48c1799bf03e1318f7810083d51574a0420b"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/JobRequest.schema.json",
+    "sha256": "f31396262a782e27a1d1818b079d5c727c1a64bc8e13d9cf249de1ac09304229"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/JobResult.schema.json",
+    "sha256": "535c4b44c0c6d4c2cd937cad2365533cea0834e9c704540d980b593caead1d59"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/ToolConfiguration.schema.json",
+    "sha256": "a0e85030e8c31c33e9b6ebcb1e09a936e51e2f18455694a6b636c7039a3d6523"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/ToolDescriptor.schema.json",
+    "sha256": "e70e31da8205a878adfc78cc0b8dbcaa34bad910f8a56819399f9544b109e1fa"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/v1.5.0/ToolHealth.schema.json",
+    "sha256": "b134f52e9520838fd86f1b647351ca55ca521ff8eb1b6579f49ec5c29f9bfce2"
+  },
+  {
+    "snapshot": "codex",
+    "path": "contracts/ValidationRecord.schema.json",
+    "sha256": "a4cd76c2b1bf5d96454057eeeabb659c1832336c0e661d902f1adfde9bfccfd8"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/ADAPTER_TEST_EVIDENCE.md",
+    "sha256": "43913c6e9cec50c56bb5952aefb001ebc8a2dff88c9f0b9a467a2a3de0287c47"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/AGENT2_HANDOFF.md",
+    "sha256": "a0d3424dcac2037b2cc44178c54b902c5a7e09d83ecb7be9c9dac24814e8356e"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/architecture.md",
+    "sha256": "f05a4ddea2988938727ddfc9c56a2de71589738bdd68df906d09b88c13a6874c"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/audits/IMPLEMENTATION_GAPS.md",
+    "sha256": "ebbd29c35fedf34df0921c502d4d3b2c57c783f82aad86cf185aa53fd79b7e51"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/audits/MASTER_IMPLEMENTATION_AUDIT.md",
+    "sha256": "b6cab4b98a114b4aee7035fdaec7787c78efc680fc001d8d7fed4d16f026cd8b"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/audits/NEXT_ACTION_PLAN.md",
+    "sha256": "24e4ff76f341bc60f8ffafc8cc3a5cea05ed1610830d545c1372e2fd04ecd7ae"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/audits/REQUIREMENTS_TRACEABILITY_MATRIX.md",
+    "sha256": "7a12ac54870c812222a6fd7984ad8e98bf32a033423e24e0d1c57aad89dd3221"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/audits/TOOL_INTEGRATION_AUDIT.md",
+    "sha256": "a94773c4eac71463b933194c1f408f229e7fed5d39355821f0c386148c612880"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/CONTRACTS.md",
+    "sha256": "aa11ef6060fefdf87a70cc6de0d85ebcb432a8b4cc249232d3c03a55c1a7aca9"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/DECISIONS.md",
+    "sha256": "ed7924af4ca0f428f4cc3657867df604e49631d6800513a1120649bf36c336e9"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/DEPENDENCY_REQUESTS.md",
+    "sha256": "7da195c411477f43621a900ef0d85a1f4bfdc54681316b3b1ab4a3afcb2bef9b"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/engineering-rules.md",
+    "sha256": "3213fcc5b490df3be2e679df6215eda78755a7955f5b8452e5217511864a6808"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/implementation-checklist.md",
+    "sha256": "7de88fc70821109e8ca9458d5faf6be79f5d4797871b2f24850935b671af6e08"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/IMPLEMENTATION_STATUS.md",
+    "sha256": "670ea9dcb74d5010602f35bfc3080d88a22812f4a0b7f25700633afb792ec0c5"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/INTEGRATIONS.md",
+    "sha256": "734b0a948bc1d549a253a0793b62044b871ac2f2db9b2e91adb5205fc7ac096f"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/known-limitations.md",
+    "sha256": "897f28e95f88ba21d9927d4e3f4a3ec00a278947b05bea8dc6e2c81fde81edac"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/local-test-log.md",
+    "sha256": "0690ad1cdab59d2c6b3041d295449338da6ceda1367e1da1c2e02929ce19f93d"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/manual-acceptance.md",
+    "sha256": "97f3a3d69c11b85245b4ef8626f487d2683212d08dc7fde62a6c3c669ae6dfec"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/Mendex_Engineering_Validation_Platform_Master_Guide_v1_3.docx",
+    "sha256": "d7a29b4896f98a1c8262d6c6ec682b6efcfecd22430036a5f3f7de30f1a21130"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/OWNERSHIP_V1_5.md",
+    "sha256": "0255afea5cfda7f6b59dd895c82a8efce685130178781510bf192e95b0ad2733"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/release-notes-v0.1.0.md",
+    "sha256": "a8c63812cda2ffe96dfa10571e8023e76bdaa54c5da0108d029aba52f5eb6481"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/requirements-matrix.md",
+    "sha256": "fced99e4d22ae34e31b983bf4e19c413fa3a864b4b62cc701000bafd6d1483b2"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/source-guide.txt",
+    "sha256": "ea485f45ec11be7729e5fec5158a6126d3b44fc2e25a19cad42c243f271dff8a"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/TOOL_COMPATIBILITY.md",
+    "sha256": "63334823372b96d33195c7870ca0c18b75727c346f78db149fb9c9a348c17126"
+  },
+  {
+    "snapshot": "codex",
+    "path": "docs/V15_INTEGRATION_HANDOFF.md",
+    "sha256": "286b93cb6aadba7d841e2d4eeb96c64298f6287404892993947eaabe69ff9144"
+  },
+  {
+    "snapshot": "codex",
+    "path": "mendex-studio.code-workspace",
+    "sha256": "1b41af6d0b689f271d3c6cba65cff4e57e3003e35369619a1176d3fa8e9c6be2"
+  },
+  {
+    "snapshot": "codex",
+    "path": "packaging/README.md",
+    "sha256": "b3684f124849db56fc6023cd4de749885fc6e68102ec166c0ded4e366d21f50d"
+  },
+  {
+    "snapshot": "codex",
+    "path": "pyproject.toml",
+    "sha256": "3b01074d9e849190220d380eb6dba2be281fc9bbcdb0947381c1235f30108c55"
+  },
+  {
+    "snapshot": "codex",
+    "path": "README.md",
+    "sha256": "9a5f3650f029700eba1d4efe327e8aa289a3e3d1a2b29c27254aa8b4c9af0856"
+  },
+  {
+    "snapshot": "codex",
+    "path": "requirements-lock.txt",
+    "sha256": "d4e5b717c7a8663b310c3557838f3f8b988fdcba3b313f22db4457f238482d82"
+  },
+  {
+    "snapshot": "codex",
+    "path": "scripts/bootstrap.ps1",
+    "sha256": "9678973388e7be7534b77e027f5e52681c6e0f9488cc6bfd4a840d50a8bb300e"
+  },
+  {
+    "snapshot": "codex",
+    "path": "scripts/desktop_smoke.py",
+    "sha256": "5b41d893aae1920a4fcaa2cd50b892645539f8f179d857e2456be3bd6ba11275"
+  },
+  {
+    "snapshot": "codex",
+    "path": "scripts/export_contracts.py",
+    "sha256": "5c53d1cdd213b8d1aba985e32e7b823dd5808cbd8ad0655cd634bad380d16d40"
+  },
+  {
+    "snapshot": "codex",
+    "path": "scripts/export_v15_contracts.py",
+    "sha256": "3c162b86b6ceb85490a485d62725bff361708669360a4848ab57870f852e2735"
+  },
+  {
+    "snapshot": "codex",
+    "path": "scripts/interactive_acceptance.py",
+    "sha256": "eeaa3a17852cafb632939f57ce8a853b7a4e745da479b265940b75c90444e397"
+  },
+  {
+    "snapshot": "codex",
+    "path": "scripts/package.ps1",
+    "sha256": "8c3ad3a74fb2b179a4777d17def55757c98bc4b19f7e486a3a3ad267ece930ab"
+  },
+  {
+    "snapshot": "codex",
+    "path": "scripts/v15_codex_smoke.py",
+    "sha256": "5028d9f52cc840d94dc4289dd2537973a6f091605d6b56ad0e01cda7f47d1478"
+  },
+  {
+    "snapshot": "codex",
+    "path": "scripts/verify_install.ps1",
+    "sha256": "d10db9502e241a3b3519b842616e34cfdf57573e9e6460a02109076babc0f619"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/__init__.py",
+    "sha256": "f403a9359b9c568012dd301765664560e48dda66c8e3b2e455e58829fc28e617"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/__init__.py",
+    "sha256": "26df8ee33cd9ba336bfc2a64526a8bfd6e3eeb0b3d06a97cad58e38b2c893aeb"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/base.py",
+    "sha256": "18a67c09bf00267030caaa6ad0f5a11ab6dadee8fa7187ea0938daf579c31ee0"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/commercial_stubs.py",
+    "sha256": "78200cad1a68e1937df8321f45995907069f46e600c69715dfe31dfe540c704a"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/femm.py",
+    "sha256": "214a5d8a6df87668f81f65c4888ad6eb4abf619114e5c54d4482f649cef40ac3"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/freecad.py",
+    "sha256": "b69f8867d8a55268d845367d1deef79f1586ed7ae7ae69d3bb55c24f237a0e36"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/git_adapter.py",
+    "sha256": "ddf21d8065a0d5deef00dc32aa02c7666b3b5b07c7ef2142e3e246907400a10a"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/jupyter.py",
+    "sha256": "50d4bc88f643039c41ca91ca721a69087b14ca0fed338aae184b7015dc36380d"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/kicad.py",
+    "sha256": "2b8f04ea7adfccd38959d6e94aaefb1854cc1469c146ef8c2155f72e88896d4d"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/ltspice.py",
+    "sha256": "f0a31f5f9b926705b99f27a5191cfc3be27fcc4197065aa2d2aa7601aff837c6"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/openmodelica.py",
+    "sha256": "bd75fbd4c11ffe727d015100d02c44eb2b8f1fa07575caedab1a20e4e6d8dfd4"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/python_runtime.py",
+    "sha256": "bd14c668616764d474af0351060bd87196300f13abbc83d79734b350a7f186d1"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/qucs_s.py",
+    "sha256": "192379c194d262265e7883f9f0c17b2dc33ac92175f9e579123d7f24872c22b9"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/registry.py",
+    "sha256": "50c897f30237a92760f4560d468aa43d52cffe0fe68276472d95f169e31fe84b"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/adapters/research_adapters.py",
+    "sha256": "3e72aa1574bf1c116923ee80ca642ae6df72083f8ba5c616edbe3ecd11b60c5d"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/calculations/__init__.py",
+    "sha256": "bda645b09153cc4c9f820a6428f97c95217efc77e4ec361d75ab6635a74900dd"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/calculations/power_losses.py",
+    "sha256": "425540ae889051ff8eac2ff8302330e8d60e438654a45ba9d8400d3d95c9dbe9"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/calculations/transformer_design.py",
+    "sha256": "cab520933177dac161e196f1832db1ce77ef3ff561a73e1cc02e42be1905d378"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/calculations/winding_losses.py",
+    "sha256": "eba4f393573a8ce14fb61145a66bec674e24ccb78bd29d97205e496f44131693"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/contracts.py",
+    "sha256": "f142d9a49d8ac9c2617d962bb09c513b50bf3e1bc7039ede5ac7961b61d66238"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/datasets/__init__.py",
+    "sha256": "7d0c3357f91b7d0358b5f2148908ddaa8ed0e648cfa2e0af32161ee3f8f4a81b"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/datasets/fixtures/magnet_sample.json",
+    "sha256": "b01663d71dd6a064b20cde73f542bb694df6484fa09722871eea47b6fdf8019a"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/datasets/fixtures/switchloss_sample.csv",
+    "sha256": "2bdf725767e44e3ac2e0e7bb0bd5dc85c696d480dfbac4d72fbb974d706c9c74"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/datasets/magnet_dataset.py",
+    "sha256": "c54e37fda636b9717fc7ee96fc91de5c3842e1aa63631585cd423810650e0aa7"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/datasets/provenance.py",
+    "sha256": "4fc6bb226d6223ea6cb2714bcbfd498e223658d3b2b6211ae1f5429350bf480c"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/datasets/switchloss_db.py",
+    "sha256": "5bc568c25ccdda8e0ebf2170ce89c83e03ddbbd8224dc7edc28099061917ee1d"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/generators/__init__.py",
+    "sha256": "d95014742866bd44ba1b12dbf054f2130bf8edf9455b685e61455ef0fd3be7b6"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/generators/femm_generator.py",
+    "sha256": "e9c56b8ae32ba93a444224a36423b03ed9b404503a471179c633868b0f79dfd9"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/generators/freecad_generator.py",
+    "sha256": "dad93b9278a802414ca77ebfa3a0f8d00ceb8da6b1e286f1d460a396fa923e66"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/generators/modelica_generator.py",
+    "sha256": "167102be93117008222e842b8223f15c00c86c98fdd03d084bb309df5bb79d89"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/parsers/__init__.py",
+    "sha256": "94ff448ea22a4ef3df209d301084a690cb84e9c3dc779e7dddfe2a54fe1afb5f"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/parsers/kicad_parser.py",
+    "sha256": "f0950816e7eab0d0e5b81531f95fb67358df9775c4c065f1e7ad1bed66ea699c"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/parsers/ltspice_parser.py",
+    "sha256": "48721994b9ae6b4c2bc7cbfed35a85563b66a99eccded098a134e81017ca69c7"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/runners/__init__.py",
+    "sha256": "4c584b86029d821e657e852e0c06d7c3df4bbda388e6aee0c85e2f3d72d00174"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/runners/safe_runner.py",
+    "sha256": "dbee86dca18af0ad740e353e531775560e3a4bf3bd0df153efd4d22482eb4d7c"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/integrations/v15_connector.py",
+    "sha256": "31963f4bd8ad6b2e7c1b2d2f5d432ea3cbab86948dc7a418778d13a378d65e25"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/__init__.py",
+    "sha256": "b6905a7af6883043552c9bc8f1b7f9f23cb0cc7b3ff96aa89184d4b1c5b303c7"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/adapters/__init__.py",
+    "sha256": "9855711e4081595cab90833d718bbeca6679eeb2db4bdbd4d8df37cadd9b5a7c"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/adapters/contracts.py",
+    "sha256": "e046071dce2bbd0cbc71548d4592728854eb7759875575b45aed9adf8c80b850"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/adapters/registry.py",
+    "sha256": "19eabeaa1c294efdded9f1e639a28b2f20ad875914d953d0462c41b4ed445b14"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/adapters/version.py",
+    "sha256": "5ea880868bcaad97e687bee625c4ccd36ac67433a3de54a81f64c0a2dc2c5c08"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/ai.py",
+    "sha256": "ed6e1391dba207230700af14bbf474fd7a6b5c347ed86a9cb536c1b5dfe12e4e"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/catalog.py",
+    "sha256": "e033d6ca98100b97eb560d6248674fe5647d8109184031937d93b93b81cbffce"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/cli.py",
+    "sha256": "af7640d4e2dc5b0cb7cad42d0423f94b96cf98bf9b4d820160123e43c23d50e7"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/config/__init__.py",
+    "sha256": "9d118125a50aed5a0e209cfde7c386a191bb2af4cfb9563a3b3ef5b016451189"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/config/engineering-rules.json",
+    "sha256": "9deb696a48df2c2b491f83d8976c7ef8b5fa5f9a15695ead45b6d53e9c2ac72e"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/config/integration_catalog.json",
+    "sha256": "d25710df952a6828f4bb0bc2af05cc40b9c09fc78cc97740d320a65a5405c535"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/config/tools.json",
+    "sha256": "dcacfc712a5ae00a04a6c2f51f949813e2e2cdc4bf2061140bcefe22b0f47e51"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/demo_adapter.py",
+    "sha256": "e94291fe9a7abf8b7be4deab1f7ea5c872078cc6244754fb3e8013b55e29b088"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/diagnostics.py",
+    "sha256": "4623d62152e882dfd4292be757a85475b87e63a91f710bf1ae509fbcf14de5da"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/doctor.py",
+    "sha256": "00609bc232b25e246a226745509b028636c2b39a28856be6c521af35aa0089a8"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/evidence.py",
+    "sha256": "1f8bfc5366fd0b86664eaa7ecd39ce01fd259f65cb979396fd2f15316888bb00"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/integration_cli.py",
+    "sha256": "ba6fe341cbb035a619b376357b5fdcbde54e9ce0a538307582213e80434e64fd"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/integration_contracts.py",
+    "sha256": "a761c1981823668abd36303f6420b7fe013c014f7f7020c31931a1c635c39fb1"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/integration_service.py",
+    "sha256": "85058a636b03de891b5ade19d78500056004aa0706cc87a98b606be819b0eb2f"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/integration_store.py",
+    "sha256": "b51741cb897a550dcb705c193673b561bdbdbde4a32aca88a5bd5ce64684b1f0"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/knowledge.py",
+    "sha256": "6c828db927320e188d485a4606a1ab0eeae7a1f4143b6cf40f5eb94a89a482f7"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/launch.py",
+    "sha256": "351a3bb2bef358e586d717c1716dda7d10cb979c1209119a0054a95ac920bd10"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/models.py",
+    "sha256": "ec8b01734b8fda9d059fca22ef8e4307b0a80330b7535e713c6b930e305d230f"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/plugins.py",
+    "sha256": "f7f4e5b88e4ec649883bcb4793fe765df63a8ca5f56736b19601d6c69eb6b361"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/rules.py",
+    "sha256": "4f65d0de8791c3a1dd26cd5272b9871748a5cc6bf42fbbd35226da76217a2323"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_core/service.py",
+    "sha256": "e7716f041582401cc1c64587f90554891c3961eb19f212a7c38401283a7c1dbe"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_ui/__init__.py",
+    "sha256": "0ab5e29a1f566d59271ab23f0d4d26ef241de076b1e9471664385f7dd43b2f5a"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_ui/__main__.py",
+    "sha256": "723c5ae5b3d68a26694fabde479180abc5ebd1aa203fe6ea2ac4347797087ad9"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_ui/integration_panels.py",
+    "sha256": "14681e71924e442632f092f2728282aaad39cc31db2dc6fecee20896b4cbdc9e"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_ui/panels.py",
+    "sha256": "b799dc8758d3558ad57191a34914f5246ab3cd02081766530c199d91f50d2551"
+  },
+  {
+    "snapshot": "codex",
+    "path": "src/mendex_ui/window.py",
+    "sha256": "175313a9c88be2b677a2960c0da17acb68420b849fc2afbc0ad8dc812925319e"
+  },
+  {
+    "snapshot": "codex",
+    "path": "templates/plugins/example-discovery.json",
+    "sha256": "9fd5aa4a119fbb4f44d4a3ab6e5831296308ab70ac2d7536e1e1606d4694fd4e"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_calculations.py",
+    "sha256": "e57ae3d744427f611d1410c65fcc2510d8d6f9be4f4f1c3a95eebf6da93c70ec"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_commercial_stubs.py",
+    "sha256": "b3f3515ee50e7c8014515960d1aa3dbc979c3aa64ce3c717c73237a65f1efc46"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_datasets.py",
+    "sha256": "2b41c8d3992d5dfa6ccc5516e04658fa5088a884655e8d1f7f2a2366d5a3382a"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_generators.py",
+    "sha256": "e299572524e1b464f520c85262fbee518107bd1ab88ba27eabfb87547f7dd736"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_ltspice_adapter.py",
+    "sha256": "9b19b75f820d9e1612317375b840d53d0276180a7060e19f9bcc88ae5d6fd3fd"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_magnetics.py",
+    "sha256": "dd0d9b7e49c2d414ffda04c3cac3e8550162a5dbbfa76cd054074a55b99761e7"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_safe_runner.py",
+    "sha256": "027243e0d426546c5562cb214dcfef4d99a75a8f603108f4b5e2b5c68fd9ec52"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_security_and_limits.py",
+    "sha256": "1b403463785a6b1f739aec8ac4dd963b4fffd8dbbbb78c5a93339d86170cb640"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_tool_detection.py",
+    "sha256": "07c196aca623bc33a6eac3101d311f647678e75bd14f20c1efd99a1857fb8db4"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/adapters/test_v15_connector.py",
+    "sha256": "9cd92769e614506e91ffb404fdc64850b059cd8f714d750dd066808c1e3a25ec"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/contracts/test_v15_contracts.py",
+    "sha256": "88bdcddc6554eeefc1c162e86e79e12e415c9e281008746a7f65346714e1160f"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/core/test_completion.py",
+    "sha256": "3fe8bcf6cf2cdde63a8f33efdab5b9cec1b26a9e57da3ab9a8b64a0326b59170"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/core/test_day2.py",
+    "sha256": "fc4e764e85334ff7b8de3e5d7bcd22abf0af3cb3a3133f0f21ee747d4f6c4788"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/core/test_service.py",
+    "sha256": "4a9431672c24ab0c62f23374dc3d5717815164e74b5313dabf32713b6c10bebd"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/integration/test_audit_regressions.py",
+    "sha256": "3d709492c4b150b013abf4648bff0f1580f5f3fd3c444f2cac7e5e01e4960ee3"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/integration/test_day3.py",
+    "sha256": "717bb6a13aab93deb9154872b905a6912eac8da9e8e19044575d1c207561fff6"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/integration/test_restore.py",
+    "sha256": "2c932b370887b4854bc203a81f33414b07d18f9576a707c0ec7f2440502bd2fc"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/integration/test_v15_integration_hook.py",
+    "sha256": "23698930f7afb07b28911f9347c8fd8d389a80cae30abe981eff4a1b032f86fc"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/integration/test_v15_jobs.py",
+    "sha256": "f56b992effb68127958e5377d31568627048cb553a0a90e7ba15ca24160555c5"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/ui/test_v15_panels.py",
+    "sha256": "f762f114f142635ca7648eb682bd3417d15e736ebf003be2be1f8188e29b3b71"
+  },
+  {
+    "snapshot": "codex",
+    "path": "tests/ui/test_window.py",
+    "sha256": "bccbd576fcb9c8b50b5804be701328ab1abdc367bdcd68e570270ad167b645aa"
+  },
+  {
+    "snapshot": "released",
+    "path": ".gitignore",
+    "sha256": "372eb0091dce11a055de2e41475bd279e8e62105b78bb68121bf46fa669950b8"
+  },
+  {
+    "snapshot": "released",
+    "path": ".vscode/tasks.json",
+    "sha256": "6c90eeaeb9d4480056ef7010bc60bde40cc7dc86a27d551cfaafd720f273df02"
+  },
+  {
+    "snapshot": "released",
+    "path": "AGENTS.md",
+    "sha256": "eecc5902805b273eeb38f8a91c19b614a11473b9e199b4855a35606504e2e83c"
+  },
+  {
+    "snapshot": "released",
+    "path": "config/README.md",
+    "sha256": "614c4390c17c7298475ab6eace87ffca40fb2de24d82bc46fc3528fcb635d185"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/AdapterCapabilities.schema.json",
+    "sha256": "b4cd5cf7676984bc7b67ad09e7b18bf8060a2118e6cd2c4b497a2edc0ab1c028"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/AdapterCheck.schema.json",
+    "sha256": "2b63a4c203d50d2e662fa5cd9349c80466c1bb6af1511bfe58541a9d47f93521"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/AdapterDefinition.schema.json",
+    "sha256": "ec9aab9b8200a833bd21123c3d41955250a0007d16112f69902f2d0cdc86bcbd"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/AIRequest.schema.json",
+    "sha256": "c5965fa455076c871575f3049c749355eedc7a765771c0289f52e3a8f12263d9"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/AIResponse.schema.json",
+    "sha256": "16d860ad5980d7cc0c4a57215e90238cd928f04bff7ce6f0302e4be89cbf107d"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/EngineeringRule.schema.json",
+    "sha256": "2089408a331102932416e36f1a7dd539d6282171f90d7259c0419246f409aad4"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/ManualCheck.schema.json",
+    "sha256": "8eb4c427ce87ecd39e6eefb482c092b1562b08b60c2b4fa29806487bdf5aa628"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/PluginManifest.schema.json",
+    "sha256": "10eb25520c6b22c23649765455f3a1e3c80fc6424072f36944da078d4af59b32"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/PreparedJob.schema.json",
+    "sha256": "467660faf14a609a3060b5109b0dadae158ab762dfef8fe76bdadc6968696281"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/Product.schema.json",
+    "sha256": "cb80e5329ed95a2554247a55ba291ad4e1117dd45e85993ff4fb79de0ef26416"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/README.md",
+    "sha256": "8e25bb3a8440bd760e651ba55ce456f57effec1293e4342bafa894fc8b5d5c5e"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/Report.schema.json",
+    "sha256": "934430b14fe91eebcdfc9583019f735876b87be712aa442e644f7111f58166c3"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/ResultBundle.schema.json",
+    "sha256": "e6e7d9a8da70ef509b75e02f39e8e9dae30a0255cb902587e34bc285dd646d69"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/Revision.schema.json",
+    "sha256": "33f7e7b85ea457df592e5dff60e58e8cd6639c920679947a9b2f35b789602800"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/RuleAssessment.schema.json",
+    "sha256": "06be19bd350faa65c3871835bd401b83d39769072c269fcf63e728aec13152df"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/SimulationRun.schema.json",
+    "sha256": "93a934478d18b86ca94d983109e5047a16fafc0489c98b726511180356a348c4"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/specification.example.json",
+    "sha256": "dc3cfec27334912332a1e1f24c9b26838b96ddb0479285eabac7808c61e50045"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/Specification.schema.json",
+    "sha256": "6f0fa2032882bf1d40d7d125389a9fdb72013306ad6cdd6fbdbd636fa0e554d1"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/ToolStatus.schema.json",
+    "sha256": "5c423b743d35781379e9bf193cb70d487a15430765964a5327ef79c6b8ac03a3"
+  },
+  {
+    "snapshot": "released",
+    "path": "contracts/ValidationRecord.schema.json",
+    "sha256": "a4cd76c2b1bf5d96454057eeeabb659c1832336c0e661d902f1adfde9bfccfd8"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/architecture.md",
+    "sha256": "e266f65778547114d2b4e46d7eda4b48f693aa79add87fc41268001b2ce39d1f"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/engineering-rules.md",
+    "sha256": "3213fcc5b490df3be2e679df6215eda78755a7955f5b8452e5217511864a6808"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/implementation-checklist.md",
+    "sha256": "0c0efe3dcee196809a718905c93e660c95e19aecc79e2e5252328108c30ce96f"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/known-limitations.md",
+    "sha256": "a6a265c331f17dbd8227166f5ce6460654b37d759c53d259af34759759101d74"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/local-test-log.md",
+    "sha256": "04235cf79b52cf30ff595001b6e4473b8063dab8f2ec0093c640458514734dc1"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/manual-acceptance.md",
+    "sha256": "97f3a3d69c11b85245b4ef8626f487d2683212d08dc7fde62a6c3c669ae6dfec"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/Mendex_Engineering_Validation_Platform_Master_Guide_v1_3.docx",
+    "sha256": "d7a29b4896f98a1c8262d6c6ec682b6efcfecd22430036a5f3f7de30f1a21130"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/release-notes-v0.1.0.md",
+    "sha256": "a8c63812cda2ffe96dfa10571e8023e76bdaa54c5da0108d029aba52f5eb6481"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/requirements-matrix.md",
+    "sha256": "fced99e4d22ae34e31b983bf4e19c413fa3a864b4b62cc701000bafd6d1483b2"
+  },
+  {
+    "snapshot": "released",
+    "path": "docs/source-guide.txt",
+    "sha256": "ea485f45ec11be7729e5fec5158a6126d3b44fc2e25a19cad42c243f271dff8a"
+  },
+  {
+    "snapshot": "released",
+    "path": "mendex-studio.code-workspace",
+    "sha256": "1b41af6d0b689f271d3c6cba65cff4e57e3003e35369619a1176d3fa8e9c6be2"
+  },
+  {
+    "snapshot": "released",
+    "path": "packaging/README.md",
+    "sha256": "b3684f124849db56fc6023cd4de749885fc6e68102ec166c0ded4e366d21f50d"
+  },
+  {
+    "snapshot": "released",
+    "path": "pyproject.toml",
+    "sha256": "748e9804559532931f7b4a8277a3bf4e3f93b6f3679dd378b845beeb271d0068"
+  },
+  {
+    "snapshot": "released",
+    "path": "README.md",
+    "sha256": "ddd8b8597ed911577d58207250236637f44c319b075529e74d62d4e310adee30"
+  },
+  {
+    "snapshot": "released",
+    "path": "requirements-lock.txt",
+    "sha256": "d4e5b717c7a8663b310c3557838f3f8b988fdcba3b313f22db4457f238482d82"
+  },
+  {
+    "snapshot": "released",
+    "path": "scripts/bootstrap.ps1",
+    "sha256": "9678973388e7be7534b77e027f5e52681c6e0f9488cc6bfd4a840d50a8bb300e"
+  },
+  {
+    "snapshot": "released",
+    "path": "scripts/desktop_smoke.py",
+    "sha256": "5b41d893aae1920a4fcaa2cd50b892645539f8f179d857e2456be3bd6ba11275"
+  },
+  {
+    "snapshot": "released",
+    "path": "scripts/export_contracts.py",
+    "sha256": "5c53d1cdd213b8d1aba985e32e7b823dd5808cbd8ad0655cd634bad380d16d40"
+  },
+  {
+    "snapshot": "released",
+    "path": "scripts/interactive_acceptance.py",
+    "sha256": "eeaa3a17852cafb632939f57ce8a853b7a4e745da479b265940b75c90444e397"
+  },
+  {
+    "snapshot": "released",
+    "path": "scripts/package.ps1",
+    "sha256": "8c3ad3a74fb2b179a4777d17def55757c98bc4b19f7e486a3a3ad267ece930ab"
+  },
+  {
+    "snapshot": "released",
+    "path": "scripts/verify_install.ps1",
+    "sha256": "d10db9502e241a3b3519b842616e34cfdf57573e9e6460a02109076babc0f619"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/__init__.py",
+    "sha256": "b6905a7af6883043552c9bc8f1b7f9f23cb0cc7b3ff96aa89184d4b1c5b303c7"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/adapters/__init__.py",
+    "sha256": "9855711e4081595cab90833d718bbeca6679eeb2db4bdbd4d8df37cadd9b5a7c"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/adapters/contracts.py",
+    "sha256": "e046071dce2bbd0cbc71548d4592728854eb7759875575b45aed9adf8c80b850"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/adapters/registry.py",
+    "sha256": "19eabeaa1c294efdded9f1e639a28b2f20ad875914d953d0462c41b4ed445b14"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/adapters/version.py",
+    "sha256": "5ea880868bcaad97e687bee625c4ccd36ac67433a3de54a81f64c0a2dc2c5c08"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/ai.py",
+    "sha256": "ed6e1391dba207230700af14bbf474fd7a6b5c347ed86a9cb536c1b5dfe12e4e"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/cli.py",
+    "sha256": "af7640d4e2dc5b0cb7cad42d0423f94b96cf98bf9b4d820160123e43c23d50e7"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/config/__init__.py",
+    "sha256": "9d118125a50aed5a0e209cfde7c386a191bb2af4cfb9563a3b3ef5b016451189"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/config/engineering-rules.json",
+    "sha256": "9deb696a48df2c2b491f83d8976c7ef8b5fa5f9a15695ead45b6d53e9c2ac72e"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/config/tools.json",
+    "sha256": "dcacfc712a5ae00a04a6c2f51f949813e2e2cdc4bf2061140bcefe22b0f47e51"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/diagnostics.py",
+    "sha256": "4623d62152e882dfd4292be757a85475b87e63a91f710bf1ae509fbcf14de5da"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/doctor.py",
+    "sha256": "00609bc232b25e246a226745509b028636c2b39a28856be6c521af35aa0089a8"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/evidence.py",
+    "sha256": "1f8bfc5366fd0b86664eaa7ecd39ce01fd259f65cb979396fd2f15316888bb00"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/knowledge.py",
+    "sha256": "6c828db927320e188d485a4606a1ab0eeae7a1f4143b6cf40f5eb94a89a482f7"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/launch.py",
+    "sha256": "351a3bb2bef358e586d717c1716dda7d10cb979c1209119a0054a95ac920bd10"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/models.py",
+    "sha256": "ec8b01734b8fda9d059fca22ef8e4307b0a80330b7535e713c6b930e305d230f"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/plugins.py",
+    "sha256": "f7f4e5b88e4ec649883bcb4793fe765df63a8ca5f56736b19601d6c69eb6b361"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/rules.py",
+    "sha256": "4f65d0de8791c3a1dd26cd5272b9871748a5cc6bf42fbbd35226da76217a2323"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_core/service.py",
+    "sha256": "735671bc6d63efa629b40ecd53d557c55f2e4869d92a2fe5bd163b48c61110b0"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_ui/__init__.py",
+    "sha256": "0ab5e29a1f566d59271ab23f0d4d26ef241de076b1e9471664385f7dd43b2f5a"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_ui/__main__.py",
+    "sha256": "723c5ae5b3d68a26694fabde479180abc5ebd1aa203fe6ea2ac4347797087ad9"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_ui/panels.py",
+    "sha256": "b799dc8758d3558ad57191a34914f5246ab3cd02081766530c199d91f50d2551"
+  },
+  {
+    "snapshot": "released",
+    "path": "src/mendex_ui/window.py",
+    "sha256": "4e1b7aac2959939e7618358550e5771798a185be3240432c26cb4b70e89615a7"
+  },
+  {
+    "snapshot": "released",
+    "path": "templates/plugins/example-discovery.json",
+    "sha256": "9fd5aa4a119fbb4f44d4a3ab6e5831296308ab70ac2d7536e1e1606d4694fd4e"
+  },
+  {
+    "snapshot": "released",
+    "path": "tests/core/test_completion.py",
+    "sha256": "3fe8bcf6cf2cdde63a8f33efdab5b9cec1b26a9e57da3ab9a8b64a0326b59170"
+  },
+  {
+    "snapshot": "released",
+    "path": "tests/core/test_day2.py",
+    "sha256": "fc4e764e85334ff7b8de3e5d7bcd22abf0af3cb3a3133f0f21ee747d4f6c4788"
+  },
+  {
+    "snapshot": "released",
+    "path": "tests/core/test_service.py",
+    "sha256": "44795e782e8081f556c7bac271ed021d105f6666591d66d48c68338b34e7c1f2"
+  },
+  {
+    "snapshot": "released",
+    "path": "tests/integration/test_day3.py",
+    "sha256": "717bb6a13aab93deb9154872b905a6912eac8da9e8e19044575d1c207561fff6"
+  },
+  {
+    "snapshot": "released",
+    "path": "tests/integration/test_restore.py",
+    "sha256": "2c932b370887b4854bc203a81f33414b07d18f9576a707c0ec7f2440502bd2fc"
+  },
+  {
+    "snapshot": "released",
+    "path": "tests/ui/test_window.py",
+    "sha256": "cf75a21199a98f2ee746505e1b85a910968ad132fc4f5360a7657c0834c1e332"
+  }
+]
