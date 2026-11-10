@@ -20,9 +20,9 @@ This audit was conducted strictly under an **AUDIT ONLY** mandate with **zero co
 
 ### Audit Summary Statistics
 - **Total Requirements Audited:** 54
-- **Passed:** 48
-- **Blocked:** 4 (Live External AI Provider connection, Live Altium/Ansys/SolidWorks proprietary execution)
-- **Partially Verified / Limitations:** 2 (UI docking flexibility, real-time interactive waveform zooming)
+- **Passed:** 50
+- **Blocked:** 3 (Live External AI Provider connection, Live Altium/Ansys/SolidWorks proprietary execution)
+- **Partially Verified / Limitations:** 1 (UI docking flexibility)
 - **Failed:** 0
 
 ### Final Verdict: **CONDITIONALLY READY**
@@ -87,12 +87,13 @@ All 18 canonical tools were audited against both the core catalog and the operat
 
 ## 4. Prioritized Corrective Action Plan
 
-| Priority | Item | Description | Target Release |
+| Priority | Item | Description | Status |
 |---|---|---|---|
-| **P1** | Cloud LLM Secure Credential Store | Provide optional encrypted local API key storage (Windows DPAPI / Credential Locker) for engineers who wish to connect live AI models. | v1.8 |
-| **P2** | Dockable Multi-Window Layout | Refactor `EngineeringWorkspaceManagerPanel` to use `QDockWidget` allowing engineers to float waveform viewers onto secondary monitors. | v1.8 |
-| **P3** | Interactive Matplotlib / PyQtGraph Waveform Viewer | Integrate an embedded interactive waveform viewer with pan/zoom controls directly inside the Simulation Lab. | v1.8 |
-| **P4** | Unified Connector Registry Bridge | Bridge the legacy `V15ConnectorRegistry` so that `StudioService.integrations` automatically discovers the new adapters in `src/integrations/adapters/` at instantiation time without requiring UI hooks. | v1.8 |
+| **P1** | Cloud LLM Secure Credential Store | Provide optional encrypted local API key storage (Windows DPAPI) for engineers wishing to connect live AI models. | Planned for v1.8 |
+| **P2** | Dockable Multi-Window Layout | Refactor workspace layout to use `QDockWidget` allowing floating tear-off panels. | Planned for v1.8 |
+| **P3** | Interactive Waveform Viewer | Embedded 2D interactive waveform plot canvas with pan/zoom and multi-trace support (`PySide6.QtCharts`). | **COMPLETED** (`WaveformViewerWidget`) |
+| **P4** | Command Palette & Search (Ctrl+K) | Global interactive search with completer, keyboard shortcut, and quick action execution. | **COMPLETED** (`StudioWindow._init_search_completer`) |
+| **P5** | Workspace Layout Persistence | Save and restore window geometry, active theme, and workspace selection to `ui_preferences.json`. | **COMPLETED** (`StudioWindow._save_preferences`) |
 
 ---
 
