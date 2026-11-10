@@ -55,7 +55,7 @@ class PLECSAdapter(CommercialStubAdapter):
 class MATLABAdapter(CommercialStubAdapter):
     def __init__(self):
         super().__init__(
-            tool_id="matlab",
+            tool_id="matlab-simulink",
             name="MATLAB / Simulink",
             vendor="MathWorks",
             official_url="https://www.mathworks.com/products/matlab.html",
@@ -69,7 +69,7 @@ class MATLABAdapter(CommercialStubAdapter):
 class AnsysMaxwellAdapter(CommercialStubAdapter):
     def __init__(self):
         super().__init__(
-            tool_id="ansys_maxwell",
+            tool_id="ansys-maxwell",
             name="Ansys Maxwell",
             vendor="Ansys",
             official_url="https://www.ansys.com/products/electronics/ansys-maxwell",
@@ -83,7 +83,7 @@ class AnsysMaxwellAdapter(CommercialStubAdapter):
 class AnsysIcepakAdapter(CommercialStubAdapter):
     def __init__(self):
         super().__init__(
-            tool_id="ansys_icepak",
+            tool_id="ansys-icepak",
             name="Ansys Icepak",
             vendor="Ansys",
             official_url="https://www.ansys.com/products/electronics/ansys-icepak",

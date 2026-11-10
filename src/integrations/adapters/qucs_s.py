@@ -10,7 +10,7 @@ class QucsSAdapter(BaseToolAdapter):
 
     def __init__(self):
         super().__init__(
-            tool_id="qucs_s",
+            tool_id="qucs-s",
             name="Qucs-S",
             kind=ToolKind.APPLICATION,
             category="high",

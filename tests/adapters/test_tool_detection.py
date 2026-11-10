@@ -9,9 +9,9 @@ def test_registry_contains_all_18_entries():
 
     expected_ids = {
         "ltspice", "python", "git", "kicad", "femm", "freecad",
-        "qucs_s", "openmodelica", "jupyter", "switchloss_db",
-        "magnet_dataset", "magnet_ml_benchmarks", "magnet_princeton",
-        "plecs", "matlab", "ansys_maxwell", "ansys_icepak", "solidworks",
+        "qucs-s", "openmodelica", "jupyter", "switchlossdb",
+        "magnet-dataset", "magnet-ml-benchmarks", "magnet-princeton",
+        "plecs", "matlab-simulink", "ansys-maxwell", "ansys-icepak", "solidworks",
     }
     registered_ids = {d.tool_id for d in registry.list_descriptors()}
     assert registered_ids == expected_ids
@@ -39,7 +39,7 @@ def test_real_tools_detected_truthfully():
 
 def test_missing_tools_never_false_ready():
     registry = ToolRegistry()
-    missing_ids = ["kicad", "femm", "freecad", "qucs_s", "openmodelica", "jupyter"]
+    missing_ids = ["kicad", "femm", "freecad", "qucs-s", "openmodelica", "jupyter"]
 
     for tool_id in missing_ids:
         desc = registry.get(tool_id).descriptor
@@ -52,7 +52,7 @@ def test_missing_tools_never_false_ready():
 
 def test_commercial_tools_are_unlicensed_stubs():
     registry = ToolRegistry()
-    commercial_ids = ["plecs", "matlab", "ansys_maxwell", "ansys_icepak", "solidworks"]
+    commercial_ids = ["plecs", "matlab-simulink", "ansys-maxwell", "ansys-icepak", "solidworks"]
 
     for tool_id in commercial_ids:
         desc = registry.get(tool_id).descriptor

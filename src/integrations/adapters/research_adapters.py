@@ -19,10 +19,10 @@ class SwitchLossDBAdapter(BaseToolAdapter):
 
     def __init__(self):
         super().__init__(
-            tool_id="switchloss_db",
+            tool_id="switchlossdb",
             name="SwitchLossDB",
             kind=ToolKind.DATASET,
-            category="high",
+            category="dataset",
             license_name="CC-BY-4.0",
             official_url="https://github.com/switchloss/switchloss-db",
         )
@@ -51,10 +51,10 @@ class MagNetDatasetAdapter(BaseToolAdapter):
 
     def __init__(self):
         super().__init__(
-            tool_id="magnet_dataset",
+            tool_id="magnet-dataset",
             name="MagNet Dataset",
             kind=ToolKind.DATASET,
-            category="high",
+            category="dataset",
             license_name="CC-BY-4.0 / Academic",
             official_url="https://www.princeton.edu/~minjie/magnet.html",
         )
@@ -83,10 +83,10 @@ class MagNetMLBenchmarksAdapter(BaseToolAdapter):
 
     def __init__(self):
         super().__init__(
-            tool_id="magnet_ml_benchmarks",
+            tool_id="magnet-ml-benchmarks",
             name="MagNet ML Benchmarks",
             kind=ToolKind.BENCHMARK,
-            category="high",
+            category="benchmark",
             license_name="Academic Open Source",
             official_url="https://github.com/minjiechen/MagNet",
         )
@@ -115,10 +115,10 @@ class MagNetPrincetonAdapter(BaseToolAdapter):
 
     def __init__(self):
         super().__init__(
-            tool_id="magnet_princeton",
+            tool_id="magnet-princeton",
             name="MagNet (Princeton University)",
             kind=ToolKind.RESEARCH_RESOURCE,
-            category="high",
+            category="research_resource",
             license_name="Academic Research",
             official_url="https://www.princeton.edu/~minjie/magnet.html",
         )
