@@ -1,0 +1,161 @@
+{
+  "$defs": {
+    "Capability": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "minLength": 1,
+          "title": "Operation",
+          "type": "string"
+        },
+        "supported": {
+          "default": false,
+          "title": "Supported",
+          "type": "boolean"
+        },
+        "tested_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tested Version"
+        },
+        "verification_evidence": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verification Evidence"
+        },
+        "diagnostic": {
+          "default": "Awaiting Agent 2 connector and repeatable smoke evidence",
+          "title": "Diagnostic",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation"
+      ],
+      "title": "Capability",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.5.0",
+      "default": "1.5.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "tool_id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]*$",
+      "title": "Tool Id",
+      "type": "string"
+    },
+    "name": {
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "application",
+        "dataset",
+        "benchmark",
+        "research_resource",
+        "runtime",
+        "developer_tool",
+        "demo"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "supported_os": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Supported Os",
+      "type": "array"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Version"
+    },
+    "license_status": {
+      "default": "REVIEW_REQUIRED",
+      "enum": [
+        "UNKNOWN",
+        "REVIEW_REQUIRED",
+        "USER_CONFIRMED",
+        "NOT_REQUIRED"
+      ],
+      "title": "License Status",
+      "type": "string"
+    },
+    "license_notes": {
+      "default": "Review the installed distribution's actual terms before use or redistribution",
+      "title": "License Notes",
+      "type": "string"
+    },
+    "optional_paid": {
+      "default": false,
+      "title": "Optional Paid",
+      "type": "boolean"
+    },
+    "source_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Url"
+    },
+    "source_notes": {
+      "default": "",
+      "title": "Source Notes",
+      "type": "string"
+    },
+    "capabilities": {
+      "items": {
+        "$ref": "#/$defs/Capability"
+      },
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "configuration_schema": {
+      "additionalProperties": true,
+      "title": "Configuration Schema",
+      "type": "object"
+    }
+  },
+  "required": [
+    "tool_id",
+    "name",
+    "category"
+  ],
+  "title": "ToolDescriptor",
+  "type": "object"
+}

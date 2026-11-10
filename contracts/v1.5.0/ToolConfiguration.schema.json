@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "executable_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Executable Path"
+    },
+    "resource_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Resource Path"
+    },
+    "license_reference": {
+      "default": "",
+      "title": "License Reference",
+      "type": "string"
+    }
+  },
+  "title": "ToolConfiguration",
+  "type": "object"
+}

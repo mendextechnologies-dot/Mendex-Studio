@@ -1,0 +1,63 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.5.0",
+      "default": "1.5.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "job_id": {
+      "format": "uuid",
+      "title": "Job Id",
+      "type": "string"
+    },
+    "workspace_id": {
+      "format": "uuid",
+      "title": "Workspace Id",
+      "type": "string"
+    },
+    "tool_id": {
+      "minLength": 1,
+      "title": "Tool Id",
+      "type": "string"
+    },
+    "operation": {
+      "minLength": 1,
+      "title": "Operation",
+      "type": "string"
+    },
+    "input_paths": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Input Paths",
+      "type": "array"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "title": "Parameters",
+      "type": "object"
+    },
+    "timeout_s": {
+      "default": 30,
+      "exclusiveMinimum": 0,
+      "maximum": 3600,
+      "title": "Timeout S",
+      "type": "number"
+    },
+    "provenance": {
+      "minLength": 1,
+      "title": "Provenance",
+      "type": "string"
+    }
+  },
+  "required": [
+    "tool_id",
+    "operation",
+    "provenance"
+  ],
+  "title": "JobRequest",
+  "type": "object"
+}

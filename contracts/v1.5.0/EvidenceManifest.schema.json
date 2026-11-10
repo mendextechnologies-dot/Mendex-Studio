@@ -1,0 +1,335 @@
+{
+  "$defs": {
+    "ArtifactManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "relative_path": {
+          "title": "Relative Path",
+          "type": "string"
+        },
+        "file_type": {
+          "title": "File Type",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        },
+        "source_job": {
+          "format": "uuid",
+          "title": "Source Job",
+          "type": "string"
+        },
+        "provenance": {
+          "title": "Provenance",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "source_label": {
+          "enum": [
+            "SYNTHETIC",
+            "SIMULATED",
+            "MEASURED",
+            "IMPORTED",
+            "SOFTWARE_LOG"
+          ],
+          "title": "Source Label",
+          "type": "string"
+        },
+        "raw_vs_derived": {
+          "enum": [
+            "raw",
+            "derived",
+            "log"
+          ],
+          "title": "Raw Vs Derived",
+          "type": "string"
+        },
+        "unit_conventions": {
+          "default": "SI where applicable; no engineering quantities in synthetic fixtures",
+          "title": "Unit Conventions",
+          "type": "string"
+        },
+        "review_state": {
+          "const": "NOT_REVIEWED",
+          "default": "NOT_REVIEWED",
+          "title": "Review State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "relative_path",
+        "file_type",
+        "sha256",
+        "size_bytes",
+        "source_job",
+        "provenance",
+        "source_label",
+        "raw_vs_derived"
+      ],
+      "title": "ArtifactManifest",
+      "type": "object"
+    },
+    "Diagnostic": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/ErrorCode"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "Diagnostic",
+      "type": "object"
+    },
+    "ErrorCode": {
+      "enum": [
+        "NOT_CONFIGURED",
+        "NOT_INSTALLED",
+        "UNSUPPORTED",
+        "INVALID_INPUT",
+        "PATH_VIOLATION",
+        "LICENSE_REQUIRED",
+        "EXECUTION_FAILED",
+        "MALFORMED_OUTPUT",
+        "CANCELLED",
+        "TIMED_OUT",
+        "INTERRUPTED"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "JobRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.5.0",
+          "default": "1.5.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "job_id": {
+          "format": "uuid",
+          "title": "Job Id",
+          "type": "string"
+        },
+        "workspace_id": {
+          "format": "uuid",
+          "title": "Workspace Id",
+          "type": "string"
+        },
+        "tool_id": {
+          "minLength": 1,
+          "title": "Tool Id",
+          "type": "string"
+        },
+        "operation": {
+          "minLength": 1,
+          "title": "Operation",
+          "type": "string"
+        },
+        "input_paths": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Input Paths",
+          "type": "array"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "timeout_s": {
+          "default": 30,
+          "exclusiveMinimum": 0,
+          "maximum": 3600,
+          "title": "Timeout S",
+          "type": "number"
+        },
+        "provenance": {
+          "minLength": 1,
+          "title": "Provenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id",
+        "operation",
+        "provenance"
+      ],
+      "title": "JobRequest",
+      "type": "object"
+    },
+    "JobResult": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.5.0",
+          "default": "1.5.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "job_id": {
+          "format": "uuid",
+          "title": "Job Id",
+          "type": "string"
+        },
+        "tool_id": {
+          "title": "Tool Id",
+          "type": "string"
+        },
+        "tool_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Version"
+        },
+        "status": {
+          "$ref": "#/$defs/JobStatus"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Started At"
+        },
+        "ended_at": {
+          "format": "date-time",
+          "title": "Ended At",
+          "type": "string"
+        },
+        "exit_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exit Code"
+        },
+        "diagnostics": {
+          "items": {
+            "$ref": "#/$defs/Diagnostic"
+          },
+          "title": "Diagnostics",
+          "type": "array"
+        },
+        "outputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Outputs",
+          "type": "array"
+        },
+        "evidence_paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Paths",
+          "type": "array"
+        }
+      },
+      "required": [
+        "job_id",
+        "tool_id",
+        "status"
+      ],
+      "title": "JobResult",
+      "type": "object"
+    },
+    "JobStatus": {
+      "enum": [
+        "QUEUED",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED",
+        "TIMED_OUT"
+      ],
+      "title": "JobStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.5.0",
+      "default": "1.5.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "job_id": {
+      "format": "uuid",
+      "title": "Job Id",
+      "type": "string"
+    },
+    "request": {
+      "$ref": "#/$defs/JobRequest"
+    },
+    "result": {
+      "$ref": "#/$defs/JobResult"
+    },
+    "input_hashes": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Input Hashes",
+      "type": "object"
+    },
+    "artifacts": {
+      "items": {
+        "$ref": "#/$defs/ArtifactManifest"
+      },
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "engineering_status": {
+      "const": "NOT_EVALUATED",
+      "default": "NOT_EVALUATED",
+      "title": "Engineering Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "job_id",
+    "request",
+    "result",
+    "artifacts"
+  ],
+  "title": "EvidenceManifest",
+  "type": "object"
+}

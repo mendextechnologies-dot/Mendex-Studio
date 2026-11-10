@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "operation": {
+      "minLength": 1,
+      "title": "Operation",
+      "type": "string"
+    },
+    "supported": {
+      "default": false,
+      "title": "Supported",
+      "type": "boolean"
+    },
+    "tested_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tested Version"
+    },
+    "verification_evidence": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Verification Evidence"
+    },
+    "diagnostic": {
+      "default": "Awaiting Agent 2 connector and repeatable smoke evidence",
+      "title": "Diagnostic",
+      "type": "string"
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "title": "Capability",
+  "type": "object"
+}

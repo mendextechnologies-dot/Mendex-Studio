@@ -1,0 +1,80 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "relative_path": {
+      "title": "Relative Path",
+      "type": "string"
+    },
+    "file_type": {
+      "title": "File Type",
+      "type": "string"
+    },
+    "sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Sha256",
+      "type": "string"
+    },
+    "size_bytes": {
+      "minimum": 0,
+      "title": "Size Bytes",
+      "type": "integer"
+    },
+    "source_job": {
+      "format": "uuid",
+      "title": "Source Job",
+      "type": "string"
+    },
+    "provenance": {
+      "title": "Provenance",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "source_label": {
+      "enum": [
+        "SYNTHETIC",
+        "SIMULATED",
+        "MEASURED",
+        "IMPORTED",
+        "SOFTWARE_LOG"
+      ],
+      "title": "Source Label",
+      "type": "string"
+    },
+    "raw_vs_derived": {
+      "enum": [
+        "raw",
+        "derived",
+        "log"
+      ],
+      "title": "Raw Vs Derived",
+      "type": "string"
+    },
+    "unit_conventions": {
+      "default": "SI where applicable; no engineering quantities in synthetic fixtures",
+      "title": "Unit Conventions",
+      "type": "string"
+    },
+    "review_state": {
+      "const": "NOT_REVIEWED",
+      "default": "NOT_REVIEWED",
+      "title": "Review State",
+      "type": "string"
+    }
+  },
+  "required": [
+    "relative_path",
+    "file_type",
+    "sha256",
+    "size_bytes",
+    "source_job",
+    "provenance",
+    "source_label",
+    "raw_vs_derived"
+  ],
+  "title": "ArtifactManifest",
+  "type": "object"
+}

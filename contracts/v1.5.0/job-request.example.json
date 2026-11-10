@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.5.0",
+  "job_id": "15000000-0000-0000-0000-000000000001",
+  "workspace_id": "15000000-0000-0000-0000-000000000002",
+  "tool_id": "studio-demo",
+  "operation": "synthetic-echo",
+  "input_paths": [],
+  "parameters": {
+    "steps": 1,
+    "delay_s": 0,
+    "echo": "synthetic contract fixture"
+  },
+  "timeout_s": 30.0,
+  "provenance": "SYNTHETIC SOFTWARE FIXTURE; no engineering evidence"
+}

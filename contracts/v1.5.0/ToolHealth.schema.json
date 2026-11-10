@@ -1,0 +1,74 @@
+{
+  "$defs": {
+    "ToolState": {
+      "enum": [
+        "NOT_CONFIGURED",
+        "NOT_INSTALLED",
+        "DETECTED",
+        "READY",
+        "UNSUPPORTED",
+        "ERROR",
+        "UNKNOWN"
+      ],
+      "title": "ToolState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "tool_id": {
+      "title": "Tool Id",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/ToolState"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Version"
+    },
+    "checked_at": {
+      "format": "date-time",
+      "title": "Checked At",
+      "type": "string"
+    },
+    "executable_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Executable Path"
+    },
+    "diagnostic": {
+      "title": "Diagnostic",
+      "type": "string"
+    },
+    "verified_operations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Verified Operations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "tool_id",
+    "state",
+    "diagnostic"
+  ],
+  "title": "ToolHealth",
+  "type": "object"
+}
