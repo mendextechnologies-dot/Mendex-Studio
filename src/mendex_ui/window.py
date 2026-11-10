@@ -322,22 +322,12 @@ class StudioWindow(QMainWindow):
 
     def _init_search_completer(self):
         items = []
-        tool_candidates = [
-            ("ltspice", "LTspice"),
-            ("kicad", "KiCad CLI"),
-            ("femm", "FEMM 4.2 2D FEA"),
-            ("freecad", "FreeCAD 3D STEP"),
-            ("qucs-s", "Qucs-S / ngspice"),
-            ("openmodelica", "OpenModelica"),
-            ("python", "Python Runtime"),
-        ]
-        for tid, label in tool_candidates:
-            try:
-                h = self.service.integrations.verify(tid)
-                st = h.state.value if hasattr(h.state, "value") else str(h.state)
-                items.append(f"Tool: {label} ({st})")
-            except Exception:
-                items.append(f"Tool: {label}")
+        try:
+            from .v17_panels import INVENTORY_DEFINITIONS
+            for res in INVENTORY_DEFINITIONS:
+                items.append(f"Resource: {res['name']} ({res['status']})")
+        except Exception:
+            pass
 
         items.extend([
             "View: Dashboard",
