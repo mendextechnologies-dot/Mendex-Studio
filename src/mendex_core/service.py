@@ -78,6 +78,10 @@ class StudioService:
         self.integrations = IntegrationService(self)
         from .intelligence import EngineeringReasoningOrchestrator
         self.intelligence = EngineeringReasoningOrchestrator()
+        from .workflows import WorkflowStorageService, migrate_workflows_table
+        with self.connection() as db:
+            migrate_workflows_table(db)
+        self.workflows = WorkflowStorageService(self.database)
 
     @contextmanager
     def connection(self):
