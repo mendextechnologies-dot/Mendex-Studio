@@ -81,6 +81,7 @@ class BaseToolAdapter:
                     Path(os.environ.get("ProgramFiles", "C:/Program Files")),
                     Path(os.environ.get("ProgramFiles(x86)", "C:/Program Files (x86)")),
                     Path(os.environ.get("LOCALAPPDATA", "C:/Users/Default/AppData/Local")) / "Programs",
+                    Path(os.environ.get("SystemDrive", "C:")) / "/",
                 ]
                 for root in roots:
                     for pat in self.candidate_paths:

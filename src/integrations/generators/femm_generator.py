@@ -9,6 +9,7 @@ def generate_femm_transformer_script(
     air_gap_mm: float = 0.5,
     frequency_hz: float = 100000.0,
     output_ans_path: str = "transformer.ans",
+    results_txt_path: str = "results.txt",
 ) -> str:
     """Generates a headless Lua script for FEMM 4.2 to model a high-frequency transformer
 
@@ -28,7 +29,7 @@ mi_addmaterial("Copper", 1, 1, 0, 0, 58, 0, 0, 1, 0, 0, 0)
 mi_addcircprop("Primary", {primary_current_a}, 1)
 mi_addcircprop("Secondary", 0.0, 1)
 
--- Core Boundary Coordinates (Axi-symmetric representation)
+-- Core Boundary Coordinates (Axi-symmetric representation: r=0..15mm, z=0..30mm)
 mi_addnode(0, 0)
 mi_addnode(15, 0)
 mi_addnode(15, 30)
@@ -42,12 +43,50 @@ mi_selectlabel(5, 15)
 mi_setblockprop("Ferrite_N87", 1, 0, "<None>", 0, 0, 0)
 mi_clearselected()
 
+-- Primary Winding (r=18..22mm, z=5..25mm)
+mi_addnode(18, 5)
+mi_addnode(22, 5)
+mi_addnode(22, 25)
+mi_addnode(18, 25)
+mi_addsegment(18, 5, 22, 5)
+mi_addsegment(22, 5, 22, 25)
+mi_addsegment(22, 25, 18, 25)
+mi_addsegment(18, 25, 18, 5)
+mi_addblocklabel(20, 15)
+mi_selectlabel(20, 15)
+mi_setblockprop("Copper", 1, 0, "Primary", 0, 0, {primary_turns})
+mi_clearselected()
+
+-- Outer Boundary (Air region: r=0..50mm, z=0..50mm)
+mi_addnode(50, 0)
+mi_addnode(50, 50)
+mi_addnode(0, 50)
+mi_addsegment(15, 0, 50, 0)
+mi_addsegment(50, 0, 50, 50)
+mi_addsegment(50, 50, 0, 50)
+mi_addsegment(0, 50, 0, 30)
+mi_addblocklabel(35, 35)
+mi_selectlabel(35, 35)
+mi_setblockprop("Air", 1, 0, "<None>", 0, 0, 0)
+mi_clearselected()
+
 -- Solve and Analyze
 mi_saveas("temp_transformer.fem")
 mi_analyze(1)
 mi_loadsolution()
 
--- Save raw solution
+-- Extract circuit properties & metrics to text file
+i_pri, v_pri, flx_pri = mo_getcircuitproperties("Primary")
+res_fp = openfile("{results_txt_path}", "w")
+write(res_fp, "primary_current=" .. tostring(i_pri) .. "\\n")
+write(res_fp, "primary_flux_linkage=" .. tostring(flx_pri) .. "\\n")
+if i_pri ~= 0 then
+    ind_pri = flx_pri / i_pri
+    write(res_fp, "primary_inductance_h=" .. tostring(ind_pri) .. "\\n")
+end
+closefile(res_fp)
+
+-- Save raw solution bitmap
 mo_savebitmap("{output_ans_path}.bmp")
 mo_close()
 mi_close()

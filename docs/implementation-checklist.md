@@ -105,4 +105,5 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Unblocked GAP-OSS-04: Installed NumPy (v2.5.4) and SciPy (v1.18.1) in `.venv`; implemented vectorized raw waveform parsing and signal metrics (RMS, peak-to-peak, min, max, mean) in `ltspice_parser.py`.
 - [x] Unblocked GAP-OSS-03: Integrated FreeCAD 1.1.4 3D STEP generation action directly into PySide6 `TransformerWorkspacePanel`.
 - [x] Unblocked GAP-OSS-06: Implemented `NgspiceAdapter` (BSD 3-Clause) with batch simulation and argument generation.
-- [x] 101 automated tests passing across adapters, contracts, UI, calculations, resilience, and parsers.
+- [x] Unblocked GAP-OSS-02: Installed and verified FEMM 4.2 at `C:\femm42\bin\femm.exe`; updated base adapter discovery roots; implemented headless Lua execution in `femm.py`, transformer Lua generator `femm_generator.py`, and results parser `femm_parser.py`; verified real 2D FEA transformer simulation in `test_femm_adapter.py`.
+- [x] 103 automated tests passing across adapters, contracts, UI, calculations, resilience, and parsers.
