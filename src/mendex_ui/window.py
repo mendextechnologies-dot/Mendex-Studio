@@ -137,6 +137,13 @@ class StudioWindow(QMainWindow):
         nav.setCurrentRow(0)
         self.setStyleSheet("QMainWindow {background:#f3f6fa;} QListWidget {background:#142639;color:#ecf1f8;border:0;padding:10px;} QListWidget::item {padding:12px;} QListWidget::item:selected {background:#29628c;} QPushButton {padding:9px;} QTextEdit,QLineEdit,QComboBox {background:white;padding:6px;} QLabel {color:#172e44;}")
         self.statusBar().showMessage(f"Local data: {service.root} · Approval and simulation execution unavailable")
+        try:
+            from integrations.v15_connector import V15ConnectorRegistry
+            for connector in V15ConnectorRegistry.all():
+                if connector.descriptor.tool_id not in self.service.integrations.adapters:
+                    self.service.integrations.register_reviewed_adapter(connector)
+        except Exception:
+            pass
         self.refresh()
 
     def guarded(self, callback):
