@@ -181,3 +181,33 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
   - [x] `docs/testing/V1_9_WORKFLOW_ACCEPTANCE.md`
   - [x] `docs/audits/V1_9_INTEGRATION_READINESS.md`
   - [x] `docs/V1_9_FINAL_IMPLEMENTATION_REPORT.md`
+
+## 18-Resource Integration Audit & Dashboard Correction (2026-11-10)
+
+- [x] Phase 1: Complete audit of all 18 approved items + native `ngspice` (19 total ecosystem resources).
+  - [x] Simulation Solvers: LTspice, Qucs-S, OpenModelica, ngspice.
+  - [x] CAD & PCB Tools: KiCad, FEMM, FreeCAD.
+  - [x] Engineering Frameworks & Dev: Python, Jupyter Notebook, Git.
+  - [x] Research Datasets & Benchmarks: SwitchLossDB, MagNet Dataset, MagNet ML Benchmarks, MagNet Princeton Research Resources.
+  - [x] Commercial Tool Integrations (Safely License-Gated): PLECS, MATLAB/Simulink, Ansys Maxwell, Ansys Icepak, SolidWorks.
+- [x] Phase 2: Root-cause identification of dashboard display discrepancy (10 displayed vs. 18+ approved).
+  - [x] Hardcoded `core_tools` array in `refresh_metrics()` resolved.
+  - [x] Dataset catalog segregation bridged into unified dashboard view.
+  - [x] Commercial stubs and Jupyter added to main ecosystem inventory table.
+- [x] Phase 3: Exact integration classification & truthful status modeling.
+  - [x] 4 VERIFIED OPERATIONAL: LTspice (26.1.1.0), ngspice (46 KLU), Python (3.13.7), Git (2.45.2).
+  - [x] 6 INSTALLED — NOT VALIDATED: KiCad (10.0.7), FEMM (4.2), FreeCAD (1.1.4), Qucs-S (26.1.1), OpenModelica (1.26.3), Jupyter (7.0.0).
+  - [x] 4 REGISTERED ONLY: SwitchLossDB, MagNet Dataset, MagNet ML Benchmarks, MagNet Princeton.
+  - [x] 5 LICENSE REQUIRED: PLECS, MATLAB/Simulink, Ansys Maxwell, Ansys Icepak, SolidWorks.
+- [x] Phase 4: UI/UX Dashboard Redesign (`EnterpriseDashboardPanel` in `src/mendex_ui/v17_panels.py`).
+  - [x] 4 KPI Cards: Active Workspaces, Verified Operational (4/19), Installed on Host (10/19), Ecosystem Inventory (19 Resources).
+  - [x] Category scope navigation tabs: All Resources (19), Simulation Solvers & CAD (7), Frameworks & Dev (3), Research Datasets & Benchmarks (4), Commercial Stubs (5).
+  - [x] Real-time search query, category dropdown filter, and status dropdown filter.
+  - [x] 8-column layout: Resource Name, Category, Install Status, Integration Status, Version, License, Capabilities, Discovered Location / Provenance.
+  - [x] Double-click navigation to Simulation Lab, Tool Center, or Dataset Catalog.
+- [x] Phase 5: Verification & Deliverables:
+  - [x] `docs/audits/COMPLETE_18_RESOURCE_INTEGRATION_AUDIT.md`
+  - [x] `docs/audits/MISSING_INTEGRATIONS_ROOT_CAUSE.md`
+  - [x] `docs/testing/INTEGRATION_INVENTORY_VERIFICATION.md`
+  - [x] Automated test `tests/ui/test_dashboard_inventory.py` passing.
+  - [x] Full test suite: **137 passed in 28.60s**, 0 failures, 100% green.
