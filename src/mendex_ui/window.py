@@ -2,11 +2,12 @@ import json
 from pathlib import Path
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFormLayout, QHBoxLayout,
     QInputDialog, QLabel, QLineEdit, QListWidget, QMainWindow, QMessageBox,
     QPushButton, QSplitter, QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog,
-    QFrame,
+    QFrame, QCompleter,
 )
 
 from mendex_core.models import Category, Specification
@@ -84,6 +85,12 @@ class StudioWindow(QMainWindow):
         self.search_box.setPlaceholderText("Search tools, activities, waveforms, jobs... (Ctrl+K)")
         self.search_box.setMinimumWidth(260)
         header_layout.addWidget(self.search_box)
+
+        # Command Palette / Shortcut
+        self.search_shortcut = QShortcut(QKeySequence("Ctrl+K"), self)
+        self.search_shortcut.activated.connect(self._focus_search)
+        self.search_box.returnPressed.connect(self._on_search_submitted)
+        self._init_search_completer()
 
         self.solver_badge = QLabel("● 6 Solvers Operational · 12 Catalog")
         self.solver_badge.setStyleSheet("background-color: #1c3b2b; color: #a6e3a1; border: 1px solid #2d5a3f; border-radius: 4px; padding: 4px 8px; font-weight: 600; font-size: 11px;")
@@ -242,6 +249,88 @@ class StudioWindow(QMainWindow):
         except Exception:
             pass
         self.refresh()
+        self._load_preferences()
+
+    def _focus_search(self):
+        self.search_box.setFocus()
+        self.search_box.selectAll()
+
+    def _init_search_completer(self):
+        items = [
+            "Tool: LTspice 26.1 (READY)",
+            "Tool: KiCad CLI 10.0 (READY)",
+            "Tool: FEMM 4.2 2D FEA (READY)",
+            "Tool: FreeCAD 1.1 3D STEP (READY)",
+            "Tool: Qucs-S / ngspice 46 (READY)",
+            "Tool: OpenModelica 1.26 (READY)",
+            "Tool: Python Runtime 3.13 (READY)",
+            "View: Dashboard",
+            "View: Tools & Integrations",
+            "View: Jobs & Simulations",
+            "View: Research Datasets",
+            "View: Knowledge Center",
+            "Action: + New Engineering Workspace",
+            "Action: Toggle Dark / Light Theme",
+        ]
+        self.search_completer = QCompleter(items, self)
+        self.search_completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.search_completer.setFilterMode(Qt.MatchContains)
+        self.search_completer.activated.connect(self._on_search_item_activated)
+        self.search_box.setCompleter(self.search_completer)
+
+    def _on_search_submitted(self):
+        text = self.search_box.text().strip()
+        if text:
+            self._on_search_item_activated(text)
+
+    def _on_search_item_activated(self, text: str):
+        lower = text.lower()
+        if "workspace" in lower and "action" in lower:
+            self._create_header_workspace()
+        elif "theme" in lower:
+            self.toggle_theme()
+        elif any(k in lower for k in ("tool", "ltspice", "kicad", "femm", "freecad", "openmodelica", "ngspice")):
+            self.navigation.setCurrentRow(11)  # Tools & Integrations
+        elif any(k in lower for k in ("job", "simulation")):
+            self.navigation.setCurrentRow(12)  # Jobs & Results
+        elif any(k in lower for k in ("dataset", "research")):
+            self.navigation.setCurrentRow(13)  # Dataset Catalog
+        elif "knowledge" in lower:
+            self.navigation.setCurrentRow(10)  # Knowledge Center
+        elif "dashboard" in lower:
+            self.navigation.setCurrentRow(0)
+        self.search_box.clear()
+
+    def _pref_file(self) -> Path:
+        return self.service.root / ".mendex" / "ui_preferences.json"
+
+    def _load_preferences(self):
+        pfile = self._pref_file()
+        if pfile.exists():
+            try:
+                import json as _json
+                data = _json.loads(pfile.read_text(encoding="utf-8"))
+                if "width" in data and "height" in data:
+                    self.resize(int(data["width"]), int(data["height"]))
+                if "is_dark" in data and not data["is_dark"]:
+                    self.toggle_theme()
+            except Exception:
+                pass
+
+    def _save_preferences(self):
+        try:
+            import json as _json
+            pfile = self._pref_file()
+            pfile.parent.mkdir(parents=True, exist_ok=True)
+            data = {
+                "width": self.width(),
+                "height": self.height(),
+                "is_dark": self._dark_theme,
+                "current_nav_row": self.navigation.currentRow(),
+            }
+            pfile.write_text(_json.dumps(data, indent=2), encoding="utf-8")
+        except Exception:
+            pass
 
     def toggle_theme(self):
         self._dark_theme = not self._dark_theme
@@ -285,6 +374,7 @@ class StudioWindow(QMainWindow):
             QMessageBox.warning(self, "Action could not be completed", str(exc))
 
     def closeEvent(self, event):
+        self._save_preferences()
         self.jobs_panel.timer.stop()
         self.service.integrations.shutdown()
         super().closeEvent(event)

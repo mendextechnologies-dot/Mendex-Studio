@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
 
 from mendex_core.service import StudioService
 from mendex_core.integration_contracts import JobRequest, ToolState
+from .waveform_viewer import WaveformViewerWidget
 
 
 class EnterpriseDashboardPanel(QWidget):
@@ -420,14 +421,23 @@ class SimulationLabPanel(QWidget):
         left_layout.addWidget(self.input_editor)
         split.addWidget(left_box)
 
-        # Right Results Viewer
-        right_box = QWidget()
-        right_layout = QVBoxLayout(right_box)
-        right_layout.addWidget(QLabel("Simulation Output & Waveform Metrics:"))
+        # Right Results Tabbed Interface: Waveform Plot + Console
+        self.right_tabs = QTabWidget()
+
+        # Tab 1: Interactive Waveform Viewer
+        self.waveform_viewer = WaveformViewerWidget(self)
+        self.right_tabs.addTab(self.waveform_viewer, "Interactive Waveform Plot")
+
+        # Tab 2: Logs & Diagnostics
+        log_box = QWidget()
+        log_layout = QVBoxLayout(log_box)
+        log_layout.setContentsMargins(4, 4, 4, 4)
         self.output_viewer = QTextEdit()
         self.output_viewer.setReadOnly(True)
-        right_layout.addWidget(self.output_viewer)
-        split.addWidget(right_box)
+        log_layout.addWidget(self.output_viewer)
+        self.right_tabs.addTab(log_box, "Output Logs & Artifacts")
+
+        split.addWidget(self.right_tabs)
 
         layout.addWidget(split, 1)
 
@@ -461,6 +471,13 @@ class SimulationLabPanel(QWidget):
                 self.output_viewer.append("Generated Artifacts:\n" + "\n".join(f" - {o}" for o in res.result.outputs))
             if res.result and res.result.diagnostics:
                 self.output_viewer.append("Diagnostics:\n" + "\n".join(res.result.diagnostics))
+            # Automatically update interactive waveform viewer
+            if tool_id in ("ltspice", "ngspice"):
+                self.waveform_viewer.load_benchmark_data(0)
+            elif tool_id == "femm":
+                self.waveform_viewer.load_benchmark_data(1)
+            else:
+                self.waveform_viewer.load_benchmark_data(2)
         except Exception as e:
             self.output_viewer.append(f"Simulation Error: {e}")
 
@@ -687,12 +704,38 @@ class ResultsReportsPanel(QWidget):
         header.addStretch()
         layout.addLayout(header)
 
+        splitter = QSplitter(Qt.Vertical)
+
+        table_box = QWidget()
+        table_layout = QVBoxLayout(table_box)
+        table_layout.setContentsMargins(0, 0, 0, 0)
         self.table = QTableWidget(0, 5)
         self.table.setHorizontalHeaderLabels(["Job / Artifact ID", "Tool / Origin", "Status", "SHA-256 Digest", "Outputs"])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        layout.addWidget(self.table, 1)
+        self.table.itemSelectionChanged.connect(self.on_result_selected)
+        table_layout.addWidget(self.table)
+        splitter.addWidget(table_box)
 
+        # Embedded Waveform & Artifact Inspector
+        self.waveform_viewer = WaveformViewerWidget(self)
+        splitter.addWidget(self.waveform_viewer)
+        splitter.setStretchFactor(0, 2)
+        splitter.setStretchFactor(1, 3)
+
+        layout.addWidget(splitter, 1)
         self.refresh_results()
+
+    def on_result_selected(self):
+        row = self.table.currentRow()
+        if row >= 0:
+            tool_item = self.table.item(row, 1)
+            tool_name = tool_item.text().lower() if tool_item else ""
+            if "ltspice" in tool_name or "ngspice" in tool_name:
+                self.waveform_viewer.load_benchmark_data(0)
+            elif "femm" in tool_name:
+                self.waveform_viewer.load_benchmark_data(1)
+            else:
+                self.waveform_viewer.load_benchmark_data(2)
 
     def refresh_results(self):
         try:
