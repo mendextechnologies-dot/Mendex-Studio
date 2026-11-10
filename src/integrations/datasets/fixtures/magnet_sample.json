@@ -1,0 +1,83 @@
+{
+  "dataset_name": "MagNet High-Frequency Ferrite Core Loss Benchmark",
+  "source": "Princeton Power Electronics Lab / MagNet Consortium",
+  "license": "CC-BY-4.0",
+  "citation": "Minjie Chen et al., MagNet: Open-Source Magnetic Core Loss Modeling, IEEE Compel 2021",
+  "measurements": [
+    {
+      "material": "N87",
+      "manufacturer": "TDK Epcos",
+      "temperature_c": 25.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.05,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 11500.0
+    },
+    {
+      "material": "N87",
+      "manufacturer": "TDK Epcos",
+      "temperature_c": 25.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 58000.0
+    },
+    {
+      "material": "N87",
+      "manufacturer": "TDK Epcos",
+      "temperature_c": 100.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 39500.0
+    },
+    {
+      "material": "N87",
+      "manufacturer": "TDK Epcos",
+      "temperature_c": 100.0,
+      "frequency_hz": 200000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 110000.0
+    },
+    {
+      "material": "3C90",
+      "manufacturer": "Ferroxcube",
+      "temperature_c": 25.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 62000.0
+    },
+    {
+      "material": "3C90",
+      "manufacturer": "Ferroxcube",
+      "temperature_c": 100.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 41000.0
+    },
+    {
+      "material": "3F3",
+      "manufacturer": "Ferroxcube",
+      "temperature_c": 100.0,
+      "frequency_hz": 400000.0,
+      "b_peak_t": 0.05,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 85000.0
+    }
+  ],
+  "steinmetz_parameters": {
+    "N87_100C": {
+      "k": 7.13,
+      "alpha": 1.42,
+      "beta": 2.65
+    },
+    "3C90_100C": {
+      "k": 3.2,
+      "alpha": 1.46,
+      "beta": 2.75
+    }
+  }
+}
