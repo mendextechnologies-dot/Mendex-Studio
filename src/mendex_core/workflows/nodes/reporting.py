@@ -47,17 +47,22 @@ class EvidenceAggregationNode(BaseNode):
         }
 
         all_passed = True
+        validation_count = 0
         for key in ("check1", "check2"):
             chk = inputs.get(key)
             if chk:
+                validation_count += 1
                 if isinstance(chk, ValidationResultData):
                     manifest_data["validations"].append(chk.model_dump())
-                    if not chk.passed:
+                    if not chk.passed or getattr(chk, "status", None) == "NOT_EVALUATED":
                         all_passed = False
                 elif isinstance(chk, dict):
                     manifest_data["validations"].append(chk)
-                    if not chk.get("passed", True):
+                    if not chk.get("passed", False) or chk.get("status") == "NOT_EVALUATED":
                         all_passed = False
+
+        if validation_count == 0:
+            all_passed = False
 
         sim = inputs.get("sim_result")
         if sim:

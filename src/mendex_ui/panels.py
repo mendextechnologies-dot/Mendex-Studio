@@ -16,18 +16,35 @@ class SimulationPanel(QWidget):
         super().__init__()
         self.service, self.guarded, self.revision = service, guarded, None
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self.tabs = QTabWidget()
+        layout.addWidget(self.tabs)
+
+        # Tab 1: Interactive Multi-Solver Simulation Lab & Live Waveform Viewer
+        try:
+            from .v17_panels import SimulationLabPanel
+            self.lab_panel = SimulationLabPanel(service)
+            self.tabs.addTab(self.lab_panel, "Simulation Lab & Waveforms")
+        except Exception:
+            self.lab_panel = None
+
+        # Tab 2: Product Revision Simulation Baseline
+        legacy_widget = QWidget()
+        legacy_layout = QVBoxLayout(legacy_widget)
         self.context = QLabel("Select a product revision in Products")
-        layout.addWidget(self.context)
+        legacy_layout.addWidget(self.context)
         self.tools = QComboBox()
         self.tools.addItems([adapter.tool_id for adapter in service.registry.list()])
-        layout.addWidget(self.tools)
+        legacy_layout.addWidget(self.tools)
         button = QPushButton("Record simulation availability request")
         button.clicked.connect(lambda: guarded(self.request))
-        layout.addWidget(button)
-        layout.addWidget(QLabel("No solver will run. Requests persist as NOT_SUPPORTED until a verified execution adapter exists."))
+        legacy_layout.addWidget(button)
+        legacy_layout.addWidget(QLabel("Product Baseline Mode: Historical product request archive."))
         self.output = QTextEdit()
         self.output.setReadOnly(True)
-        layout.addWidget(self.output)
+        legacy_layout.addWidget(self.output)
+        self.tabs.addTab(legacy_widget, "Product Simulation Archive")
 
     def set_revision(self, revision):
         self.revision = revision
@@ -49,6 +66,12 @@ class KnowledgePanel(QTabWidget):
     def __init__(self, service, guarded):
         super().__init__()
         self.service, self.guarded, self.revision = service, guarded, None
+        try:
+            from .v17_panels import AIAssistantPanel
+            self.ai_assistant = AIAssistantPanel(service)
+            self.addTab(self.ai_assistant, "Engineering AI Assistant")
+        except Exception:
+            self.ai_assistant = None
         guidelines = QTextEdit()
         guidelines.setReadOnly(True)
         guidelines.setPlainText(f"Engineering guidelines · revision {GUIDELINES_REVISION}\n\n" + "\n\n".join(f"{title}\n{body}" for title, body in GUIDELINES))

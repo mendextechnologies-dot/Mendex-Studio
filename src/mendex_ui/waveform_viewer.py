@@ -185,6 +185,31 @@ class WaveformViewerWidget(QWidget):
     def _on_benchmark_changed(self, index: int):
         self.load_benchmark_data(index)
 
+    def load_raw_file(self, raw_path: Path | str) -> bool:
+        """Parses and renders real solver output waveforms from an ASCII .raw file."""
+        p = Path(raw_path)
+        if not p.exists():
+            return False
+        try:
+            from integrations.parsers.ltspice_parser import parse_ascii_raw_waveforms
+            parsed = parse_ascii_raw_waveforms(p)
+            if not parsed or "time" not in parsed:
+                return False
+            time_arr = [float(x) for x in parsed["time"]]
+            traces = {k: [float(x) for x in v] for k, v in parsed.items() if k.lower() != "time"}
+            if traces:
+                self.set_waveform_data(
+                    f"Measured Solver Waveforms: {p.name}",
+                    time_arr,
+                    traces,
+                    x_label="Time (s)",
+                    y_label="Amplitude (V / A)",
+                )
+                return True
+        except Exception:
+            pass
+        return False
+
     def load_benchmark_data(self, index: int):
         if index == 0:
             # RC Step: V(in) = 10V step, V(out) = 10*(1 - exp(-t/1ms))

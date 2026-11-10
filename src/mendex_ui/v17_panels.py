@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from uuid import uuid4
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPixmap
 from .resources import SHIELD_TRANSPARENT_PATH, LOGO_PATH
 from PySide6.QtWidgets import (
@@ -482,35 +482,81 @@ class SimulationLabPanel(QWidget):
         else:
             ws_id = workspaces[0]["workspace_id"]
 
+        ws_dir = self.service.integrations.workspace_directory(ws_id)
+        input_paths = []
+        text = self.input_editor.toPlainText().strip()
+        if text:
+            if tool_id in ("ltspice", "ngspice"):
+                net_file = ws_dir / "circuit.net"
+                net_file.write_text(text, encoding="utf-8")
+                input_paths.append("circuit.net")
+            elif tool_id == "femm":
+                lua_file = ws_dir / "script.lua"
+                lua_file.write_text(text, encoding="utf-8")
+                input_paths.append("script.lua")
+
         self.output_viewer.append(f"Starting {tool_id.upper()} simulation [{op}]...")
+        self.btn_run.setEnabled(False)
         req = JobRequest(
             schema_version="1.5.0",
             job_id=uuid4(),
             workspace_id=ws_id,
             tool_id=tool_id,
             operation=op,
-            parameters={"netlist_text": self.input_editor.toPlainText()},
+            input_paths=input_paths,
+            parameters={"netlist_text": text} if text else {},
             timeout_s=30,
             provenance="Simulation Lab interactive execution",
         )
         try:
             job = self.service.integrations.submit(req)
-            self.service.integrations.wait(job.request.job_id)
-            res = self.service.integrations.job(job.request.job_id)
-            self.output_viewer.append(f"Status: {res.status.value} (Exit: {res.result.exit_code if res.result else 'N/A'})")
-            if res.result and res.result.outputs:
-                self.output_viewer.append("Generated Artifacts:\n" + "\n".join(f" - {o}" for o in res.result.outputs))
-            if res.result and res.result.diagnostics:
-                self.output_viewer.append("Diagnostics:\n" + "\n".join(res.result.diagnostics))
-            # Automatically update interactive waveform viewer
-            if tool_id in ("ltspice", "ngspice"):
-                self.waveform_viewer.load_benchmark_data(0)
-            elif tool_id == "femm":
-                self.waveform_viewer.load_benchmark_data(1)
-            else:
-                self.waveform_viewer.load_benchmark_data(2)
+            job_id = job.request.job_id
+            self.output_viewer.append(f"Job {job_id} submitted. Running asynchronously...")
+
+            poll_timer = QTimer(self)
+            def poll_job():
+                try:
+                    res = self.service.integrations.job(job_id)
+                    st = res.status.value if hasattr(res.status, "value") else str(res.status)
+                    if st in ("SUCCEEDED", "FAILED", "CANCELLED", "TIMED_OUT"):
+                        poll_timer.stop()
+                        poll_timer.deleteLater()
+                        self.btn_run.setEnabled(True)
+                        self._handle_simulation_finished(res, ws_dir, tool_id)
+                except Exception as e:
+                    poll_timer.stop()
+                    poll_timer.deleteLater()
+                    self.btn_run.setEnabled(True)
+                    self.output_viewer.append(f"Polling error: {e}")
+
+            poll_timer.timeout.connect(poll_job)
+            poll_timer.start(100)
         except Exception as e:
+            self.btn_run.setEnabled(True)
             self.output_viewer.append(f"Simulation Error: {e}")
+
+    def _handle_simulation_finished(self, res, ws_dir: Path, tool_id: str):
+        st = res.status.value if hasattr(res.status, "value") else str(res.status)
+        exit_code = res.result.exit_code if res.result else "N/A"
+        self.output_viewer.append(f"Status: {st} (Exit: {exit_code})")
+        if res.result and res.result.outputs:
+            self.output_viewer.append("Generated Artifacts:\n" + "\n".join(f" - {o}" for o in res.result.outputs))
+        if res.result and res.result.diagnostics:
+            self.output_viewer.append("Diagnostics:\n" + "\n".join(d.message if hasattr(d, "message") else str(d) for d in res.result.diagnostics))
+
+        # Real waveform extraction from actual output .raw file
+        loaded = False
+        if res.result and res.result.outputs:
+            for out_name in res.result.outputs:
+                if out_name.endswith(".raw") and not out_name.endswith(".op.raw"):
+                    cand = ws_dir / out_name
+                    if cand.exists():
+                        if self.waveform_viewer.load_raw_file(cand):
+                            loaded = True
+                            self.output_viewer.append(f"Loaded real output waveform from solver artifact: {out_name}")
+                            break
+        if not loaded and st != "SUCCEEDED":
+            self.waveform_viewer.clear()
 
 
 class AIAssistantPanel(QWidget):

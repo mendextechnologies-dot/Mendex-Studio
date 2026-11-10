@@ -103,7 +103,7 @@ class StudioWindow(QMainWindow):
         self.search_box.returnPressed.connect(self._on_search_submitted)
         self._init_search_completer()
 
-        self.solver_badge = QLabel("● 6 Solvers Operational · 12 Catalog")
+        self.solver_badge = QLabel("● Solvers Status Loading...")
         self.solver_badge.setStyleSheet("background-color: #1c3b2b; color: #a6e3a1; border: 1px solid #2d5a3f; border-radius: 4px; padding: 4px 8px; font-weight: 600; font-size: 11px;")
         header_layout.addWidget(self.solver_badge)
 
@@ -299,8 +299,22 @@ class StudioWindow(QMainWindow):
                     self.service.integrations.register_reviewed_adapter(connector)
         except Exception:
             pass
+        self._update_solver_badge()
         self.refresh()
         self._load_preferences()
+
+    def _update_solver_badge(self):
+        ready_solvers = 0
+        total_solvers = len(self.service.integrations.list_tools())
+        for tid in ("ltspice", "kicad", "femm", "freecad", "qucs-s", "openmodelica"):
+            try:
+                h = self.service.integrations.verify(tid)
+                st = h.state.value if hasattr(h.state, "value") else str(h.state)
+                if st == "READY":
+                    ready_solvers += 1
+            except Exception:
+                pass
+        self.solver_badge.setText(f"● {ready_solvers} Solvers READY · {total_solvers} Catalog")
 
     def _focus_search(self):
         self.search_box.setFocus()
