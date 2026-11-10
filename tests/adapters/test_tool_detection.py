@@ -1,3 +1,4 @@
+from pathlib import Path
 import pytest
 from integrations.contracts import ToolState, ToolKind
 from integrations.adapters.registry import ToolRegistry
@@ -39,21 +40,13 @@ def test_real_tools_detected_truthfully():
 
 def test_missing_tools_never_false_ready():
     registry = ToolRegistry()
-    missing_ids = ["openmodelica"]
-
-    for tool_id in missing_ids:
-        desc = registry.get(tool_id).descriptor
-        # Truly missing tools must be NOT_INSTALLED
-        assert desc.state in (ToolState.NOT_INSTALLED, ToolState.DETECTED)
-        if desc.state == ToolState.NOT_INSTALLED:
-            assert desc.executable_path is None
-            assert "not installed" in desc.diagnostic.lower()
-
-    # FreeCAD and Jupyter are now installed and verified
-    for tool_id in ["freecad", "jupyter", "femm", "qucs-s", "kicad"]:
+    # All 6 core open-source candidate tools are now installed and verified ready on host
+    installed_ids = ["freecad", "jupyter", "femm", "qucs-s", "kicad", "openmodelica"]
+    for tool_id in installed_ids:
         desc = registry.get(tool_id).descriptor
         assert desc.state in (ToolState.READY, ToolState.DETECTED)
         assert desc.executable_path is not None
+        assert Path(desc.executable_path).exists()
 
 
 def test_commercial_tools_are_unlicensed_stubs():
