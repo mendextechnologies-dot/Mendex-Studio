@@ -253,3 +253,25 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
   - [x] `docs/architecture/PRODUCT_ENGINEERING_LIFECYCLE.md`
   - [x] `docs/testing/PRODUCT_E2E_ACCEPTANCE.md`
   - [x] `docs/PRODUCT_ENGINEERING_IMPLEMENTATION_REPORT.md`
+
+## SV-1000 execution preflight ? 11 November 2026
+
+- [x] Inspect active V1 via shared StudioService and export canonical specification into its requirements folder without approval.
+- [x] Save lifecycle snapshot and archived-source SHA-256 manifest in reports/sv1000-execution-preflight-20261111/.
+- [x] Identify incomplete circuit template (secondary/multiplier absent), conflicting PCB/enclosure dimensions and unresolved transformer inputs.
+- [x] Run relevant lifecycle regression tests: 6 passed.
+- [ ] Resolve design inputs with owner, build reviewed full-product models and execute traceable engineering checks. Missing checks remain NOT_EVALUATED; prototype remains BLOCKED.
+
+## SV-1000 compact direction ? 11 November 2026
+
+- [x] Record owner smaller-size preference in active draft through StudioService; retain 45 x 28 x 13 mm external target and distinguish assistant-selected positive 1 W working scope.
+- [x] Document incompatibility of archived 50 x 32 mm PCB proposal; leave actual board outline unresolved pending usable-volume and insulation analysis.
+- [x] Export updated specification, verify persistence and continued blocked readiness; lifecycle tests: 6 passed.
+- [ ] Complete sourced component/core selection and mechanical budget before transformer execution; missing results remain NOT_EVALUATED.
+
+## SV-1000 compact architecture proposal ? 11 November 2026
+
+- [x] Research primary manufacturer sources; save proposed flyback/push-pull trade study in active V1 requirements without changing canonical topology or approving a design.
+- [x] Record elementary power, load, filter drop, divider, volume and illustrative stored-energy budgets with assumptions; independently check arithmetic.
+- [x] Identify LT3751 auxiliary-supply constraint and exclude 0.5 W proportional Q-series as a direct 1 W precision match.
+- [ ] Resolve load/insulation specification and exact magnetic construction before full-product model execution. Missing checks remain NOT_EVALUATED.
