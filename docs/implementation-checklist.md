@@ -153,3 +153,31 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
   - [x] `docs/release/V1_8_RELEASE_READINESS.md`
   - [x] `docs/V1_8_FINAL_IMPLEMENTATION_REPORT.md`
 - [x] Regression & Acceptance Test Verification: **118 passed in 37.82s**, 0 failures, 100% green.
+
+## v1.9 Engineering Readiness Gate & Milestone Completion (2026-11-10)
+
+- [x] Gate executed against commit `dc21aa9`; findings documented in `docs/readiness/V1_9_FINAL_READINESS_DECISION.md`.
+- [x] All 6 critical gate audit findings addressed and verified:
+  - [x] Finding 1: Fabricated results removed. Unexecuted/failed nodes strictly return `NOT_EVALUATED` without synthetic data.
+  - [x] Finding 2: KiCad ERC parser updated to traverse nested `sheets[].violations`.
+  - [x] Finding 3: `DeterministicPhysicsNode` wired to real core equations with SI unit checking.
+  - [x] Finding 4: Real LTspice ASCII `.raw` parsing wired into waveform extraction.
+  - [x] Finding 5: Interactive QtCharts waveform viewer and `WorkflowStudioPanel` fully mounted on Page 14 in `StudioWindow`.
+  - [x] Finding 6: Native host tools bridged via `AdapterBridgeV15Connector` into `V15ConnectorRegistry.all()`.
+  - [x] UI Readiness: Dashboard and completer dynamically verify tool health via `service.integrations.verify(tool_id)`.
+- [x] Phase 1: Baseline Verification & Product-Independent Architecture Preserved.
+- [x] Phase 2: Workflow Data Models, Node Contracts & Schema Validation (`src/mendex_core/workflows/`).
+- [x] Phase 3: DAG Execution Engine with Topological Scheduling & Cancellation (`engine.py`).
+- [x] Phase 4: Engineering Node Catalog (Inputs, Calculations, Tools, Results, Validation, Reporting, Intelligence).
+- [x] Phase 5: Qt-Native Visual Workflow Designer Canvas (`src/mendex_ui/workflow_canvas/`).
+- [x] Phase 6: Workflow Studio UI Integration, Command Palette & Navigation (`WorkflowStudioPanel` on Page 14).
+- [x] Phase 7: End-to-End Workflow Scenarios (Scenarios A through G tested and passing).
+- [x] Phase 8: Official Mendex Technologies branding, logo icons, and dark/light asset bundle.
+- [x] Phase 9: Automated Test Suite: **136 passed in 24.53s**, 0 failures, 100% green.
+- [x] Documentation & Deliverables:
+  - [x] `docs/architecture/V1_9_WORKFLOW_ARCHITECTURE.md`
+  - [x] `docs/architecture/V1_9_NODE_CONTRACTS.md`
+  - [x] `docs/ui/V1_9_WORKFLOW_STUDIO_DESIGN.md`
+  - [x] `docs/testing/V1_9_WORKFLOW_ACCEPTANCE.md`
+  - [x] `docs/audits/V1_9_INTEGRATION_READINESS.md`
+  - [x] `docs/V1_9_FINAL_IMPLEMENTATION_REPORT.md`

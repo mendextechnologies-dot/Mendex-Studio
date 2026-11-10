@@ -165,19 +165,43 @@ class EnterpriseDashboardPanel(QWidget):
                 if isinstance(child, QLabel) and child.property("class") == "metric_value":
                     child.setText(str(len(jobs)))
 
-            # Populate Tool Health Table
-            tools_data = [
-                ("LTspice", "READY", "26.1.1.0", "C:\\Program Files\\ADI\\LTspice\\LTspice.exe"),
-                ("KiCad CLI", "READY", "10.0.7", "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe"),
-                ("FEMM 4.2", "READY", "4.2", "C:\\femm42\\bin\\femm.exe"),
-                ("FreeCAD", "READY", "1.1.4", "C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe"),
-                ("Qucs-S", "READY", "26.1.1", "LOCALAPPDATA\\Programs\\qucs-s\\bin\\qucs-s.exe"),
-                ("ngspice", "READY", "46 KLU", "LOCALAPPDATA\\Programs\\qucs-s\\bin\\ngspice_con.exe"),
-                ("OpenModelica", "READY", "1.26.3", "C:\\Program Files\\OpenModelica1.26.3-64bit\\bin\\omc.exe"),
-                ("Python Math", "READY", "3.13.7", "Studio Virtual Environment (.venv)"),
-                ("PLECS", "OPTIONAL", "License Guard", "Unlicensed Stub"),
-                ("MATLAB", "OPTIONAL", "License Guard", "Unlicensed Stub"),
+            # Populate Tool Health Table dynamically
+            core_tools = [
+                ("ltspice", "LTspice"),
+                ("kicad", "KiCad CLI"),
+                ("femm", "FEMM 4.2"),
+                ("freecad", "FreeCAD"),
+                ("qucs-s", "Qucs-S"),
+                ("openmodelica", "OpenModelica"),
+                ("python", "Python Math"),
+                ("git", "Git"),
+                ("plecs", "PLECS"),
+                ("matlab-simulink", "MATLAB"),
             ]
+            tools_data = []
+            ready_count = 0
+            for tid, display_name in core_tools:
+                try:
+                    desc = self.service.integrations.descriptor(tid)
+                    health = self.service.integrations.verify(tid)
+                    state_str = str(health.state.value if hasattr(health.state, "value") else health.state)
+                    if state_str == "READY":
+                        if tid in ("ltspice", "kicad", "femm", "freecad", "qucs-s", "openmodelica"):
+                            ready_count += 1
+                        status = "READY"
+                    elif getattr(desc, "optional_paid", False) or state_str in ("NOT_CONFIGURED", "OPTIONAL_UNLICENSED"):
+                        status = "OPTIONAL"
+                    else:
+                        status = state_str
+                    ver = health.version or getattr(desc, "version", None) or "—"
+                    path = health.executable_path or "—"
+                    tools_data.append((display_name, status, ver, path))
+                except Exception:
+                    tools_data.append((display_name, "UNAVAILABLE", "—", "—"))
+
+            for child in self.card_tools.children():
+                if isinstance(child, QLabel) and child.property("class") == "metric_value":
+                    child.setText(f"{ready_count} / 6")
             self.tools_table.setRowCount(len(tools_data))
             for row, (name, status, ver, path) in enumerate(tools_data):
                 self.tools_table.setItem(row, 0, QTableWidgetItem(name))

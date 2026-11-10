@@ -7,3 +7,4 @@ products/
 *.sqlite3*
 build/
 dist/
+reports/

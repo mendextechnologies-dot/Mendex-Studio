@@ -22,7 +22,7 @@ def test_real_service_editor_roundtrip_and_restart(tmp_path):
     window.close()
     reopened = StudioWindow(StudioService(tmp_path))
     assert '24.0' in reopened.specification.toPlainText()
-    assert reopened.pages.count() == 14
+    assert reopened.pages.count() == 15
     reopened.simulation_panel.request()
     assert "not_supported" in reopened.simulation_panel.output.toPlainText()
     assert "not_evaluated" in reopened.knowledge_panel.rules.toPlainText()

@@ -22,6 +22,7 @@ from .workspace_panels import (
 )
 from .theme import DARK_THEME_QSS, LIGHT_THEME_QSS
 from .v17_panels import EnterpriseDashboardPanel
+from .workflow_canvas import WorkflowStudioPanel
 
 
 class ProductDialog(QDialog):
@@ -279,6 +280,11 @@ class StudioWindow(QMainWindow):
             nav.addItem(title)
             self.pages.addWidget(panel)
 
+        # Page 14: Visual Workflow Studio
+        self.workflow_studio = WorkflowStudioPanel(service)
+        nav.addItem("Workflow Studio")
+        self.pages.addWidget(self.workflow_studio)
+
         nav.currentRowChanged.connect(self.pages.setCurrentIndex)
         nav.setCurrentRow(0)
 
@@ -301,22 +307,35 @@ class StudioWindow(QMainWindow):
         self.search_box.selectAll()
 
     def _init_search_completer(self):
-        items = [
-            "Tool: LTspice 26.1 (READY)",
-            "Tool: KiCad CLI 10.0 (READY)",
-            "Tool: FEMM 4.2 2D FEA (READY)",
-            "Tool: FreeCAD 1.1 3D STEP (READY)",
-            "Tool: Qucs-S / ngspice 46 (READY)",
-            "Tool: OpenModelica 1.26 (READY)",
-            "Tool: Python Runtime 3.13 (READY)",
+        items = []
+        tool_candidates = [
+            ("ltspice", "LTspice"),
+            ("kicad", "KiCad CLI"),
+            ("femm", "FEMM 4.2 2D FEA"),
+            ("freecad", "FreeCAD 3D STEP"),
+            ("qucs-s", "Qucs-S / ngspice"),
+            ("openmodelica", "OpenModelica"),
+            ("python", "Python Runtime"),
+        ]
+        for tid, label in tool_candidates:
+            try:
+                h = self.service.integrations.verify(tid)
+                st = h.state.value if hasattr(h.state, "value") else str(h.state)
+                items.append(f"Tool: {label} ({st})")
+            except Exception:
+                items.append(f"Tool: {label}")
+
+        items.extend([
             "View: Dashboard",
             "View: Tools & Integrations",
             "View: Jobs & Simulations",
             "View: Research Datasets",
             "View: Knowledge Center",
+            "View: Workflow Studio",
+            "Action: + New Visual Workflow",
             "Action: + New Engineering Workspace",
             "Action: Toggle Dark / Light Theme",
-        ]
+        ])
         self.search_completer = QCompleter(items, self)
         self.search_completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.search_completer.setFilterMode(Qt.MatchContains)
@@ -342,6 +361,8 @@ class StudioWindow(QMainWindow):
             self.navigation.setCurrentRow(13)  # Dataset Catalog
         elif "knowledge" in lower:
             self.navigation.setCurrentRow(10)  # Knowledge Center
+        elif "workflow" in lower:
+            self.navigation.setCurrentRow(14)  # Workflow Studio
         elif "dashboard" in lower:
             self.navigation.setCurrentRow(0)
         self.search_box.clear()
@@ -387,7 +408,7 @@ class StudioWindow(QMainWindow):
             self.btn_theme_toggle.setText("☀️ Light")
 
     def _handle_dashboard_navigate(self, target: int):
-        mapping = {1: 12, 2: 11, 3: 6, 4: 10, 5: 13}
+        mapping = {1: 12, 2: 11, 3: 6, 4: 10, 5: 13, 6: 14}
         dest = mapping.get(target, 0)
         self.navigation.setCurrentRow(dest)
 

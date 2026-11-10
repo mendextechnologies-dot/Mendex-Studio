@@ -212,29 +212,31 @@ class DeterministicPhysicsNode(BaseNode):
             val = rec.outputs.get("skin_depth_m", next(iter(rec.outputs.values())))
             unit = rec.output_units.get("skin_depth_m", "m")
         elif formula_id == "dowell_factor":
-            m = int(_get("layers_m", _get("param1", 2)))
+            num_layers = int(_get("num_layers", _get("param1", 2)))
             h_ratio = _get("h_over_delta", _get("param2", 1.0))
-            rec = calc_service.calculate_dowell_factor(layers_m=m, h_over_delta=h_ratio)
+            # layer_thickness_m = h_ratio * skin_depth
+            rec = calc_service.calculate_dowell_factor(layer_thickness_m=h_ratio * 0.0002, skin_depth_m=0.0002, num_layers=num_layers)
             val = rec.outputs.get("F_R", next(iter(rec.outputs.values())))
             unit = ""
         elif formula_id == "flyback_ccm":
             vin = _get("vin_min_v", _get("param1", 100.0))
-            dmax = _get("duty_max", _get("param2", 0.45))
-            pin = _get("p_in_w", _get("param3", 50.0))
+            vout = _get("vout_v", _get("param2", 24.0))
+            iout = _get("iout_a", _get("param3", 2.0))
             fsw = _get("fsw_hz", _get("param4", 100000.0))
-            rec = calc_service.calculate_flyback_ccm_inductance(vin_min_v=vin, duty_max=dmax, p_in_w=pin, fsw_hz=fsw)
+            rec = calc_service.calculate_flyback_sizing(vin_min_v=vin, vin_nom_v=vin*1.2, vout_v=vout, iout_a=iout, fsw_hz=fsw)
             val = rec.outputs.get("primary_inductance_h", next(iter(rec.outputs.values())))
             unit = "H"
         elif formula_id == "steinmetz":
             f = _get("frequency_hz", _get("param1", 100000.0))
             b = _get("b_peak_t", _get("param2", 0.1))
-            rec = calc_service.calculate_steinmetz_core_loss(frequency_hz=f, b_peak_t=b)
-            val = rec.outputs.get("core_loss_density_w_per_m3", next(iter(rec.outputs.values())))
-            unit = "W/m3"
+            vol = _get("core_volume_m3", _get("param3", 1e-5))
+            rec = calc_service.calculate_steinmetz_loss(frequency_hz=f, b_max_t=b, core_volume_m3=vol)
+            val = rec.outputs.get("total_core_loss_w", next(iter(rec.outputs.values())))
+            unit = "W"
         elif formula_id == "lc_resonance":
-            l_val = _get("l_henries", _get("param1", 10e-6))
-            c_val = _get("c_farads", _get("param2", 100e-9))
-            rec = calc_service.calculate_lc_resonance(l_henries=l_val, c_farads=c_val)
+            l_val = _get("inductance_h", _get("param1", 15e-6))
+            c_val = _get("capacitance_f", _get("param2", 100e-9))
+            rec = calc_service.calculate_lc_resonance(inductance_h=l_val, capacitance_f=c_val)
             val = rec.outputs.get("resonant_frequency_hz", next(iter(rec.outputs.values())))
             unit = "Hz"
         else:
