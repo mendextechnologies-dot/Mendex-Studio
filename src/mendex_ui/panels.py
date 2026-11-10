@@ -1,8 +1,6 @@
 """Desktop views consume core services; engineering policy stays in the core."""
 import json
 
-from PySide6.QtCore import QUrl
-from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout,
     QLabel, QLineEdit, QListWidget, QPushButton, QTextEdit,
@@ -34,6 +32,12 @@ class ToolPanel(QWidget):
         self.output = QTextEdit()
         self.output.setReadOnly(True)
         layout.addWidget(self.output)
+        diagnostics = QHBoxLayout()
+        for title, callback in [("Run workstation doctor", self.doctor), ("Export diagnostics", self.export_diagnostics)]:
+            button = QPushButton(title)
+            button.clicked.connect(lambda checked=False, callback=callback: guarded(callback))
+            diagnostics.addWidget(button)
+        layout.addLayout(diagnostics)
         self.tools.currentIndexChanged.connect(self.selected)
         self.selected()
 
@@ -41,6 +45,14 @@ class ToolPanel(QWidget):
         path, _ = QFileDialog.getOpenFileName(self, "Select native tool executable", "", "Executables (*.exe);;All files (*)")
         if path:
             self.path.setText(path)
+
+    def doctor(self):
+        diagnostic = self.service.diagnostics()
+        self.output.setPlainText(f"Workstation: {diagnostic['status']}\nFramework ready: {diagnostic['framework_ready']}\n\n" + json.dumps(diagnostic, indent=2))
+
+    def export_diagnostics(self):
+        destination = self.service.export_diagnostics()
+        self.output.setPlainText(f"Diagnostics exported locally:\n{destination}\n\nIncludes OS, dependency versions and executable paths; review before sharing.")
 
     def selected(self):
         self.path.setText(self.service.check_tool(self.tools.currentText()).configured_path or "")
@@ -114,7 +126,7 @@ class ValidationPanel(QWidget):
     def refresh(self):
         if self.revision:
             entries = self.service.validation_summary(self.revision.revision_id)
-            overview = "\n".join(f"{entry['record'].check.check_id}: {entry['effective_status'].upper()} · {entry['record'].check.evidence_kind}\nReviewer: {entry['record'].check.reviewer} · stale: {entry['stale']} · evidence intact: {entry['evidence_integrity']}\n{entry['record'].check.notes}\n" for entry in entries)
+            overview = "\n".join(f"{entry['record'].check.check_id}: {entry['effective_status'].upper()} · {entry['record'].check.evidence_kind}\nReviewer: {entry['record'].check.reviewer} · stale: {entry['stale']} · evidence: {'not supplied' if entry['record'].evidence_uri is None else ('intact' if entry['evidence_integrity'] else 'missing or altered')}\n{entry['record'].check.notes}\n" for entry in entries)
             self.output.setPlainText(overview + "\nRecord details\n\n" + json.dumps([{**entry, "record": entry["record"].model_dump(mode="json")} for entry in entries], indent=2) if entries else "NOT_EVALUATED · No validation entries recorded")
 
     def record(self):
@@ -166,8 +178,4 @@ class ReportsPanel(QWidget):
         index = self.list.currentRow()
         if index < 0:
             raise ValueError("Select a report first")
-        path = (self.service.root / self.reports[index].report_path).resolve()
-        if not path.is_relative_to(self.service.root) or not path.is_file():
-            raise ValueError("Report is unavailable or outside the data root")
-        if not QDesktopServices.openUrl(QUrl.fromLocalFile(str(path))):
-            raise ValueError("Could not open report with the default application")
+        self.service.open_report(self.reports[index].report_id)

@@ -1,6 +1,6 @@
 # Known limitations
 
-- Day 2 framework: discovery, manual validation and draft HTML/JSON reports work. VS Code launch, doctor/diagnostic export and clean-machine qualification remain Day 3 work.
+- Integrated foundation: discovery, manual validation, draft HTML/JSON reports, VS Code/native-file handoff and doctor/diagnostic export are implemented. Interactive handoff on a second machine remains unqualified.
 - Module workspaces are explicitly NOT IMPLEMENTED; no numeric engineering outputs exist.
 - Specification and manual-check editing use typed JSON; category-specific guided forms are future enhancements.
 - No approvals, manufacturing release, users/permissions or cloud sharing.
@@ -12,4 +12,5 @@
 - HTML/JSON reports are drafts. PDF/Word generation, embedded plots and report signing are not implemented.
 - Append-only storage is enforced through the service and SQLite validation triggers; a user with direct filesystem/database access can alter local data. Evidence changes are detected on recheck. Signed/tamper-proof storage is unavailable.
 - Plugin registration supports reviewed in-process Python adapters. Automatic loading of untrusted packages is unavailable. Simulation runs are contract-only with execution disabled.
-- No signed installer or release tag until the full Day 3 acceptance path passes.
+- Automated editor/native launch tests use mocks; an actual editor/CAD window is not launched during those tests. A returned process ID means launch requested, not application readiness or engineering execution.
+- Bootstrap and an independent wheel installation are tested on this workstation. Second-engineer/clean-machine qualification, signed installer and final v0.1.0 tag remain pending.

@@ -67,7 +67,10 @@ class StudioService:
             return [Product.model_validate_json(row[0]) for row in db.execute("SELECT payload FROM products ORDER BY code")]
 
     def _get(self, table, identifier, model):
-        identifier = str(UUID(str(identifier)))
+        try:
+            identifier = str(UUID(str(identifier)))
+        except (ValueError, TypeError) as exc:
+            raise StudioError("INVALID_INPUT", "Expected a valid product or revision UUID") from exc
         with self.connection() as db:
             row = db.execute(f"SELECT payload FROM {table} WHERE id=?", (identifier,)).fetchone()
         if row is None:
@@ -99,6 +102,56 @@ class StudioService:
 
     def create_workspace(self, revision_id):
         return self._workspace(self.get_revision(revision_id))
+
+    def open_in_vscode(self, revision_id):
+        from .launch import launch_vscode
+        revision = self.get_revision(revision_id)
+        folder = self.workspace_path(revision)
+        if not folder.is_dir():
+            raise StudioError("NOT_FOUND", "Workspace is missing; restore the project files before opening")
+        try:
+            return launch_vscode(folder)
+        except OSError as exc:
+            raise StudioError("LAUNCH_ERROR", str(exc)) from exc
+
+    def open_project_file(self, revision_id, relative_path="."):
+        from .launch import NATIVE_EXTENSIONS, open_native
+        folder = self.workspace_path(self.get_revision(revision_id))
+        relative = Path(relative_path)
+        path = (folder / relative).resolve()
+        if relative.is_absolute() or not path.is_relative_to(folder) or not path.exists():
+            raise StudioError("INVALID_INPUT", "Choose an existing file or folder inside this revision workspace")
+        if path.is_file() and path.suffix.lower() not in NATIVE_EXTENSIONS:
+            raise StudioError("INVALID_INPUT", "This file type cannot be launched from Studio; scripts and executables are excluded")
+        try:
+            open_native(path)
+        except OSError as exc:
+            raise StudioError("LAUNCH_ERROR", f"Could not open the file. Check the Windows file association: {exc}") from exc
+        return str(path)
+
+    def diagnostics(self):
+        from .diagnostics import diagnose
+        return diagnose(self)
+
+    def export_diagnostics(self):
+        destination = self.root / ".mendex" / "diagnostics" / f"{uuid4()}.json"
+        destination.parent.mkdir(exist_ok=True)
+        data = self.diagnostics()
+        with destination.open("x", encoding="utf-8") as handle:
+            json.dump(data, handle, indent=2)
+        return destination
+
+    def open_report(self, report_id):
+        from .launch import open_native
+        report = self._get("reports", report_id, Report)
+        path = (self.root / report.report_path).resolve()
+        if not path.is_relative_to(self.root) or not path.is_file() or path.suffix.lower() != ".html":
+            raise StudioError("INVALID_INPUT", "Report is missing or outside the data root")
+        try:
+            open_native(path)
+        except OSError as exc:
+            raise StudioError("LAUNCH_ERROR", f"Could not open report. Check the default HTML application: {exc}") from exc
+        return str(path)
 
     def create_product(self, code, name, category: Category, owner, description=""):
         revision_id = uuid4()

@@ -5,3 +5,5 @@ __pycache__/
 .mendex/
 products/
 *.sqlite3*
+build/
+dist/

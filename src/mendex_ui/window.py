@@ -1,10 +1,11 @@
 import json
+from pathlib import Path
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFormLayout, QHBoxLayout,
     QInputDialog, QLabel, QLineEdit, QListWidget, QMainWindow, QMessageBox,
-    QPushButton, QSplitter, QStackedWidget, QTextEdit, QVBoxLayout, QWidget,
+    QPushButton, QSplitter, QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog,
 )
 
 from mendex_core.models import Category, Specification
@@ -93,6 +94,12 @@ class StudioWindow(QMainWindow):
         revision = QPushButton("Create revision from active baseline")
         revision.clicked.connect(self.new_revision)
         form.addWidget(revision)
+        handoff = QHBoxLayout()
+        for title, callback in [("Open in VS Code", self.open_vscode), ("Open workspace", self.open_workspace), ("Open project file", self.open_file)]:
+            button = QPushButton(title)
+            button.clicked.connect(lambda checked=False, callback=callback: self.guarded(callback))
+            handoff.addWidget(button)
+        form.addLayout(handoff)
         split.addWidget(editor)
         split.setStretchFactor(1, 3)
         pane.addWidget(split)
@@ -131,7 +138,7 @@ class StudioWindow(QMainWindow):
         self.products.clear()
         for product in self.items:
             self.products.addItem(f"{product.code}\n{product.name} · {product.owner}")
-        self.dashboard.setText(f"Mendex Engineering Studio\n\nv0.1 · Day 2 framework\n\n{len(self.items)} local products\n\nNext action: select a product, review specifications, discover tools, and record manual evidence.\n\nEngineering modules: framework only\nValidation: manual records available per revision\nTool qualification: pending · discovery available\n\nNo automated engineering results or approvals are generated.")
+        self.dashboard.setText(f"Mendex Engineering Studio\n\nv0.1 · Integrated foundation\n\n{len(self.items)} local products\n\nNext action: select a product, review specifications, open its workspace, discover tools, and record manual evidence.\n\nEngineering modules: framework only\nValidation: manual records available per revision\nTool qualification: pending · discovery and doctor available\n\nNo automated engineering results or approvals are generated.")
         index = next((i for i, p in enumerate(self.items) if p.product_id == selected), 0)
         if self.items:
             self.products.setCurrentRow(index)
@@ -201,3 +208,25 @@ class StudioWindow(QMainWindow):
                 self.service.create_revision(self.product.product_id, label)
                 self.refresh()
             self.guarded(action)
+
+    def require_revision(self):
+        if not self.revision:
+            raise ValueError("Select a product revision first")
+        return self.revision
+
+    def open_vscode(self):
+        result = self.service.open_in_vscode(self.require_revision().revision_id)
+        self.statusBar().showMessage(f"VS Code launch requested: {result['workspace']}")
+
+    def open_workspace(self):
+        self.service.open_project_file(self.require_revision().revision_id)
+
+    def open_file(self):
+        revision = self.require_revision()
+        workspace = self.service.workspace_path(revision)
+        filename, _ = QFileDialog.getOpenFileName(self, "Open a file within this revision", str(workspace))
+        if filename:
+            path = Path(filename).resolve()
+            if not path.is_relative_to(workspace):
+                raise ValueError("Select a file inside this revision workspace")
+            self.service.open_project_file(revision.revision_id, str(path.relative_to(workspace)))

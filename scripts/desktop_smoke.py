@@ -29,9 +29,13 @@ with TemporaryDirectory() as root:
     for index, name in [(1, "products"), (2, "transformer"), (7, "validation"), (8, "reports"), (9, "tools"), (10, "knowledge")]:
         window.navigation.setCurrentRow(index)
         app.processEvents()
-        destination = Path(f".mendex/qa/day2-{name}.png")
+        destination = Path(f".mendex/qa/day3-{name}.png")
         destination.parent.mkdir(parents=True, exist_ok=True)
         if not window.grab().save(str(destination)):
             raise RuntimeError("Screenshot failed")
+    window.navigation.setCurrentRow(9)
+    window.tool_panel.doctor()
+    app.processEvents()
+    window.grab().save(".mendex/qa/day3-doctor.png")
     window.close()
-    print("Desktop smoke passed: six screens captured under .mendex/qa")
+    print("Desktop smoke passed: seven screens captured under .mendex/qa")

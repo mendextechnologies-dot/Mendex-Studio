@@ -23,9 +23,12 @@ Scope: final foundation addendum of supplied guide; user owns approval decisions
 
 ## Day 3 — integration
 
-- [ ] VS Code/project-file launching with path validation.
-- [ ] CLI doctor, diagnostic export and complete UI/core integration.
-- [ ] Product → specification → revision → tool check → evidence → draft report smoke test.
-- [ ] Reproduce installation, document rollback and remaining issues.
-- [ ] Capture desktop demo; qualify on second machine when available.
+- [x] VS Code/project-file launching with path validation (automated launch mocks).
+- [x] CLI doctor, diagnostic export and UI/core integration.
+- [x] Product → specification → revision → tool check → evidence → draft report automated smoke test, including deliberate FAIL (21 tests).
+- [x] Reproduce wheel installation in a fresh local environment; document rollback and remaining issues.
+- [x] Capture seven desktop screens and run installed-package desktop smoke test.
+- [ ] Complete interactive VS Code/native-file handoff and second-engineer clean-machine qualification using docs/manual-acceptance.md.
 - [ ] Tag v0.1.0 only after release gates pass; manual packaging optional.
+
+Source repository: https://github.com/mendextechnologies-dot/Mendex-Studio · branch `main`. The integrated build remains `0.1.0.dev3`; native simulation qualification and manufacturing release are not claimed.

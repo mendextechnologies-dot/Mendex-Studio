@@ -27,3 +27,15 @@ Version 0.1.0.dev2. SQLite schema v2 adds persisted executable settings, validat
 Editable installation refreshed successfully to 0.1.0.dev2 using the documented isolated-build install. A trial with `--no-build-isolation` failed because setuptools is not installed in the runtime venv; the standard documented command succeeded. Build isolation remains required for this setup.
 
 Remaining release gates: Day 3 integration and doctor/diagnostic export, clean-machine/second-engineer qualification, native benchmark verification, optional manual packaging. No release tag or manufacturing approval.
+
+## Day 3 integration — 10 November 2026 (Asia/Calcutta)
+
+Version 0.1.0.dev3. `python -m pytest -q`: **21 passed**. The integrated path creates a product, saves SI specifications, creates R002, requests a shell-free VS Code launch through a mock, discovers tools, attaches a clearly labeled software fixture with deliberate FAIL, exports a draft report, compares CLI status and reopens persisted data. No real engineering measurement or simulation is invented. Additional cases verify command paths containing spaces, code.cmd resolving to Code.exe, missing editor, out-of-workspace files, rejected scripts, native association errors, report opening and JSON CLI errors.
+
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify_install.ps1`: passed. Pinned dependencies installed into a new virtual environment, the project built and installed as a non-editable wheel, tests passed, Doctor exported diagnostics and the installed desktop launched/exited via smoke mode. After final launch-service changes the wheel was refreshed in that independent environment and all **21 tests** plus installed desktop launch passed again. This is same-workstation installation verification, not an independent machine or engineer.
+
+Doctor reports framework_ready=true and workstation PARTIAL. SQLite quick_check is ok, schema 2 has no foreign-key errors; Python/Qt, Git and VS Code are detected. LTspice remains FOUND_UNVERIFIED; FEMM and KiCad remain undetected in searched locations. Native tools are never executed by Doctor. Runtime OS is reported as Windows-11-10.0.26300-SP0; this differs from the initial Windows marketing-name query retained in the Day 1 record.
+
+Desktop screenshots captured for Products, Transformer, Validation, Reports, Tool Manager, Knowledge Center and Doctor. Verified no missing glyphs or clipped primary controls. Repository metadata and setup/rollback/manual acceptance instructions updated. Source remote configured to the user-provided empty Mendex-Studio GitHub repository; integrated history stays on main.
+
+Pending: actual interactive editor/CAD handoff, second-engineer qualification, native benchmarks, final v0.1.0 tag and optional signed installer. No CI/CD, deployment or manufacturing approval created.
