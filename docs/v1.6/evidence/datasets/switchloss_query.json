@@ -1,0 +1,96 @@
+{
+  "loaded_records": 9,
+  "devices_gte_600v": [
+    {
+      "part_number": "C3M0065090D",
+      "manufacturer": "Wolfspeed",
+      "device_type": "SiC",
+      "v_ds_rated_v": 900.0,
+      "i_d_rated_a": 36.0,
+      "r_ds_on_mohm": 65.0,
+      "e_on_uj": 85.0,
+      "e_off_uj": 22.0,
+      "v_test_v": 600.0,
+      "i_test_a": 20.0,
+      "t_j_c": 25.0
+    },
+    {
+      "part_number": "C3M0065090D_HOT",
+      "manufacturer": "Wolfspeed",
+      "device_type": "SiC",
+      "v_ds_rated_v": 900.0,
+      "i_d_rated_a": 24.0,
+      "r_ds_on_mohm": 90.0,
+      "e_on_uj": 95.0,
+      "e_off_uj": 26.0,
+      "v_test_v": 600.0,
+      "i_test_a": 20.0,
+      "t_j_c": 125.0
+    },
+    {
+      "part_number": "NVHL080N120SC1",
+      "manufacturer": "onsemi",
+      "device_type": "SiC",
+      "v_ds_rated_v": 1200.0,
+      "i_d_rated_a": 28.0,
+      "r_ds_on_mohm": 80.0,
+      "e_on_uj": 120.0,
+      "e_off_uj": 35.0,
+      "v_test_v": 800.0,
+      "i_test_a": 20.0,
+      "t_j_c": 25.0
+    },
+    {
+      "part_number": "NVHL020N120SC1",
+      "manufacturer": "onsemi",
+      "device_type": "SiC",
+      "v_ds_rated_v": 1200.0,
+      "i_d_rated_a": 103.0,
+      "r_ds_on_mohm": 20.0,
+      "e_on_uj": 310.0,
+      "e_off_uj": 85.0,
+      "v_test_v": 800.0,
+      "i_test_a": 80.0,
+      "t_j_c": 25.0
+    },
+    {
+      "part_number": "IMW120R045M1",
+      "manufacturer": "Infineon",
+      "device_type": "SiC",
+      "v_ds_rated_v": 1200.0,
+      "i_d_rated_a": 52.0,
+      "r_ds_on_mohm": 45.0,
+      "e_on_uj": 140.0,
+      "e_off_uj": 42.0,
+      "v_test_v": 800.0,
+      "i_test_a": 30.0,
+      "t_j_c": 25.0
+    },
+    {
+      "part_number": "GS66508T",
+      "manufacturer": "GaN Systems",
+      "device_type": "GaN",
+      "v_ds_rated_v": 650.0,
+      "i_d_rated_a": 30.0,
+      "r_ds_on_mohm": 50.0,
+      "e_on_uj": 45.0,
+      "e_off_uj": 12.0,
+      "v_test_v": 400.0,
+      "i_test_a": 15.0,
+      "t_j_c": 25.0
+    },
+    {
+      "part_number": "STW48N60M2",
+      "manufacturer": "STMicroelectronics",
+      "device_type": "MOSFET",
+      "v_ds_rated_v": 650.0,
+      "i_d_rated_a": 42.0,
+      "r_ds_on_mohm": 70.0,
+      "e_on_uj": 72.0,
+      "e_off_uj": 28.0,
+      "v_test_v": 400.0,
+      "i_test_a": 20.0,
+      "t_j_c": 25.0
+    }
+  ]
+}

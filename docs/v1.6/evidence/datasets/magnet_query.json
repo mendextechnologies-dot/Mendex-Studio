@@ -1,0 +1,37 @@
+{
+  "loaded_records": 7,
+  "n87_query": [
+    {
+      "material": "N87",
+      "temperature_c": 25.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.05,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 11500.0
+    },
+    {
+      "material": "N87",
+      "temperature_c": 25.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 58000.0
+    },
+    {
+      "material": "N87",
+      "temperature_c": 100.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 39500.0
+    },
+    {
+      "material": "N87",
+      "temperature_c": 100.0,
+      "frequency_hz": 200000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 110000.0
+    }
+  ]
+}
