@@ -1,0 +1,101 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "tool_id": {
+      "title": "Tool Id",
+      "type": "string"
+    },
+    "display_name": {
+      "title": "Display Name",
+      "type": "string"
+    },
+    "configured_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Configured Path"
+    },
+    "executable": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Executable"
+    },
+    "detected": {
+      "default": false,
+      "title": "Detected",
+      "type": "boolean"
+    },
+    "installed_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Installed Version"
+    },
+    "compatibility": {
+      "default": "unknown",
+      "title": "Compatibility",
+      "type": "string"
+    },
+    "state": {
+      "default": "NOT_INSTALLED",
+      "title": "State",
+      "type": "string"
+    },
+    "checked_at": {
+      "title": "Checked At",
+      "type": "string"
+    },
+    "diagnostic": {
+      "title": "Diagnostic",
+      "type": "string"
+    },
+    "official_url": {
+      "title": "Official Url",
+      "type": "string"
+    },
+    "adapter_version": {
+      "default": "0.1.0",
+      "title": "Adapter Version",
+      "type": "string"
+    },
+    "capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "self_test_status": {
+      "default": "NOT_EVALUATED",
+      "title": "Self Test Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "tool_id",
+    "display_name",
+    "diagnostic",
+    "official_url"
+  ],
+  "title": "ToolStatus",
+  "type": "object"
+}

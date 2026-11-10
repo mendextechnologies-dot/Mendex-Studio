@@ -1,0 +1,51 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "report_id": {
+      "format": "uuid",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "revision_id": {
+      "format": "uuid",
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "input_hash": {
+      "title": "Input Hash",
+      "type": "string"
+    },
+    "report_path": {
+      "title": "Report Path",
+      "type": "string"
+    },
+    "included_check_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Included Check Ids",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "revision_id",
+    "input_hash",
+    "report_path",
+    "included_check_ids",
+    "warnings"
+  ],
+  "title": "Report",
+  "type": "object"
+}

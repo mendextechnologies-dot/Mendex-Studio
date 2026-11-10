@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mendex-studio"
-version = "0.1.0.dev1"
+version = "0.1.0.dev2"
 description = "Local engineering project and evidence framework"
 requires-python = ">=3.13,<3.14"
 dependencies = ["pydantic>=2.12,<3", "PySide6>=6.10,<7"]

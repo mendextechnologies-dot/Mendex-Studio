@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QFont, QFontDatabase
 
 from mendex_core.service import StudioService
+from mendex_core.evidence import ManualCheck
 from mendex_ui.window import StudioWindow
 
 app = QApplication([])
@@ -18,14 +19,19 @@ if font_path.exists():
 app.setFont(QFont("Segoe UI", 10))
 with TemporaryDirectory() as root:
     service = StudioService(Path(root))
-    service.create_product("DEMO-100", "Illustrative transformer workspace", "transformer", "Demo engineer")
+    product = service.create_product("DEMO-100", "Illustrative transformer workspace", "transformer", "Demo engineer")
+    service.record_validation(product.active_revision_id, ManualCheck(check_id="DEMO-REQ-001", reviewer="Demo engineer", notes="Illustrative workspace: no evidence available; not evaluated"))
+    service.generate_report(product.active_revision_id)
     window = StudioWindow(service)
     window.navigation.setCurrentRow(1)
     window.show()
     app.processEvents()
-    destination = Path(".mendex/qa/day1-desktop.png")
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    if not window.grab().save(str(destination)):
-        raise RuntimeError("Screenshot failed")
+    for index, name in [(1, "products"), (2, "transformer"), (7, "validation"), (8, "reports"), (9, "tools"), (10, "knowledge")]:
+        window.navigation.setCurrentRow(index)
+        app.processEvents()
+        destination = Path(f".mendex/qa/day2-{name}.png")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        if not window.grab().save(str(destination)):
+            raise RuntimeError("Screenshot failed")
     window.close()
-    print(destination.resolve())
+    print("Desktop smoke passed: six screens captured under .mendex/qa")

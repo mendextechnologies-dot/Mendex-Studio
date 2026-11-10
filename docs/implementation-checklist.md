@@ -14,12 +14,12 @@ Scope: final foundation addendum of supplied guide; user owns approval decisions
 
 ## Day 2 — extensibility
 
-- [ ] Adapter protocol, capability registry and native executable detection/configuration.
-- [ ] Simulation-run contracts, no automatic execution claims.
-- [ ] Append-only manual validation entries with provenance and evidence hashes.
-- [ ] Basic draft report service and module-specific workspace views.
-- [ ] Tool Manager, validation/report views and revisioned knowledge content.
-- [ ] Verify missing tools and no-PASS-without-evidence cases.
+- [x] Adapter protocol, discovery capability registry and native executable detection/configuration.
+- [x] Simulation-run contracts, no automatic execution claims.
+- [x] Append-only manual validation entries with provenance and evidence hashes.
+- [x] Basic draft HTML/JSON report service and module-specific workspace views.
+- [x] Tool Manager, validation/report views and revisioned knowledge content (0.2).
+- [x] Verify missing tools, no-PASS-without-evidence, stale evidence and deliberate failure cases (17 tests).
 
 ## Day 3 — integration
 

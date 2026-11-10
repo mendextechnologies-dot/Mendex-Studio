@@ -8,6 +8,8 @@ from PySide6.QtWidgets import (
 )
 
 from mendex_core.models import Category, Specification
+from mendex_core.knowledge import GUIDELINES, GUIDELINES_REVISION
+from .panels import ToolPanel, ValidationPanel, ReportsPanel
 
 
 class ProductDialog(QDialog):
@@ -95,14 +97,21 @@ class StudioWindow(QMainWindow):
         split.setStretchFactor(1, 3)
         pane.addWidget(split)
         self.pages.addWidget(products)
-        for title in ("Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace", "Simulations", "Validation", "Reports", "Tool Manager"):
+        self.module_pages = []
+        for title in ("Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace", "Simulations"):
             label = QLabel(f"{title}\n\nImplementation: NOT IMPLEMENTED\nProduct evaluation: NOT_EVALUATED\n\nFoundation workspace only. No calculation, tool execution or result is available.")
             label.setMargin(30)
             label.setAlignment(Qt.AlignTop)
             self.pages.addWidget(label)
+            self.module_pages.append(label)
+        self.validation_panel = ValidationPanel(service, self.guarded)
+        self.reports_panel = ReportsPanel(service, self.guarded)
+        self.tool_panel = ToolPanel(service, self.guarded)
+        for panel in (self.validation_panel, self.reports_panel, self.tool_panel):
+            self.pages.addWidget(panel)
         knowledge = QTextEdit()
         knowledge.setReadOnly(True)
-        knowledge.setPlainText("Engineering guidelines · revision 0.1\n\nUse SI units and record sources and assumptions.\nMissing evidence is NOT_EVALUATED.\nSimulation does not establish compliance or physical safety.\nTransformer design requires material data, winding assumptions, duty limits and standards review.\nHV hardware requires qualified review and a separately authorized physical test plan.\nManufacturing approval is unavailable in v0.1.")
+        knowledge.setPlainText(f"Engineering guidelines · revision {GUIDELINES_REVISION}\n\n" + "\n\n".join(f"{title}\n{body}" for title, body in GUIDELINES))
         self.pages.addWidget(knowledge)
         nav.currentRowChanged.connect(self.pages.setCurrentIndex)
         nav.setCurrentRow(0)
@@ -122,7 +131,7 @@ class StudioWindow(QMainWindow):
         self.products.clear()
         for product in self.items:
             self.products.addItem(f"{product.code}\n{product.name} · {product.owner}")
-        self.dashboard.setText(f"Mendex Engineering Studio\n\nv0.1 · Day 1 foundation\n\n{len(self.items)} local products\n\nNext action: create a product, capture specifications, then save a revision.\n\nEngineering modules: framework only\nValidation: NOT_EVALUATED\nTool qualification: pending\n\nNo engineering results or approvals have been generated.")
+        self.dashboard.setText(f"Mendex Engineering Studio\n\nv0.1 · Day 2 framework\n\n{len(self.items)} local products\n\nNext action: select a product, review specifications, discover tools, and record manual evidence.\n\nEngineering modules: framework only\nValidation: manual records available per revision\nTool qualification: pending · discovery available\n\nNo automated engineering results or approvals are generated.")
         index = next((i for i, p in enumerate(self.items) if p.product_id == selected), 0)
         if self.items:
             self.products.setCurrentRow(index)
@@ -149,9 +158,21 @@ class StudioWindow(QMainWindow):
             return
         self.revision = self.service.get_revision(identifier)
         path = self.service.workspace_path(self.revision)
-        self.detail.setText(f"{self.product.code} · {self.revision.revision_label} · {self.revision.lifecycle_status}\nWorkspace: {path}\nModules: NOT IMPLEMENTED · Validation: NOT_EVALUATED · Last run: none\nNext action: complete specifications; engineering review remains required.")
+        entries = self.service.validation_summary(self.revision.revision_id)
+        validation = f"{len(entries)} manual entries; no product approval" if entries else "NOT_EVALUATED"
+        numeric_fields = ("vin_min_v", "vin_nom_v", "vin_max_v", "vout_v", "iout_a", "switching_frequency_hz", "ambient_temperature_k")
+        supplied = sum(getattr(self.revision.specification, name) is not None for name in numeric_fields)
+        self.detail.setText(f"{self.product.code} · {self.revision.revision_label} · {self.revision.lifecycle_status}\nWorkspace: {path}\nSpecification: {supplied}/7 common numeric fields supplied · not an approval\nModules: NOT IMPLEMENTED · Validation: {validation} · Last run: none\nNext action: review specifications and manual evidence; engineering review remains required.")
         self.specification.setPlainText(json.dumps(self.revision.specification.model_dump(), indent=2))
         self.specification.setReadOnly(self.revision.lifecycle_status != "draft")
+        if hasattr(self, "validation_panel"):
+            self.validation_panel.set_revision(self.revision)
+            self.reports_panel.set_revision(self.revision)
+            locations = ["magnetics", "circuit", "circuit", "pcb", "simulations"]
+            requirements = ["Core geometry and material sources, winding construction, Bmax, duty limits and insulation requirements.", "Topology, input/output range, switching frequency, control mode, ripple and efficiency targets.", "MOSFET/IGBT/BJT datasheet, voltage/current/SOA ratings, gate drive and thermal assumptions.", "Native KiCad files, ERC/DRC evidence, clearance assumptions and qualified HV isolation review.", "Verified tool version, model inputs, solver logs, raw outputs and independently checked reference case."]
+            for label, folder, requirement in zip(self.module_pages, locations, requirements):
+                label.setWordWrap(True)
+                label.setText(f"{folder.upper()} workspace · {self.product.code} · {self.revision.revision_label}\n\nPath: {path / folder}\n\nEngineering execution: NOT IMPLEMENTED\nProduct evaluation: NOT_EVALUATED\n\nRequired inputs: {requirement}\n\nUse native files and record available evidence in Validation. No solver or calculation is executed.")
 
     def create_product(self):
         dialog = ProductDialog(self)

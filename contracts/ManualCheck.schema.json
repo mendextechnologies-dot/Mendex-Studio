@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "ValidationStatus": {
+      "enum": [
+        "pass",
+        "fail",
+        "not_evaluated",
+        "physical_verification_required"
+      ],
+      "title": "ValidationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "check_id": {
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Check Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ValidationStatus",
+      "default": "not_evaluated"
+    },
+    "rule_version": {
+      "default": "manual-1.0",
+      "minLength": 1,
+      "title": "Rule Version",
+      "type": "string"
+    },
+    "reviewer": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+    },
+    "notes": {
+      "minLength": 1,
+      "title": "Notes",
+      "type": "string"
+    },
+    "evidence_kind": {
+      "default": "MANUAL",
+      "pattern": "^(MANUAL|CALCULATED|SIMULATED|MEASURED)$",
+      "title": "Evidence Kind",
+      "type": "string"
+    },
+    "measured_value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Measured Value"
+    },
+    "unit": {
+      "default": "",
+      "title": "Unit",
+      "type": "string"
+    },
+    "minimum": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Minimum"
+    },
+    "maximum": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Maximum"
+    }
+  },
+  "required": [
+    "check_id",
+    "reviewer",
+    "notes"
+  ],
+  "title": "ManualCheck",
+  "type": "object"
+}
