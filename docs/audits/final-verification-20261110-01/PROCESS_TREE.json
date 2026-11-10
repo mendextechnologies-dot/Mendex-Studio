@@ -1,0 +1,8 @@
+{
+  "status": "TIMED_OUT",
+  "child_pid": 36056,
+  "child_still_running": false,
+  "stdout": "36056\r\n",
+  "stderr": "",
+  "scope": "Benign audit-owned parent/child only"
+}
