@@ -282,3 +282,14 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Document proposed resistive operating points; lifecycle regression tests: 6 passed. No product simulation or approval performed by this work.
 - [ ] Investigate concurrent readiness records: assessment now returns ready, but PCB approval cites 50 x 32 mm, conflicting with compact envelope; independent readiness NOT_EVALUATED. Existing records preserved.
 - [ ] Resolve dynamic load/cable capacitance, output reference, insulation applicability and magnetic inputs.
+
+## SV-1000 compact feasibility audit ? 11 November 2026
+
+- [x] Complete read-only source/CAD/validation audit through shared core service; preserve product files and historic approvals/evidence.
+- [x] Reproduce empty schematic/PCB and ideal-output-source findings; native STEP read confirms 22 x 22 x 16 mm existing bobbin.
+- [x] Verify all five effective validation records NOT_EVALUATED despite lifecycle ready badge; document unsupported scripted approvals without altering them.
+- [x] Prepare dimensioned 42 x 25 x 1 mm PCB concept, explicit 9 mm height budget, sourced shortlist and insulation/space limitations. SVG rendered and visually inspected.
+- [x] Save reproducible audit script, source hashes and matching product-file hashes in reports/sv1000-compact-feasibility-20261111-verified/; report: docs/audits/SV1000_COMPACT_FEASIBILITY_20261111.md.
+- [x] Run relevant core + UI lifecycle tests: 7 passed in 2.75 s; check report links, arithmetic, source preservation and render.
+- [ ] Complete dimensioned insulated winding construction, exact magnetic/component selection and full circuit model before new product simulation.
+- [ ] Correct lifecycle evidence/approval binding in a reviewed software change; current ready badge is not accepted as independent compact prototype verification.

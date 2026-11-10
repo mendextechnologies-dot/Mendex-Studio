@@ -177,14 +177,43 @@ QLabel.badge_ready {
 QScrollBar:vertical {
     border: none;
     background: #11111b;
-    width: 8px;
-    border-radius: 4px;
+    width: 10px;
+    border-radius: 5px;
 }
 
 QScrollBar::handle:vertical {
     background: #45475a;
-    border-radius: 4px;
-    min-height: 20px;
+    border-radius: 5px;
+    min-height: 25px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #585b70;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background: #11111b;
+    height: 10px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #45475a;
+    border-radius: 5px;
+    min-width: 25px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #585b70;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal,
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    border: none;
+    background: none;
+    width: 0px;
+    height: 0px;
 }
 """
 

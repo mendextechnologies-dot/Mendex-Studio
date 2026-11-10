@@ -69,6 +69,7 @@ class StageCardWidget(QFrame):
         self.init_ui()
 
     def init_ui(self):
+        self.setMinimumWidth(180)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 8, 10, 8)
         layout.setSpacing(4)
@@ -166,6 +167,7 @@ class ProductEngineeringOverviewPanel(QWidget):
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         self.content_widget = QWidget()
+        self.content_widget.setMinimumWidth(1220)
         main_layout = QVBoxLayout(self.content_widget)
         main_layout.setContentsMargins(14, 14, 14, 14)
         main_layout.setSpacing(12)
@@ -285,9 +287,12 @@ class ProductEngineeringOverviewPanel(QWidget):
         self.cards_scroll = QScrollArea()
         self.cards_scroll.setWidgetResizable(True)
         self.cards_scroll.setFixedHeight(235)
+        self.cards_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.cards_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.cards_scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
 
         cards_container = QWidget()
+        cards_container.setMinimumWidth(1180)
         self.cards_grid = QGridLayout(cards_container)
         self.cards_grid.setContentsMargins(0, 0, 0, 0)
         self.cards_grid.setSpacing(8)
