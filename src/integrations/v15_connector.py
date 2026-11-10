@@ -222,13 +222,11 @@ class LTspiceV15Connector:
         outputs: list[str] = []
         evidence_paths: list[str] = [str(netlist_file.relative_to(workdir)).replace("\\", "/")]
 
-        raw_file = workdir / f"{netlist_file.stem}.raw"
-        lt_log_file = workdir / f"{netlist_file.stem}.log"
-
-        if raw_file.exists():
-            outputs.append(str(raw_file.relative_to(workdir)).replace("\\", "/"))
-        if lt_log_file.exists():
-            outputs.append(str(lt_log_file.relative_to(workdir)).replace("\\", "/"))
+        for ext_pattern in ("*.raw", "*.log"):
+            for found in sorted(workdir.rglob(ext_pattern)):
+                rel = str(found.relative_to(workdir)).replace("\\", "/")
+                if rel not in outputs and Path(rel).name not in ("job.log", f"{netlist_file.stem}_runner.log"):
+                    outputs.append(rel)
 
         end_time = datetime.now(timezone.utc)
         status = "SUCCEEDED" if exec_out.exit_code == 0 else "FAILED"
