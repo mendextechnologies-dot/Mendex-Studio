@@ -39,7 +39,7 @@ def test_real_tools_detected_truthfully():
 
 def test_missing_tools_never_false_ready():
     registry = ToolRegistry()
-    missing_ids = ["kicad", "openmodelica"]
+    missing_ids = ["openmodelica"]
 
     for tool_id in missing_ids:
         desc = registry.get(tool_id).descriptor
@@ -50,7 +50,7 @@ def test_missing_tools_never_false_ready():
             assert "not installed" in desc.diagnostic.lower()
 
     # FreeCAD and Jupyter are now installed and verified
-    for tool_id in ["freecad", "jupyter", "femm", "qucs-s"]:
+    for tool_id in ["freecad", "jupyter", "femm", "qucs-s", "kicad"]:
         desc = registry.get(tool_id).descriptor
         assert desc.state in (ToolState.READY, ToolState.DETECTED)
         assert desc.executable_path is not None

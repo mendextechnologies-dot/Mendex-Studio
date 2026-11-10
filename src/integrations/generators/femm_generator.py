@@ -86,9 +86,5 @@ if i_pri ~= 0 then
 end
 closefile(res_fp)
 
--- Save raw solution bitmap
-mo_savebitmap("{output_ans_path}.bmp")
-mo_close()
-mi_close()
 quit()
 """

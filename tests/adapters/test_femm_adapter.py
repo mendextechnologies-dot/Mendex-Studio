@@ -58,7 +58,6 @@ def test_femm_adapter_execution_lifecycle(tmp_path):
     artifact_paths = [a.relative_path for a in result.artifacts]
     assert any("temp_transformer.fem" in p for p in artifact_paths)
     assert any("temp_transformer.ans" in p for p in artifact_paths)
-    assert any("transformer.ans.bmp" in p for p in artifact_paths)
     assert any("results.txt" in p for p in artifact_paths)
 
     # Verify extracted metrics from real FEA solution

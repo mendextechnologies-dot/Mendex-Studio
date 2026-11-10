@@ -41,7 +41,7 @@ The following table evaluates every mandatory and candidate open-source tool aga
 | **Princeton MagNet Hub** | Open Reference Data | **YES** (Reference Hub) | **YES** | Metadata Registry | **YES** (Materials taxonomy verified) | **FULLY WORKING** | None. Taxonomic reference hub indexed. |
 | **PySide6 (Qt)** | LGPL v3 / Commercial | **YES** (`v6.12.0`) | **YES** | `src/mendex_ui/` | **YES** (14 desktop windows, calculation workbenches, visual smoke passing) | **FULLY WORKING** | None. Desktop UI shell operational. |
 | **Pydantic** | MIT License (Open Source) | **YES** (`v2.14.3`) | **YES** | `src/mendex_core/models.py` | **YES** (Contract validation, SI units enforcement, immutability) | **FULLY WORKING** | None. Schema engine operational. |
-| **KiCad** | GPL v3+ (Open Source) | **NO** (Not on host) | **YES** | `kicad.py` / `kicad_parser.py` | **BLOCKED** | **NOT_INSTALLED** | Binary missing (`kicad-cli.exe`). Install KiCad 8.x for DRC/ERC execution. |
+| **KiCad** | GPL v3+ (Open Source) | **YES** (`10.0.7`) | **YES** | `src/integrations/adapters/kicad.py` | **YES** (`kicad-cli.exe` verified at `C:\Program Files\KiCad\10.0\bin\kicad-cli.exe`) | **FULLY WORKING** | Resolved (`GAP-OSS-01`). Verified execution and JSON DRC/ERC parser in `test_kicad_adapter.py`. |
 | **FEMM** | Aladdin Free Public License | **YES** (`C:\femm42\bin\femm.exe`) | **YES** | `femm.py` / `femm_generator.py` / `femm_parser.py` | **YES** (Real headless Lua 2D FEA transformer simulation, inductance & flux calculated) | **FULLY WORKING** | Resolved (GAP-OSS-02). Headless execution and metrics parsing verified in `tests/adapters/test_femm_adapter.py`. |
 | **Qucs-S** | GPL v2+ (Open Source) | **YES** (`26.1.1`) | **YES** | `qucs_s.py` | **YES** (Detected at `C:\Users\Sagar\AppData\Local\Programs\qucs-s\bin\qucs-s.exe`) | **FULLY WORKING** | Resolved (`GAP-OSS-05`). Installed portable release with bundled ngspice backend. |
 | **OpenModelica** | OSMC-PL (Open Source) | **NO** (Not on host) | **YES** | `openmodelica.py` / `modelica_generator.py` | **BLOCKED** | **NOT_INSTALLED** | Binary missing (`omc.exe`). Modelica `.mos` generator ready once compiler is installed. |
@@ -128,7 +128,7 @@ pie title Free & Open-Source Integration Status (23 Evaluated Tools & Libraries)
 
 | Gap ID | Priority | Tool / Framework | Description of Missing Work | Recommended Owner |
 | :--- | :--- | :--- | :--- | :--- |
-| **GAP-OSS-01** | **P1** | **KiCad EDA** | Install KiCad 8.x on host; verify `kicad-cli.exe pcb drc` and ERC execution through adapter. | **Agent 2 (Antigravity)** |
+| **GAP-OSS-01** | **P1** | **KiCad EDA** | **RESOLVED**: Installed KiCad 10.0.7 at `C:\Program Files\KiCad\10.0\bin\kicad-cli.exe`; implemented adapter execution and verified ERC/DRC in `test_kicad_adapter.py`. | **Agent 2 (Antigravity)** |
 | **GAP-OSS-02** | **P1** | **FEMM 4.2** | **RESOLVED**: Installed FEMM 4.2 at `C:\femm42\bin\femm.exe`; implemented headless Lua execution in `femm.py`, metrics parser `femm_parser.py`, and verified in `test_femm_adapter.py`. | **Agent 2 (Antigravity)** |
 | **GAP-OSS-03** | **P2** | **FreeCAD UI Panel** | Connect the verified headless STEP export engine directly into the PySide6 UI bobbin workbench. | **Agent 1 (Codex)** |
 | **GAP-OSS-04** | **P2** | **NumPy & SciPy** | Add `numpy` and `scipy` to `requirements-lock.txt` for vectorized waveform parsing and FFT analysis. | **Agent 1 (Codex)** |
