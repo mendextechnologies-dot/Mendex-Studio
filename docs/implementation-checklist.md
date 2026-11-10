@@ -275,3 +275,10 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Record elementary power, load, filter drop, divider, volume and illustrative stored-energy budgets with assumptions; independently check arithmetic.
 - [x] Identify LT3751 auxiliary-supply constraint and exclude 0.5 W proportional Q-series as a direct 1 W precision match.
 - [ ] Resolve load/insulation specification and exact magnetic construction before full-product model execution. Missing checks remain NOT_EVALUATED.
+
+## SV-1000 provisional load ? 11 November 2026
+
+- [x] Record owner-authorized generic instrumentation load assumption through StudioService; export and verify persistence.
+- [x] Document proposed resistive operating points; lifecycle regression tests: 6 passed. No product simulation or approval performed by this work.
+- [ ] Investigate concurrent readiness records: assessment now returns ready, but PCB approval cites 50 x 32 mm, conflicting with compact envelope; independent readiness NOT_EVALUATED. Existing records preserved.
+- [ ] Resolve dynamic load/cable capacitance, output reference, insulation applicability and magnetic inputs.
