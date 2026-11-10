@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "vin_min_v": 20.0,
+  "vin_nom_v": 24.0,
+  "vin_max_v": 30.0,
+  "vout_v": null,
+  "iout_a": null,
+  "switching_frequency_hz": null,
+  "ambient_temperature_k": null,
+  "topology": "",
+  "isolation_requirement": "",
+  "standards_profile": "UNASSIGNED",
+  "source": "Guide illustrative example",
+  "assumptions": [
+    "Demonstration only; no approved design"
+  ]
+}

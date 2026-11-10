@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "Category": {
+      "enum": [
+        "transformer",
+        "dc_dc_converter",
+        "power_semiconductor",
+        "pcb"
+      ],
+      "title": "Category",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "product_id": {
+      "format": "uuid",
+      "title": "Product Id",
+      "type": "string"
+    },
+    "code": {
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$",
+      "title": "Code",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "category": {
+      "$ref": "#/$defs/Category"
+    },
+    "owner": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Owner",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "active_revision_id": {
+      "format": "uuid",
+      "title": "Active Revision Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "name",
+    "category",
+    "owner",
+    "active_revision_id"
+  ],
+  "title": "Product",
+  "type": "object"
+}
