@@ -76,6 +76,8 @@ class StudioService:
                 migrate_v5(db)
         from .integration_service import IntegrationService
         self.integrations = IntegrationService(self)
+        from .intelligence import EngineeringReasoningOrchestrator
+        self.intelligence = EngineeringReasoningOrchestrator()
 
     @contextmanager
     def connection(self):
@@ -311,6 +313,9 @@ class StudioService:
     def ai_advice(self, revision_id, question):
         revision = self.get_revision(revision_id)
         return self.ai.advise(AIRequest(revision_id=revision.revision_id, question=question, context={"specification": revision.specification.model_dump(mode="json")}))
+
+    def advise_engineering(self, question, workspace_context=None, provider_id=None):
+        return self.intelligence.process_query(question, workspace_context, provider_id)
 
     def list_plugins(self):
         return self.plugin_status

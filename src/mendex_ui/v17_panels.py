@@ -548,33 +548,18 @@ class AIAssistantPanel(QWidget):
 
     def send_prompt(self, text: str):
         self.history.append(f"<br><b>Engineer:</b> {text}")
-        # Deterministic engineering calculation assistance
-        lower = text.lower()
-        if "dowell" in lower:
-            reply = (
-                "<b>AI Assistant:</b> Dowell's analytical model calculates AC winding resistance factor $F_R = R_{AC} / R_{DC}$ "
-                "based on foil/layer thickness $\\xi = h / \\delta$ and number of layers $m$:\n"
-                "$$F_R = \\xi \\left[ \\frac{\\sinh(2\\xi) + \\sin(2\\xi)}{\\cosh(2\\xi) - \\cos(2\\xi)} + "
-                "\\frac{2(m^2 - 1)}{3} \\frac{\\sinh(\\xi) - \\sin(\\xi)}{\\cosh(\\xi) + \\cos(\\xi)} \\right]$$\n"
-                "In Mendex Studio, skin depth $\\delta$ is evaluated in `src/integrations/calculations/dowell.py`."
-            )
-        elif "flyback" in lower:
-            reply = (
-                "<b>AI Assistant:</b> For CCM Flyback operating at $V_{in}=24\\text{V}$, $V_{out}=1000\\text{V}$, $f_{sw}=100\\text{kHz}$:\n"
-                "- Duty cycle $D = \\frac{V_{out}}{V_{out} + n V_{in}}$\n"
-                "- Primary inductance $L_p = \\frac{V_{in}^2 D^2}{2 P_{out} f_{sw} K_{RF}}$\n"
-                "You can model this directly using the OpenModelica adapter (`simulate_modelica`) or LTspice."
-            )
-        elif "sic" in lower or "loss" in lower:
-            reply = (
-                "<b>AI Assistant:</b> Switching losses $E_{on}$ and $E_{off}$ can be queried directly from our integrated "
-                "**SwitchLossDB** dataset without external simulation. Conduction loss is $P_{cond} = I_{rms}^2 R_{ds(on)}(T_j)$."
-            )
+        if hasattr(self.service, "advise_engineering"):
+            res = self.service.advise_engineering(text)
+            reply = f"<b>{res['model']}:</b><br>" + res["reply"].replace("\n", "<br>")
+            if res.get("recommendations"):
+                reply += "<br><br><b>Recommended Solvers & Actions:</b><ul>"
+                for rec in res["recommendations"]:
+                    reply += f"<li><b>{rec['headline']}</b> [{rec['target_tool_or_module'].upper()}]: {rec['description']}</li>"
+                reply += "</ul>"
+            if res.get("limitations"):
+                reply += "<br><small style='color:#a6adc8;'><i>" + "; ".join(res["limitations"]) + "</i></small>"
         else:
-            reply = (
-                f"<b>AI Assistant:</b> Recorded query regarding '{text}'. You can execute real simulations in the "
-                "**Simulation Lab** using verified native engines (LTspice, ngspice, FEMM, OpenModelica)."
-            )
+            reply = f"<b>AI Assistant:</b> Recorded query regarding '{text}'."
         self.history.append(reply)
 
 
