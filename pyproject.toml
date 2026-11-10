@@ -20,6 +20,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "mendex_core.config" = ["*.json"]
+"mendex_ui.resources" = ["*.png"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

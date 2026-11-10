@@ -5,6 +5,8 @@ from pathlib import Path
 from uuid import uuid4
 
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QPixmap
+from .resources import SHIELD_TRANSPARENT_PATH, LOGO_PATH
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableWidget,
     QTableWidgetItem, QHeaderView, QLineEdit, QTextEdit, QComboBox, QSplitter,
@@ -33,6 +35,11 @@ class EnterpriseDashboardPanel(QWidget):
 
         # Title & Subtitle
         header_box = QHBoxLayout()
+        header_box.setSpacing(14)
+        if SHIELD_TRANSPARENT_PATH.exists():
+            dash_logo = QLabel()
+            dash_logo.setPixmap(QPixmap(str(SHIELD_TRANSPARENT_PATH)).scaled(44, 44, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            header_box.addWidget(dash_logo)
         title_box = QVBoxLayout()
         title = QLabel("Engineering Operations Dashboard")
         title.setStyleSheet("font-size: 20px; font-weight: 700; color: #cdd6f4;")
@@ -497,6 +504,11 @@ class AIAssistantPanel(QWidget):
 
         # Header Banner
         header = QHBoxLayout()
+        header.setSpacing(10)
+        if SHIELD_TRANSPARENT_PATH.exists():
+            ai_logo = QLabel()
+            ai_logo.setPixmap(QPixmap(str(SHIELD_TRANSPARENT_PATH)).scaled(26, 26, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            header.addWidget(ai_logo)
         title = QLabel("AI Engineering Assistant")
         title.setStyleSheet("font-size: 16px; font-weight: 700; color: #89b4fa;")
         header.addWidget(title)
@@ -509,7 +521,7 @@ class AIAssistantPanel(QWidget):
         # Conversation History
         self.history = QTextEdit()
         self.history.setReadOnly(True)
-        self.history.append("<b>AI Assistant:</b> Welcome to Mendex Engineering Studio v1.7. I can assist you with converter topology trade-offs, transformer magnetic sizing, SPICE simulation debugging, and OpenModelica equation formulation.\n")
+        self.history.append("<b>AI Assistant:</b> Welcome to Mendex Engineering Studio v1.9. I can assist you with converter topology trade-offs, transformer magnetic sizing, SPICE simulation debugging, and OpenModelica equation formulation.\n")
         layout.addWidget(self.history, 1)
 
         # Quick Suggestion Chips
@@ -682,7 +694,14 @@ class ResultsReportsPanel(QWidget):
         layout.setSpacing(12)
 
         header = QHBoxLayout()
-        header.addWidget(QLabel("Engineering Results, Evidence & Reports"))
+        header.setSpacing(10)
+        if SHIELD_TRANSPARENT_PATH.exists():
+            rep_logo = QLabel()
+            rep_logo.setPixmap(QPixmap(str(SHIELD_TRANSPARENT_PATH)).scaled(24, 24, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            header.addWidget(rep_logo)
+        title_lbl = QLabel("Engineering Results, Evidence & Reports")
+        title_lbl.setStyleSheet("font-size: 16px; font-weight: 700; color: #89b4fa;")
+        header.addWidget(title_lbl)
         btn_refresh = QPushButton("Refresh Manifests")
         btn_refresh.clicked.connect(self.refresh_results)
         header.addWidget(btn_refresh)

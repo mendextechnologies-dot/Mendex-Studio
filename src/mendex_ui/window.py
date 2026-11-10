@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QKeySequence, QShortcut
+from PySide6.QtGui import QKeySequence, QShortcut, QIcon, QPixmap
+from .resources import LOGO_PATH, SHIELD_PATH, ICON_PATH, SHIELD_TRANSPARENT_PATH
 from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFormLayout, QHBoxLayout,
     QInputDialog, QLabel, QLineEdit, QListWidget, QMainWindow, QMessageBox,
@@ -47,7 +48,9 @@ class StudioWindow(QMainWindow):
         self.service = service
         self.product = None
         self.revision = None
-        self.setWindowTitle("Mendex Engineering Studio v1.7 · Enterprise Edition")
+        self.setWindowTitle("Mendex Engineering Studio v1.9 · Enterprise Edition")
+        if ICON_PATH.exists():
+            self.setWindowIcon(QIcon(str(ICON_PATH)))
         self.resize(1380, 880)
 
         # Central Root Container
@@ -64,7 +67,14 @@ class StudioWindow(QMainWindow):
         header_layout.setContentsMargins(16, 8, 16, 8)
         header_layout.setSpacing(12)
 
-        brand_title = QLabel("MENDEX STUDIO v1.7")
+        if SHIELD_TRANSPARENT_PATH.exists():
+            logo_label = QLabel()
+            logo_pixmap = QPixmap(str(SHIELD_TRANSPARENT_PATH)).scaled(26, 26, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            logo_label.setPixmap(logo_pixmap)
+            logo_label.setToolTip("Mendex Technologies — Engineering Studio")
+            header_layout.addWidget(logo_label)
+
+        brand_title = QLabel("MENDEX STUDIO v1.9")
         brand_title.setStyleSheet("font-weight: 700; font-size: 13px; color: #89b4fa; letter-spacing: 0.5px;")
         header_layout.addWidget(brand_title)
 
@@ -111,13 +121,48 @@ class StudioWindow(QMainWindow):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
+        sidebar_container = QWidget()
+        sidebar_container.setFixedWidth(220)
+        sidebar_container.setObjectName("sidebar_container")
+        sidebar_layout = QVBoxLayout(sidebar_container)
+        sidebar_layout.setContentsMargins(0, 0, 0, 0)
+        sidebar_layout.setSpacing(0)
+
+        # Branded Header in Sidebar
+        brand_card = QFrame()
+        brand_card.setObjectName("sidebar_brand")
+        brand_card.setStyleSheet("background-color: #11111b; border-bottom: 1px solid #313244; padding: 12px 14px;")
+        b_layout = QHBoxLayout(brand_card)
+        b_layout.setContentsMargins(0, 0, 0, 0)
+        b_layout.setSpacing(10)
+
+        if SHIELD_TRANSPARENT_PATH.exists():
+            s_label = QLabel()
+            s_label.setPixmap(QPixmap(str(SHIELD_TRANSPARENT_PATH)).scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            b_layout.addWidget(s_label)
+
+        t_box = QVBoxLayout()
+        t_box.setSpacing(1)
+        t1 = QLabel("MENDEX")
+        t1.setStyleSheet("font-weight: 800; font-size: 13px; color: #cdd6f4; letter-spacing: 1px;")
+        t2 = QLabel("TECHNOLOGIES")
+        t2.setStyleSheet("font-size: 9px; font-weight: 600; color: #a6e3a1; letter-spacing: 0.5px;")
+        t_box.addWidget(t1)
+        t_box.addWidget(t2)
+        b_layout.addLayout(t_box)
+        b_layout.addStretch()
+
+        sidebar_layout.addWidget(brand_card)
+
         nav = QListWidget()
         self.navigation = nav
         nav.setObjectName("nav_sidebar")
         nav.setFixedWidth(220)
         nav.addItems(["Dashboard", "Products", "Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace", "Simulations", "Validation", "Reports", "Tool Manager", "Knowledge Center"])
+        sidebar_layout.addWidget(nav, 1)
+
         self.pages = QStackedWidget()
-        layout.addWidget(nav)
+        layout.addWidget(sidebar_container)
         layout.addWidget(self.pages, 1)
         root_layout.addWidget(work_area, 1)
 
