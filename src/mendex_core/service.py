@@ -85,6 +85,8 @@ class StudioService:
         self.workflow_engine = WorkflowExecutionEngine(self, self.workflows)
         from .lifecycle import ProductLifecycleEngine
         self.lifecycle = ProductLifecycleEngine(self)
+        from .pcb import PCBWorkspaceService
+        self.pcb = PCBWorkspaceService(self)
 
     @contextmanager
     def connection(self):
@@ -468,7 +470,35 @@ class StudioService:
             values = [row["check_id"], row["effective_status"], check["evidence_kind"], f'{check["measured_value"]} {check["unit"]}' if check["measured_value"] is not None else "Unavailable", check["reviewer"]]
             table += '<tr>' + ''.join(f'<td>{html.escape(str(value))}</td>' for value in values) + '</tr>'
         table += '</table><p>Entries are historical assessments, not a consolidated product approval.</p>'
-        body = body.replace('<h2>Frozen input and evidence snapshot</h2>', table + '<h2>Frozen input and evidence snapshot</h2>')
+        
+        # If lifecycle engine is present and available, enrich report with complete lifecycle assessment & evidence register
+        lifecycle_html = ""
+        if hasattr(self, "lifecycle"):
+            try:
+                assessment = self.lifecycle.assess(product.product_id, revision.revision_id)
+                evidence = self.lifecycle.get_evidence_register(product.product_id, revision.revision_id)
+                status_color = "#1b4332" if assessment.prototype_ready else "#4a1525"
+                status_text = "PROTOTYPE READY (Authorized for Fabrication)" if assessment.prototype_ready else "PROTOTYPE BLOCKED"
+                lifecycle_html += f"<h2>Product Engineering Lifecycle Maturity & Prototype Readiness</h2>"
+                lifecycle_html += f"<p style='font-size:16px;font-weight:bold;color:{status_color};'>Overall Status: {html.escape(assessment.overall_status.value)} — {status_text}</p>"
+                lifecycle_html += "<table border='1' cellpadding='8' style='border-collapse:collapse;width:100%;margin-bottom:20px;'>"
+                lifecycle_html += "<tr style='background:#f1f3f5;'><th>Stage #</th><th>Stage Name</th><th>Status</th><th>Evidence Records</th><th>Blockers</th></tr>"
+                for s_key, s_eval in assessment.stages.items():
+                    blk_str = "; ".join(s_eval.blockers) if s_eval.blockers else "None"
+                    lifecycle_html += f"<tr><td>#{s_eval.category_number}</td><td>{html.escape(s_eval.title)}</td><td><b>{html.escape(s_eval.status.value)}</b></td><td>{len(s_eval.evidence_records)}</td><td>{html.escape(blk_str)}</td></tr>"
+                lifecycle_html += "</table>"
+                if evidence:
+                    lifecycle_html += f"<h2>Unified Cryptographic Evidence Register ({len(evidence)} Artifacts)</h2>"
+                    lifecycle_html += "<table border='1' cellpadding='6' style='border-collapse:collapse;width:100%;font-size:13px;margin-bottom:20px;'>"
+                    lifecycle_html += "<tr style='background:#f1f3f5;'><th>Stage</th><th>Artifact Type</th><th>Source Tool</th><th>File Name</th><th>Size (B)</th><th>SHA-256 Digest</th><th>Validation</th></tr>"
+                    for rec in evidence:
+                        h_short = (rec.sha256[:16] + "...") if rec.sha256 else "N/A"
+                        lifecycle_html += f"<tr><td>{html.escape(rec.stage_id.value)}</td><td>{html.escape(rec.artifact_type.value)}</td><td>{html.escape(rec.source_tool)}</td><td>{html.escape(rec.source_file)}</td><td>{rec.file_size_bytes}</td><td><code>{html.escape(h_short)}</code></td><td>{html.escape(rec.validation_result)}</td></tr>"
+                    lifecycle_html += "</table>"
+            except Exception:
+                pass
+
+        body = body.replace('<h2>Frozen input and evidence snapshot</h2>', table + lifecycle_html + '<h2>Frozen input and evidence snapshot</h2>')
         try:
             folder.mkdir(parents=True, exist_ok=False)
             (folder / "snapshot.json").write_text(text, encoding="utf-8")

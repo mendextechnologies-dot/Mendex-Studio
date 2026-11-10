@@ -66,7 +66,9 @@ class KiCadLifecycleService:
         if not sch.exists():
             raise FileNotFoundError(f"Schematic file not found: {sch}")
 
-        out_json = output_json.resolve() if output_json else (sch.parent / f"{sch.stem}_erc.json").resolve()
+        out_json = output_json.resolve() if output_json else (sch.parent / f"{sch.stem}_erc_{uuid4()}.json").resolve()
+        if out_json.exists():
+            raise FileExistsError("Choose a new report path; previous evidence cannot be overwritten")
         cmd = [
             str(self.kicad_cli),
             "sch",
@@ -77,11 +79,17 @@ class KiCadLifecycleService:
             "json",
             str(sch),
         ]
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=60, shell=False)
         
         parsed = {}
+        diagnostic = ""
         if out_json.exists():
-            parsed = parse_kicad_drc_json(out_json)
+            try:
+                parsed = parse_kicad_drc_json(out_json)
+            except (ValueError, OSError) as exc:
+                diagnostic = f"Report could not be evaluated: {exc}"
+        else:
+            diagnostic = "KiCad did not produce a report"
 
         return {
             "exit_code": res.returncode,
@@ -89,6 +97,8 @@ class KiCadLifecycleService:
             "stdout": res.stdout,
             "stderr": res.stderr,
             "parsed": parsed,
+            "command": cmd,
+            "diagnostic": diagnostic,
             "passed": res.returncode == 0 and parsed.get("total_issues", 1) == 0,
         }
 
@@ -100,7 +110,9 @@ class KiCadLifecycleService:
         if not board.exists():
             raise FileNotFoundError(f"PCB file not found: {board}")
 
-        out_json = output_json.resolve() if output_json else (board.parent / f"{board.stem}_drc.json").resolve()
+        out_json = output_json.resolve() if output_json else (board.parent / f"{board.stem}_drc_{uuid4()}.json").resolve()
+        if out_json.exists():
+            raise FileExistsError("Choose a new report path; previous evidence cannot be overwritten")
         cmd = [
             str(self.kicad_cli),
             "pcb",
@@ -111,11 +123,17 @@ class KiCadLifecycleService:
             "json",
             str(board),
         ]
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=60, shell=False)
 
         parsed = {}
+        diagnostic = ""
         if out_json.exists():
-            parsed = parse_kicad_drc_json(out_json)
+            try:
+                parsed = parse_kicad_drc_json(out_json)
+            except (ValueError, OSError) as exc:
+                diagnostic = f"Report could not be evaluated: {exc}"
+        else:
+            diagnostic = "KiCad did not produce a report"
 
         return {
             "exit_code": res.returncode,
@@ -123,6 +141,8 @@ class KiCadLifecycleService:
             "stdout": res.stdout,
             "stderr": res.stderr,
             "parsed": parsed,
+            "command": cmd,
+            "diagnostic": diagnostic,
             "passed": res.returncode == 0 and parsed.get("total_issues", 1) == 0,
         }
 

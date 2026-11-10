@@ -24,6 +24,7 @@ from .theme import DARK_THEME_QSS, LIGHT_THEME_QSS
 from .v17_panels import EnterpriseDashboardPanel
 from .workflow_canvas import WorkflowStudioPanel
 from .product_lifecycle_panel import ProductEngineeringOverviewPanel
+from .pcb_panel import PCBWorkspacePanel
 
 
 class ProductDialog(QDialog):
@@ -265,7 +266,7 @@ class StudioWindow(QMainWindow):
         self.transformer_ws = TransformerWorkspacePanel(service, self.guarded, labels["Transformer"])
         self.dcdc_ws = DCDCWorkspacePanel(service, self.guarded, labels["DC–DC Converter"])
         self.semiconductor_ws = SemiconductorWorkspacePanel(service, self.guarded, labels["Switching Devices"])
-        self.pcb_ws = labels["PCB Workspace"]
+        self.pcb_ws = PCBWorkspacePanel(service, self.guarded)
 
         for ws in (self.transformer_ws, self.dcdc_ws, self.semiconductor_ws, self.pcb_ws):
             self.pages.addWidget(ws)
@@ -466,6 +467,10 @@ class StudioWindow(QMainWindow):
             QMessageBox.warning(self, "Action could not be completed", str(exc))
 
     def closeEvent(self, event):
+        if self.pcb_ws.is_running():
+            self.statusBar().showMessage("A KiCad check is finishing. Close Studio after the check completes.")
+            event.ignore()
+            return
         self._save_preferences()
         self.jobs_panel.timer.stop()
         self.service.integrations.shutdown()
@@ -488,6 +493,8 @@ class StudioWindow(QMainWindow):
     def select_product(self, row):
         if row < 0:
             self.product = None
+            self.revision = None
+            self.pcb_ws.set_revision(None)
             return
         self.product = self.items[row]
         self.name.setText(self.product.name)
@@ -527,6 +534,7 @@ class StudioWindow(QMainWindow):
                 self.dcdc_ws.set_revision(self.revision)
             if hasattr(self, "semiconductor_ws"):
                 self.semiconductor_ws.set_revision(self.revision)
+            self.pcb_ws.set_revision(self.revision)
             locations = ["magnetics", "circuit", "circuit", "pcb", "simulations"]
             requirements = ["Core geometry and material sources, winding construction, Bmax, duty limits and insulation requirements.", "Topology, input/output range, switching frequency, control mode, ripple and efficiency targets.", "MOSFET/IGBT/BJT datasheet, voltage/current/SOA ratings, gate drive and thermal assumptions.", "Native KiCad files, ERC/DRC evidence, clearance assumptions and qualified HV isolation review.", "Verified tool version, model inputs, solver logs, raw outputs and independently checked reference case."]
             for label, folder, requirement in zip(self.module_pages, locations, requirements):

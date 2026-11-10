@@ -218,6 +218,11 @@ class ProductEngineeringOverviewPanel(QWidget):
         btn_refresh.clicked.connect(self.refresh_assessment)
         sub_row.addWidget(btn_refresh)
 
+        btn_dossier = QPushButton("📄 Export Engineering Dossier")
+        btn_dossier.setStyleSheet("font-weight: 700; color: #a6e3a1;")
+        btn_dossier.clicked.connect(self._generate_dossier)
+        sub_row.addWidget(btn_dossier)
+
         btn_open_ws = QPushButton("📂 Open Workspace Folder")
         btn_open_ws.setStyleSheet("font-weight: 600; color: #89b4fa;")
         btn_open_ws.clicked.connect(self._open_workspace_folder)
@@ -1386,3 +1391,19 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(revision)
         if ws_path.exists():
             _safe_open_path(ws_path)
+
+    def _generate_dossier(self):
+        if not self.current_revision_id:
+            return
+        try:
+            report = self.service.generate_report(self.current_revision_id)
+            report_full_path = self.service.root / report.report_path
+            QMessageBox.information(
+                self,
+                "Engineering Dossier Generated",
+                f"Generated formal Engineering Dossier:\n{report_full_path}\n\nOpening report in browser...",
+            )
+            _safe_open_path(report_full_path)
+        except Exception as e:
+            QMessageBox.warning(self, "Dossier Generation Error", str(e))
+

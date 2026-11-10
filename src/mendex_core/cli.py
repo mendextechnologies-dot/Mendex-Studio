@@ -40,6 +40,15 @@ def main(argv=None):
     validation.add_argument("--revision", required=True)
     report = commands.add_parser("report")
     report.add_argument("--revision", required=True)
+    for name in ("pcb-files", "pcb-checks", "pcb-import", "pcb-open", "pcb-check", "pcb-notes"):
+        pcb = commands.add_parser(name)
+        pcb.add_argument("--revision", required=True)
+        if name in {"pcb-import", "pcb-open", "pcb-check"}:
+            pcb.add_argument("path", help="Source file for import; otherwise path relative to revision workspace")
+        if name == "pcb-check":
+            pcb.add_argument("--kind", choices=("erc", "drc"), required=True)
+        if name == "pcb-notes":
+            pcb.add_argument("--file", type=Path, help="UTF-8 notes to save; omit to read notes")
     create = commands.add_parser("create")
     create.add_argument("code")
     create.add_argument("name")
@@ -75,6 +84,23 @@ def execute(args):
         print(json.dumps([{**entry, "record": entry["record"].model_dump(mode="json")} for entry in service.validation_summary(args.revision)], indent=2))
     elif args.command == "report":
         print(service.generate_report(args.revision).model_dump_json(indent=2))
+    elif args.command == "pcb-files":
+        print(json.dumps(service.pcb.overview(args.revision), indent=2))
+    elif args.command == "pcb-checks":
+        print(json.dumps(service.pcb.list_checks(args.revision), indent=2))
+    elif args.command == "pcb-import":
+        print(json.dumps({"path": service.pcb.import_file(args.revision, args.path)}))
+    elif args.command == "pcb-open":
+        print(json.dumps({"opened": service.pcb.open_file(args.revision, args.path)}))
+    elif args.command == "pcb-notes":
+        if args.file:
+            print(json.dumps({"path": service.pcb.save_review_notes(args.revision, args.file.read_text(encoding="utf-8"))}))
+        else:
+            print(json.dumps({"notes": service.pcb.review_notes(args.revision)}))
+    elif args.command == "pcb-check":
+        result = service.pcb.run_check(args.revision, args.path, args.kind)
+        print(json.dumps(result, indent=2))
+        return 0 if result["effective_status"] == "CLEAR" else (2 if result["effective_status"] == "NOT_EVALUATED" else 1)
     elif args.command == "doctor":
         diagnostics = service.diagnostics()
         if args.export:
