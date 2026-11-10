@@ -30,6 +30,7 @@ from .validation import (
     detect_cycles_and_toposort,
 )
 from .storage import WorkflowStorageService, migrate_workflows_table
+from .engine import WorkflowExecutionEngine, CancellationToken
 from . import nodes  # Ensure all nodes register automatically
 
 __all__ = [
@@ -61,5 +62,7 @@ __all__ = [
     "detect_cycles_and_toposort",
     "WorkflowStorageService",
     "migrate_workflows_table",
+    "WorkflowExecutionEngine",
+    "CancellationToken",
     "nodes",
 ]

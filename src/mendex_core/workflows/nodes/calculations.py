@@ -209,30 +209,40 @@ class DeterministicPhysicsNode(BaseNode):
             freq = _get("frequency_hz", _get("param1", 100000.0))
             temp = _get("temperature_c", _get("param2", 20.0))
             rec = calc_service.calculate_skin_depth(frequency_hz=freq, temperature_c=temp)
+            val = rec.outputs.get("skin_depth_m", next(iter(rec.outputs.values())))
+            unit = rec.output_units.get("skin_depth_m", "m")
         elif formula_id == "dowell_factor":
             m = int(_get("layers_m", _get("param1", 2)))
             h_ratio = _get("h_over_delta", _get("param2", 1.0))
             rec = calc_service.calculate_dowell_factor(layers_m=m, h_over_delta=h_ratio)
+            val = rec.outputs.get("F_R", next(iter(rec.outputs.values())))
+            unit = ""
         elif formula_id == "flyback_ccm":
             vin = _get("vin_min_v", _get("param1", 100.0))
             dmax = _get("duty_max", _get("param2", 0.45))
             pin = _get("p_in_w", _get("param3", 50.0))
             fsw = _get("fsw_hz", _get("param4", 100000.0))
             rec = calc_service.calculate_flyback_ccm_inductance(vin_min_v=vin, duty_max=dmax, p_in_w=pin, fsw_hz=fsw)
+            val = rec.outputs.get("primary_inductance_h", next(iter(rec.outputs.values())))
+            unit = "H"
         elif formula_id == "steinmetz":
             f = _get("frequency_hz", _get("param1", 100000.0))
             b = _get("b_peak_t", _get("param2", 0.1))
             rec = calc_service.calculate_steinmetz_core_loss(frequency_hz=f, b_peak_t=b)
+            val = rec.outputs.get("core_loss_density_w_per_m3", next(iter(rec.outputs.values())))
+            unit = "W/m3"
         elif formula_id == "lc_resonance":
             l_val = _get("l_henries", _get("param1", 10e-6))
             c_val = _get("c_farads", _get("param2", 100e-9))
             rec = calc_service.calculate_lc_resonance(l_henries=l_val, c_farads=c_val)
+            val = rec.outputs.get("resonant_frequency_hz", next(iter(rec.outputs.values())))
+            unit = "Hz"
         else:
             raise ValueError(f"Unknown deterministic formula: {formula_id}")
 
         return {
-            "result": rec.result_value,
-            "quantity": QuantityValue(value=rec.result_value, unit=rec.result_unit),
+            "result": val,
+            "quantity": QuantityValue(value=val, unit=unit),
             "record": rec.model_dump(),
         }
 

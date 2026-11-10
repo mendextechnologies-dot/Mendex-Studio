@@ -78,10 +78,11 @@ class StudioService:
         self.integrations = IntegrationService(self)
         from .intelligence import EngineeringReasoningOrchestrator
         self.intelligence = EngineeringReasoningOrchestrator()
-        from .workflows import WorkflowStorageService, migrate_workflows_table
+        from .workflows import WorkflowStorageService, migrate_workflows_table, WorkflowExecutionEngine
         with self.connection() as db:
             migrate_workflows_table(db)
         self.workflows = WorkflowStorageService(self.database)
+        self.workflow_engine = WorkflowExecutionEngine(self, self.workflows)
 
     @contextmanager
     def connection(self):
@@ -503,3 +504,18 @@ class StudioService:
                 shutil.rmtree(path)
             raise
         return revision
+
+    def execute_workflow(self, workflow, workspace_id=None, timeout_s=300.0, progress_callback=None, cancel_token=None):
+        return self.workflow_engine.execute_workflow(workflow, workspace_id=workspace_id, timeout_s=timeout_s, progress_callback=progress_callback, cancel_token=cancel_token)
+
+    def list_workflows(self, workspace_id=None):
+        return self.workflows.list_workflows(workspace_id)
+
+    def get_workflow(self, workflow_id):
+        return self.workflows.get_workflow(workflow_id)
+
+    def save_workflow(self, workflow):
+        return self.workflows.save_workflow(workflow)
+
+    def delete_workflow(self, workflow_id):
+        return self.workflows.delete_workflow(workflow_id)
