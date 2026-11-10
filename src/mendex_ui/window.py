@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFormLayout, QHBoxLayout,
     QInputDialog, QLabel, QLineEdit, QListWidget, QMainWindow, QMessageBox,
     QPushButton, QSplitter, QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog,
-    QFrame, QCompleter,
+    QFrame, QCompleter, QTabWidget,
 )
 
 from mendex_core.models import Category, Specification
@@ -23,6 +23,7 @@ from .workspace_panels import (
 from .theme import DARK_THEME_QSS, LIGHT_THEME_QSS
 from .v17_panels import EnterpriseDashboardPanel
 from .workflow_canvas import WorkflowStudioPanel
+from .product_lifecycle_panel import ProductEngineeringOverviewPanel
 
 
 class ProductDialog(QDialog):
@@ -238,8 +239,16 @@ class StudioWindow(QMainWindow):
             button.clicked.connect(lambda checked=False, callback=callback: self.guarded(callback))
             handoff.addWidget(button)
         form.addLayout(handoff)
-        split.addWidget(editor)
-        split.setStretchFactor(1, 3)
+
+        self.product_tabs = QTabWidget()
+        self.product_lifecycle = ProductEngineeringOverviewPanel(service)
+        self.product_lifecycle.navigate_requested.connect(self._handle_overview_navigate)
+        self.product_tabs.addTab(self.product_lifecycle, "Engineering Overview")
+        self.product_tabs.addTab(editor, "Specification & Revisions")
+
+        split.addWidget(self.product_tabs)
+        split.setStretchFactor(0, 1)
+        split.setStretchFactor(1, 4)
         pane.addWidget(split)
         self.pages.addWidget(products)
 
@@ -416,6 +425,19 @@ class StudioWindow(QMainWindow):
         dest = mapping.get(target, 0)
         self.navigation.setCurrentRow(dest)
 
+    def _handle_overview_navigate(self, target_name: str):
+        mapping = {
+            "Simulations": 6,
+            "Transformer": 2,
+            "DC-DC": 3,
+            "Validation": 7,
+            "Reports": 8,
+            "Tools": 9,
+            "Workflows": 14,
+        }
+        dest = mapping.get(target_name, 0)
+        self.navigation.setCurrentRow(dest)
+
     def _on_workspace_selected_header(self, index: int):
         pass
 
@@ -497,6 +519,8 @@ class StudioWindow(QMainWindow):
             self.reports_panel.set_revision(self.revision)
             self.simulation_panel.set_revision(self.revision)
             self.knowledge_panel.set_revision(self.revision)
+            if hasattr(self, "product_lifecycle") and self.product:
+                self.product_lifecycle.set_product(self.product.product_id, self.revision.revision_id)
             if hasattr(self, "transformer_ws"):
                 self.transformer_ws.set_revision(self.revision)
             if hasattr(self, "dcdc_ws"):

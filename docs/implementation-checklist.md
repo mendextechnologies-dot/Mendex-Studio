@@ -211,3 +211,45 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
   - [x] `docs/testing/INTEGRATION_INVENTORY_VERIFICATION.md`
   - [x] Automated test `tests/ui/test_dashboard_inventory.py` passing.
   - [x] Full test suite: **137 passed in 28.60s**, 0 failures, 100% green.
+
+## Product Engineering E2E Workflow & Status Control (2026-11-11)
+
+- [x] Phase 1: Read-only inventory and audit of existing SV-1000 record across database, workspaces, jobs, and evidence.
+  - [x] Product ID `e7d058ef-b1e8-4752-ab87-c17bf7f32c12` audited: 0 simulations, 0 KiCad files, 0 validations, 10 critical blockers.
+  - [x] Produced `docs/audits/SV1000_CURRENT_ENGINEERING_STATUS.md`.
+  - [x] Produced `docs/audits/PRODUCT_ENGINEERING_GAPS.md`.
+- [x] Phase 2: Product Engineering Overview tab integrated into Product view (`ProductEngineeringOverviewPanel`).
+  - [x] Readiness header banner: `PROTOTYPE BLOCKED` (red) vs. `PROTOTYPE READY` (green).
+  - [x] Critical blockers alert box summarizing top blockers.
+  - [x] 12 Interactive clickable stage cards with color-coded status badges and evidence counts.
+- [x] Phase 3: Core Engineering Lifecycle Engine (`src/mendex_core/lifecycle/`).
+  - [x] 12 Typed stages: Requirements, Architecture, Circuit Design, Simulation, Magnetics, Schematic Capture, PCB Layout, PCB DRC, Thermal/Mechanical, BOM Review, Validation, Prototype Gate.
+  - [x] Status definitions: NOT STARTED, IN PROGRESS, PENDING VERIFICATION, PASSED, FAILED, BLOCKED, NOT APPLICABLE.
+  - [x] Persistent reviewer approval sign-off table (`lifecycle_approvals`).
+  - [x] Strict rule: No stage automatically marked PASSED solely because a file exists.
+- [x] Phase 4: Reuse of existing Studio services (Simulation Lab, Workflow Studio, Adapters, Reports, Intelligence).
+  - [x] Product-independent engineering workflows preserved.
+- [x] Phase 5: Simulation status & validation distinction.
+  - [x] Distinguishes tool execution exit 0 from engineering validation criteria.
+- [x] Phase 6: KiCad schematic and PCB workflow service (`src/mendex_core/lifecycle/kicad_service.py`).
+  - [x] Discovery of `.kicad_sch` and `.kicad_pcb`.
+  - [x] Direct execution of `kicad-cli sch erc` and `kicad-cli pcb drc`.
+  - [x] Structured violation parsing across sheets.
+  - [x] Manufacturing Gerber, STEP, and BOM export capabilities.
+- [x] Phase 7: Unified Evidence Register (`UnifiedEvidenceRecord`).
+  - [x] Full provenance, SHA-256 digests, artifact types, execution timestamps, and reviewer approvals.
+- [x] Phase 8: Configurable readiness gates.
+  - [x] Prototype readiness strictly blocked if mandatory engineering gates are failed, blocked, missing, or unverified.
+- [x] Phase 9: Enterprise UI dashboard with 5 sub-tabs (Stage Detail & Approvals, Simulations & Waveforms, KiCad Schematic & PCB, Evidence Register, Readiness Gates).
+- [x] Phase 10: E2E Verification using SV-1000.
+  - [x] Verified all 10 acceptance criteria; prototype readiness truthfully reports BLOCKED.
+- [x] Phase 11: Testing & Regression:
+  - [x] Unit tests `tests/core/test_product_lifecycle.py` (6 passed in 1.75s).
+  - [x] UI tests `tests/ui/test_product_lifecycle_ui.py` (1 passed in 4.72s).
+  - [x] Full test suite: **144 passed in 31.86s**, 0 failures, 100% green.
+- [x] Phase 12: Deliverables:
+  - [x] `docs/audits/SV1000_CURRENT_ENGINEERING_STATUS.md`
+  - [x] `docs/audits/PRODUCT_ENGINEERING_GAPS.md`
+  - [x] `docs/architecture/PRODUCT_ENGINEERING_LIFECYCLE.md`
+  - [x] `docs/testing/PRODUCT_E2E_ACCEPTANCE.md`
+  - [x] `docs/PRODUCT_ENGINEERING_IMPLEMENTATION_REPORT.md`

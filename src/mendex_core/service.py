@@ -83,6 +83,8 @@ class StudioService:
             migrate_workflows_table(db)
         self.workflows = WorkflowStorageService(self.database)
         self.workflow_engine = WorkflowExecutionEngine(self, self.workflows)
+        from .lifecycle import ProductLifecycleEngine
+        self.lifecycle = ProductLifecycleEngine(self)
 
     @contextmanager
     def connection(self):
