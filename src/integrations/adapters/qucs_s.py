@@ -17,7 +17,7 @@ class QucsSAdapter(BaseToolAdapter):
             license_name="GPLv2+",
             official_url="https://ra3xdh.github.io/",
             candidate_binaries=["qucs-s.exe", "qucs-s"],
-            candidate_paths=["Qucs-S*/bin/qucs-s.exe"],
+            candidate_paths=["qucs-s/bin/qucs-s.exe", "Qucs-S*/bin/qucs-s.exe", "qucs-s*/bin/qucs-s.exe"],
         )
 
     def supported_operations(self) -> list[str]:

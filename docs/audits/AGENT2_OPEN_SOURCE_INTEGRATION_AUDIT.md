@@ -43,10 +43,10 @@ The following table evaluates every mandatory and candidate open-source tool aga
 | **Pydantic** | MIT License (Open Source) | **YES** (`v2.14.3`) | **YES** | `src/mendex_core/models.py` | **YES** (Contract validation, SI units enforcement, immutability) | **FULLY WORKING** | None. Schema engine operational. |
 | **KiCad** | GPL v3+ (Open Source) | **NO** (Not on host) | **YES** | `kicad.py` / `kicad_parser.py` | **BLOCKED** | **NOT_INSTALLED** | Binary missing (`kicad-cli.exe`). Install KiCad 8.x for DRC/ERC execution. |
 | **FEMM** | Aladdin Free Public License | **YES** (`C:\femm42\bin\femm.exe`) | **YES** | `femm.py` / `femm_generator.py` / `femm_parser.py` | **YES** (Real headless Lua 2D FEA transformer simulation, inductance & flux calculated) | **FULLY WORKING** | Resolved (GAP-OSS-02). Headless execution and metrics parsing verified in `tests/adapters/test_femm_adapter.py`. |
-| **Qucs-S** | GPL v2+ (Open Source) | **NO** (Not on host) | **YES** | `qucs_s.py` | **BLOCKED** | **NOT_INSTALLED** | Binary missing (`qucs-s.exe`). Requires Qucs-S + ngspice backend. |
+| **Qucs-S** | GPL v2+ (Open Source) | **YES** (`26.1.1`) | **YES** | `qucs_s.py` | **YES** (Detected at `C:\Users\Sagar\AppData\Local\Programs\qucs-s\bin\qucs-s.exe`) | **FULLY WORKING** | Resolved (`GAP-OSS-05`). Installed portable release with bundled ngspice backend. |
 | **OpenModelica** | OSMC-PL (Open Source) | **NO** (Not on host) | **YES** | `openmodelica.py` / `modelica_generator.py` | **BLOCKED** | **NOT_INSTALLED** | Binary missing (`omc.exe`). Modelica `.mos` generator ready once compiler is installed. |
 | **NumPy & SciPy** | BSD-3-Clause (Open Source) | **NO** (Uninstalled) | **NO** (Catalog) | None | **BLOCKED** | **DEFERRED DEPENDENCY** | Listed in `docs/DEPENDENCY_REQUESTS.md`; required for binary raw parsing and FFTs. |
-| **ngspice & PySpice** | BSD / LGPL (Open Source) | **NO** (Not on host) | **NO** | None | **NO** | **MISSING** | No adapter or catalog entry in Studio. |
+| **ngspice** | BSD-3-Clause (Open Source) | **YES** (`ngspice-46`) | **YES** | `src/integrations/adapters/ngspice.py` | **YES** (Real batch netlist simulation verified in `test_ngspice_adapter.py`) | **FULLY WORKING** | Resolved (`GAP-OSS-06`). `ngspice_con.exe` installed and verified. |
 | **Gmsh & Elmer FEM** | GPL v2+ / LGPL (Open Source) | **NO** (Not on host) | **NO** | None | **NO** | **MISSING** | No adapter or catalog entry in Studio. |
 | **OpenMDAO** | Apache 2.0 (Open Source) | **NO** (Not on host) | **NO** | None | **NO** | **MISSING** | Multidisciplinary optimization framework not integrated. |
 | **python-control** | BSD-3-Clause (Open Source) | **NO** (Not on host) | **NO** | None | **NO** | **MISSING** | Feedback control loop analysis framework not integrated. |
@@ -132,8 +132,8 @@ pie title Free & Open-Source Integration Status (23 Evaluated Tools & Libraries)
 | **GAP-OSS-02** | **P1** | **FEMM 4.2** | **RESOLVED**: Installed FEMM 4.2 at `C:\femm42\bin\femm.exe`; implemented headless Lua execution in `femm.py`, metrics parser `femm_parser.py`, and verified in `test_femm_adapter.py`. | **Agent 2 (Antigravity)** |
 | **GAP-OSS-03** | **P2** | **FreeCAD UI Panel** | Connect the verified headless STEP export engine directly into the PySide6 UI bobbin workbench. | **Agent 1 (Codex)** |
 | **GAP-OSS-04** | **P2** | **NumPy & SciPy** | Add `numpy` and `scipy` to `requirements-lock.txt` for vectorized waveform parsing and FFT analysis. | **Agent 1 (Codex)** |
-| **GAP-OSS-05** | **P2** | **OpenModelica / Qucs-S** | Install OpenModelica (`omc.exe`) and Qucs-S on host for behavioral DCDC circuit verification. | **Agent 2 (Antigravity)** |
-| **GAP-OSS-06** | **P3** | **ngspice & PySpice** | Implement catalog entry and native adapter for standalone ngspice netlist simulation. | **Agent 2 (Antigravity)** |
+| **GAP-OSS-05** | **P2** | **Qucs-S / OpenModelica** | **PARTIALLY RESOLVED**: Qucs-S 26.1.1 installed at `LOCALAPPDATA\Programs\qucs-s`; OpenModelica (`omc.exe`) pending installation. | **Agent 2 (Antigravity)** |
+| **GAP-OSS-06** | **P3** | **ngspice** | **RESOLVED**: `ngspice-46` (`ngspice_con.exe`) installed; `NgspiceAdapter` implemented and verified with real batch netlist simulation in `test_ngspice_adapter.py`. | **Agent 2 (Antigravity)** |
 | **GAP-OSS-07** | **P3** | **PyVISA / sigrok** | Implement lab instrumentation discovery behind strict human safety interlocks (Phase 6). | **Agent 2 (Antigravity)** |
 
 ---

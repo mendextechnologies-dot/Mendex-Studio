@@ -106,4 +106,5 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Unblocked GAP-OSS-03: Integrated FreeCAD 1.1.4 3D STEP generation action directly into PySide6 `TransformerWorkspacePanel`.
 - [x] Unblocked GAP-OSS-06: Implemented `NgspiceAdapter` (BSD 3-Clause) with batch simulation and argument generation.
 - [x] Unblocked GAP-OSS-02: Installed and verified FEMM 4.2 at `C:\femm42\bin\femm.exe`; updated base adapter discovery roots; implemented headless Lua execution in `femm.py`, transformer Lua generator `femm_generator.py`, and results parser `femm_parser.py`; verified real 2D FEA transformer simulation in `test_femm_adapter.py`.
-- [x] 103 automated tests passing across adapters, contracts, UI, calculations, resilience, and parsers.
+- [x] Unblocked GAP-OSS-05 (Qucs-S) & GAP-OSS-06 (ngspice): Installed standalone Qucs-S 26.1.1 and bundled ngspice 46 at `LOCALAPPDATA\Programs\qucs-s`; verified `qucs-s.exe` and `ngspice_con.exe`; tested real batch netlist simulation in `test_ngspice_adapter.py`.
+- [x] 104 automated tests passing across adapters, contracts, UI, calculations, resilience, and parsers.

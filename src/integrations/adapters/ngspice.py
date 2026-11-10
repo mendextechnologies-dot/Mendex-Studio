@@ -27,8 +27,10 @@ class NgspiceAdapter(BaseToolAdapter):
             category="core",
             license_name="BSD 3-Clause (Open Source)",
             official_url="https://ngspice.sourceforge.io/",
-            candidate_binaries=["ngspice.exe", "ngspice"],
+            candidate_binaries=["ngspice_con.exe", "ngspice.exe", "ngspice"],
             candidate_paths=[
+                "qucs-s/bin/ngspice_con.exe",
+                "qucs-s/bin/ngspice.exe",
                 "Spice64/bin/ngspice.exe",
                 "Spice64/bin/ngspice_con.exe",
                 "ngspice/bin/ngspice.exe",
@@ -88,7 +90,7 @@ class NgspiceAdapter(BaseToolAdapter):
         raw_file = target_dir / "circuit.raw"
         command = [exe, "-b", "-r", str(raw_file.name), "-o", str(log_file.name), str(netlist_file.resolve())]
 
-        exec_res = self.runner.run(
+        exec_res = self._runner.run(
             command_args=command,
             cwd=target_dir,
             timeout_s=request.timeout_s,
@@ -96,7 +98,7 @@ class NgspiceAdapter(BaseToolAdapter):
         )
 
         status = JobState.SUCCEEDED if exec_res.exit_code == 0 else JobState.FAILED
-        artifacts = manifest_directory(target_dir)
+        artifacts = manifest_directory(target_dir, job_id=request.job_id)
 
         return JobResult(
             job_id=request.job_id,
