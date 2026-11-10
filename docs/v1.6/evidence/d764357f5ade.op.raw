@@ -1,0 +1,20 @@
+Title: C:\Mendex studio\.mendex\v16_evidence_run\.mendex\ij\d61d3ad18ec3485e8b2d343efafe980a\inputs\d764357f5ade.net
+Date: Tue Nov 10 15:21:47 2026
+Plotname: Operating Point
+Flags: real
+No. Variables: 5
+No. Points:            1
+Offset:    0.0000000000000000e+00
+Command: Linear Technology Corporation LTspice
+Variables:
+	0	V(in)	voltage
+	1	V(out)	voltage
+	2	I(C1)	device_current
+	3	I(R1)	device_current
+	4	I(V1)	device_current
+Values:
+0		5.000000000000000e+00
+	4.999999999999995e+00
+	4.999999999999996e-19
+	5.329070518200752e-19
+	-4.999999999999996e-19

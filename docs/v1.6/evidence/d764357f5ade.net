@@ -1,0 +1,6 @@
+* Mendex v1.6 Synthetic Benchmark - RC Filter
+V1 in 0 5.0
+R1 in out 10k
+C1 out 0 100n
+.tran 10u 2m
+.end

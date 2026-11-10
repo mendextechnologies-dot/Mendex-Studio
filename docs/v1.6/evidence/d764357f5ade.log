@@ -1,0 +1,16 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\Mendex studio\.mendex\v16_evidence_run\.mendex\ij\d61d3ad18ec3485e8b2d343efafe980a\inputs\d764357f5ade.net
+Start Time: Tue Nov 10 15:21:47 2026
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.179 seconds.
+Total iterations: 2085
+
+Files loaded:
+C:\Mendex studio\.mendex\v16_evidence_run\.mendex\ij\d61d3ad18ec3485e8b2d343efafe980a\inputs\d764357f5ade.net
+

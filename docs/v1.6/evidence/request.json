@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.5.0",
+  "job_id": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+  "workspace_id": "e7a846c4-c019-4a34-8148-71e038aa5800",
+  "tool_id": "ltspice",
+  "operation": "batch_simulate",
+  "input_paths": [
+    "inputs\\d764357f5ade.net"
+  ],
+  "parameters": {},
+  "timeout_s": 30.0,
+  "provenance": "SYNTHETIC SOFTWARE VERIFICATION; not physical product engineering evidence"
+}

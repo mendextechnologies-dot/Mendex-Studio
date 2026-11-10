@@ -1,0 +1,47 @@
+{
+  "d764357f5ade_runner.log": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/d764357f5ade_runner.log",
+    "size": 402,
+    "sha256": "9ad37fbc524f1c92d55ab1e45fd6546b2b04cbc975019b81c101536541a6a7df"
+  },
+  "job.log": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/job.log",
+    "size": 97,
+    "sha256": "aa3cbbf4f42ac6ef45c35bbbd595740cd0da9ea9f57020e9243a85c76796f287"
+  },
+  "manifest.json": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/manifest.json",
+    "size": 4872,
+    "sha256": "b5422b10369981a68465f5f6349d486e3824af1f473758c94b9e6fb9dfa6fe22"
+  },
+  "request.json": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/request.json",
+    "size": 400,
+    "sha256": "71f59ee884a128ab43678af8ced03b17680c05a7bb6247f38d06b6886249f214"
+  },
+  "d764357f5ade.log": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/d764357f5ade.log",
+    "size": 524,
+    "sha256": "99933b43d3b9bb7f71754ffd1faea4ebcfe7ed941080cef03361a27819ed4277"
+  },
+  "d764357f5ade.net": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/d764357f5ade.net",
+    "size": 110,
+    "sha256": "a9441757ed023a0c5b809a42b8ea801085cd284a07f02de7fa8bb309933bec90"
+  },
+  "d764357f5ade.op.raw": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/d764357f5ade.op.raw",
+    "size": 573,
+    "sha256": "ca39a4b95140ed27e2b62d0fdf78c199decdc51944923a4680049c7626d816cf"
+  },
+  "d764357f5ade.raw": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/d764357f5ade.raw",
+    "size": 155667,
+    "sha256": "ce34228c6f0f9a999a54c80a5844b489ff61a2ac31f5d3032b9404e481edd7e5"
+  },
+  "workflow_report.html": {
+    "path": "C:/Mendex studio/docs/v1.6/evidence/workflow_report.html",
+    "size": 9503,
+    "sha256": "0b874832c6d8c6b02a4c4ff649ce2459a2e5df47375765a56351545ccf3a975e"
+  }
+}

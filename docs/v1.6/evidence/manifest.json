@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.5.0",
+  "job_id": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+  "request": {
+    "schema_version": "1.5.0",
+    "job_id": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+    "workspace_id": "e7a846c4-c019-4a34-8148-71e038aa5800",
+    "tool_id": "ltspice",
+    "operation": "batch_simulate",
+    "input_paths": [
+      "inputs\\d764357f5ade.net"
+    ],
+    "parameters": {},
+    "timeout_s": 30.0,
+    "provenance": "SYNTHETIC SOFTWARE VERIFICATION; not physical product engineering evidence"
+  },
+  "result": {
+    "schema_version": "1.5.0",
+    "job_id": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+    "tool_id": "ltspice",
+    "tool_version": "26.1.1.0",
+    "status": "SUCCEEDED",
+    "started_at": "2026-11-10T09:51:46.930703Z",
+    "ended_at": "2026-11-10T09:51:47.515300Z",
+    "exit_code": 0,
+    "diagnostics": [],
+    "outputs": [
+      "inputs/d764357f5ade.op.raw",
+      "inputs/d764357f5ade.raw",
+      "inputs/d764357f5ade.log"
+    ],
+    "evidence_paths": [
+      "inputs/d764357f5ade.net"
+    ]
+  },
+  "input_hashes": {
+    "inputs\\d764357f5ade.net": "a9441757ed023a0c5b809a42b8ea801085cd284a07f02de7fa8bb309933bec90"
+  },
+  "artifacts": [
+    {
+      "relative_path": "inputs/d764357f5ade.op.raw",
+      "file_type": ".raw",
+      "sha256": "ca39a4b95140ed27e2b62d0fdf78c199decdc51944923a4680049c7626d816cf",
+      "size_bytes": 573,
+      "source_job": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+      "provenance": "SYNTHETIC SOFTWARE VERIFICATION; not physical product engineering evidence",
+      "created_at": "2026-11-10T09:51:47.520331Z",
+      "source_label": "IMPORTED",
+      "raw_vs_derived": "derived",
+      "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+      "review_state": "NOT_REVIEWED"
+    },
+    {
+      "relative_path": "inputs/d764357f5ade.raw",
+      "file_type": ".raw",
+      "sha256": "ce34228c6f0f9a999a54c80a5844b489ff61a2ac31f5d3032b9404e481edd7e5",
+      "size_bytes": 155667,
+      "source_job": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+      "provenance": "SYNTHETIC SOFTWARE VERIFICATION; not physical product engineering evidence",
+      "created_at": "2026-11-10T09:51:47.521705Z",
+      "source_label": "IMPORTED",
+      "raw_vs_derived": "derived",
+      "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+      "review_state": "NOT_REVIEWED"
+    },
+    {
+      "relative_path": "inputs/d764357f5ade.log",
+      "file_type": ".log",
+      "sha256": "99933b43d3b9bb7f71754ffd1faea4ebcfe7ed941080cef03361a27819ed4277",
+      "size_bytes": 524,
+      "source_job": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+      "provenance": "SYNTHETIC SOFTWARE VERIFICATION; not physical product engineering evidence",
+      "created_at": "2026-11-10T09:51:47.522625Z",
+      "source_label": "IMPORTED",
+      "raw_vs_derived": "derived",
+      "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+      "review_state": "NOT_REVIEWED"
+    },
+    {
+      "relative_path": "inputs/d764357f5ade.net",
+      "file_type": ".net",
+      "sha256": "a9441757ed023a0c5b809a42b8ea801085cd284a07f02de7fa8bb309933bec90",
+      "size_bytes": 110,
+      "source_job": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+      "provenance": "SYNTHETIC SOFTWARE VERIFICATION; not physical product engineering evidence",
+      "created_at": "2026-11-10T09:51:47.523469Z",
+      "source_label": "IMPORTED",
+      "raw_vs_derived": "raw",
+      "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+      "review_state": "NOT_REVIEWED"
+    },
+    {
+      "relative_path": "request.json",
+      "file_type": ".json",
+      "sha256": "71f59ee884a128ab43678af8ced03b17680c05a7bb6247f38d06b6886249f214",
+      "size_bytes": 400,
+      "source_job": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+      "provenance": "SYNTHETIC SOFTWARE VERIFICATION; not physical product engineering evidence",
+      "created_at": "2026-11-10T09:51:47.540952Z",
+      "source_label": "IMPORTED",
+      "raw_vs_derived": "raw",
+      "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+      "review_state": "NOT_REVIEWED"
+    },
+    {
+      "relative_path": "job.log",
+      "file_type": ".log",
+      "sha256": "aa3cbbf4f42ac6ef45c35bbbd595740cd0da9ea9f57020e9243a85c76796f287",
+      "size_bytes": 97,
+      "source_job": "d61d3ad1-8ec3-485e-8b2d-343efafe980a",
+      "provenance": "SYNTHETIC SOFTWARE VERIFICATION; not physical product engineering evidence",
+      "created_at": "2026-11-10T09:51:47.562662Z",
+      "source_label": "SOFTWARE_LOG",
+      "raw_vs_derived": "log",
+      "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+      "review_state": "NOT_REVIEWED"
+    }
+  ],
+  "engineering_status": "NOT_EVALUATED"
+}

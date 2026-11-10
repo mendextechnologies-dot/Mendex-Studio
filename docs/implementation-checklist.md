@@ -83,3 +83,21 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Inspect/test concurrent UI delta; retain stale unspecified-revision fields and hardcoded-export reproductions.
 - [x] Produce [independent final verification](audits/final-verification-20261110-01/FINAL_IMPLEMENTATION_VERIFICATION.md), complete status matrix, owners and completion tasks. Existing root-level verification report preserved separately.
 - [ ] Close independently reproduced defects and resolve blocked/unverified checks, then verify one immutable acceptance commit and obtain actual owner acceptance. **Studio completion is NOT YET VERIFIED.**
+
+## Codex final implementation audit — current source 0f299dd
+
+- [x] Freeze current source and separate remediation0312f5a; retain exact commands/source hashes and previous reports.
+- [x] Execute current short/deep suites: **90 passed**; **13 failed,77 passed**. Candidate: **112 passed,1 failed** at each path regime; released baseline: **28 passed**.
+- [x] Independently run existing RC fixture, generic FreeCAD STEP export and Jupyter software-marker notebook; distinguish direct native components from unimplemented Studio operation wrappers.
+- [x] Reproduce readiness/data/parser/runner/report/input/form failures; verify all five optional configuration-only guards.
+- [x] Save the independent [Codex final audit](audits/FINAL_IMPLEMENTATION_VERIFICATION_CODEX.md), normalized traceability matrix, all18 statuses and agent-wise actions. No application changes/installations or automatic fixes performed.
+- [ ] Resolve listed findings, integrate reviewed workstreams and reverify one accepted source tree. **NO — IMPLEMENTATION INCOMPLETE.**
+
+## v1.6 Operational Readiness & Workflow Validation — Antigravity (Agent 2) Milestone
+
+- [x] Read and align with Version 1.6 Execution Specification (10 November 2026), architecture.md, engineering-rules.md, and contracts/README.md.
+- [x] Classified and evidenced all 18 approved tools/resources in [docs/v1.6/TOOL_READINESS_MATRIX.md](v1.6/TOOL_READINESS_MATRIX.md) (Gate C: PASS; 18/18 entries classified with exact version, capability scope, license constraints, and blockers).
+- [x] Implemented and verified generic end-to-end simulation workflow using real installed LTspice 26.1.1.0 in [docs/v1.6/WORKFLOW_TEST_REPORT.md](v1.6/WORKFLOW_TEST_REPORT.md) (Gate B: PASS; queued -> running -> exit code 0, outputs hashed to manifest, truthful NOT_EVALUATED provenance, exported report, deterministic rerun).
+- [x] Verified critical failure, timeout, cancellation, tampering, and recovery modes in [docs/v1.6/RESILIENCE_TEST_REPORT.md](v1.6/RESILIENCE_TEST_REPORT.md) (Gate D: PASS; missing exe rejection, timeout process tree cleanup, cooperative cancel, SHA-256 tampering detection, restart persistence).
+- [x] Preserved raw evidence artifacts in [docs/v1.6/evidence/](v1.6/evidence/) with cryptographically verifiable SHA-256 hashes.
+- [x] Added automated integration test suites `test_v16_workflow.py` and `test_v16_resilience.py`; all **97 tests** pass cleanly in pytest.
