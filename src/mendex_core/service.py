@@ -9,7 +9,9 @@ from uuid import UUID, uuid4
 
 from .models import Category, Lifecycle, Product, Revision, Specification, now
 from .adapters import AdapterRegistry
-from .evidence import ManualCheck, ValidationRecord, ValidationStatus, Report, digest, specification_hash
+from .evidence import ManualCheck, ValidationRecord, ValidationStatus, Report, SimulationRun, digest, specification_hash
+from .rules import RuleRegistry
+from .ai import AIRequest, UnavailableAIService
 
 
 class StudioError(Exception):
@@ -26,9 +28,19 @@ class StudioService:
         metadata = self.root / ".mendex"
         metadata.mkdir(exist_ok=True)
         self.database = metadata / "studio.sqlite3"
+        self.rules = RuleRegistry.defaults()
+        self.ai = UnavailableAIService()
+        self.plugin_status = []
+        from .plugins import load_plugin_file
+        loaded_plugin_ids = set()
+        for manifest in sorted((metadata / "plugins").glob("*.json")):
+            try:
+                self.plugin_status.append(load_plugin_file(manifest, self.registry, self.rules, loaded_plugin_ids))
+            except (ValueError, OSError) as exc:
+                self.plugin_status.append({"path": str(manifest), "status": "rejected", "diagnostic": str(exc)})
         with self.connection() as db:
             version = db.execute("PRAGMA user_version").fetchone()[0]
-            if version > 2:
+            if version > 3:
                 raise StudioError("STORAGE_ERROR", "Database is newer than this application")
             if version == 0:
                 db.executescript('''
@@ -45,6 +57,15 @@ class StudioService:
                     CREATE TRIGGER IF NOT EXISTS validation_no_update BEFORE UPDATE ON validations BEGIN SELECT RAISE(ABORT,'Validation records are append-only'); END;
                     CREATE TRIGGER IF NOT EXISTS validation_no_delete BEFORE DELETE ON validations BEGIN SELECT RAISE(ABORT,'Validation records are append-only'); END;
                     PRAGMA user_version=2;
+                    COMMIT;
+                ''')
+            if version < 3:
+                db.executescript('''
+                    BEGIN IMMEDIATE;
+                    CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY, revision_id TEXT NOT NULL REFERENCES revisions(id), payload TEXT NOT NULL);
+                    CREATE TRIGGER IF NOT EXISTS runs_no_update BEFORE UPDATE ON runs BEGIN SELECT RAISE(ABORT,'Run records are append-only'); END;
+                    CREATE TRIGGER IF NOT EXISTS runs_no_delete BEFORE DELETE ON runs BEGIN SELECT RAISE(ABORT,'Run records are append-only'); END;
+                    PRAGMA user_version=3;
                     COMMIT;
                 ''')
 
@@ -98,7 +119,20 @@ class StudioService:
         path = self.workspace_path(revision)
         for folder in ("requirements", "magnetics", "circuit", "pcb", "mechanical", "simulations", "validation", "reports"):
             (path / folder).mkdir(parents=True, exist_ok=True)
+        snapshot = path / "revision.json"
+        if not snapshot.exists():
+            snapshot.write_text(revision.model_dump_json(indent=2), encoding="utf-8")
         return path
+
+    def export_specification(self, revision_id):
+        revision = self.get_revision(revision_id)
+        folder = self.workspace_path(revision) / "requirements"
+        destination = (folder / f"specification-{uuid4()}.json").resolve()
+        if not destination.is_relative_to(self.root):
+            raise StudioError("INVALID_INPUT", "Specification export escapes data root")
+        with destination.open("x", encoding="utf-8") as handle:
+            json.dump({"revision": revision.model_dump(mode="json"), "input_hash": specification_hash(revision.specification), "notice": "Read-only export; SQLite is canonical. This export does not approve the design."}, handle, indent=2)
+        return destination
 
     def create_workspace(self, revision_id):
         return self._workspace(self.get_revision(revision_id))
@@ -176,6 +210,39 @@ class StudioService:
             db.execute("UPDATE products SET payload=? WHERE id=?", (product.model_dump_json(), str(product_id)))
         return product
 
+    def save_product_revision(self, product_id, revision_id, name, owner, description, specification):
+        spec = Specification.model_validate(specification)
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            product_row = db.execute("SELECT payload FROM products WHERE id=?", (str(product_id),)).fetchone()
+            revision_row = db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision_id),)).fetchone()
+            if not product_row or not revision_row:
+                raise StudioError("NOT_FOUND", "Product or revision not found")
+            product = Product.model_validate_json(product_row[0])
+            revision = Revision.model_validate_json(revision_row[0])
+            if revision.product_id != product.product_id:
+                raise StudioError("INVALID_INPUT", "Revision does not belong to this product")
+            if revision.lifecycle_status != Lifecycle.DRAFT:
+                raise StudioError("IMMUTABLE", "Only draft revisions can be edited")
+            product = Product.model_validate({**product.model_dump(), "name": name, "owner": owner, "description": description, "updated_at": now()})
+            revision.specification = spec
+            db.execute("UPDATE products SET payload=? WHERE id=?", (product.model_dump_json(), str(product.product_id)))
+            db.execute("UPDATE revisions SET payload=? WHERE id=?", (revision.model_dump_json(), str(revision.revision_id)))
+        return product, revision
+
+    def rename_revision(self, revision_id, label):
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision_id),)).fetchone()
+            if not row:
+                raise StudioError("NOT_FOUND", "Revision not found")
+            revision = Revision.model_validate_json(row[0])
+            if revision.lifecycle_status != Lifecycle.DRAFT:
+                raise StudioError("IMMUTABLE", "Only a draft revision label can be edited")
+            revision = Revision.model_validate({**revision.model_dump(), "revision_label": label})
+            db.execute("UPDATE revisions SET label=?,payload=? WHERE id=?", (revision.revision_label, revision.model_dump_json(), str(revision.revision_id)))
+        return revision
+
     def update_specification(self, revision_id, specification):
         spec = Specification.model_validate(specification)
         with self.connection() as db:
@@ -214,7 +281,47 @@ class StudioService:
 
     def list_runs(self, revision_id):
         self.get_revision(revision_id)
-        return []  # No solver execution implemented. Never manufacture run records.
+        with self.connection() as db:
+            return [SimulationRun.model_validate_json(row[0]) for row in db.execute("SELECT payload FROM runs WHERE revision_id=? ORDER BY rowid", (str(revision_id),))]
+
+    def request_simulation(self, revision_id, tool_id):
+        revision = self.get_revision(revision_id)
+        if revision.lifecycle_status != Lifecycle.DRAFT:
+            raise StudioError("IMMUTABLE", "Simulation requests require a draft revision")
+        adapter = self.registry.get(tool_id)
+        record = SimulationRun(revision_id=revision.revision_id, tool_id=tool_id, adapter_version=adapter.capabilities().adapter_version, status="not_supported", input_hash=specification_hash(revision.specification), specification=revision.specification, tool_version=self.check_tool(tool_id).installed_version)
+        with self.connection() as db:
+            db.execute("INSERT INTO runs VALUES (?,?,?)", (str(record.run_id), str(revision_id), record.model_dump_json()))
+        return record
+
+    def list_rules(self, revision_id=None):
+        if revision_id is None:
+            return self.rules.list()
+        revision = self.get_revision(revision_id)
+        return self.rules.assess(self.get_product(revision.product_id).category, revision.specification)
+
+    def ai_advice(self, revision_id, question):
+        revision = self.get_revision(revision_id)
+        return self.ai.advise(AIRequest(revision_id=revision.revision_id, question=question, context={"specification": revision.specification.model_dump(mode="json")}))
+
+    def list_plugins(self):
+        return self.plugin_status
+
+    def set_revision_status(self, revision_id, status):
+        status = Lifecycle(status)
+        if status not in (Lifecycle.DRAFT, Lifecycle.IN_REVIEW):
+            raise StudioError("INVALID_INPUT", "Approval is not implemented. Archive a baseline by creating its next revision.")
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision_id),)).fetchone()
+            if not row:
+                raise StudioError("NOT_FOUND", "Revision not found")
+            revision = Revision.model_validate_json(row[0])
+            if revision.lifecycle_status not in (Lifecycle.DRAFT, Lifecycle.IN_REVIEW):
+                raise StudioError("IMMUTABLE", "Archived or approved baselines cannot be reopened")
+            revision.lifecycle_status = status
+            db.execute("UPDATE revisions SET payload=? WHERE id=?", (revision.model_dump_json(), str(revision_id)))
+        return revision
 
     def list_validation(self, revision_id):
         self.get_revision(revision_id)
@@ -245,8 +352,15 @@ class StudioService:
                         raise StudioError("INVALID_INPUT", "Evidence must be an existing absolute file path")
                     if source.stat().st_size > 50 * 1024 * 1024:
                         raise StudioError("INVALID_INPUT", "Evidence limit is 50 MiB per entry")
-                    data = source.read_bytes()
-                    destination = folder / "evidence.bin"
+                    with source.open("rb") as handle:
+                        data = handle.read(50 * 1024 * 1024 + 1)
+                    if len(data) > 50 * 1024 * 1024:
+                        raise StudioError("INVALID_INPUT", "Evidence limit is 50 MiB per entry")
+                    if not data and check.status in (ValidationStatus.PASS, ValidationStatus.FAIL):
+                        raise StudioError("INVALID_INPUT", "PASS/FAIL requires a nonempty evidence file")
+                    raw_folder = folder / "raw"
+                    raw_folder.mkdir()
+                    destination = raw_folder / ("evidence" + source.suffix[:16])
                     with destination.open("xb") as handle:
                         handle.write(data)
                     record.evidence_uri = str(destination.relative_to(self.root))
@@ -266,9 +380,23 @@ class StudioService:
             return record.check.status not in (ValidationStatus.PASS, ValidationStatus.FAIL)
         path = (self.root / record.evidence_uri).resolve()
         try:
-            return path.is_relative_to(self.root) and path.is_file() and digest(path.read_bytes()) == record.evidence_sha256
+            return path.is_relative_to(self.root) and path.is_file() and path.stat().st_size <= 50 * 1024 * 1024 and digest(path.read_bytes()) == record.evidence_sha256
         except OSError:
             return False
+
+    def open_evidence(self, record_id):
+        from .launch import NATIVE_EXTENSIONS, open_native
+        record = self._get("validations", record_id, ValidationRecord)
+        if not record.evidence_uri or not self.validation_integrity(record):
+            raise StudioError("INVALID_INPUT", "Evidence is unavailable or has changed")
+        path = (self.root / record.evidence_uri).resolve()
+        if path.suffix.lower() not in NATIVE_EXTENSIONS:
+            raise StudioError("INVALID_INPUT", "Use the workspace folder to inspect this evidence format; direct launch is not allowed")
+        try:
+            open_native(path)
+        except OSError as exc:
+            raise StudioError("LAUNCH_ERROR", str(exc)) from exc
+        return str(path)
 
     def validation_summary(self, revision_id):
         revision = self.get_revision(revision_id)
@@ -311,7 +439,7 @@ class StudioService:
         if not folder.is_relative_to(self.root):
             raise StudioError("INVALID_INPUT", "Report directory escapes the data root")
         report = Report(report_id=report_id, revision_id=revision.revision_id, input_hash=current_hash, report_path=str((folder / "report.html").relative_to(self.root)), included_check_ids=[r.check.check_id for r in records], warnings=warnings)
-        snapshot = {"report": report.model_dump(mode="json"), "product": product.model_dump(mode="json"), "revision": revision.model_dump(mode="json"), "tools": [t.model_dump(mode="json") for t in self.list_tools()], "validation": rows}
+        snapshot = {"report": report.model_dump(mode="json"), "product": product.model_dump(mode="json"), "revision": revision.model_dump(mode="json"), "tools": [t.model_dump(mode="json") for t in self.list_tools()], "validation": rows, "simulation_requests": [run.model_dump(mode="json") for run in self.list_runs(revision_id)], "engineering_rules": [rule.model_dump(mode="json") for rule in self.list_rules(revision_id)], "plugins": self.list_plugins()}
         text = json.dumps(snapshot, indent=2)
         body = f'<!doctype html><html><head><meta charset="utf-8"><title>Mendex draft dossier</title><style>body{{font:16px Segoe UI,sans-serif;max-width:1000px;margin:40px auto;padding:20px}}pre{{white-space:pre-wrap;overflow-wrap:anywhere}}li{{margin:8px}}</style></head><body><h1>Mendex engineering dossier · DRAFT</h1><p>{html.escape(product.code)} · {html.escape(revision.revision_label)}</p><ul>' + ''.join(f'<li>{html.escape(w)}</li>' for w in warnings) + '</ul><h2>Frozen input and evidence snapshot</h2><pre>' + html.escape(text) + '</pre></body></html>'
         table = '<h2>Manual validation history</h2><table border="1" cellpadding="8" style="border-collapse:collapse"><tr><th>Requirement</th><th>Effective status</th><th>Origin</th><th>Value</th><th>Reviewer</th></tr>'

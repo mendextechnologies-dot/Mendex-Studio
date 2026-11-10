@@ -1,0 +1,5 @@
+[
+  {"tool_id":"ltspice","display_name":"LTspice","binaries":["LTspice.exe"],"locations":["ADI/LTspice/LTspice.exe"],"official_url":"https://www.analog.com/ltspice"},
+  {"tool_id":"femm","display_name":"FEMM","binaries":["femm.exe"],"locations":["femm*/bin/femm.exe"],"official_url":"https://www.femm.info/"},
+  {"tool_id":"kicad","display_name":"KiCad CLI","binaries":["kicad-cli.exe","kicad-cli"],"locations":["KiCad/*/bin/kicad-cli.exe"],"official_url":"https://www.kicad.org/"}
+]

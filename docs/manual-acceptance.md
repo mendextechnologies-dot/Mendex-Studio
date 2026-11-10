@@ -1,6 +1,6 @@
 # Remaining manual acceptance — v0.1 foundation
 
-This is a test procedure, not a completed qualification record. Release version stays 0.1.0.dev3 until the maintainer records acceptance.
+This is the independent-engineer pilot procedure, not a completed independent qualification record. The final addendum's v0.1 foundation gate is primary-workstation installation, repeatable smoke test, green tests and documented limitations; those checks can support a foundation tag separately from this broader pilot acceptance. Primary-workstation real window observations are recorded by scripts/interactive_acceptance.py; they are not independent human sign-off.
 
 1. A second engineer clones `https://github.com/mendextechnologies-dot/Mendex-Studio` on a separately prepared Windows workstation with Python 3.13 and VS Code. Run scripts/bootstrap.ps1 and record the commit, OS/runtime, test output and Doctor export. Missing/unqualified engineering tools must remain visible.
 2. Launch Studio. Create an illustrative product, fill a source-tagged specification, save, restart, reopen and confirm all fields. Create R002; confirm R001 cannot be changed and R002 copied the specifications.
@@ -9,6 +9,6 @@ This is a test procedure, not a completed qualification record. Release version 
 5. Record NOT_EVALUATED with the reason. Attach a clearly labeled regression fixture for a deliberately failing numerical rule, record FAIL, and confirm both CLI and desktop show FAIL. These are software fixtures, not actual engineering measurements.
 6. Export a draft report; confirm revision ID, assumptions, manual origin, requirement IDs, evidence hashes and unresolved checks. Modify a draft specification and confirm earlier evidence becomes effectively NOT_EVALUATED. A new revision must not inherit validation.
 7. Close Studio. Back up `.mendex` and `products` together, restore the backup into a separate data root and confirm products/evidence reopen. Never downgrade an application against a newer database; use its matching backup.
-8. Record tester, date, workstation, commit, actual observed results and unresolved issues. Tag v0.1.0 only after maintainer acceptance. No manufacturing release, certification or native simulation correctness is implied.
+8. Record tester, date, workstation, commit, actual observed results and unresolved issues for independent pilot acceptance. Do not infer that a foundation software tag represents this qualification. No manufacturing release, certification or native simulation correctness is implied.
 
 Automated tests and a fresh virtual environment on the development machine have already exercised persistence, failure paths, wheel installation and headless desktop launch. Native CAD benchmarks, actual interactive handoff and this independent human test are not substituted by those checks.

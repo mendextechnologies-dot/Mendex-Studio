@@ -1,0 +1,26 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "default": "not_evaluated",
+      "title": "Status",
+      "type": "string"
+    },
+    "metrics": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Metrics",
+      "type": "object"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "title": "ResultBundle",
+  "type": "object"
+}

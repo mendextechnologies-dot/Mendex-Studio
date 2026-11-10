@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "plugin_id": "example-tool-discovery",
+  "version": "0.1.0",
+  "adapters": [{"tool_id":"example-eda","display_name":"Example EDA (not installed)","binaries":["example-eda.exe"],"locations":[],"official_url":"https://example.org/"}],
+  "rules": []
+}

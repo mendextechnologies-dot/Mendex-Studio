@@ -4,10 +4,85 @@ import json
 from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout,
     QLabel, QLineEdit, QListWidget, QPushButton, QTextEdit,
-    QVBoxLayout, QWidget,
+    QVBoxLayout, QWidget, QTabWidget,
 )
 
 from mendex_core.evidence import ManualCheck
+from mendex_core.knowledge import GUIDELINES, GUIDELINES_REVISION
+
+
+class SimulationPanel(QWidget):
+    def __init__(self, service, guarded):
+        super().__init__()
+        self.service, self.guarded, self.revision = service, guarded, None
+        layout = QVBoxLayout(self)
+        self.context = QLabel("Select a product revision in Products")
+        layout.addWidget(self.context)
+        self.tools = QComboBox()
+        self.tools.addItems([adapter.tool_id for adapter in service.registry.list()])
+        layout.addWidget(self.tools)
+        button = QPushButton("Record simulation availability request")
+        button.clicked.connect(lambda: guarded(self.request))
+        layout.addWidget(button)
+        layout.addWidget(QLabel("No solver will run. Requests persist as NOT_SUPPORTED until a verified execution adapter exists."))
+        self.output = QTextEdit()
+        self.output.setReadOnly(True)
+        layout.addWidget(self.output)
+
+    def set_revision(self, revision):
+        self.revision = revision
+        self.context.setText(f"Simulation requests · {revision.revision_label} · execution unavailable")
+        self.refresh()
+
+    def refresh(self):
+        runs = self.service.list_runs(self.revision.revision_id) if self.revision else []
+        self.output.setPlainText(json.dumps([run.model_dump(mode="json") for run in runs], indent=2) if runs else "NOT_RUN · No simulation requests or solver outputs")
+
+    def request(self):
+        if not self.revision:
+            raise ValueError("Select a product revision first")
+        self.service.request_simulation(self.revision.revision_id, self.tools.currentText())
+        self.refresh()
+
+
+class KnowledgePanel(QTabWidget):
+    def __init__(self, service, guarded):
+        super().__init__()
+        self.service, self.guarded, self.revision = service, guarded, None
+        guidelines = QTextEdit()
+        guidelines.setReadOnly(True)
+        guidelines.setPlainText(f"Engineering guidelines · revision {GUIDELINES_REVISION}\n\n" + "\n\n".join(f"{title}\n{body}" for title, body in GUIDELINES))
+        self.addTab(guidelines, "Guidelines")
+        self.rules = QTextEdit()
+        self.rules.setReadOnly(True)
+        self.addTab(self.rules, "Engineering rules")
+        self.plugins = QTextEdit()
+        self.plugins.setReadOnly(True)
+        self.plugins.setPlainText("Data-only plugin manifests load from .mendex/plugins/*.json on startup. No plugin Python or model scripts are executed.\n\n" + json.dumps(service.list_plugins(), indent=2))
+        self.addTab(self.plugins, "Plugins")
+        ai_page = QWidget()
+        layout = QVBoxLayout(ai_page)
+        layout.addWidget(QLabel("Read-only AI interface · provider unavailable · no network requests or engineering outputs"))
+        self.question = QLineEdit()
+        self.question.setPlaceholderText("Question for a future configured provider")
+        layout.addWidget(self.question)
+        button = QPushButton("Check AI availability")
+        button.clicked.connect(lambda: guarded(self.ask))
+        layout.addWidget(button)
+        self.ai_output = QTextEdit()
+        self.ai_output.setReadOnly(True)
+        layout.addWidget(self.ai_output)
+        self.addTab(ai_page, "AI interface")
+        self.rules.setPlainText(json.dumps([rule.model_dump(mode="json") for rule in service.list_rules()], indent=2))
+
+    def set_revision(self, revision):
+        self.revision = revision
+        self.rules.setPlainText(json.dumps([rule.model_dump(mode="json") for rule in self.service.list_rules(revision.revision_id)], indent=2))
+
+    def ask(self):
+        if not self.revision:
+            raise ValueError("Select a product revision first")
+        self.ai_output.setPlainText(self.service.ai_advice(self.revision.revision_id, self.question.text()).model_dump_json(indent=2))
 
 
 class ToolPanel(QWidget):
@@ -114,6 +189,11 @@ class ValidationPanel(QWidget):
             button.clicked.connect(lambda checked=False, callback=callback: guarded(callback))
             actions.addWidget(button)
         layout.addLayout(actions)
+        self.evidence = QComboBox()
+        layout.addWidget(self.evidence)
+        open_button = QPushButton("Open selected evidence")
+        open_button.clicked.connect(lambda: guarded(self.open_evidence))
+        layout.addWidget(open_button)
         self.output = QTextEdit()
         self.output.setReadOnly(True)
         layout.addWidget(self.output)
@@ -126,6 +206,11 @@ class ValidationPanel(QWidget):
     def refresh(self):
         if self.revision:
             entries = self.service.validation_summary(self.revision.revision_id)
+            self.evidence.clear()
+            for entry in entries:
+                record = entry["record"]
+                if record.evidence_uri:
+                    self.evidence.addItem(f"{record.check.check_id} · {record.evidence_filename or 'evidence'}", str(record.record_id))
             overview = "\n".join(f"{entry['record'].check.check_id}: {entry['effective_status'].upper()} · {entry['record'].check.evidence_kind}\nReviewer: {entry['record'].check.reviewer} · stale: {entry['stale']} · evidence: {'not supplied' if entry['record'].evidence_uri is None else ('intact' if entry['evidence_integrity'] else 'missing or altered')}\n{entry['record'].check.notes}\n" for entry in entries)
             self.output.setPlainText(overview + "\nRecord details\n\n" + json.dumps([{**entry, "record": entry["record"].model_dump(mode="json")} for entry in entries], indent=2) if entries else "NOT_EVALUATED · No validation entries recorded")
 
@@ -137,6 +222,12 @@ class ValidationPanel(QWidget):
             check = ManualCheck.model_validate_json(dialog.editor.toPlainText())
             self.service.record_validation(self.revision.revision_id, check, dialog.path.text() or None)
             self.refresh()
+
+    def open_evidence(self):
+        identifier = self.evidence.currentData()
+        if not identifier:
+            raise ValueError("No attached evidence selected")
+        self.service.open_evidence(identifier)
 
 
 class ReportsPanel(QWidget):

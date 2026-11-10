@@ -1,4 +1,4 @@
-# Mendex Engineering Studio v0.1 — integrated foundation
+# Mendex Engineering Studio v0.1.0 — foundation
 
 Local Python/PySide6 desktop with SQLite products, typed specifications, immutable previous revisions, filesystem workspaces, native-tool discovery, manual evidence records and draft reports. No engineering calculations or simulation results are produced by the application.
 
@@ -47,6 +47,10 @@ Create products in Products, edit the typed JSON specification, save, then creat
 4. Open Reports, Generate draft dossier, select it and Open selected report. The HTML and `snapshot.json` contain frozen specifications, validation history, hashes, tool inventory and warnings. No released status is available.
 5. In Products, use Open in VS Code to open the selected revision folder, Open workspace for File Explorer, or Open project file for an associated native application. Files must be inside that revision workspace and use a supported document/CAD extension. Scripts and executables cannot be opened through this action. VS Code, Windows associations and CAD applications must already be installed.
 6. In Tool Manager, Run workstation doctor or Export diagnostics. Exports stay under `.mendex/diagnostics`; review environment paths before sharing.
+7. In Knowledge Center, review category-specific Engineering rules, loaded/rejected Plugins and the AI interface's explicit availability response. No provider or network connection is configured; no AI-generated engineering answer is produced.
+8. In Simulations, record an availability request. It persists the input snapshot and tool metadata as NOT_SUPPORTED, with no solver start or result. This is a job-model foundation, not a simulation runner.
+
+Draft revisions can be renamed or placed In Review. Review locks specification edits until returned to Draft; archived baselines cannot be reopened. Neither state grants product approval. Export specification creates a new JSON snapshot under requirements/; the database remains canonical. Product and specification edits save atomically. Evidence files keep their original name in metadata and use compact internal paths; Open selected evidence checks the hash before invoking an allowed document association.
 
 Evidence copies and metadata are append-only through the service. If specifications change, existing check records remain historical and their effective status becomes NOT_EVALUATED. Missing/modified evidence also becomes NOT_EVALUATED on recheck. Creating a new revision starts a new validation history. Reports do not infer an overall approval from historical PASS entries.
 
@@ -56,6 +60,10 @@ Evidence copies and metadata are append-only through the service. If specificati
 .venv\Scripts\python -m mendex_core.cli open-vscode --revision <revision-uuid>
 .venv\Scripts\python -m mendex_core.cli open-file --revision <revision-uuid> requirements/spec.json
 .venv\Scripts\python -m mendex_core.doctor --export
+.venv\Scripts\python -m mendex_core.cli rules
+.venv\Scripts\python -m mendex_core.cli plugins
+.venv\Scripts\python -m mendex_core.cli request-simulation --revision <revision-uuid> --tool ltspice
+.venv\Scripts\python -m mendex_core.cli runs --revision <revision-uuid>
 .venv\Scripts\python scripts/desktop_smoke.py
 ```
 
@@ -69,6 +77,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify_install.ps1
 
 This retains the verification environment in ignored `.mendex/qa`; it does not replace a second-engineer clean-machine acceptance test. See [manual acceptance](docs/manual-acceptance.md) for the remaining release gates.
 
-Database schema v2 migrates existing v1 data automatically. Before upgrading, close Studio and back up `.mendex` and `products` together. To roll back the application, restore the matching pre-upgrade backup; do not open v2 data with the Day 1 build. HTML/JSON are the supported draft formats; Word/PDF export remains unavailable.
+Database schema v3 migrates existing v1/v2 data automatically and preserves evidence. Before upgrading, close Studio and back up `.mendex` and `products` together. To roll back the application, restore the matching pre-upgrade backup; do not open v3 data with an older build. HTML/JSON are the supported draft formats; Word/PDF export remains a post-foundation enhancement.
+
+Data-only plugins can extend discovery and rules using [the template](templates/plugins/example-discovery.json); see [configuration instructions](config/README.md). The loader rejects invalid/conflicting manifests without importing Python. Built-in metadata and rule resources ship inside the wheel. Tool versions are read from available Windows file metadata; runtime compatibility remains unqualified.
+
+Manual primary-workstation handoff and packaging commands:
+
+```powershell
+.venv\Scripts\python scripts/interactive_acceptance.py --launch
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1
+```
+
+The first command opens actual VS Code, File Explorer and a harmless uniquely named text fixture, observes the matching windows and retains an acceptance record under ignored `.mendex/qa`. The second requires committed sources, runs local tests and produces a wheel/source archive/checksums under `dist`. Neither command runs a simulator, controls hardware or deploys software. The [v0.1 requirements matrix](docs/requirements-matrix.md) records what is implemented and what the final addendum explicitly excludes.
 
 See [implementation checklist](docs/implementation-checklist.md), [architecture](docs/architecture.md) and [known limitations](docs/known-limitations.md). No CI/CD or deployments are configured.

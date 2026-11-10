@@ -63,6 +63,7 @@ class ValidationRecord(Model):
 
 
 class SimulationRun(Model):
+    schema_version: str = Field(default="1.0", pattern=r"^1\.0$")
     run_id: UUID = Field(default_factory=uuid4)
     revision_id: UUID
     tool_id: str
@@ -73,6 +74,10 @@ class SimulationRun(Model):
     input_hash: str | None = None
     artifacts: list[str] = Field(default_factory=list)
     log_path: str | None = None
+    requested_at: datetime = Field(default_factory=now)
+    limitation: str = "Solver execution is unavailable; no simulation has been performed"
+    specification: Specification | None = None
+    tool_version: str | None = None
 
 
 class Report(Model):

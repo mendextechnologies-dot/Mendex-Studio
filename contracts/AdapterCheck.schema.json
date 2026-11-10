@@ -1,0 +1,17 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "default": "not_evaluated",
+      "title": "Status",
+      "type": "string"
+    },
+    "diagnostic": {
+      "default": "No independently checked benchmark has been executed",
+      "title": "Diagnostic",
+      "type": "string"
+    }
+  },
+  "title": "AdapterCheck",
+  "type": "object"
+}

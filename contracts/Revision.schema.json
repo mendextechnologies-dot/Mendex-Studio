@@ -3,6 +3,8 @@
     "Lifecycle": {
       "enum": [
         "draft",
+        "in_review",
+        "approved",
         "archived"
       ],
       "title": "Lifecycle",

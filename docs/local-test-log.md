@@ -39,3 +39,15 @@ Doctor reports framework_ready=true and workstation PARTIAL. SQLite quick_check 
 Desktop screenshots captured for Products, Transformer, Validation, Reports, Tool Manager, Knowledge Center and Doctor. Verified no missing glyphs or clipped primary controls. Repository metadata and setup/rollback/manual acceptance instructions updated. Source remote configured to the user-provided empty Mendex-Studio GitHub repository; integrated history stays on main.
 
 Pending: actual interactive editor/CAD handoff, second-engineer qualification, native benchmarks, final v0.1.0 tag and optional signed installer. No CI/CD, deployment or manufacturing approval created.
+
+## Foundation completion — 10 November 2026 (Asia/Calcutta)
+
+Version 0.1.0; SQLite schema v3. Final suite: **28 passed**, including missing contracts, JSON plugin loading/rejection (duplicate IDs, unsupported code fields and atomic conflicts), AI unavailability, category-specific rules, persisted NOT_SUPPORTED simulation requests, draft/review locks, label/spec exports, atomic saves, model-instance revalidation, empty-evidence rejection, metadata filename collision and backup/restore.
+
+The real primary-workstation acceptance script opened VS Code on the selected revision, File Explorer on its directory and a uniquely named harmless text fixture. Matching editor/document window titles and the Explorer CabinetWClass window were observed. The complete acceptance record is retained locally at `.mendex/qa/primary-acceptance/acceptance-acdb423c-a8f7-4168-a9c3-d44afc8782da.json`; it explicitly states independent_engineer_acceptance=NOT_PERFORMED. A deliberate software-only FAIL entry and draft dossier were recorded; no real engineering result is asserted.
+
+Windows-native Qt smoke captures show the product editor, review/export/handoff controls, module workspace, evidence view, reports, discovery, knowledge tabs and Doctor. Available LTspice file-version metadata reads 26.1.1.0 without launching LTspice; its runtime compatibility and benchmark remain unverified.
+
+The release wheel was installed in the separate local verification environment, where all 28 tests and a Windows-native installed desktop launch passed. Packaged tool/rule JSON resources were exercised by those installed-package tests. The regular developer environment was refreshed using the documented editable install. No native EDA executables or hardware were run during these checks.
+
+The final addendum's foundation release gate is primary-machine clean installation, repeatable smoke, no invented results, green tests and documented issues. Those checks are complete; independent-engineer pilot qualification is still external and unperformed. Manual packaging produces source/wheel artifacts and checksums, without CI/CD, deployment, bundled EDA tools or manufacturing approval.

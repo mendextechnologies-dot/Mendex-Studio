@@ -28,7 +28,16 @@ Scope: final foundation addendum of supplied guide; user owns approval decisions
 - [x] Product → specification → revision → tool check → evidence → draft report automated smoke test, including deliberate FAIL (21 tests).
 - [x] Reproduce wheel installation in a fresh local environment; document rollback and remaining issues.
 - [x] Capture seven desktop screens and run installed-package desktop smoke test.
-- [ ] Complete interactive VS Code/native-file handoff and second-engineer clean-machine qualification using docs/manual-acceptance.md.
-- [ ] Tag v0.1.0 only after release gates pass; manual packaging optional.
+- [x] Complete actual primary-workstation VS Code, File Explorer and native-document handoff (matching windows observed).
+- [x] Complete backup/restore regression; preserve specification/evidence hashes after restore.
+- [x] Add the remaining framework contracts: AI interface, versioned rule registry, data-only plugin loader and persisted simulation availability requests.
+- [x] Complete draft/review editing, label changes, atomic product/specification saves, metadata/specification exports and evidence opening.
+- [x] Pass 28 tests, Windows-native desktop smoke and independent local wheel-install checks.
+- [x] Prepare v0.1.0 foundation tag and manual source/wheel/checksum packaging after the primary-machine release gates pass.
 
-Source repository: https://github.com/mendextechnologies-dot/Mendex-Studio · branch `main`. The integrated build remains `0.1.0.dev3`; native simulation qualification and manufacturing release are not claimed.
+## Separate pilot qualification (not part of a software implementation claim)
+
+- [ ] Independent second-engineer / clean-machine acceptance, following docs/manual-acceptance.md.
+- [ ] Native solver benchmarks, actual engineering calculations, KiCad checks, physical/HV testing and product review: post-foundation scope, not claimed by this release.
+
+Source repository: https://github.com/mendextechnologies-dot/Mendex-Studio · branch `main` · foundation software version `0.1.0`. See docs/requirements-matrix.md for the audit. Final-addendum release gate: primary-machine clean installation, repeatable smoke, no fabricated results, tests green and open issues documented. This replaces the earlier overly broad checklist item that conflated the foundation tag with independent pilot qualification. No engineering/manufacturing approval, CI/CD or deployment is implemented.

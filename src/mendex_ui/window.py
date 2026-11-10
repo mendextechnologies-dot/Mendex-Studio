@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
 
 from mendex_core.models import Category, Specification
 from mendex_core.knowledge import GUIDELINES, GUIDELINES_REVISION
-from .panels import ToolPanel, ValidationPanel, ReportsPanel
+from .panels import ToolPanel, ValidationPanel, ReportsPanel, SimulationPanel, KnowledgePanel
 
 
 class ProductDialog(QDialog):
@@ -94,6 +94,12 @@ class StudioWindow(QMainWindow):
         revision = QPushButton("Create revision from active baseline")
         revision.clicked.connect(self.new_revision)
         form.addWidget(revision)
+        revision_actions = QHBoxLayout()
+        for title, callback in [("Rename draft", self.rename_revision), ("Toggle draft / review", self.toggle_review), ("Export specification", self.export_specification)]:
+            button = QPushButton(title)
+            button.clicked.connect(lambda checked=False, callback=callback: self.guarded(callback))
+            revision_actions.addWidget(button)
+        form.addLayout(revision_actions)
         handoff = QHBoxLayout()
         for title, callback in [("Open in VS Code", self.open_vscode), ("Open workspace", self.open_workspace), ("Open project file", self.open_file)]:
             button = QPushButton(title)
@@ -105,21 +111,21 @@ class StudioWindow(QMainWindow):
         pane.addWidget(split)
         self.pages.addWidget(products)
         self.module_pages = []
-        for title in ("Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace", "Simulations"):
+        for title in ("Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace"):
             label = QLabel(f"{title}\n\nImplementation: NOT IMPLEMENTED\nProduct evaluation: NOT_EVALUATED\n\nFoundation workspace only. No calculation, tool execution or result is available.")
             label.setMargin(30)
             label.setAlignment(Qt.AlignTop)
             self.pages.addWidget(label)
             self.module_pages.append(label)
+        self.simulation_panel = SimulationPanel(service, self.guarded)
+        self.pages.addWidget(self.simulation_panel)
         self.validation_panel = ValidationPanel(service, self.guarded)
         self.reports_panel = ReportsPanel(service, self.guarded)
         self.tool_panel = ToolPanel(service, self.guarded)
         for panel in (self.validation_panel, self.reports_panel, self.tool_panel):
             self.pages.addWidget(panel)
-        knowledge = QTextEdit()
-        knowledge.setReadOnly(True)
-        knowledge.setPlainText(f"Engineering guidelines · revision {GUIDELINES_REVISION}\n\n" + "\n\n".join(f"{title}\n{body}" for title, body in GUIDELINES))
-        self.pages.addWidget(knowledge)
+        self.knowledge_panel = KnowledgePanel(service, self.guarded)
+        self.pages.addWidget(self.knowledge_panel)
         nav.currentRowChanged.connect(self.pages.setCurrentIndex)
         nav.setCurrentRow(0)
         self.setStyleSheet("QMainWindow {background:#f3f6fa;} QListWidget {background:#142639;color:#ecf1f8;border:0;padding:10px;} QListWidget::item {padding:12px;} QListWidget::item:selected {background:#29628c;} QPushButton {padding:9px;} QTextEdit,QLineEdit,QComboBox {background:white;padding:6px;} QLabel {color:#172e44;}")
@@ -175,6 +181,8 @@ class StudioWindow(QMainWindow):
         if hasattr(self, "validation_panel"):
             self.validation_panel.set_revision(self.revision)
             self.reports_panel.set_revision(self.revision)
+            self.simulation_panel.set_revision(self.revision)
+            self.knowledge_panel.set_revision(self.revision)
             locations = ["magnetics", "circuit", "circuit", "pcb", "simulations"]
             requirements = ["Core geometry and material sources, winding construction, Bmax, duty limits and insulation requirements.", "Topology, input/output range, switching frequency, control mode, ripple and efficiency targets.", "MOSFET/IGBT/BJT datasheet, voltage/current/SOA ratings, gate drive and thermal assumptions.", "Native KiCad files, ERC/DRC evidence, clearance assumptions and qualified HV isolation review.", "Verified tool version, model inputs, solver logs, raw outputs and independently checked reference case."]
             for label, folder, requirement in zip(self.module_pages, locations, requirements):
@@ -194,8 +202,7 @@ class StudioWindow(QMainWindow):
             return
         def action():
             specification = Specification.model_validate_json(self.specification.toPlainText())
-            self.service.update_specification(self.revision.revision_id, specification)
-            self.product = self.service.update_product(self.product.product_id, self.name.text(), self.owner.text(), self.description.text())
+            self.product, self.revision = self.service.save_product_revision(self.product.product_id, self.revision.revision_id, self.name.text(), self.owner.text(), self.description.text(), specification)
             self.refresh()
         self.guarded(action)
 
@@ -208,6 +215,22 @@ class StudioWindow(QMainWindow):
                 self.service.create_revision(self.product.product_id, label)
                 self.refresh()
             self.guarded(action)
+
+    def rename_revision(self):
+        revision = self.require_revision()
+        label, accepted = QInputDialog.getText(self, "Rename draft revision", "Revision label", text=revision.revision_label)
+        if accepted:
+            self.service.rename_revision(revision.revision_id, label)
+            self.refresh()
+
+    def toggle_review(self):
+        revision = self.require_revision()
+        self.service.set_revision_status(revision.revision_id, "in_review" if revision.lifecycle_status == "draft" else "draft")
+        self.refresh()
+
+    def export_specification(self):
+        path = self.service.export_specification(self.require_revision().revision_id)
+        self.statusBar().showMessage(f"Specification snapshot exported: {path}")
 
     def require_revision(self):
         if not self.revision:

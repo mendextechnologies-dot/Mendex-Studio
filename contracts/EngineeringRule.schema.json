@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "Category": {
+      "enum": [
+        "transformer",
+        "dc_dc_converter",
+        "power_semiconductor",
+        "pcb"
+      ],
+      "title": "Category",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "rule_id": {
+      "pattern": "^[a-zA-Z0-9_.-]+$",
+      "title": "Rule Id",
+      "type": "string"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "categories": {
+      "items": {
+        "$ref": "#/$defs/Category"
+      },
+      "title": "Categories",
+      "type": "array"
+    },
+    "required_fields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Fields",
+      "type": "array"
+    },
+    "evidence_required": {
+      "title": "Evidence Required",
+      "type": "string"
+    },
+    "physical_verification": {
+      "default": false,
+      "title": "Physical Verification",
+      "type": "boolean"
+    },
+    "automatic_evaluation": {
+      "const": false,
+      "default": false,
+      "title": "Automatic Evaluation",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "rule_id",
+    "version",
+    "title",
+    "categories",
+    "evidence_required"
+  ],
+  "title": "EngineeringRule",
+  "type": "object"
+}

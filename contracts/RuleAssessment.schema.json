@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "rule_id": {
+      "title": "Rule Id",
+      "type": "string"
+    },
+    "rule_version": {
+      "title": "Rule Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "not_evaluated",
+        "physical_verification_required"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "missing_fields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing Fields",
+      "type": "array"
+    },
+    "notes": {
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "rule_id",
+    "rule_version",
+    "status",
+    "missing_fields",
+    "notes"
+  ],
+  "title": "RuleAssessment",
+  "type": "object"
+}

@@ -50,6 +50,18 @@
       "default": null,
       "title": "Installed Version"
     },
+    "version_source": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Version Source"
+    },
     "compatibility": {
       "default": "unknown",
       "title": "Compatibility",

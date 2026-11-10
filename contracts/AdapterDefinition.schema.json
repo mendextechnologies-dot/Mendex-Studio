@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "tool_id": {
+      "pattern": "^[a-zA-Z0-9_.-]+$",
+      "title": "Tool Id",
+      "type": "string"
+    },
+    "display_name": {
+      "minLength": 1,
+      "title": "Display Name",
+      "type": "string"
+    },
+    "binaries": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Binaries",
+      "type": "array"
+    },
+    "locations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Locations",
+      "type": "array"
+    },
+    "official_url": {
+      "pattern": "^https://",
+      "title": "Official Url",
+      "type": "string"
+    }
+  },
+  "required": [
+    "tool_id",
+    "display_name",
+    "official_url"
+  ],
+  "title": "AdapterDefinition",
+  "type": "object"
+}

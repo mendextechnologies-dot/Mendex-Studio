@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "revision_id": {
+      "format": "uuid",
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "question": {
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Question",
+      "type": "string"
+    },
+    "context": {
+      "additionalProperties": true,
+      "title": "Context",
+      "type": "object"
+    }
+  },
+  "required": [
+    "revision_id",
+    "question"
+  ],
+  "title": "AIRequest",
+  "type": "object"
+}

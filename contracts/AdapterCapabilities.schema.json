@@ -1,0 +1,68 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "tool_id": {
+      "title": "Tool Id",
+      "type": "string"
+    },
+    "adapter_version": {
+      "default": "0.1.0",
+      "title": "Adapter Version",
+      "type": "string"
+    },
+    "supported_os": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Supported Os",
+      "type": "array"
+    },
+    "supported_tool_versions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Supported Tool Versions",
+      "type": "array"
+    },
+    "features": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Features",
+      "type": "array"
+    },
+    "input_schema": {
+      "default": "Specification:1.0",
+      "title": "Input Schema",
+      "type": "string"
+    },
+    "output_schema": {
+      "default": "SimulationRun:1.0",
+      "title": "Output Schema",
+      "type": "string"
+    },
+    "timeout_s": {
+      "default": 60,
+      "exclusiveMinimum": 0,
+      "title": "Timeout S",
+      "type": "integer"
+    },
+    "error_taxonomy": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Error Taxonomy",
+      "type": "array"
+    },
+    "execution_enabled": {
+      "default": false,
+      "title": "Execution Enabled",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "tool_id"
+  ],
+  "title": "AdapterCapabilities",
+  "type": "object"
+}

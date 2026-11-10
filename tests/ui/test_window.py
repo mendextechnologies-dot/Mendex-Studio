@@ -23,6 +23,12 @@ def test_real_service_editor_roundtrip_and_restart(tmp_path):
     reopened = StudioWindow(StudioService(tmp_path))
     assert '24.0' in reopened.specification.toPlainText()
     assert reopened.pages.count() == 11
+    reopened.simulation_panel.request()
+    assert "not_supported" in reopened.simulation_panel.output.toPlainText()
+    assert "not_evaluated" in reopened.knowledge_panel.rules.toPlainText()
+    reopened.knowledge_panel.question.setText("What is available?")
+    reopened.knowledge_panel.ask()
+    assert "unavailable" in reopened.knowledge_panel.ai_output.toPlainText()
     reopened.service.record_validation(product.active_revision_id, ManualCheck(check_id="REQ-UI", reviewer="Test engineer", notes="No evidence available"))
     reopened.validation_panel.refresh()
     assert "REQ-UI" in reopened.validation_panel.output.toPlainText()

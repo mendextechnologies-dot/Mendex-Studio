@@ -1,0 +1,152 @@
+{
+  "$defs": {
+    "AdapterDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "tool_id": {
+          "pattern": "^[a-zA-Z0-9_.-]+$",
+          "title": "Tool Id",
+          "type": "string"
+        },
+        "display_name": {
+          "minLength": 1,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "binaries": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Binaries",
+          "type": "array"
+        },
+        "locations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Locations",
+          "type": "array"
+        },
+        "official_url": {
+          "pattern": "^https://",
+          "title": "Official Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id",
+        "display_name",
+        "official_url"
+      ],
+      "title": "AdapterDefinition",
+      "type": "object"
+    },
+    "Category": {
+      "enum": [
+        "transformer",
+        "dc_dc_converter",
+        "power_semiconductor",
+        "pcb"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "EngineeringRule": {
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "pattern": "^[a-zA-Z0-9_.-]+$",
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "categories": {
+          "items": {
+            "$ref": "#/$defs/Category"
+          },
+          "title": "Categories",
+          "type": "array"
+        },
+        "required_fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Fields",
+          "type": "array"
+        },
+        "evidence_required": {
+          "title": "Evidence Required",
+          "type": "string"
+        },
+        "physical_verification": {
+          "default": false,
+          "title": "Physical Verification",
+          "type": "boolean"
+        },
+        "automatic_evaluation": {
+          "const": false,
+          "default": false,
+          "title": "Automatic Evaluation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "rule_id",
+        "version",
+        "title",
+        "categories",
+        "evidence_required"
+      ],
+      "title": "EngineeringRule",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "pattern": "^1\\.0$",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "plugin_id": {
+      "pattern": "^[a-zA-Z0-9_.-]+$",
+      "title": "Plugin Id",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Version",
+      "type": "string"
+    },
+    "adapters": {
+      "items": {
+        "$ref": "#/$defs/AdapterDefinition"
+      },
+      "title": "Adapters",
+      "type": "array"
+    },
+    "rules": {
+      "items": {
+        "$ref": "#/$defs/EngineeringRule"
+      },
+      "title": "Rules",
+      "type": "array"
+    }
+  },
+  "required": [
+    "plugin_id",
+    "version"
+  ],
+  "title": "PluginManifest",
+  "type": "object"
+}

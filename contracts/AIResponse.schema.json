@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "enum": [
+        "unavailable",
+        "needs_review"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "provider": {
+      "title": "Provider",
+      "type": "string"
+    },
+    "text": {
+      "title": "Text",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "status",
+    "provider",
+    "text",
+    "limitations"
+  ],
+  "title": "AIResponse",
+  "type": "object"
+}

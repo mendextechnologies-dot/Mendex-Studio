@@ -15,6 +15,19 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("products")
     commands.add_parser("tools")
+    commands.add_parser("plugins")
+    rules = commands.add_parser("rules")
+    rules.add_argument("--revision")
+    ai = commands.add_parser("ai-availability")
+    ai.add_argument("--revision", required=True)
+    ai.add_argument("question")
+    request = commands.add_parser("request-simulation")
+    request.add_argument("--revision", required=True)
+    request.add_argument("--tool", required=True)
+    runs = commands.add_parser("runs")
+    runs.add_argument("--revision", required=True)
+    export = commands.add_parser("export-specification")
+    export.add_argument("--revision", required=True)
     doctor = commands.add_parser("doctor")
     doctor.add_argument("--root", type=Path, dest="doctor_root")
     doctor.add_argument("--export", action="store_true")
@@ -46,6 +59,18 @@ def execute(args):
         print(json.dumps([p.model_dump(mode="json") for p in service.list_products()], indent=2))
     elif args.command == "tools":
         print(json.dumps([t.model_dump(mode="json") for t in service.list_tools()], indent=2))
+    elif args.command == "plugins":
+        print(json.dumps(service.list_plugins(), indent=2))
+    elif args.command == "rules":
+        print(json.dumps([r.model_dump(mode="json") for r in service.list_rules(args.revision)], indent=2))
+    elif args.command == "ai-availability":
+        print(service.ai_advice(args.revision, args.question).model_dump_json(indent=2))
+    elif args.command == "request-simulation":
+        print(service.request_simulation(args.revision, args.tool).model_dump_json(indent=2))
+    elif args.command == "runs":
+        print(json.dumps([r.model_dump(mode="json") for r in service.list_runs(args.revision)], indent=2))
+    elif args.command == "export-specification":
+        print(json.dumps({"path": str(service.export_specification(args.revision))}))
     elif args.command == "validation":
         print(json.dumps([{**entry, "record": entry["record"].model_dump(mode="json")} for entry in service.validation_summary(args.revision)], indent=2))
     elif args.command == "report":

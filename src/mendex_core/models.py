@@ -10,7 +10,7 @@ def now() -> datetime:
 
 
 class Model(BaseModel):
-    model_config = ConfigDict(extra="forbid", allow_inf_nan=False, str_strip_whitespace=True)
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False, str_strip_whitespace=True, revalidate_instances="always", validate_assignment=True)
 
 
 class Category(StrEnum):
@@ -22,6 +22,8 @@ class Category(StrEnum):
 
 class Lifecycle(StrEnum):
     DRAFT = "draft"
+    IN_REVIEW = "in_review"
+    APPROVED = "approved"
     ARCHIVED = "archived"
 
 
