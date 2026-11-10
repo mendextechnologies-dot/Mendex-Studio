@@ -1,0 +1,14 @@
+{
+  "commit": "30cbb1508982d5f04be1629e400a6cc569fecf74",
+  "snapshot": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\latest",
+  "changed_application_files": [
+    "src/mendex_ui/window.py",
+    "src/mendex_ui/workspace_panels.py",
+    "tests/ui/test_workspace_panels.py"
+  ],
+  "source_hashes": {
+    "src/mendex_ui/window.py": "14e4931a7acf9a3dbd06f3b70c26325cd0dac0e17be33de291e86d29035f3721",
+    "src/mendex_ui/workspace_panels.py": "a6618a8f6cf726d4fe08e20acfdd14bfab04f84787c7b2f5401cc13b357c0420",
+    "tests/ui/test_workspace_panels.py": "54eb306de0e8bff3ca1bf9ca9495e1bff8f0376dd11df0a2ef29f00b60f66377"
+  }
+}

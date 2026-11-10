@@ -72,3 +72,14 @@ Source repository: https://github.com/mendextechnologies-dot/Mendex-Studio · br
 - [x] Integrated interactive engineering workbenches (`TransformerWorkspacePanel`, `SemiconductorWorkspacePanel`, `DCDCWorkspacePanel`) into `StudioWindow` while maintaining 14 navigation pages and dynamic specification synchronization.
 - [x] 90 automated tests passed across adapters, contracts, core services, UI, calculations, and integrations (`pytest` green in 10.17s).
 - [x] Desktop smoke tests passed (`scripts/desktop_smoke.py` and `scripts/v15_codex_smoke.py`).
+
+## Independent final verification — 10 November 2026
+
+This verification does not close the acceptance gate or implement fixes. Scope: frozen main `30cbb15`, initial main `7230079`, comparison Codex `f2be079`, released baseline `2055673`.
+
+- [x] Re-run latest main suite: **90 passed** at short paths; **13 failed, 77 passed** at the deeper root. Retain both results.
+- [x] Re-run Codex candidate: **96 passed** at short and deeper roots; these fixes are not present in tested main.
+- [x] Verify existing native RC software execution and raw artifacts; reproduce health, dataset, runner, parsing, report and input-collision failures without application changes.
+- [x] Inspect/test concurrent UI delta; retain stale unspecified-revision fields and hardcoded-export reproductions.
+- [x] Produce [independent final verification](audits/final-verification-20261110-01/FINAL_IMPLEMENTATION_VERIFICATION.md), complete status matrix, owners and completion tasks. Existing root-level verification report preserved separately.
+- [ ] Close independently reproduced defects and resolve blocked/unverified checks, then verify one immutable acceptance commit and obtain actual owner acceptance. **Studio completion is NOT YET VERIFIED.**

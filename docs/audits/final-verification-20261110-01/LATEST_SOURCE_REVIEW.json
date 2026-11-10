@@ -1,0 +1,65 @@
+[
+  {
+    "path": "docs/release-notes-v1.5.0.md",
+    "sha256": "9095ac1dde2f934ca84b8f6fcc92715b33b56734233ee873f01cb47338bc3405"
+  },
+  {
+    "path": "docs/implementation-checklist.md",
+    "sha256": "de3575343554ec4edec11bd30f7aa430173bc760ac834ccc8973b435687beff4"
+  },
+  {
+    "path": "FINAL_IMPLEMENTATION_VERIFICATION.md",
+    "sha256": "25e59123a5f0ca4195dd142f1492ef7360478b54ca9eaa93b223ec3dfcd757e4"
+  },
+  {
+    "path": "src/mendex_ui/window.py",
+    "sha256": "14e4931a7acf9a3dbd06f3b70c26325cd0dac0e17be33de291e86d29035f3721",
+    "definitions": {
+      "ProductDialog": 22,
+      "StudioWindow": 40,
+      "__init__": 41,
+      "guarded": 163,
+      "closeEvent": 169,
+      "refresh": 174,
+      "select_product": 185,
+      "select_revision": 201,
+      "create_product": 231,
+      "save": 239,
+      "new_revision": 248,
+      "rename_revision": 258,
+      "toggle_review": 265,
+      "export_specification": 270,
+      "require_revision": 274,
+      "open_vscode": 279,
+      "open_workspace": 283,
+      "open_file": 286,
+      "action": 253
+    }
+  },
+  {
+    "path": "src/mendex_ui/workspace_panels.py",
+    "sha256": "a6618a8f6cf726d4fe08e20acfdd14bfab04f84787c7b2f5401cc13b357c0420",
+    "definitions": {
+      "TransformerWorkspacePanel": 20,
+      "SemiconductorWorkspacePanel": 180,
+      "DCDCWorkspacePanel": 289,
+      "__init__": 292,
+      "set_revision": 319,
+      "calculate": 255,
+      "export_femm_script": 137,
+      "export_freecad_script": 159,
+      "_on_device_selected": 244,
+      "export_script": 335
+    }
+  },
+  {
+    "path": "tests/ui/test_workspace_panels.py",
+    "sha256": "54eb306de0e8bff3ca1bf9ca9495e1bff8f0376dd11df0a2ef29f00b60f66377",
+    "definitions": {
+      "test_transformer_workspace_panel": 17,
+      "test_semiconductor_workspace_panel": 63,
+      "test_dcdc_workspace_panel": 99,
+      "test_window_integration_with_workspace_panels": 131
+    }
+  }
+]

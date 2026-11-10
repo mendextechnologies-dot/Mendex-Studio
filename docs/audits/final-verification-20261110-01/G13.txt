@@ -1,0 +1,613 @@
+MENDEX
+Engineering & Validation Platform
+Master implementation blueprint • Desktop Studio • VS Code + Codex • Multi-engineer onboarding
+Version 1.0  |  10 November 2026  |  Draft for engineering review
+Document status: implementation specification; not a certification, validated product design, or verified installation record.
+
+Document control
+Field
+Value
+Owner
+Mendex Electronics
+Scope
+Power electronics: transformers, inductors, DC–DC, AC–DC, inverters, PCB and testing
+Architecture
+Local-first, modular Python core, PySide6 desktop, VS Code development
+Decision gates
+Architecture approval; pilot acceptance; production release
+Critical caveat
+Tool versions, licenses and OS support must be verified against official releases before installation
+How to use this guide
+Engineering lead: approve architecture, standards applicability and acceptance gates.
+Platform developer: implement the core, adapters, installer, desktop and CI in the chapter order.
+New engineer: follow onboarding and the first-project walkthrough.
+Reviewer: inspect evidence manifests and sign-off records; never infer safety from simulation alone.
+1. Executive scope
+MEVP is a repeatable engineering workflow rather than a bundle of software. It records product requirements, generates models, invokes approved simulators, preserves raw outputs, validates evidence, and supports controlled design release. A single Python core is shared by the desktop application, CLI and VS Code integrations.
+1.1 In scope
+Transformer and magnetic-component calculations; 2D magnetic analysis and optional advanced 3D workflows.
+Electrical simulation, PCB design checks, mechanical modeling, thermal studies and parameter optimization.
+Local desktop experience, one-command developer onboarding, team collaboration and reproducible reports.
+AI-assisted development using Codex, with explicit human review and tool execution boundaries.
+1.2 Out of scope for v1
+Automatic safety certification, guaranteed simulation-to-hardware equivalence, unattended high-voltage tests.
+Full bidirectional lossless conversion among LTspice, FEMM, KiCad and FreeCAD.
+Cloud multi-tenant platform or proprietary EDA replacement.
+2. System architecture
+Mendex Engineering Studio (PySide6)       VS Code + Codex
+                  \                         /
+                   MEVP CLI / Python service
+                              |
+          Specifications -> Workflow orchestrator
+                              |
+             Tool registry + adapter interfaces
+          / LTspice / FEMM / KiCad / FreeCAD / ...
+                              |
+          Raw evidence -> Validation -> Reports
+                              |
+                Human release approval
+Design decisions: local-first execution; typed versioned JSON inputs; SI units internally; subprocess isolation for external tools; no hidden modifications to released baselines; append-only evidence metadata; human sign-off for manufacturing.
+3. Tool inventory and adoption gates
+Tier
+Tool
+Purpose / integration approach
+Core
+VS Code, Git, Python, Codex
+Developer UI, source control, automation; Codex uses repository AGENTS.md
+Core
+LTspice
+Electrical simulations; CLI/batch behavior and model licensing verified per OS
+Core
+KiCad
+Schematic/PCB; kicad-cli ERC/DRC, BOM and manufacturing exports
+Core
+FEMM
+2D magnetics; Python/automation capability depends on installed release and OS
+Core
+FreeCAD
+Mechanical CAD; Python scripts and batch execution
+Core
+NumPy, SciPy, Pydantic, pytest
+Numerical methods, schemas, testing
+Phase 2
+ngspice, PySpice
+Scriptable circuit simulation; PySpice optional
+Phase 2
+Gmsh, Elmer FEM
+Meshing and multiphysics
+Phase 2
+OpenMDAO, python-control
+Optimization and control analysis
+Research
+MagNet, JAXMagNet, PE-GPT
+Evaluate dataset/model applicability, provenance and maturity
+Optional
+OpenModelica, Octave, OpenFOAM, MOOSE
+Systems, control, CFD, multiphysics
+Lab
+PyVISA, sigrok
+Instrument automation and supported signal acquisition
+Do not assume every listed research project is in the IEEE collection, maintained, commercially suitable, or ready to integrate. Maintain a tool-review sheet with official project URL, exact version, license, checksum, platform support, test evidence and owner. Official starting points: kicad.org; analog.com/ltspice; femm.info; freecad.org; ngspice.sourceforge.io; gmsh.info; elmerfem.org; openmdao.org; python-control.readthedocs.io; pyvisa.readthedocs.io; sigrok.org.
+4. Repository and project structure
+mendex-engineering/
+  AGENTS.md                 README.md
+  pyproject.toml            uv.lock (or pinned requirements)
+  .vscode/                 .github/workflows/
+  config/tool-registry/    config/validation-policies/
+  src/mendex/{core,schemas,orchestrator,adapters,validation,reports,cli,studio}/
+  tests/{unit,integration,reference,fixtures}/
+  scripts/{bootstrap,doctor,release}/
+  templates/{products,reports,adapters}/
+  docs/{architecture,setup,standards,security,operations}/
+  products/<product-id>/{requirements,models,pcb,mechanical,results,reviews}/
+Product folders contain references to large immutable evidence artifacts; do not commit multi-gigabyte simulation output directly to ordinary Git. Use Git LFS or approved artifact storage with hashes and retention policies.
+5. Developer installation: Windows-first reference path
+Windows 11 x64 is the reference development target, pending hardware and tool compatibility verification. macOS/Linux support must be qualified separately; FEMM and LTspice workflows may differ substantially. Never advertise cross-platform support without passing platform-specific smoke tests.
+5.1 Prerequisites
+Administrator-approved workstation, sufficient RAM/storage, access to official vendor downloads, Git and VS Code.
+Python version pinned by project lockfile; install an approved package manager such as uv if selected.
+Install KiCad, LTspice, FEMM and FreeCAD from verified vendor sources; record versions and executable locations.
+Configure Codex in VS Code using the currently supported extension or CLI; sign in with authorized account.
+5.2 Bootstrap sequence
+git clone <approved-mendex-repository-url>
+cd mendex-engineering
+python --version
+git --version
+python -m venv .venv
+.venv\Scripts\activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+python -m pytest tests/unit
+python -m mendex.cli doctor
+python -m mendex.cli tools list
+python -m mendex.studio
+These are TARGET commands to implement, not currently working released commands. The setup wizard should wrap the same functions and provide actionable diagnostics. For macOS/Linux replace activation with source .venv/bin/activate.
+5.3 Tool discovery and verification
+Tool
+Detection
+Smoke test
+KiCad
+kicad-cli --version or configured path
+Run ERC/DRC on reference board; capture exit status and report
+LTspice
+Configured executable path and version
+Run reference netlist; confirm waveform/log outputs
+FEMM
+Executable/API availability
+Solve known magnetic benchmark and compare tolerance
+FreeCAD
+Executable and Python interface
+Generate simple solid and export STEP
+Python core
+Package metadata
+Run unit tests and schema validation
+Lab instruments
+Approved VISA backend/device discovery
+Simulation/mock only until lab authorization
+6. Multi-engineer onboarding and distribution
+Offer two distributions: (A) developer repository with VS Code and source, and (B) signed Mendex Engineering Studio installer with bundled Python runtime and MEVP core. External EDA tools remain separately installed unless redistribution and licensing explicitly permit bundling.
+Engineer receives GitHub access and role-based permissions.
+Downloads signed Studio release or clones approved repository tag.
+Setup wizard checks OS, disk space, permissions, tool versions, paths and license acknowledgments.
+Wizard offers official install links or approved silent installers, with explicit user approval.
+Doctor runs reference checks; onboarding status is READY / PARTIAL / BLOCKED with reasons.
+Engineer opens sample transformer project, runs calculation + FEMM reference case, reviews report and records onboarding completion.
+Desktop releases should publish signed installers, SHA-256 checksums, release notes, supported-tool matrix and rollback installers. Updates must never silently migrate approved design baselines.
+7. Mendex Engineering Studio UI specification
+Screen
+Required capabilities
+Home
+Recent projects, alerts, tool health, pending approvals
+Project wizard
+Template, product type, units, target market, requirements, owner
+Specification editor
+Typed fields, ranges, units, source and assumptions
+Workflow builder
+Calculation -> simulation -> validation with dependencies and dry-run
+Tool Manager
+Detected version, compatibility, install instructions, repair, smoke test
+Simulation center
+Job queue, progress, logs, cancel/retry, input snapshots
+Validation center
+Pass/fail/not-evaluated/blocked, evidence links and waivers
+Evidence viewer
+Raw outputs, hashes, plots, provenance and differences
+Reports
+Generate draft DOCX/PDF; mark simulated vs measured
+Review & release
+Reviewer assignments, sign-off, immutable release package
+Settings
+Paths, tool registry, access policies, offline status
+PySide6 is recommended for the desktop shell. Use background worker processes to avoid freezing the UI. The desktop should invoke the same CLI/core services used by VS Code, never reimplement validation logic in UI event handlers.
+8. VS Code and Codex workflow
+Repository AGENTS.md is the AI instruction entry point; link to versioned engineering policies and do not paste an enormous manual into it. Treat Codex output as proposed changes subject to tests and review. Codex can create models/scripts and run approved local simulations, but cannot sign releases or erase raw evidence.
+# AGENTS.md (starter)
+Read docs/architecture.md and docs/engineering-rules.md before changes.
+Use SI units internally and typed, versioned schemas.
+Never fabricate simulation or hardware measurements.
+Never modify immutable evidence or approved release baselines.
+Record tool version, inputs, model hashes, logs and solver exit codes.
+Mark unavailable checks NOT_EVALUATED, never PASS.
+Run unit, integration and reference tests before proposing a merge.
+Require human approval for hazardous tests, hardware control and releases.
+Recommended VS Code tasks: Mendex: Doctor; New Project; Run FEMM; Run LTspice; KiCad ERC/DRC; Validate; Generate Report; Open Studio. Implement these as tasks invoking MEVP CLI; optionally add a VS Code extension later. AI requests should specify project ID, approved topology, acceptance criteria and allowed tools.
+9. Core data contracts
+{
+  "schema_version": "1.0",
+  "project_id": "MX-HVDC-001",
+  "revision": "A",
+  "product_type": "dc_dc_converter",
+  "requirements": {
+    "vin_min_v": 20.0, "vin_nom_v": 24.0, "vin_max_v": 30.0,
+    "vout_v": 1000.0, "iout_a": 0.05,
+    "topology": "flyback", "switching_frequency_hz": 100000
+  },
+  "assumptions": ["Illustrative values only; no approved design"],
+  "standards_profile": "UNASSIGNED"
+}
+Use explicit units in field names or a unit-aware schema; reject ambiguous unitless engineering inputs. Version schema and provide tested migrations. Tool results include status, inputs hash, model hash, executable version, execution environment, start/end time, solver exit code, raw artifact links, parsed metrics, warnings and limitations.
+10. Adapter plugin contract and extension policy
+class ToolAdapter(Protocol):
+    def probe(self) -> ToolCapabilities: ...
+    def validate(self, spec: DesignSpec) -> ValidationResult: ...
+    def prepare(self, spec: DesignSpec, workdir: Path) -> PreparedJob: ...
+    def run(self, job: PreparedJob, timeout_s: int) -> RunRecord: ...
+    def parse(self, record: RunRecord) -> ResultBundle: ...
+    def self_test(self) -> TestReport: ...
+Each adapter must declare tool ID, semantic adapter version, supported tool-version ranges, supported OS, features, input/output schemas, timeouts, error taxonomy and benchmark fixtures. Never allow plugins to mark their own engineering results approved.
+10.1 Adding a new tool
+Create proposal: use case, alternatives, official license, platform support, maintenance status and security risks.
+Implement adapter from template and registry manifest; pin dependencies.
+Add unit tests, simulated failure tests and an independently checked benchmark.
+Verify output provenance, timeouts, cancellation, logging and isolation.
+Expose only registered capabilities in Studio and CLI; add docs and install checks.
+Release behind feature flag; qualify per OS and tool version before default enablement.
+11. Engineering workflow: transformer pilot
+Pilot MX-HVDC-001 is illustrative: 24 V nominal input, 1 kV / 50 mA output, 100 kHz candidate flyback topology. These values are not sufficient to specify a safe transformer. Collect input range, duty-cycle limits, control method, operating mode, isolation category, pollution degree, altitude, ambient temperature, winding construction, insulation system and target standards before design approval.
+Requirements gate: signed product specification and applicable standards profile.
+Analytical gate: turns ratio, peak current, core flux swing, inductance, losses and margins with cited equations and material data.
+FEMM gate: core geometry/material, excitation, boundary conditions, mesh convergence, saturation margin and leakage assumptions.
+Electrical gate: LTspice switching waveforms, startup, line/load corners, stress and transient tests.
+PCB gate: KiCad ERC/DRC, creepage/clearance review, footprint verification and assembly review.
+Thermal gate: loss budget and justified thermal model; lab confirmation later.
+Physical gate: approved high-voltage test plan, rated equipment, interlocks and authorized supervision.
+Release gate: all mandatory evidence present, deviations approved, independent engineering review.
+12. Validation policy and statuses
+Status
+Meaning
+PASS
+Executed check met approved numerical criteria with evidence
+FAIL
+Executed check violated criteria
+NOT_EVALUATED
+Check not executed or required evidence unavailable
+BLOCKED
+Dependency, environment or safety gate prevents execution
+WAIVED
+Documented exception approved by authorized reviewer; not a pass
+Rules should be machine-readable, versioned and associated with product type and standards profile. Critical safety requirements cannot be waived solely by a developer. A passing KiCad DRC or FEMM model is not proof of electrical safety, EMI compliance, dielectric withstand or production readiness.
+13. Evidence and reproducibility
+For every run store a manifest containing input hash, source commit, adapter/tool versions, OS, solver options, timestamps, exit code, stdout/stderr, raw results, parsed metrics, plots and validation rule version. Raw outputs are write-once; reports link to evidence IDs. For reproducibility, preserve model files and external material/library versions. Never overwrite the previous successful run.
+14. Security and collaboration
+Private GitHub repository; least-privilege access, protected main branch and peer review. Automated CI/CD checks will be introduced in a later phase.
+Separate development, reviewed baseline and released artifact states.
+No credentials in Git; use OS credential store or approved secret manager.
+Allowlisted executable paths; subprocess timeouts; sandbox untrusted model files where feasible.
+Log who initiated simulations and approved exceptions; restrict release signing.
+Treat third-party CAD libraries, SPICE models and AI-generated code as supply-chain inputs requiring review.
+15. Local testing and manual desktop packaging (CI/CD deferred)
+For v0.1, run linting, schema checks, unit tests, adapter mock tests and desktop smoke tests manually on developer machines. Record results in a local test log. Package the desktop application manually after the end-to-end pilot passes. Automated CI/CD workflows, deployment pipelines and release automation are explicitly out of scope until a later phase.
+16. Reporting and sign-off
+Reports include document control, requirements traceability, assumptions, tool inventory, model inputs, plots, validation table, failures, outstanding physical tests, limitations, reviewer names and release status. Use separate labels for CALCULATED, SIMULATED and MEASURED results. The report generator must refuse to issue a RELEASED status without authorized sign-off.
+17. Standards selection
+Maintain a standards applicability matrix by intended use, jurisdiction, voltage, insulation and product classification. Candidate families to review include IEC 60664, IEC 61558, IEC 61010, IEC 62368, IEC 61000 and IPC-2221/IPC-2152. These are examples, not universal requirements; purchase and consult the applicable editions and qualified safety engineers.
+18. Roadmap and acceptance criteria
+Phase
+Deliverable
+Exit criterion
+0: Discovery
+Approved scope, OS matrix, tool/license audit
+Engineering lead signs architecture and tool shortlist
+1: Foundation
+Repo, schemas, CLI, doctor, CI, AGENTS.md
+Fresh machine can pass unit and doctor checks
+2: Core adapters
+LTspice, FEMM, KiCad integration
+Reference benchmarks reproducible with archived evidence
+3: Validation
+Rule engine, manifests, reports
+No fabricated pass; failure paths verified
+4: Desktop
+PySide6 wizard, project screens, Tool Manager
+New engineer completes guided onboarding
+5: Advanced
+FreeCAD, optimization, optional thermal
+Adapters pass acceptance tests
+6: Lab and release
+Instrument controls and approval workflow
+Safety-reviewed hardware test procedure and audited sign-off
+Planning range: initial pilot roughly 10–18 weeks with appropriate engineering and development capacity; schedule is provisional and should be estimated after OS/tool discovery.
+19. Operational runbooks
+19.1 When installation fails
+Capture doctor output, OS build, exact tool versions and executable paths.
+Check permission, antivirus quarantine, path quoting and missing runtime dependencies.
+Run the tool standalone before diagnosing its adapter.
+Use supported-version matrix; never silently downgrade tool versions.
+Escalate with sanitized logs and reproducible reference project.
+19.2 When simulation fails
+Preserve failed inputs, logs and solver exit code.
+Classify failure as environment, invalid model, numerical convergence or unsupported capability.
+Do not report partial numerical outputs as successful results.
+Retry only with a documented parameter change and new run ID.
+19.3 When a tool is upgraded
+Install in staging; run reference benchmarks and compare tolerances.
+Review file-format/API changes and adapter compatibility.
+Approve registry version update via pull request.
+Publish release notes and retain rollback path.
+20. Sample Codex tasks
+Task A: “Read AGENTS.md and docs/architecture.md. Implement a read-only tool doctor for KiCad and FEMM using versioned adapter contracts. Add mocked tests and a benchmark smoke-test command. Do not install tools or modify global PATH without approval.”
+Task B: “For MX-HVDC-001, validate the JSON specification and generate a calculation-only draft. Mark missing insulation, material and topology assumptions as BLOCKED. Do not claim production readiness.”
+Task C: “Create a PySide6 Tool Manager screen using core API data. Show installed, unsupported and missing states; include version and self-test evidence. No direct validation logic in UI.”
+21. New engineer quick start checklist
+Request access to repository and release portal.
+Install approved desktop release or clone repository tag.
+Run setup wizard and Mendex Doctor.
+Complete reference sample with all required tools detected.
+Open project in VS Code; confirm Codex reads AGENTS.md.
+Submit first change via feature branch and PR.
+Review safety and release responsibilities with engineering lead.
+22. Decisions still required before implementation
+Decision
+Default proposal
+Reference OS
+Windows 11 x64; qualify macOS/Linux separately
+Primary UI
+PySide6 desktop + VS Code
+Core language
+Python with pinned dependencies
+Source control
+Private GitHub, protected main
+First product pilot
+Low-current HV DC–DC transformer/converter
+Storage
+Git + LFS/artifact store with hashes
+Safety approver
+Named qualified engineering lead
+Installer signing
+Organization-controlled code signing
+Tool versions
+Freeze after official vendor verification
+23. Final acceptance checklist
+Clean workstation onboarding succeeds with documented prerequisites.
+Desktop and CLI show identical validation status for same evidence.
+All adapters provide version and self-test metadata.
+Failed simulations never appear as passing results.
+Reference models reproduce within approved tolerances.
+Raw evidence and released baselines are immutable.
+New adapter can be added without editing the core orchestrator.
+Manufacturing release requires independent authorized review.
+Installation, rollback, troubleshooting and developer instructions are tested by a second engineer.
+End of implementation blueprint. Next artifact after architecture approval: executable repository skeleton, bootstrap/doctor scripts, sample transformer project and desktop UI prototype.
+
+V1 PILOT ADDENDUM — FOCUSED MENDEX STUDIO
+Revision 1.1 | 10 November 2026 | Implementation priority: prove one complete engineering workflow before adding enterprise features. This addendum supersedes broader v1 scope wherever inconsistent; the original chapters remain the long-term platform reference.
+24. Revised mission and deliberately narrow v1 scope
+Build Mendex Studio Pilot as a local-first desktop application for a small engineering team developing high-frequency transformers and power-conversion circuits. It is an engineering workbench and evidence tracker, not a general ERP, full PLM, automated CAD designer, or safety certification system.
+Included in pilot
+Deferred until pilot passes
+One pilot product: isolated high-frequency DC-DC supply; configurable transformer design
+AC-DC, inverters, motor drives, enterprise-wide PLM
+MOSFET, IGBT and BJT device records; diode, rectifier and gate-drive checks
+Full semiconductor device physics and automatic device selection
+LTspice + FEMM + KiCad workflow, Python calculations
+Elmer, OpenFOAM, OpenModelica, large optimization stack
+Desktop UI, VS Code handoff, local projects, revision history
+Web portal, procurement, ERP, cloud multi-tenancy
+Evidence-backed reports, human review and pilot release package
+Unattended production sign-off and compliance certification
+First product is a demonstration only. Illustrative starting targets (24 V DC input, high-voltage low-current output) must not be treated as final requirements; the responsible engineer must approve the actual voltage range, power, isolation class, topology, frequency, duty cycle, temperature limits and safety test plan before design execution.
+25. Existing product experiences to adapt, not clone
+Reference product
+Observed design pattern
+Mendex pilot adaptation
+Altium 365
+Requirements linked to design, structured reviews, checklists and snapshots
+Requirement ID → simulation/test evidence; simple review checklist and revision snapshot
+Autodesk Fusion
+Design-centered workspace and mechanical/electronic project context
+One product overview with links to native design tools; no embedded CAD rewrite
+OpenBOM
+Item/BOM revisions, change history and product context
+Simple component list, source links, BOM export, revision diff; no procurement
+Siemens Teamcenter / Xcelerator
+Controlled lifecycle and traceability
+Small explicit states, approver identity and immutable release manifest
+Design principles: one product landing page; progressive disclosure; persistent left navigation; prominent next action; clear “not run / failed / passed / review required” states; one-click open in native application; every number links to raw evidence. These are design inspirations, not claims of integration with those commercial systems.
+26. Mendex Studio pilot UI — concrete screens and journeys
+Screen
+Required v1 elements
+Acceptance check
+Home / Products
+Product cards, owner, revision, stage, blockers, last run
+Open a product in two clicks
+Product Overview
+Specifications, lifecycle rail, next action, file locations, recent activity
+Every design artifact has a resolvable path
+Transformer Designer
+Core/material, winding assumptions, calculation outputs, FEMM launcher
+Missing inputs block execution; units displayed
+Circuit Lab
+LTspice source file, run history, plots, device ratings, comparison
+One approved sample run produces traceable evidence
+PCB Workspace
+KiCad project link, ERC/DRC result, manufacturing export status
+CLI check results parsed; manual exceptions visible
+Validation Center
+Requirement matrix, check status, evidence link, reviewer
+No “passed” without verifiable evidence
+Reports
+Report list, revision, generated time, DOCX/PDF export
+Rebuild report from frozen inputs
+Tool Manager / Setup
+Executable path, version, health check, repair guidance
+Missing tool cannot silently show ready
+Knowledge Center
+Contextual SOPs, approved checklists, help links
+Guideline revision displayed on screen
+Primary engineer journey
+Create product → approve requirement baseline → calculate transformer → review FEMM model and results → simulate switching stage in LTspice → compare against acceptance criteria → create/review KiCad design → run ERC/DRC → attach physical-test plan/results if available → review unresolved risks → export pilot design dossier. The UI should always show the current stage and the next permitted action.
+Status semantics
+Project stages: Draft, Requirements Approved, Design In Progress, Simulation Reviewed, PCB Reviewed, Prototype Pending, Testing In Progress, Pilot Review, Pilot Closed. Individual checks: NOT_RUN, RUNNING, PASS, FAIL, ERROR, NOT_APPLICABLE, NEEDS_REVIEW. Stage completion must not imply product safety approval.
+27. Desktop, VS Code, Codex and local data integration
+Use a single Python core for both the PySide6 desktop interface and VS Code command-line tasks. The desktop app invokes versioned core services rather than maintaining separate business logic. The first pilot can use SQLite for structured metadata and a local filesystem for project source and immutable run artifacts; add PostgreSQL and shared object storage only after team collaboration needs justify migration.
+Element
+Pilot implementation
+Boundary
+Desktop
+PySide6 UI + Python application services
+No direct editing of frozen result folders
+VS Code
+Open project folder; tasks invoke `mendex` CLI
+Uses same config, product ID and revision
+Codex
+AGENTS.md, approved prompts, repository tests
+AI cannot alter approved evidence or release status
+LTspice
+Versioned netlists, batch runs where supported, parsed raw/log output
+Record actual tool version and exit state
+FEMM
+Python automation supported by selected installation
+Magnetic model is not a physical safety test
+KiCad
+Native editor + kicad-cli ERC/DRC and export
+DRC does not certify HV insulation
+Storage
+SQLite metadata + project folders + SHA-256 manifest
+Do not overwrite completed run artifacts
+Suggested project layout
+products/MC-100/revisions/R001/{requirements,calculations,femm,ltspice,kicad,components,validation,reports}; runs/<run-id>/{inputs,logs,raw,parsed,manifest.json}; docs/sops; config/tool-registry.yaml; src/mendex; tests. Keep generated reports out of the source-of-truth calculation folders.
+Codex execution rules
+Read AGENTS.md, project specification, engineering SOP and adapter contract before modifying models.
+Use an explicit command such as `mendex validate --product MC-100 --revision R001`; desktop and VS Code call the same command.
+Never invent waveform values, material data, temperature rise or test outcomes; label unavailable results NOT_RUN.
+Propose changes in a branch and run unit/integration tests; changes to acceptance thresholds require human approval.
+Store exact tool versions, source-file hashes, run parameters and parser version with every run.
+28. Installation and onboarding — minimum viable experience
+Supported pilot platform
+Windows 11 is the initial reference platform because LTspice, KiCad and FEMM workflows require OS-specific verification. macOS/Linux are future compatibility targets, not promised pilot deliverables. Verify actual FEMM build and Python binding compatibility before freezing the installer.
+New engineer sequence
+Install Git, VS Code, supported Python, and the approved native applications from their official sources.
+Clone the private Mendex repository and open the included .code-workspace file.
+Run the provided bootstrap script to create a virtual environment and install pinned Python dependencies.
+Launch Mendex Studio → Setup Wizard; discover native executables, record versions and run smoke tests.
+Run the reference transformer calculation, a FEMM sample, LTspice reference simulation and KiCad ERC/DRC sample.
+Generate the sample evidence report and compare it with the approved benchmark; only then mark the workstation Ready.
+The future setup wizard should show clear per-tool states: NOT_INSTALLED, FOUND_UNVERIFIED, READY, INCOMPATIBLE, FAILED. Offer official installation guidance and a diagnostics export. Never auto-download third-party installers or silently accept licenses.
+Pilot installation acceptance
+A clean supported Windows machine must be able to clone the repository, follow the README, pass `mendex doctor`, open the sample product, execute available smoke tests, and export a report. A missing optional tool must be visibly degraded rather than incorrectly reported as successful.
+29. Validation, reporting and safety gates for power electronics
+Area
+Minimum pilot checks / evidence
+Specifications
+Input/output ranges, power, ripple, efficiency target, isolation, ambient, operating mode; approved requirement IDs
+Transformer
+Core geometry/material/source, Bmax, inductance, turns, flux density, winding assumptions, leakage estimate, loss assumptions
+Switching devices
+MOSFET/IGBT/BJT voltage/current/SOA and switching loss assumptions; gate drive and thermal limits
+Circuit
+Input sweep, load sweep, startup, steady state, peak device stress, output ripple and waveform captures
+PCB
+ERC/DRC reports, copper/clearance assumptions, HV isolation review, Gerber package and board revision
+Prototype
+Test plan, instrument calibration status, measurements and deviations; remain NOT_RUN until measured
+Release
+Unresolved issue list, reviewer decision, exact manifest and human sign-off
+High-voltage insulation, creepage, clearance, dielectric withstand, temperature, EMC and functional safety require product-specific engineering assessment and suitable physical testing. No simulator or AI assistant can certify a design safe. If any mandatory check is failed, missing or unreviewed, block “Pilot Review Complete”.
+Report pack required in pilot
+Product specification and requirement traceability matrix.
+Transformer design and FEMM analysis report with model limitations.
+LTspice electrical simulation report with plots and stress summary.
+KiCad ERC/DRC summary and PCB manufacturing artifact index.
+Component/BOM list with manufacturer datasheet references and revision.
+Consolidated validation matrix, exceptions and human review sign-off.
+Machine-readable run manifest (JSON), plus a human-readable DOCX/PDF dossier.
+30. End-to-end demonstration, acceptance and enhancement gates
+The pilot is successful only when a second engineer can independently install the platform, open a sample product, run the same calculation and supported simulations, inspect evidence in the desktop UI, open source files in VS Code and native applications, and produce a reproducible report. The test must include at least one deliberate failure to prove that validation gates cannot be bypassed.
+Milestone
+Demonstrable output
+Exit criterion
+M0: Foundation
+Repo, pinned environment, AGENTS.md, CLI, doctor
+Second machine passes setup checks
+M1: UI and project model
+Product dashboard, specs, files, lifecycle
+Can create and reopen revisioned product
+M2: Transformer + circuit
+FEMM and LTspice adapters with reference cases
+Raw outputs and parsed results agree with reference checks
+M3: PCB and evidence
+KiCad checks, evidence store, validation matrix
+Failed DRC correctly blocks review
+M4: Pilot dossier
+Reports, revision snapshot, approval workflow
+Second engineer reproduces dossier
+Deferred enhancement backlog
+After M4, prioritize: multi-user shared service and permissions; stronger BOM/component library; FreeCAD and thermal analysis; automated instrument acquisition; optimization; optional in-app AI assistant; web read-only management portal. New tools must implement the existing adapter contract, reference benchmarks, health checks, evidence schema and regression tests before appearing as Ready in the UI.
+31. Reference material and design decisions
+The following official references inform UI and workflow patterns; they are not dependencies and do not grant rights to reproduce proprietary UI assets.
+Altium 365 design reviews — https://www.altium.com/documentation/altium-365/project-design-reviews
+Altium 365 requirements — https://www.altium.com/documentation/altium-365/requirements-portal
+OpenBOM product data and revision patterns — https://www.openbom.com/revision-control
+KiCad CLI ERC/DRC — https://docs.kicad.org/master/en/cli/cli.html
+FreeCAD — https://www.freecad.org/
+FEMM — https://www.femm.info/
+LTspice — https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html
+Open decisions before implementation: final pilot product requirements; exact Windows/FEMM/LTspice/KiCad versions; whether pilot uses local-only accounts or shared identity; approved engineering check thresholds; report signatory roles; and whether PCB fabrication is included in the first acceptance run.
+
+PART IV — THREE-DAY FOUNDATION BUILD (v1.2 ADDENDUM)
+Release intent: Mendex Engineering Studio v0.1 is an integrated, extendable desktop framework—not a completed or certified power-electronics design system. Build the framework now; enhance engineering capabilities as real product work exposes requirements. This addendum supersedes any earlier v1.0/v1.1 timelines or feature claims that imply fully automated engineering validation in three days.
+24. Scope and Definition of Done
+Primary domains: high-frequency transformers and magnetics; isolated/non-isolated DC–DC converters; high-frequency power supplies; MOSFET, IGBT and BJT switching devices; PCB design. Exclude enterprise PLM, supplier procurement, advanced AI, automated lab control and manufacturing release from v0.1.
+Category
+Acceptance criteria
+Must work end to end
+Launch desktop app; create/edit product and revision; persist specifications; create local project directory; display module status; detect configured tools; open VS Code and project files; record manual validation entries with provenance; export basic report.
+Framework only
+Transformer and converter workspaces, tool-adapter interfaces, simulation job model, AI service interface, knowledge center, engineering rule registry, plugin loader.
+Not claimed
+Automatic FEMM/LTspice correctness; verified transformer design; passing high-voltage safety tests; completed KiCad integration; production readiness.
+Release gate
+Clean install on primary development machine, repeatable smoke test, no fabricated results, tests green, open issues documented.
+25. Two-Agent Development Ownership
+Area
+Codex — engineering core
+Antigravity — desktop UI
+Owned paths
+src/mendex_core/, tests/core/, schemas/, migrations/, scripts/
+src/mendex_ui/, tests/ui/, assets/, packaging/
+Primary work
+Domain models, SQLite, API/service layer, validation, adapters, report service, tests
+PySide6 shell, dashboard, forms, status, tool manager, guidelines view, VS Code launcher
+Shared files
+Only designated integrator changes contracts/ and pyproject.toml after joint review
+Consume contracts; mock API until core implementation is ready
+Branch
+feature/engineering-core
+feature/desktop-ui
+Integration owner: one human maintainer merges pull requests daily, resolves contract changes, and runs the full smoke test. Agents must not concurrently edit the same files. Both work against a committed contract and stable example payloads.
+26. Three-Day Execution Plan
+Day 0 — 60–90 minute prerequisite
+Confirm OS (Windows recommended for FEMM/LTspice compatibility), Python and Git versions, available native engineering tools, repo access and packaging target. Create baseline repository, API contracts, example JSON, task board and two branches. Commit contracts before either agent begins.
+Day 1 — foundation
+Codex: package structure, SQLite migrations, product/revision models, typed schemas, project-folder creation and service tests. Antigravity: PySide6 app shell, dashboard, product list/editor and mock service integration. Joint checkpoint: product created, saved, reopened.
+Day 2 — extensibility
+Codex: adapter protocol, tool discovery, validation result schema, run records, report service and reference tests. Antigravity: transformer/DC–DC/device workspace shells, Tool Manager, knowledge center, validation and reports views. Joint checkpoint: tool status and sample validation persist.
+Day 3 — integration and release
+Codex: CLI diagnostics, smoke tests, report evidence checks, error handling. Antigravity: real service wiring, VS Code/project launch, installation notes and basic packaging. Joint checkpoint: new product → spec → workspace → tool check → recorded result → report; tag v0.1.0.
+27. Shared Contracts (Freeze Before Parallel Work)
+Use typed Python Pydantic models and JSON serialization. The desktop UI calls a documented Python application service interface in-process for v0.1; a future FastAPI layer may expose the same operations for web or team use. Do not build two independent databases or duplicate validation logic.
+Product
+product_id (UUID), code, name, category, description, owner, created_at, updated_at, active_revision_id.
+Revision
+revision_id, product_id, revision_label, lifecycle_status (draft/in_review/approved/archived), specification_json, created_at; approvals are informational until an approval workflow exists.
+ToolStatus
+tool_id, display_name, configured_path, installed_version, detected, executable, compatibility (supported/unsupported/unknown), checked_at, diagnostic.
+SimulationRun
+run_id, revision_id, tool_id, adapter_version, status (not_started/queued/running/succeeded/failed/not_supported), started_at, ended_at, input_hash, artifacts[], log_path.
+ValidationResult
+check_id, revision_id, status (pass/fail/not_evaluated/physical_verification_required), rule_version, measured_value, unit, evidence_uri, reviewer, timestamp, notes. A PASS requires actual evidence and evaluated rule.
+Report
+report_id, revision_id, generated_at, input_hash, report_path, included_check_ids, warnings.
+Service operations: create_product, list_products, get_product, update_specification, create_revision, create_workspace, list_tools, check_tool, list_runs, record_validation, list_validation, generate_report, open_in_vscode. Errors use typed error codes and actionable messages; all file paths are normalized and validated.
+28. Repository and Workspace Layout
+mendex-studio/  AGENTS.md  README.md  pyproject.toml  .gitignore  contracts/                 # frozen models and example payloads  src/mendex_core/           # domain, persistence, services, validation    adapters/                # ltspice, femm, kicad, future tools    reports/  plugins/  src/mendex_ui/             # PySide6 windows, views, viewmodels  config/                   # tool registry and validation policies  docs/                     # engineering rules, install, architecture  templates/                # product and report templates  tests/core/  tests/ui/  tests/integration/  scripts/                  # doctor, smoke-test, package  products/                 # local projects; exclude sensitive data from git
+Each product workspace contains requirements/, magnetics/, circuit/, pcb/, mechanical/, simulations/, validation/, reports/ and revision metadata. The SQLite database indexes paths; source CAD files remain editable in their native applications. Do not store large binary results directly in SQLite.
+29. Installation and New-Engineer Experience
+Prerequisites: Windows 10/11 development baseline (confirm actual compatibility per application); Python, Git, VS Code. LTspice, FEMM and KiCad remain separately installed and may require user interaction.
+Quick start: clone private repository; create .venv; install project in editable mode with development extras; run python -m mendex_core.doctor; launch python -m mendex_ui. Final command names must match implementation and be verified before publishing.
+Tool Manager: detect binaries using explicit user-configured paths and known installation locations; report unknown versions as unknown, never silently supported. Offer official download guidance rather than unsafe automatic installation.
+Packaging: first ship source-based developer setup; optionally package PySide6 using a supported packager after tests. Packaging does not redistribute third-party tools without license review.
+Team test: second engineer clones repository on clean machine, completes setup, creates product, launches VS Code, records a result, exports report and logs any missing dependency.
+30. Engineering UI Experience Principles
+Learn from Altium 365 (design context/reviews), Autodesk Fusion (discipline navigation), OpenBOM (revisions/BOM), and Siemens Teamcenter (traceability). These are inspiration, not dependencies or UI designs to copy. Initial navigation: Dashboard → Products → Product Detail → Engineering Workspace (Transformer, DC–DC, Switching Devices, PCB) → Simulations → Validation → Reports → Tool Manager → Knowledge Center.
+Each product detail page must show product code, current revision, lifecycle stage, specification completeness, engineering-module implementation status, last run and validation summary, related design file locations, and next action. Distinguish “module not implemented” from “product not evaluated.” Use clear empty states and evidence links.
+31. Agent Instructions — Codex (Copy into Task Brief)
+Build the Mendex Studio v0.1 engineering core only. Read AGENTS.md, docs/architecture.md and contracts/ before edits. Own src/mendex_core/, tests/core/, schemas/migrations and scripts. Implement typed Pydantic domain contracts, SQLite persistence and migrations, service methods, project workspace creation, tool detection, pluggable adapters with capability flags, evidence-based validation records and a basic report exporter. Never invent simulation data or mark an unevaluated check PASS. Do not implement the desktop UI. Include unit tests and example payloads. Keep external tool execution disabled or explicit until verified. Commit to feature/engineering-core; report changed files, tests, open issues and integration contract deviations.
+32. Agent Instructions — Antigravity (Copy into Task Brief)
+Build Mendex Studio v0.1 PySide6 desktop UI only. Read AGENTS.md, docs/architecture.md and contracts/ before edits. Own src/mendex_ui/, tests/ui/, assets/ and packaging. Build app shell, dashboard, product CRUD views, transformer/DC–DC/power semiconductor workspace placeholders, tool manager, validation list, report screen, engineering knowledge viewer and Open in VS Code action. Initially use mock service implementation matching contracts; switch to real core service after merge. Clearly label not-implemented features and unavailable tools. Never generate fake engineering results. Do not alter core domain schemas or database. Commit to feature/desktop-ui; report changed files, screenshots, tests and contract issues.
+33. Daily Integration and Acceptance Checklist
+Day 1: app launches; product persists after restart; specification fields round-trip without loss.
+Day 2: plugin registry lists known adapters; absent engineering tools show “not installed”; validation can record “not evaluated”; UI shows real persisted data.
+Day 3: product created → revision saved → workspace folders created → project opened in VS Code → tool diagnostic performed → manual evidence attached → report exported with correct status and provenance.
+Regression: tests run without external simulators; no PASS without evidence; missing binaries handled; invalid paths rejected; report contains revision ID and warnings.
+Release: installation steps reproduced, branch integration complete, known limitations documented, v0.1.0 tag created, demo recorded or screenshots captured.
+34. Post-Foundation Enhancement Policy
+Enhance only against real product needs. Priority backlog: (1) transformer analytical calculator with benchmark tests; (2) LTspice reference simulation runner with actual logs and parsing; (3) FEMM magnetic model automation with independently checked reference case; (4) KiCad ERC/DRC import; (5) power-device switching-loss analysis; (6) evidence-rich PDF/Word reports; (7) revision diff and design impact; (8) optional AI read-only assistant. Every enhancement needs a requirement, contract change review, automated test, example evidence, UI status and release note.
+Safety: simulation does not establish compliance, isolation integrity or suitability for high-voltage hardware. High-voltage prototypes require qualified review, physical testing, documented safety procedures and separate manufacturing approval. No automatic release gate may be bypassed by AI.
+35. Immediate Start — First 90 Minutes
+Create private Git repository mendex-studio; add v1.2 master guide under docs/ and create AGENTS.md.
+Choose primary operating system and confirm Python, Git, VS Code, LTspice, FEMM and KiCad installation status.
+Commit contracts, sample payloads, product status enums and ownership rules to main.
+Create branches feature/engineering-core and feature/desktop-ui; give each agent its dedicated brief above.
+At the end of the first day, integrate a minimal working product-creation path and run a smoke test.
+Document control: Version 1.2 • Foundation release plan • 10 November 2026. The earlier master guide remains architectural reference; this addendum governs the immediate three-day implementation scope.

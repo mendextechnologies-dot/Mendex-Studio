@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 from datetime import datetime, timezone
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -75,6 +76,8 @@ class BaseToolAdapter:
 
             if not resolved_exe:
                 roots = [
+                    Path(sys.prefix) / "Scripts",
+                    Path(sys.prefix),
                     Path(os.environ.get("ProgramFiles", "C:/Program Files")),
                     Path(os.environ.get("ProgramFiles(x86)", "C:/Program Files (x86)")),
                     Path(os.environ.get("LOCALAPPDATA", "C:/Users/Default/AppData/Local")) / "Programs",

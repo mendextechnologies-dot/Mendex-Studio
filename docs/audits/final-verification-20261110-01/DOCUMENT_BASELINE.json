@@ -1,0 +1,148 @@
+{
+  "sources": [
+    {
+      "label": "G13",
+      "source": "C:\\Users\\Sagar\\Downloads\\Mendex_Engineering_Validation_Platform_Master_Guide_v1_3.docx",
+      "sha256": "d7a29b4896f98a1c8262d6c6ec682b6efcfecd22430036a5f3f7de30f1a21130",
+      "paragraphs": 613
+    },
+    {
+      "label": "G14-G15",
+      "source": "C:\\Users\\Sagar\\Downloads\\Mendex_Engineering_Studio_Two_Agent_Execution_Plan_v1_5.docx",
+      "sha256": "39fcc1f9e9958b06c3ed8464b27d71395972de5d4094c567c21b90cbc8ff84f3",
+      "paragraphs": 229
+    }
+  ],
+  "repository_documents": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "eecc5902805b273eeb38f8a91c19b614a11473b9e199b4855a35606504e2e83c"
+    },
+    {
+      "path": "config/README.md",
+      "sha256": "614c4390c17c7298475ab6eace87ffca40fb2de24d82bc46fc3528fcb635d185"
+    },
+    {
+      "path": "contracts/README.md",
+      "sha256": "8e25bb3a8440bd760e651ba55ce456f57effec1293e4342bafa894fc8b5d5c5e"
+    },
+    {
+      "path": "docs/ADAPTER_TEST_EVIDENCE.md",
+      "sha256": "43913c6e9cec50c56bb5952aefb001ebc8a2dff88c9f0b9a467a2a3de0287c47"
+    },
+    {
+      "path": "docs/AGENT2_HANDOFF.md",
+      "sha256": "a0d3424dcac2037b2cc44178c54b902c5a7e09d83ecb7be9c9dac24814e8356e"
+    },
+    {
+      "path": "docs/architecture.md",
+      "sha256": "e266f65778547114d2b4e46d7eda4b48f693aa79add87fc41268001b2ce39d1f"
+    },
+    {
+      "path": "docs/audits/IMPLEMENTATION_GAPS.md",
+      "sha256": "ebbd29c35fedf34df0921c502d4d3b2c57c783f82aad86cf185aa53fd79b7e51"
+    },
+    {
+      "path": "docs/audits/MASTER_IMPLEMENTATION_AUDIT.md",
+      "sha256": "b6cab4b98a114b4aee7035fdaec7787c78efc680fc001d8d7fed4d16f026cd8b"
+    },
+    {
+      "path": "docs/audits/NEXT_ACTION_PLAN.md",
+      "sha256": "24e4ff76f341bc60f8ffafc8cc3a5cea05ed1610830d545c1372e2fd04ecd7ae"
+    },
+    {
+      "path": "docs/audits/REQUIREMENTS_TRACEABILITY_MATRIX.md",
+      "sha256": "7a12ac54870c812222a6fd7984ad8e98bf32a033423e24e0d1c57aad89dd3221"
+    },
+    {
+      "path": "docs/audits/TOOL_INTEGRATION_AUDIT.md",
+      "sha256": "a94773c4eac71463b933194c1f408f229e7fed5d39355821f0c386148c612880"
+    },
+    {
+      "path": "docs/CONTRACTS.md",
+      "sha256": "aa11ef6060fefdf87a70cc6de0d85ebcb432a8b4cc249232d3c03a55c1a7aca9"
+    },
+    {
+      "path": "docs/DECISIONS.md",
+      "sha256": "ed7924af4ca0f428f4cc3657867df604e49631d6800513a1120649bf36c336e9"
+    },
+    {
+      "path": "docs/DEPENDENCY_REQUESTS.md",
+      "sha256": "7da195c411477f43621a900ef0d85a1f4bfdc54681316b3b1ab4a3afcb2bef9b"
+    },
+    {
+      "path": "docs/engineering-rules.md",
+      "sha256": "3213fcc5b490df3be2e679df6215eda78755a7955f5b8452e5217511864a6808"
+    },
+    {
+      "path": "docs/implementation-checklist.md",
+      "sha256": "a5f7bc8ce0c463dc64c27d4ca1c594fe4640f7914eb941e1c0996af73bdc3cb6"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_STATUS.md",
+      "sha256": "f32c6131e1a17fad12a75dfb7fc882a09e49fe69193f67da70cacd42daffd933"
+    },
+    {
+      "path": "docs/INTEGRATIONS.md",
+      "sha256": "734b0a948bc1d549a253a0793b62044b871ac2f2db9b2e91adb5205fc7ac096f"
+    },
+    {
+      "path": "docs/known-limitations.md",
+      "sha256": "897f28e95f88ba21d9927d4e3f4a3ec00a278947b05bea8dc6e2c81fde81edac"
+    },
+    {
+      "path": "docs/local-test-log.md",
+      "sha256": "0690ad1cdab59d2c6b3041d295449338da6ceda1367e1da1c2e02929ce19f93d"
+    },
+    {
+      "path": "docs/manual-acceptance.md",
+      "sha256": "97f3a3d69c11b85245b4ef8626f487d2683212d08dc7fde62a6c3c669ae6dfec"
+    },
+    {
+      "path": "docs/Mendex_Engineering_Validation_Platform_Master_Guide_v1_3.docx",
+      "sha256": "d7a29b4896f98a1c8262d6c6ec682b6efcfecd22430036a5f3f7de30f1a21130"
+    },
+    {
+      "path": "docs/OWNERSHIP_V1_5.md",
+      "sha256": "0255afea5cfda7f6b59dd895c82a8efce685130178781510bf192e95b0ad2733"
+    },
+    {
+      "path": "docs/release-notes-v0.1.0.md",
+      "sha256": "a8c63812cda2ffe96dfa10571e8023e76bdaa54c5da0108d029aba52f5eb6481"
+    },
+    {
+      "path": "docs/requirements-matrix.md",
+      "sha256": "fced99e4d22ae34e31b983bf4e19c413fa3a864b4b62cc701000bafd6d1483b2"
+    },
+    {
+      "path": "docs/source-guide.txt",
+      "sha256": "ea485f45ec11be7729e5fec5158a6126d3b44fc2e25a19cad42c243f271dff8a"
+    },
+    {
+      "path": "docs/TOOL_COMPATIBILITY.md",
+      "sha256": "63334823372b96d33195c7870ca0c18b75727c346f78db149fb9c9a348c17126"
+    },
+    {
+      "path": "docs/V15_INTEGRATION_HANDOFF.md",
+      "sha256": "286b93cb6aadba7d841e2d4eeb96c64298f6287404892993947eaabe69ff9144"
+    },
+    {
+      "path": "packaging/README.md",
+      "sha256": "b3684f124849db56fc6023cd4de749885fc6e68102ec166c0ded4e366d21f50d"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "3b01074d9e849190220d380eb6dba2be281fc9bbcdb0947381c1235f30108c55"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b7fc89eb83155b3fd134344154e66fc20f19a0cb46057dac81a5c82ef2b03a03"
+    },
+    {
+      "path": "requirements-lock.txt",
+      "sha256": "d4e5b717c7a8663b310c3557838f3f8b988fdcba3b313f22db4457f238482d82"
+    }
+  ],
+  "missing": "Referenced Detailed Software Architecture/UI-UX Specification v1.0 not supplied or located; no newer approved specification located",
+  "approval_limit": "Plan labels/implementation claims are not signed acceptance records"
+}

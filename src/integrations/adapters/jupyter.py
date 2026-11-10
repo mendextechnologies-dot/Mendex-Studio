@@ -17,6 +17,7 @@ class JupyterAdapter(BaseToolAdapter):
             license_name="Modified BSD",
             official_url="https://jupyter.org/",
             candidate_binaries=["jupyter.exe", "jupyter"],
+            candidate_paths=["jupyter.exe", "Scripts/jupyter.exe"],
         )
 
     def supported_operations(self) -> list[str]:

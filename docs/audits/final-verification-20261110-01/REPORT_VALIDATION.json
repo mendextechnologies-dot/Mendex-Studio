@@ -1,0 +1,18 @@
+{
+  "requirement_rows": 271,
+  "counts": {
+    "PASS": 75,
+    "PARTIAL": 98,
+    "FAIL": 55,
+    "UNVERIFIED": 9,
+    "BLOCKED": 34
+  },
+  "verified_percentage": 27.68,
+  "all_failed_rows_have_findings": true,
+  "local_report_links_valid": true,
+  "retained_native_hashes_valid": true,
+  "separate_root_report_preserved_text": true,
+  "report_sha256": "09c38324af906757ed22341c2a6922c36bfa77177aa69ce54b2e5fda0b3782fc",
+  "report_bytes": 192102,
+  "application_unchanged_by_verification": true
+}

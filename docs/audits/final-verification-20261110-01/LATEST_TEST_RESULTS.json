@@ -1,0 +1,51 @@
+[
+  {
+    "label": "latest-short",
+    "commit": "30cbb1508982d5f04be1629e400a6cc569fecf74",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvl-7233sqj0\\tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\latest",
+    "exit_code": 0,
+    "elapsed_s": 10.752,
+    "log": "latest-short.txt",
+    "tail": [
+      "........................................................................ [ 80%]",
+      "..................                                                       [100%]",
+      "90 passed in 10.31s"
+    ]
+  },
+  {
+    "label": "latest-deep",
+    "commit": "30cbb1508982d5f04be1629e400a6cc569fecf74",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\latest\\.audit-tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\final-verification-20261110-01\\latest",
+    "exit_code": 1,
+    "elapsed_s": 9.794,
+    "log": "latest-deep.txt",
+    "tail": [
+      "FAILED tests/core/test_day2.py::test_invalid_evidence_rolls_back_and_html_escapes",
+      "FAILED tests/integration/test_day3.py::test_end_to_end_with_shell_free_editor_handoff",
+      "FAILED tests/integration/test_day3.py::test_launch_paths_and_missing_editor",
+      "FAILED tests/integration/test_restore.py::test_closed_database_and_evidence_backup_restore",
+      "FAILED tests/ui/test_window.py::test_real_service_editor_roundtrip_and_restart",
+      "13 failed, 77 passed in 9.33s"
+    ]
+  }
+]

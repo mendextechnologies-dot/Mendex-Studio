@@ -1,0 +1,101 @@
+{
+  "snapshot": "latest",
+  "probe_root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvp-fv3crdf8",
+  "environment": {
+    "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "git": "git version 2.48.1.windows.1"
+  },
+  "fake_binary_application_verify": {
+    "tool_id": "ltspice",
+    "state": "READY",
+    "version": "26.1.1.0",
+    "checked_at": "2026-11-10T08:45:33.729517Z",
+    "executable_path": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvp-fv3crdf8\\fake.exe",
+    "diagnostic": "LTspice 26.1.1.0 verified with reproducible RC benchmark",
+    "verified_operations": [
+      "batch_simulate"
+    ]
+  },
+  "missing_python_verify": {
+    "tool_id": "python",
+    "state": "READY",
+    "version": "3.13.7",
+    "checked_at": "2026-11-10T08:45:33.735427Z",
+    "executable_path": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvp-fv3crdf8\\missing-python.exe",
+    "diagnostic": "Python 3.13.7 runtime verified",
+    "verified_operations": [
+      "run_script"
+    ]
+  },
+  "dataset_no_resource_health": {
+    "tool_id": "magnet-dataset",
+    "state": "READY",
+    "version": "1.0-dataset",
+    "checked_at": "2026-11-10T08:45:33.737194Z",
+    "executable_path": null,
+    "diagnostic": "MagNet Dataset verified with local sample benchmark",
+    "verified_operations": [
+      "verify_checksum"
+    ]
+  },
+  "dataset_no_input_job": {
+    "status": "SUCCEEDED",
+    "outputs": [],
+    "evidence_paths": [],
+    "integrity": true
+  },
+  "non_allowlisted_binary_accepted": "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+  "runner_log_boundary": {
+    "status": "JobState.SUCCEEDED",
+    "outside_workdir_written": true,
+    "sentinel_overwritten": true
+  },
+  "malformed_kicad": {
+    "violation_count": 0,
+    "unconnected_count": 0,
+    "total_issues": 0
+  },
+  "missing_magnet_measurements": [
+    {
+      "material": "N87",
+      "temperature_c": 25.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 0.0
+    }
+  ],
+  "unrelated_switchloss_csv": [
+    {
+      "part_number": "",
+      "manufacturer": "",
+      "device_type": "MOSFET",
+      "v_ds_rated_v": 0.0,
+      "i_d_rated_a": 0.0,
+      "r_ds_on_mohm": null,
+      "e_on_uj": null,
+      "e_off_uj": null,
+      "v_test_v": null,
+      "i_test_a": null,
+      "t_j_c": null
+    }
+  ],
+  "report_interleaving": {
+    "hook_fired": true,
+    "report_hash": "b731250c1e22ead6dbe605667584249bbde288d99605868e770cc576bda7d074",
+    "report_vout": null,
+    "validation": [
+      [
+        "pass",
+        "ee653a26ff58dcec4e7056c001b9f39e7dece29d870a5e8704f693e9fad57cc7",
+        24.0
+      ]
+    ]
+  },
+  "windows_reserved_collision": {
+    "status": "SUCCEEDED",
+    "integrity": false,
+    "staged_input_preserved": false
+  }
+}
