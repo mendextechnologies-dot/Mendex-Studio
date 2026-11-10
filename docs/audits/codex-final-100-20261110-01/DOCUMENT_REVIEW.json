@@ -1,0 +1,458 @@
+{
+  "sources": [
+    {
+      "label": "G13",
+      "path": "C:\\Users\\Sagar\\Downloads\\Mendex_Engineering_Validation_Platform_Master_Guide_v1_3.docx",
+      "sha256": "d7a29b4896f98a1c8262d6c6ec682b6efcfecd22430036a5f3f7de30f1a21130",
+      "extracted": "G13.txt"
+    },
+    {
+      "label": "G14-G15",
+      "path": "C:\\Users\\Sagar\\Downloads\\Mendex_Engineering_Studio_Two_Agent_Execution_Plan_v1_5.docx",
+      "sha256": "39fcc1f9e9958b06c3ed8464b27d71395972de5d4094c567c21b90cbc8ff84f3",
+      "extracted": "G14-G15.txt"
+    }
+  ],
+  "reviewed_inventory": [
+    {
+      "snapshot": "working",
+      "path": "AGENTS.md",
+      "sha256": "eecc5902805b273eeb38f8a91c19b614a11473b9e199b4855a35606504e2e83c"
+    },
+    {
+      "snapshot": "working",
+      "path": "config/README.md",
+      "sha256": "614c4390c17c7298475ab6eace87ffca40fb2de24d82bc46fc3528fcb635d185"
+    },
+    {
+      "snapshot": "working",
+      "path": "contracts/README.md",
+      "sha256": "8e25bb3a8440bd760e651ba55ce456f57effec1293e4342bafa894fc8b5d5c5e"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/ADAPTER_TEST_EVIDENCE.md",
+      "sha256": "43913c6e9cec50c56bb5952aefb001ebc8a2dff88c9f0b9a467a2a3de0287c47"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/AGENT2_HANDOFF.md",
+      "sha256": "a0d3424dcac2037b2cc44178c54b902c5a7e09d83ecb7be9c9dac24814e8356e"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/architecture.md",
+      "sha256": "e266f65778547114d2b4e46d7eda4b48f693aa79add87fc41268001b2ce39d1f"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/codex-deep.txt",
+      "sha256": "cd0aba20bb0142fc354f1dffb212126f1b62e1b1f25be76c1564dfcdf7845bbc"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/codex-probe-stdout.txt",
+      "sha256": "22298f24ae6b684b26a25112e6c2e76c61f50e431277eb4419be37f787f19af4"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/codex-short.txt",
+      "sha256": "d95e258d4a76abdd8766c753f465032a4eef546b168bb7c4b70f5352542e0a5b"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/FINAL_IMPLEMENTATION_VERIFICATION.md",
+      "sha256": "52f34cae6f2fd2a17dad37c43e8e2e2d8fd372766a3b7096c5e11cf1e32aafcd"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/G13.txt",
+      "sha256": "be7365cb6b0f52ea367989e12124c16036225c761a7f54e4c70f4af0ed67f447"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/G14-G15.txt",
+      "sha256": "f87fcc854732b60bceadd3b6af3e94ca2b6cd7c9d0e8cf71987d1937b163f501"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/latest-deep.txt",
+      "sha256": "7b547837337b127b70830e756b7c94ec2473d711b2bad7924c85502a60293613"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/latest-probes-stdout.txt",
+      "sha256": "f27cb2fe486ef5a55a18b7698e45b181c582a012d3f886ad5c83d1a54d4e8488"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/latest-short.txt",
+      "sha256": "0fa3b792ba82ca0f635629615a34393b6a2f4746856bc8db6b3d92b01ad0db24"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/main-deep.txt",
+      "sha256": "82bbff2ca466afacaea3131022d8c5995363638dcfdb043d603bae8c52a0e905"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/main-short.txt",
+      "sha256": "8bc35d8b8e1528c38ade57578ee6379ab0374c53eab39bd98f0d8165a36ce047"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/final-verification-20261110-01/released-short.txt",
+      "sha256": "c0a476841ae33a4a546306b581e32fa34405301b794b7b6bcdef5589884aa050"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/IMPLEMENTATION_GAPS.md",
+      "sha256": "ebbd29c35fedf34df0921c502d4d3b2c57c783f82aad86cf185aa53fd79b7e51"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/MASTER_IMPLEMENTATION_AUDIT.md",
+      "sha256": "b6cab4b98a114b4aee7035fdaec7787c78efc680fc001d8d7fed4d16f026cd8b"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/NEXT_ACTION_PLAN.md",
+      "sha256": "24e4ff76f341bc60f8ffafc8cc3a5cea05ed1610830d545c1372e2fd04ecd7ae"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/REQUIREMENTS_TRACEABILITY_MATRIX.md",
+      "sha256": "7a12ac54870c812222a6fd7984ad8e98bf32a033423e24e0d1c57aad89dd3221"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/audits/TOOL_INTEGRATION_AUDIT.md",
+      "sha256": "a94773c4eac71463b933194c1f408f229e7fed5d39355821f0c386148c612880"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/CONTRACTS.md",
+      "sha256": "aa11ef6060fefdf87a70cc6de0d85ebcb432a8b4cc249232d3c03a55c1a7aca9"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/DECISIONS.md",
+      "sha256": "ed7924af4ca0f428f4cc3657867df604e49631d6800513a1120649bf36c336e9"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/DEPENDENCY_REQUESTS.md",
+      "sha256": "7da195c411477f43621a900ef0d85a1f4bfdc54681316b3b1ab4a3afcb2bef9b"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/engineering-rules.md",
+      "sha256": "3213fcc5b490df3be2e679df6215eda78755a7955f5b8452e5217511864a6808"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/implementation-checklist.md",
+      "sha256": "526a6e9d4d35fbf8fc7be62d65f1080b935171e61782552fe0680e3307682b35"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/IMPLEMENTATION_STATUS.md",
+      "sha256": "f32c6131e1a17fad12a75dfb7fc882a09e49fe69193f67da70cacd42daffd933"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/INTEGRATIONS.md",
+      "sha256": "734b0a948bc1d549a253a0793b62044b871ac2f2db9b2e91adb5205fc7ac096f"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/known-limitations.md",
+      "sha256": "897f28e95f88ba21d9927d4e3f4a3ec00a278947b05bea8dc6e2c81fde81edac"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/local-test-log.md",
+      "sha256": "0690ad1cdab59d2c6b3041d295449338da6ceda1367e1da1c2e02929ce19f93d"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/manual-acceptance.md",
+      "sha256": "97f3a3d69c11b85245b4ef8626f487d2683212d08dc7fde62a6c3c669ae6dfec"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/Mendex_Engineering_Validation_Platform_Master_Guide_v1_3.docx",
+      "sha256": "d7a29b4896f98a1c8262d6c6ec682b6efcfecd22430036a5f3f7de30f1a21130"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/OWNERSHIP_V1_5.md",
+      "sha256": "0255afea5cfda7f6b59dd895c82a8efce685130178781510bf192e95b0ad2733"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/release-notes-v0.1.0.md",
+      "sha256": "a8c63812cda2ffe96dfa10571e8023e76bdaa54c5da0108d029aba52f5eb6481"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/release-notes-v1.5.0.md",
+      "sha256": "9095ac1dde2f934ca84b8f6fcc92715b33b56734233ee873f01cb47338bc3405"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/requirements-matrix.md",
+      "sha256": "fced99e4d22ae34e31b983bf4e19c413fa3a864b4b62cc701000bafd6d1483b2"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/source-guide.txt",
+      "sha256": "ea485f45ec11be7729e5fec5158a6126d3b44fc2e25a19cad42c243f271dff8a"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/TOOL_COMPATIBILITY.md",
+      "sha256": "63334823372b96d33195c7870ca0c18b75727c346f78db149fb9c9a348c17126"
+    },
+    {
+      "snapshot": "working",
+      "path": "docs/V15_INTEGRATION_HANDOFF.md",
+      "sha256": "286b93cb6aadba7d841e2d4eeb96c64298f6287404892993947eaabe69ff9144"
+    },
+    {
+      "snapshot": "working",
+      "path": "FINAL_IMPLEMENTATION_VERIFICATION.md",
+      "sha256": "c5e7e37bde22b91c6525447683a31130e638ada3572abff754d7de5d33f1d8be"
+    },
+    {
+      "snapshot": "working",
+      "path": "packaging/README.md",
+      "sha256": "b3684f124849db56fc6023cd4de749885fc6e68102ec166c0ded4e366d21f50d"
+    },
+    {
+      "snapshot": "working",
+      "path": "pyproject.toml",
+      "sha256": "3b01074d9e849190220d380eb6dba2be281fc9bbcdb0947381c1235f30108c55"
+    },
+    {
+      "snapshot": "working",
+      "path": "README.md",
+      "sha256": "b7fc89eb83155b3fd134344154e66fc20f19a0cb46057dac81a5c82ef2b03a03"
+    },
+    {
+      "snapshot": "working",
+      "path": "requirements-lock.txt",
+      "sha256": "d4e5b717c7a8663b310c3557838f3f8b988fdcba3b313f22db4457f238482d82"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "AGENTS.md",
+      "sha256": "eecc5902805b273eeb38f8a91c19b614a11473b9e199b4855a35606504e2e83c"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "config/README.md",
+      "sha256": "614c4390c17c7298475ab6eace87ffca40fb2de24d82bc46fc3528fcb635d185"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "contracts/README.md",
+      "sha256": "8e25bb3a8440bd760e651ba55ce456f57effec1293e4342bafa894fc8b5d5c5e"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/ACCEPTANCE_REMEDIATION.md",
+      "sha256": "49a3a184cdf2b23ab150e13b195f71a4bb2c8f30a69a431a9d20e98d264cbc74"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/ADAPTER_TEST_EVIDENCE.md",
+      "sha256": "43913c6e9cec50c56bb5952aefb001ebc8a2dff88c9f0b9a467a2a3de0287c47"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/AGENT2_HANDOFF.md",
+      "sha256": "a0d3424dcac2037b2cc44178c54b902c5a7e09d83ecb7be9c9dac24814e8356e"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/architecture.md",
+      "sha256": "e00478c7f12da621c6f415d3529403c3da845b52262017034cf1251025f1d856"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/final-verification-20261110-01/codex-deep.txt",
+      "sha256": "cd0aba20bb0142fc354f1dffb212126f1b62e1b1f25be76c1564dfcdf7845bbc"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/final-verification-20261110-01/codex-probe-stdout.txt",
+      "sha256": "22298f24ae6b684b26a25112e6c2e76c61f50e431277eb4419be37f787f19af4"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/final-verification-20261110-01/codex-short.txt",
+      "sha256": "d95e258d4a76abdd8766c753f465032a4eef546b168bb7c4b70f5352542e0a5b"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/final-verification-20261110-01/main-deep.txt",
+      "sha256": "82bbff2ca466afacaea3131022d8c5995363638dcfdb043d603bae8c52a0e905"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/final-verification-20261110-01/main-short.txt",
+      "sha256": "8bc35d8b8e1528c38ade57578ee6379ab0374c53eab39bd98f0d8165a36ce047"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/final-verification-20261110-01/released-short.txt",
+      "sha256": "c0a476841ae33a4a546306b581e32fa34405301b794b7b6bcdef5589884aa050"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/IMPLEMENTATION_GAPS.md",
+      "sha256": "ebbd29c35fedf34df0921c502d4d3b2c57c783f82aad86cf185aa53fd79b7e51"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/MASTER_IMPLEMENTATION_AUDIT.md",
+      "sha256": "b6cab4b98a114b4aee7035fdaec7787c78efc680fc001d8d7fed4d16f026cd8b"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/NEXT_ACTION_PLAN.md",
+      "sha256": "24e4ff76f341bc60f8ffafc8cc3a5cea05ed1610830d545c1372e2fd04ecd7ae"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/REQUIREMENTS_TRACEABILITY_MATRIX.md",
+      "sha256": "7a12ac54870c812222a6fd7984ad8e98bf32a033423e24e0d1c57aad89dd3221"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/audits/TOOL_INTEGRATION_AUDIT.md",
+      "sha256": "a94773c4eac71463b933194c1f408f229e7fed5d39355821f0c386148c612880"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/CONTRACTS.md",
+      "sha256": "aa11ef6060fefdf87a70cc6de0d85ebcb432a8b4cc249232d3c03a55c1a7aca9"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/DECISIONS.md",
+      "sha256": "ed7924af4ca0f428f4cc3657867df604e49631d6800513a1120649bf36c336e9"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/DEPENDENCY_REQUESTS.md",
+      "sha256": "7da195c411477f43621a900ef0d85a1f4bfdc54681316b3b1ab4a3afcb2bef9b"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/engineering-rules.md",
+      "sha256": "3213fcc5b490df3be2e679df6215eda78755a7955f5b8452e5217511864a6808"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/implementation-checklist.md",
+      "sha256": "038b958faf77af7062ce1510376324a650e6d87bb35d73504cee6ee642186de5"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/IMPLEMENTATION_STATUS.md",
+      "sha256": "ba48a5dae45f007491533f0f4061a64716b90a0cd1ba749efb19a31b4d92c78c"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/INTEGRATIONS.md",
+      "sha256": "734b0a948bc1d549a253a0793b62044b871ac2f2db9b2e91adb5205fc7ac096f"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/known-limitations.md",
+      "sha256": "897f28e95f88ba21d9927d4e3f4a3ec00a278947b05bea8dc6e2c81fde81edac"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/local-test-log.md",
+      "sha256": "0690ad1cdab59d2c6b3041d295449338da6ceda1367e1da1c2e02929ce19f93d"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/manual-acceptance.md",
+      "sha256": "97f3a3d69c11b85245b4ef8626f487d2683212d08dc7fde62a6c3c669ae6dfec"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/Mendex_Engineering_Validation_Platform_Master_Guide_v1_3.docx",
+      "sha256": "d7a29b4896f98a1c8262d6c6ec682b6efcfecd22430036a5f3f7de30f1a21130"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/OWNERSHIP_V1_5.md",
+      "sha256": "0255afea5cfda7f6b59dd895c82a8efce685130178781510bf192e95b0ad2733"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/release-notes-v0.1.0.md",
+      "sha256": "a8c63812cda2ffe96dfa10571e8023e76bdaa54c5da0108d029aba52f5eb6481"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/release-notes-v1.5.0.md",
+      "sha256": "9095ac1dde2f934ca84b8f6fcc92715b33b56734233ee873f01cb47338bc3405"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/requirements-matrix.md",
+      "sha256": "fced99e4d22ae34e31b983bf4e19c413fa3a864b4b62cc701000bafd6d1483b2"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/source-guide.txt",
+      "sha256": "ea485f45ec11be7729e5fec5158a6126d3b44fc2e25a19cad42c243f271dff8a"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/TOOL_COMPATIBILITY.md",
+      "sha256": "63334823372b96d33195c7870ca0c18b75727c346f78db149fb9c9a348c17126"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "docs/V15_INTEGRATION_HANDOFF.md",
+      "sha256": "286b93cb6aadba7d841e2d4eeb96c64298f6287404892993947eaabe69ff9144"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "FINAL_IMPLEMENTATION_VERIFICATION.md",
+      "sha256": "25e59123a5f0ca4195dd142f1492ef7360478b54ca9eaa93b223ec3dfcd757e4"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "packaging/README.md",
+      "sha256": "b3684f124849db56fc6023cd4de749885fc6e68102ec166c0ded4e366d21f50d"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "pyproject.toml",
+      "sha256": "3b01074d9e849190220d380eb6dba2be281fc9bbcdb0947381c1235f30108c55"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "README.md",
+      "sha256": "bc7cde0e45b54efc515047d87844c9440b8d0fe741d9b3734afb8583e728237d"
+    },
+    {
+      "snapshot": "remediation",
+      "path": "requirements-lock.txt",
+      "sha256": "d4e5b717c7a8663b310c3557838f3f8b988fdcba3b313f22db4457f238482d82"
+    }
+  ],
+  "later_audit_reviewed": {
+    "path": "C:\\Mendex studio\\docs\\audits\\FINAL_IMPLEMENTATION_VERIFICATION_ANTIGRAVITY.md",
+    "sha256": "fe127e1daf1780fc081d08336935395fb52a6dd40232991bd3503373483c2177"
+  },
+  "missing_baseline": "Referenced detailed architecture/UI-UXv1.0 was not supplied/located; no signed newer specification found"
+}

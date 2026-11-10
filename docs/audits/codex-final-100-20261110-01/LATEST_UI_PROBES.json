@@ -1,0 +1,33 @@
+{
+  "scope": "Synthetic UI/software probes only; no engineering design/approval",
+  "revision_reset": {
+    "previous": {
+      "vin_min": "36.0",
+      "vout": "400.0",
+      "iout": "0.5",
+      "freq_khz": "150.0"
+    },
+    "after_unspecified_revision": {
+      "vin_min": "36.0",
+      "vout": "400.0",
+      "iout": "0.5",
+      "freq_khz": "150.0"
+    },
+    "stale_fields_retained": true
+  },
+  "no_product_calculation": {
+    "products": 0,
+    "numeric_result_returned": true
+  },
+  "femm_export": {
+    "calculated_turns_changed": true,
+    "script_bytes_identical": true,
+    "first_sha256": "3ff2f4ea1ee4e6606f4c36edbc9ee062ca9652612b4dbd166ec3e5c630cb3b2c",
+    "second_sha256": "3ff2f4ea1ee4e6606f4c36edbc9ee062ca9652612b4dbd166ec3e5c630cb3b2c"
+  },
+  "traceability": {
+    "jobs": 0,
+    "products": 0,
+    "notes": "UI calls math and writes scripts directly; no service-calculation run/hash/source metadata is persisted"
+  }
+}

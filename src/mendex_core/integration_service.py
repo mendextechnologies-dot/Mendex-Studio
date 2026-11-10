@@ -101,18 +101,130 @@ class IntegrationService:
         # Integration hook for an agreed, reviewed Agent 2 PR; no dynamic imports.
         self.adapters[descriptor.tool_id] = adapter
 
-    def create_workspace(self, name="Generic integration workspace"):
+    def create_workspace(self, name="Generic integration workspace", description="", owner="Engineer", product_id=None):
         if not name.strip() or len(name) > 200:
             raise StudioError("INVALID_INPUT", "Supply a workspace name up to 200 characters")
         workspace_id = uuid4()
+        now_iso = now().isoformat()
+        prod_str = str(product_id) if product_id else None
         with self.studio.connection() as db:
-            db.execute("INSERT INTO integration_workspaces VALUES (?,?)", (str(workspace_id), name.strip()))
+            cols = [r[1] for r in db.execute("PRAGMA table_info(integration_workspaces)").fetchall()]
+            if "description" in cols:
+                db.execute(
+                    "INSERT INTO integration_workspaces (id, name, description, owner, product_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (str(workspace_id), name.strip(), description.strip(), owner.strip(), prod_str, now_iso, now_iso),
+                )
+            else:
+                db.execute("INSERT INTO integration_workspaces (id, name) VALUES (?, ?)", (str(workspace_id), name.strip()))
         self.workspace_path(workspace_id).mkdir(parents=True, exist_ok=False)
-        return {"workspace_id": str(workspace_id), "name": name.strip()}
+        return {
+            "workspace_id": str(workspace_id),
+            "name": name.strip(),
+            "description": description.strip(),
+            "owner": owner.strip(),
+            "product_id": prod_str,
+            "created_at": now_iso,
+            "updated_at": now_iso,
+        }
 
     def list_workspaces(self):
         with self.studio.connection() as db:
+            cols = [r[1] for r in db.execute("PRAGMA table_info(integration_workspaces)").fetchall()]
+            if "description" in cols:
+                rows = db.execute("SELECT id, name, description, owner, product_id, created_at, updated_at FROM integration_workspaces ORDER BY rowid").fetchall()
+                return [
+                    {
+                        "workspace_id": r[0],
+                        "name": r[1],
+                        "description": r[2] or "",
+                        "owner": r[3] or "Engineer",
+                        "product_id": r[4],
+                        "created_at": r[5] or "",
+                        "updated_at": r[6] or "",
+                    }
+                    for r in rows
+                ]
             return [{"workspace_id": row[0], "name": row[1]} for row in db.execute("SELECT id,name FROM integration_workspaces ORDER BY rowid")]
+
+    def get_workspace(self, workspace_id):
+        identifier = str(UUID(str(workspace_id)))
+        with self.studio.connection() as db:
+            cols = [r[1] for r in db.execute("PRAGMA table_info(integration_workspaces)").fetchall()]
+            if "description" in cols:
+                row = db.execute("SELECT id, name, description, owner, product_id, created_at, updated_at FROM integration_workspaces WHERE id=?", (identifier,)).fetchone()
+                if not row:
+                    return None
+                return {
+                    "workspace_id": row[0],
+                    "name": row[1],
+                    "description": row[2] or "",
+                    "owner": row[3] or "Engineer",
+                    "product_id": row[4],
+                    "created_at": row[5] or "",
+                    "updated_at": row[6] or "",
+                }
+            row = db.execute("SELECT id, name FROM integration_workspaces WHERE id=?", (identifier,)).fetchone()
+            if not row:
+                return None
+            return {"workspace_id": row[0], "name": row[1]}
+
+    def create_activity(self, workspace_id, name, activity_type="simulation", tool_id=None, parameters=None, product_id=None):
+        if not name.strip() or len(name) > 200:
+            raise StudioError("INVALID_INPUT", "Supply an activity name up to 200 characters")
+        activity_id = uuid4()
+        now_iso = now().isoformat()
+        payload = json.dumps(parameters or {})
+        prod_str = str(product_id) if product_id else None
+        ws_id_str = str(UUID(str(workspace_id)))
+        with self.studio.connection() as db:
+            if not db.execute("SELECT 1 FROM integration_workspaces WHERE id=?", (ws_id_str,)).fetchone():
+                raise StudioError("NOT_FOUND", "Workspace not found")
+            db.execute(
+                "INSERT INTO activities (id, workspace_id, name, activity_type, tool_id, payload, product_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (str(activity_id), ws_id_str, name.strip(), activity_type.strip(), tool_id, payload, prod_str, now_iso, now_iso),
+            )
+        return {
+            "activity_id": str(activity_id),
+            "workspace_id": ws_id_str,
+            "name": name.strip(),
+            "activity_type": activity_type.strip(),
+            "tool_id": tool_id,
+            "parameters": parameters or {},
+            "product_id": prod_str,
+            "created_at": now_iso,
+            "updated_at": now_iso,
+        }
+
+    def list_activities(self, workspace_id=None):
+        with self.studio.connection() as db:
+            if workspace_id:
+                ws_id_str = str(UUID(str(workspace_id)))
+                rows = db.execute("SELECT id, workspace_id, name, activity_type, tool_id, payload, product_id, created_at, updated_at FROM activities WHERE workspace_id=? ORDER BY created_at", (ws_id_str,)).fetchall()
+            else:
+                rows = db.execute("SELECT id, workspace_id, name, activity_type, tool_id, payload, product_id, created_at, updated_at FROM activities ORDER BY created_at").fetchall()
+            return [
+                {
+                    "activity_id": r[0],
+                    "workspace_id": r[1],
+                    "name": r[2],
+                    "activity_type": r[3],
+                    "tool_id": r[4],
+                    "parameters": json.loads(r[5]) if r[5] else {},
+                    "product_id": r[6],
+                    "created_at": r[7],
+                    "updated_at": r[8],
+                }
+                for r in rows
+            ]
+
+    def associate_product(self, workspace_id, product_id):
+        ws_id_str = str(UUID(str(workspace_id)))
+        prod_str = str(UUID(str(product_id))) if product_id else None
+        with self.studio.connection() as db:
+            if not db.execute("SELECT 1 FROM integration_workspaces WHERE id=?", (ws_id_str,)).fetchone():
+                raise StudioError("NOT_FOUND", "Workspace not found")
+            db.execute("UPDATE integration_workspaces SET product_id=? WHERE id=?", (prod_str, ws_id_str))
+            db.execute("UPDATE activities SET product_id=? WHERE workspace_id=?", (prod_str, ws_id_str))
 
     def workspace_path(self, workspace_id):
         identifier = str(UUID(str(workspace_id)))

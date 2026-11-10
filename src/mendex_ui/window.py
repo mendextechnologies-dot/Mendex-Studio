@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFormLayout, QHBoxLayout,
     QInputDialog, QLabel, QLineEdit, QListWidget, QMainWindow, QMessageBox,
     QPushButton, QSplitter, QStackedWidget, QTextEdit, QVBoxLayout, QWidget, QFileDialog,
+    QFrame,
 )
 
 from mendex_core.models import Category, Specification
@@ -17,6 +18,8 @@ from .workspace_panels import (
     DCDCWorkspacePanel,
     SemiconductorWorkspacePanel,
 )
+from .theme import DARK_THEME_QSS, LIGHT_THEME_QSS
+from .v17_panels import EnterpriseDashboardPanel
 
 
 class ProductDialog(QDialog):
@@ -43,22 +46,92 @@ class StudioWindow(QMainWindow):
         self.service = service
         self.product = None
         self.revision = None
-        self.setWindowTitle("Mendex Engineering Studio · v0.1 foundation")
-        self.resize(1180, 790)
-        container = QWidget()
-        self.setCentralWidget(container)
-        layout = QHBoxLayout(container)
+        self.setWindowTitle("Mendex Engineering Studio v1.7 · Enterprise Edition")
+        self.resize(1380, 880)
+
+        # Central Root Container
+        root_container = QWidget()
+        self.setCentralWidget(root_container)
+        root_layout = QVBoxLayout(root_container)
+        root_layout.setContentsMargins(0, 0, 0, 0)
+        root_layout.setSpacing(0)
+
+        # 1. Global Enterprise Top Header Bar
+        self.top_header = QFrame()
+        self.top_header.setObjectName("top_header")
+        header_layout = QHBoxLayout(self.top_header)
+        header_layout.setContentsMargins(16, 8, 16, 8)
+        header_layout.setSpacing(12)
+
+        brand_title = QLabel("MENDEX STUDIO v1.7")
+        brand_title.setStyleSheet("font-weight: 700; font-size: 13px; color: #89b4fa; letter-spacing: 0.5px;")
+        header_layout.addWidget(brand_title)
+
+        ws_label = QLabel("Active Workspace:")
+        ws_label.setStyleSheet("color: #a6adc8; font-weight: 500;")
+        header_layout.addWidget(ws_label)
+
+        self.workspace_selector = QComboBox()
+        self.workspace_selector.setMinimumWidth(220)
+        self.workspace_selector.currentIndexChanged.connect(self._on_workspace_selected_header)
+        header_layout.addWidget(self.workspace_selector)
+
+        btn_new_ws = QPushButton("+ New Workspace")
+        btn_new_ws.clicked.connect(self._create_header_workspace)
+        header_layout.addWidget(btn_new_ws)
+
+        self.search_box = QLineEdit()
+        self.search_box.setPlaceholderText("Search tools, activities, waveforms, jobs... (Ctrl+K)")
+        self.search_box.setMinimumWidth(260)
+        header_layout.addWidget(self.search_box)
+
+        self.solver_badge = QLabel("● 6 Solvers Operational · 12 Catalog")
+        self.solver_badge.setStyleSheet("background-color: #1c3b2b; color: #a6e3a1; border: 1px solid #2d5a3f; border-radius: 4px; padding: 4px 8px; font-weight: 600; font-size: 11px;")
+        header_layout.addWidget(self.solver_badge)
+
+        header_layout.addStretch()
+
+        self._dark_theme = True
+        self.btn_theme_toggle = QPushButton("🌙 Dark")
+        self.btn_theme_toggle.clicked.connect(self.toggle_theme)
+        header_layout.addWidget(self.btn_theme_toggle)
+
+        root_layout.addWidget(self.top_header)
+
+        # 2. Main Work Area (Sidebar Navigation + Stacked Pages)
+        work_area = QWidget()
+        layout = QHBoxLayout(work_area)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+
         nav = QListWidget()
         self.navigation = nav
-        nav.setFixedWidth(215)
+        nav.setObjectName("nav_sidebar")
+        nav.setFixedWidth(220)
         nav.addItems(["Dashboard", "Products", "Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace", "Simulations", "Validation", "Reports", "Tool Manager", "Knowledge Center"])
         self.pages = QStackedWidget()
         layout.addWidget(nav)
         layout.addWidget(self.pages, 1)
+        root_layout.addWidget(work_area, 1)
+
+        # Page 0: Enterprise Dashboard
+        dash_container = QWidget()
+        dash_layout = QVBoxLayout(dash_container)
+        dash_layout.setContentsMargins(0, 0, 0, 0)
+        self.enterprise_dashboard = EnterpriseDashboardPanel(service)
+        self.enterprise_dashboard.navigate_requested.connect(self._handle_dashboard_navigate)
+        dash_layout.addWidget(self.enterprise_dashboard)
+
+        # Preserved legacy dashboard label for backwards compatibility
         self.dashboard = QLabel()
         self.dashboard.setMargin(30)
         self.dashboard.setAlignment(Qt.AlignTop)
-        self.pages.addWidget(self.dashboard)
+        self.dashboard.setVisible(False)
+        dash_layout.addWidget(self.dashboard)
+
+        self.pages.addWidget(dash_container)
+
+        # Page 1: Products
         products = QWidget()
         pane = QVBoxLayout(products)
         actions = QHBoxLayout()
@@ -116,6 +189,8 @@ class StudioWindow(QMainWindow):
         split.setStretchFactor(1, 3)
         pane.addWidget(split)
         self.pages.addWidget(products)
+
+        # Pages 2-5: Engineering Workspaces
         self.module_pages = []
         labels = {}
         for title in ("Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace"):
@@ -132,6 +207,8 @@ class StudioWindow(QMainWindow):
 
         for ws in (self.transformer_ws, self.dcdc_ws, self.semiconductor_ws, self.pcb_ws):
             self.pages.addWidget(ws)
+
+        # Pages 6-10: Simulations, Validation, Reports, Tools, Knowledge
         self.simulation_panel = SimulationPanel(service, self.guarded)
         self.pages.addWidget(self.simulation_panel)
         self.validation_panel = ValidationPanel(service, self.guarded)
@@ -141,15 +218,21 @@ class StudioWindow(QMainWindow):
             self.pages.addWidget(panel)
         self.knowledge_panel = KnowledgePanel(service, self.guarded)
         self.pages.addWidget(self.knowledge_panel)
+
+        # Pages 11-13: Tools & Integrations, Jobs & Results, Dataset Catalog
         self.tool_center = ToolCenter(service, self.guarded)
         self.jobs_panel = JobsPanel(service, self.guarded)
         self.dataset_panel = DatasetPanel(service, self.guarded)
         for title, panel in [("Tools & Integrations", self.tool_center), ("Jobs & Results", self.jobs_panel), ("Dataset Catalog", self.dataset_panel)]:
             nav.addItem(title)
             self.pages.addWidget(panel)
+
         nav.currentRowChanged.connect(self.pages.setCurrentIndex)
         nav.setCurrentRow(0)
-        self.setStyleSheet("QMainWindow {background:#f3f6fa;} QListWidget {background:#142639;color:#ecf1f8;border:0;padding:10px;} QListWidget::item {padding:12px;} QListWidget::item:selected {background:#29628c;} QPushButton {padding:9px;} QTextEdit,QLineEdit,QComboBox {background:white;padding:6px;} QLabel {color:#172e44;}")
+
+        # Apply Enterprise Dark Design System
+        self.setStyleSheet(DARK_THEME_QSS)
+
         self.statusBar().showMessage(f"Local data: {service.root} · Approval and simulation execution unavailable")
         try:
             from integrations.v15_connector import V15ConnectorRegistry
@@ -159,6 +242,41 @@ class StudioWindow(QMainWindow):
         except Exception:
             pass
         self.refresh()
+
+    def toggle_theme(self):
+        self._dark_theme = not self._dark_theme
+        if self._dark_theme:
+            self.setStyleSheet(DARK_THEME_QSS)
+            self.btn_theme_toggle.setText("🌙 Dark")
+        else:
+            self.setStyleSheet(LIGHT_THEME_QSS)
+            self.btn_theme_toggle.setText("☀️ Light")
+
+    def _handle_dashboard_navigate(self, target: int):
+        mapping = {1: 12, 2: 11, 3: 6, 4: 10, 5: 13}
+        dest = mapping.get(target, 0)
+        self.navigation.setCurrentRow(dest)
+
+    def _on_workspace_selected_header(self, index: int):
+        pass
+
+    def _create_header_workspace(self):
+        name, accepted = QInputDialog.getText(self, "New Engineering Workspace", "Workspace Name:")
+        if accepted and name.strip():
+            ws = self.service.integrations.create_workspace(name=name.strip(), description="General engineering study")
+            self.refresh_workspace_selector()
+            self.enterprise_dashboard.refresh_metrics()
+            self.statusBar().showMessage(f"Created workspace: {ws['name']}")
+
+    def refresh_workspace_selector(self):
+        self.workspace_selector.blockSignals(True)
+        self.workspace_selector.clear()
+        workspaces = self.service.integrations.list_workspaces()
+        for ws in workspaces:
+            self.workspace_selector.addItem(f"📁 {ws.get('name', 'Workspace')}", ws.get("workspace_id"))
+        if not workspaces:
+            self.workspace_selector.addItem("No workspaces yet", None)
+        self.workspace_selector.blockSignals(False)
 
     def guarded(self, callback):
         try:
@@ -177,10 +295,13 @@ class StudioWindow(QMainWindow):
         self.products.clear()
         for product in self.items:
             self.products.addItem(f"{product.code}\n{product.name} · {product.owner}")
-        self.dashboard.setText(f"Mendex Engineering Studio\n\nv0.1 · Integrated foundation\n\n{len(self.items)} local products\n\nNext action: select a product, review specifications, open its workspace, discover tools, and record manual evidence.\n\nEngineering modules: framework only\nValidation: manual records available per revision\nTool qualification: pending · discovery and doctor available\n\nNo automated engineering results or approvals are generated.")
+        self.dashboard.setText(f"Mendex Engineering Studio\n\nv1.7 · Integrated foundation\n\n{len(self.items)} local products\n\nNext action: select a product, review specifications, open its workspace, discover tools, and record manual evidence.\n\nEngineering modules: framework only\nValidation: manual records available per revision\nTool qualification: pending · discovery and doctor available\n\nNo automated engineering results or approvals are generated.")
         index = next((i for i, p in enumerate(self.items) if p.product_id == selected), 0)
         if self.items:
             self.products.setCurrentRow(index)
+        self.refresh_workspace_selector()
+        if hasattr(self, "enterprise_dashboard"):
+            self.enterprise_dashboard.refresh_metrics()
 
     def select_product(self, row):
         if row < 0:

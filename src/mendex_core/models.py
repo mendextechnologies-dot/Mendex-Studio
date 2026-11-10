@@ -69,3 +69,30 @@ class Revision(Model):
     lifecycle_status: Lifecycle = Lifecycle.DRAFT
     specification: Specification = Field(default_factory=Specification)
     created_at: datetime = Field(default_factory=now)
+
+
+class EngineeringWorkspace(Model):
+    workspace_id: UUID = Field(default_factory=uuid4)
+    name: str = Field(min_length=1, max_length=200)
+    description: str = ""
+    owner: str = Field(default="Engineer", min_length=1, max_length=200)
+    storage_path: str = ""
+    product_id: UUID | None = None
+    created_at: datetime = Field(default_factory=now)
+    updated_at: datetime = Field(default_factory=now)
+    metadata: dict = Field(default_factory=dict)
+
+
+class EngineeringActivity(Model):
+    activity_id: UUID = Field(default_factory=uuid4)
+    workspace_id: UUID
+    name: str = Field(min_length=1, max_length=200)
+    activity_type: str = Field(default="simulation", min_length=1, max_length=64)
+    tool_id: str | None = None
+    parameters: dict = Field(default_factory=dict)
+    input_files: list[str] = Field(default_factory=list)
+    status: str = Field(default="PENDING", pattern=r"^(PENDING|RUNNING|COMPLETED|FAILED|CANCELLED)$")
+    product_id: UUID | None = None
+    created_at: datetime = Field(default_factory=now)
+    updated_at: datetime = Field(default_factory=now)
+

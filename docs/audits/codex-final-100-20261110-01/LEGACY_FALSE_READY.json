@@ -1,0 +1,20 @@
+{
+  "tool_id": "freecad",
+  "name": "FreeCAD",
+  "kind": "application",
+  "category": "core",
+  "supported_os": [
+    "Windows"
+  ],
+  "version": null,
+  "license_name": "LGPLv2+",
+  "official_url": "https://www.freecad.org/",
+  "capabilities": [
+    "export_step",
+    "generate_bobbin",
+    "export_stl"
+  ],
+  "state": "READY",
+  "executable_path": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100fake-1gwadl9e\\not-freecad.exe",
+  "diagnostic": "Executable found at C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100fake-1gwadl9e\\not-freecad.exe"
+}

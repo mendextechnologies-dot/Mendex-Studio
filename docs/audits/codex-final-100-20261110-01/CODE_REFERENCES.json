@@ -1,0 +1,512 @@
+{
+  "src/integrations/contracts.py": {
+    "ToolKind": 10,
+    "ToolState": 18,
+    "JobState": 28,
+    "IntegrationModel": 37,
+    "ToolDescriptor": 41,
+    "ArtifactManifest": 56,
+    "JobRequest": 65,
+    "JobResult": 78,
+    "ToolAdapter": 95,
+    "descriptor": 97,
+    "detect": 99,
+    "verify": 101,
+    "supported_operations": 103,
+    "execute": 105
+  },
+  "src/integrations/v15_connector.py": {
+    "LTspiceV15Connector": 100,
+    "PythonV15Connector": 249,
+    "GitV15Connector": 353,
+    "UninstalledToolV15Connector": 438,
+    "CommercialStubV15Connector": 489,
+    "DatasetV15Connector": 536,
+    "V15ConnectorRegistry": 609,
+    "__init__": 539,
+    "_find_default_executable": 110,
+    "descriptor": 546,
+    "supported_operations": 563,
+    "detect": 574,
+    "verify": 582,
+    "execute": 591,
+    "all": 613,
+    "Capability": 33,
+    "ToolDescriptor": 40,
+    "ToolConfiguration": 55,
+    "ToolHealth": 60,
+    "JobRequest": 68,
+    "Diagnostic": 78,
+    "JobResult": 82
+  },
+  "src/integrations/__init__.py": {},
+  "src/mendex_core/ai.py": {
+    "AIRequest": 10,
+    "AIResponse": 16,
+    "AIService": 23,
+    "UnavailableAIService": 27,
+    "advise": 28
+  },
+  "src/mendex_core/catalog.py": {
+    "descriptors": 9,
+    "unconnected_health": 17
+  },
+  "src/mendex_core/cli.py": {
+    "main": 12,
+    "execute": 56
+  },
+  "src/mendex_core/demo_adapter.py": {
+    "SyntheticAdapter": 9,
+    "detect": 12,
+    "verify": 15,
+    "supported_operations": 18,
+    "execute": 21
+  },
+  "src/mendex_core/diagnostics.py": {
+    "diagnose": 11
+  },
+  "src/mendex_core/doctor.py": {},
+  "src/mendex_core/evidence.py": {
+    "digest": 12,
+    "specification_hash": 16,
+    "ValidationStatus": 20,
+    "ManualCheck": 27,
+    "ValidationRecord": 52,
+    "SimulationRun": 65,
+    "Report": 83,
+    "evaluated_rule": 40
+  },
+  "src/mendex_core/integration_cli.py": {
+    "main": 11
+  },
+  "src/mendex_core/integration_contracts.py": {
+    "ToolState": 17,
+    "JobStatus": 27,
+    "ErrorCode": 39,
+    "safe_relative": 53,
+    "Capability": 60,
+    "ToolDescriptor": 68,
+    "ToolConfiguration": 84,
+    "ToolHealth": 90,
+    "JobRequest": 100,
+    "Diagnostic": 118,
+    "JobResult": 123,
+    "ArtifactManifest": 147,
+    "EvidenceManifest": 166,
+    "JobRecord": 184,
+    "ExecutionCancelled": 195,
+    "ExecutionTimedOut": 199,
+    "ExecutionContext": 203,
+    "ToolAdapter": 216,
+    "paths": 112,
+    "final_result": 137,
+    "relative": 161,
+    "identities": 176,
+    "__init__": 205,
+    "checkpoint": 209,
+    "detect": 218,
+    "verify": 219,
+    "supported_operations": 220,
+    "execute": 221
+  },
+  "src/mendex_core/integration_service.py": {
+    "IntegrationService": 21,
+    "__init__": 22,
+    "list_tools": 32,
+    "descriptor": 35,
+    "configuration": 42,
+    "configure": 48,
+    "detect": 65,
+    "verify": 77,
+    "register_reviewed_adapter": 97,
+    "create_workspace": 104,
+    "list_workspaces": 113,
+    "workspace_path": 117,
+    "attach_input": 127,
+    "job_path": 142,
+    "job": 148,
+    "list_jobs": 155,
+    "_store_job": 160,
+    "submit": 164,
+    "_log": 211,
+    "_run": 220,
+    "_finalize": 258,
+    "_failure": 277,
+    "cancel": 280,
+    "retry": 295,
+    "wait": 303,
+    "logs": 309,
+    "evidence": 321,
+    "evidence_integrity": 335,
+    "export_report": 352,
+    "preview_artifact": 365,
+    "open_framework_report": 379,
+    "register_dataset": 392,
+    "list_datasets": 416,
+    "shutdown": 420,
+    "progress": 223
+  },
+  "src/mendex_core/integration_store.py": {
+    "migrate": 2
+  },
+  "src/mendex_core/knowledge.py": {},
+  "src/mendex_core/launch.py": {
+    "find_vscode": 8,
+    "launch_vscode": 21,
+    "open_native": 32
+  },
+  "src/mendex_core/models.py": {
+    "now": 8,
+    "Model": 12,
+    "Category": 16,
+    "Lifecycle": 23,
+    "Specification": 30,
+    "Product": 53,
+    "Revision": 65,
+    "ordered_voltage": 46
+  },
+  "src/mendex_core/plugins.py": {
+    "AdapterDefinition": 13,
+    "PluginManifest": 21,
+    "load_plugin_file": 29
+  },
+  "src/mendex_core/rules.py": {
+    "EngineeringRule": 9,
+    "RuleAssessment": 26,
+    "RuleRegistry": 34,
+    "known_fields": 20,
+    "__init__": 35,
+    "register": 38,
+    "list": 44,
+    "assess": 47,
+    "defaults": 55
+  },
+  "src/mendex_core/service.py": {
+    "StudioError": 17,
+    "StudioService": 23,
+    "__init__": 24,
+    "connection": 78,
+    "list_products": 91,
+    "_get": 95,
+    "get_product": 106,
+    "get_revision": 109,
+    "list_revisions": 112,
+    "workspace_path": 117,
+    "_workspace": 123,
+    "export_specification": 132,
+    "create_workspace": 142,
+    "open_in_vscode": 145,
+    "open_project_file": 156,
+    "diagnostics": 171,
+    "export_diagnostics": 175,
+    "open_report": 183,
+    "create_product": 195,
+    "update_product": 211,
+    "save_product_revision": 218,
+    "rename_revision": 238,
+    "update_specification": 251,
+    "configure_tool": 265,
+    "check_tool": 279,
+    "list_tools": 284,
+    "list_runs": 287,
+    "request_simulation": 292,
+    "list_rules": 302,
+    "ai_advice": 308,
+    "list_plugins": 312,
+    "set_revision_status": 315,
+    "list_validation": 331,
+    "record_validation": 336,
+    "validation_integrity": 383,
+    "open_evidence": 392,
+    "validation_summary": 406,
+    "list_reports": 419,
+    "generate_report": 424,
+    "create_revision": 469
+  },
+  "src/mendex_core/__init__.py": {},
+  "src/mendex_ui/integration_panels.py": {
+    "ToolCenter": 10,
+    "JobsPanel": 85,
+    "DatasetPanel": 266,
+    "__init__": 267,
+    "descriptor": 49,
+    "selected": 300,
+    "browse_executable": 61,
+    "browse_resource": 66,
+    "show_health": 71,
+    "save": 74,
+    "detect": 78,
+    "verify": 81,
+    "refresh_workspaces": 154,
+    "create_workspace": 164,
+    "attach_input": 170,
+    "start": 179,
+    "selected_job": 188,
+    "refresh": 314,
+    "cancel": 230,
+    "retry": 237,
+    "report": 244,
+    "open_report": 253,
+    "preview": 258,
+    "browse": 305,
+    "register": 310
+  },
+  "src/mendex_ui/panels.py": {
+    "SimulationPanel": 14,
+    "KnowledgePanel": 48,
+    "ToolPanel": 88,
+    "ValidationDialog": 152,
+    "ValidationPanel": 179,
+    "ReportsPanel": 233,
+    "__init__": 234,
+    "set_revision": 250,
+    "refresh": 255,
+    "request": 41,
+    "ask": 82,
+    "browse": 173,
+    "doctor": 124,
+    "export_diagnostics": 128,
+    "selected": 132,
+    "configure": 136,
+    "reset": 142,
+    "record": 217,
+    "open_evidence": 226,
+    "generate": 262,
+    "open_report": 268
+  },
+  "src/mendex_ui/window.py": {
+    "ProductDialog": 22,
+    "StudioWindow": 40,
+    "__init__": 41,
+    "guarded": 163,
+    "closeEvent": 169,
+    "refresh": 174,
+    "select_product": 185,
+    "select_revision": 201,
+    "create_product": 231,
+    "save": 239,
+    "new_revision": 248,
+    "rename_revision": 258,
+    "toggle_review": 265,
+    "export_specification": 270,
+    "require_revision": 274,
+    "open_vscode": 279,
+    "open_workspace": 283,
+    "open_file": 286,
+    "action": 253
+  },
+  "src/mendex_ui/workspace_panels.py": {
+    "TransformerWorkspacePanel": 20,
+    "SemiconductorWorkspacePanel": 180,
+    "DCDCWorkspacePanel": 289,
+    "__init__": 292,
+    "set_revision": 319,
+    "calculate": 255,
+    "export_femm_script": 137,
+    "export_freecad_script": 159,
+    "_on_device_selected": 244,
+    "export_script": 335
+  },
+  "src/mendex_ui/__init__.py": {},
+  "src/mendex_ui/__main__.py": {
+    "main": 12
+  },
+  "src/mendex_core/adapters/contracts.py": {
+    "AdapterCapabilities": 10,
+    "AdapterCheck": 23,
+    "PreparedJob": 28,
+    "ResultBundle": 34,
+    "ToolAdapter": 40,
+    "probe": 42,
+    "capabilities": 43,
+    "validate": 44,
+    "prepare": 45,
+    "run": 46,
+    "parse": 47,
+    "self_test": 48
+  },
+  "src/mendex_core/adapters/registry.py": {
+    "ToolStatus": 12,
+    "DiscoveryAdapter": 30,
+    "AdapterRegistry": 83,
+    "__init__": 84,
+    "probe": 38,
+    "run": 62,
+    "capabilities": 65,
+    "validate": 68,
+    "prepare": 73,
+    "parse": 76,
+    "self_test": 79,
+    "register": 87,
+    "get": 92,
+    "list": 97,
+    "defaults": 101
+  },
+  "src/mendex_core/adapters/version.py": {
+    "windows_file_version": 6
+  },
+  "src/mendex_core/adapters/__init__.py": {},
+  "src/mendex_core/config/__init__.py": {},
+  "src/integrations/adapters/base.py": {
+    "read_pe_version": 21,
+    "BaseToolAdapter": 32,
+    "__init__": 35,
+    "descriptor": 58,
+    "supported_operations": 61,
+    "detect": 64,
+    "verify_executable": 120,
+    "verify": 124,
+    "execute": 127
+  },
+  "src/integrations/adapters/commercial_stubs.py": {
+    "CommercialStubAdapter": 8,
+    "PLECSAdapter": 41,
+    "MATLABAdapter": 55,
+    "AnsysMaxwellAdapter": 69,
+    "AnsysIcepakAdapter": 83,
+    "SolidWorksAdapter": 97,
+    "__init__": 98,
+    "detect": 22,
+    "supported_operations": 107
+  },
+  "src/integrations/adapters/femm.py": {
+    "FEMMAdapter": 8,
+    "__init__": 11,
+    "supported_operations": 23
+  },
+  "src/integrations/adapters/freecad.py": {
+    "FreeCADAdapter": 8,
+    "__init__": 11,
+    "supported_operations": 23
+  },
+  "src/integrations/adapters/git_adapter.py": {
+    "GitAdapter": 19,
+    "__init__": 22,
+    "detect": 33,
+    "supported_operations": 63
+  },
+  "src/integrations/adapters/jupyter.py": {
+    "JupyterAdapter": 8,
+    "__init__": 11,
+    "supported_operations": 23
+  },
+  "src/integrations/adapters/kicad.py": {
+    "KiCadAdapter": 8,
+    "__init__": 11,
+    "supported_operations": 23
+  },
+  "src/integrations/adapters/ltspice.py": {
+    "LTspiceAdapter": 20,
+    "__init__": 23,
+    "supported_operations": 38,
+    "verify_executable": 41,
+    "execute": 44
+  },
+  "src/integrations/adapters/openmodelica.py": {
+    "OpenModelicaAdapter": 8,
+    "__init__": 11,
+    "supported_operations": 23
+  },
+  "src/integrations/adapters/python_runtime.py": {
+    "PythonRuntimeAdapter": 19,
+    "__init__": 22,
+    "detect": 33,
+    "supported_operations": 52,
+    "execute": 55
+  },
+  "src/integrations/adapters/qucs_s.py": {
+    "QucsSAdapter": 8,
+    "__init__": 11,
+    "supported_operations": 23
+  },
+  "src/integrations/adapters/registry.py": {
+    "ToolRegistry": 29,
+    "__init__": 32,
+    "_register_default_adapters": 36,
+    "register": 61,
+    "get": 67,
+    "list_descriptors": 72,
+    "list_tools": 75,
+    "count": 78
+  },
+  "src/integrations/adapters/research_adapters.py": {
+    "SwitchLossDBAdapter": 17,
+    "MagNetDatasetAdapter": 49,
+    "MagNetMLBenchmarksAdapter": 81,
+    "MagNetPrincetonAdapter": 113,
+    "__init__": 116,
+    "detect": 126,
+    "supported_operations": 141
+  },
+  "src/integrations/adapters/__init__.py": {},
+  "src/integrations/calculations/power_losses.py": {
+    "SemiconductorLossResult": 7,
+    "CoreLossResult": 19,
+    "calculate_semiconductor_losses": 32,
+    "calculate_core_loss_steinmetz": 64
+  },
+  "src/integrations/calculations/transformer_design.py": {
+    "FlybackTransformerDesign": 9,
+    "calculate_flyback_transformer_parameters": 30
+  },
+  "src/integrations/calculations/winding_losses.py": {
+    "SkinDepthResult": 12,
+    "DowellLossFactorResult": 23,
+    "calculate_copper_resistivity": 37,
+    "calculate_skin_depth": 42,
+    "calculate_dowell_ac_resistance": 63
+  },
+  "src/integrations/calculations/__init__.py": {},
+  "src/integrations/datasets/magnet_dataset.py": {
+    "CoreLossRecord": 9,
+    "MagNetDataset": 20,
+    "__init__": 28,
+    "load_json": 33,
+    "query": 52
+  },
+  "src/integrations/datasets/provenance.py": {
+    "DatasetMetadata": 10,
+    "verify_dataset_file": 26
+  },
+  "src/integrations/datasets/switchloss_db.py": {
+    "DeviceSwitchLossRecord": 10,
+    "SwitchLossDB": 26,
+    "__init__": 33,
+    "load_csv": 38,
+    "find_devices": 63
+  },
+  "src/integrations/datasets/__init__.py": {},
+  "src/integrations/generators/femm_generator.py": {
+    "generate_femm_transformer_script": 4
+  },
+  "src/integrations/generators/freecad_generator.py": {
+    "generate_freecad_bobbin_script": 4
+  },
+  "src/integrations/generators/modelica_generator.py": {
+    "generate_openmodelica_flyback_script": 4
+  },
+  "src/integrations/generators/__init__.py": {},
+  "src/integrations/parsers/kicad_parser.py": {
+    "parse_kicad_drc_json": 7
+  },
+  "src/integrations/parsers/ltspice_parser.py": {
+    "LTspiceLogMetrics": 7,
+    "parse_ltspice_log": 48,
+    "parse_ascii_raw_header": 56,
+    "__init__": 8,
+    "_parse": 16
+  },
+  "src/integrations/parsers/__init__.py": {},
+  "src/integrations/runners/safe_runner.py": {
+    "ExecutionOutput": 16,
+    "compute_sha256": 26,
+    "manifest_directory": 35,
+    "SafeRunner": 59,
+    "__init__": 67,
+    "validate_command": 70,
+    "run": 88,
+    "_kill_process_tree": 195,
+    "poll_cancellation": 130
+  },
+  "src/integrations/runners/__init__.py": {}
+}

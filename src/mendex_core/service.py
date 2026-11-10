@@ -71,6 +71,9 @@ class StudioService:
             if version < 4:
                 from .integration_store import migrate
                 migrate(db)
+            if version < 5:
+                from .integration_store import migrate_v5
+                migrate_v5(db)
         from .integration_service import IntegrationService
         self.integrations = IntegrationService(self)
 

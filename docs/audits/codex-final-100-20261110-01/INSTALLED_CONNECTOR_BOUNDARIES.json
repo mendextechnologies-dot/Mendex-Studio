@@ -1,0 +1,87 @@
+[
+  {
+    "tool": "freecad",
+    "legacy_descriptor": {
+      "tool_id": "freecad",
+      "name": "FreeCAD",
+      "kind": "application",
+      "category": "core",
+      "supported_os": [
+        "Windows"
+      ],
+      "version": "1.1.4.0",
+      "license_name": "LGPLv2+",
+      "official_url": "https://www.freecad.org/",
+      "capabilities": [
+        "export_step",
+        "generate_bobbin",
+        "export_stl"
+      ],
+      "state": "READY",
+      "executable_path": "C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe",
+      "diagnostic": "Executable found at C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe (Version: 1.1.4.0)"
+    },
+    "v15_default_detect": {
+      "tool_id": "freecad",
+      "state": "NOT_INSTALLED",
+      "version": null,
+      "checked_at": "2026-11-10T09:30:50.932176Z",
+      "executable_path": null,
+      "diagnostic": "FreeCAD is not installed on this machine.",
+      "verified_operations": []
+    },
+    "v15_configured_detect": {
+      "tool_id": "freecad",
+      "state": "DETECTED",
+      "version": null,
+      "checked_at": "2026-11-10T09:30:50.932244Z",
+      "executable_path": "C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe",
+      "diagnostic": "FreeCAD configured at C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe",
+      "verified_operations": []
+    },
+    "v15_operations": [],
+    "v15_execute_exception": "FileNotFoundError('FreeCAD is NOT_INSTALLED and cannot execute jobs')"
+  },
+  {
+    "tool": "jupyter",
+    "legacy_descriptor": {
+      "tool_id": "jupyter",
+      "name": "Jupyter Notebook",
+      "kind": "application",
+      "category": "high",
+      "supported_os": [
+        "Windows"
+      ],
+      "version": null,
+      "license_name": "Modified BSD",
+      "official_url": "https://jupyter.org/",
+      "capabilities": [
+        "execute_notebook",
+        "export_html"
+      ],
+      "state": "READY",
+      "executable_path": "C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+      "diagnostic": "Executable found at C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe"
+    },
+    "v15_default_detect": {
+      "tool_id": "jupyter",
+      "state": "NOT_INSTALLED",
+      "version": null,
+      "checked_at": "2026-11-10T09:30:50.935220Z",
+      "executable_path": null,
+      "diagnostic": "Jupyter Notebook is not installed on this machine.",
+      "verified_operations": []
+    },
+    "v15_configured_detect": {
+      "tool_id": "jupyter",
+      "state": "DETECTED",
+      "version": null,
+      "checked_at": "2026-11-10T09:30:50.935268Z",
+      "executable_path": "C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+      "diagnostic": "Jupyter Notebook configured at C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+      "verified_operations": []
+    },
+    "v15_operations": [],
+    "v15_execute_exception": "FileNotFoundError('Jupyter Notebook is NOT_INSTALLED and cannot execute jobs')"
+  }
+]

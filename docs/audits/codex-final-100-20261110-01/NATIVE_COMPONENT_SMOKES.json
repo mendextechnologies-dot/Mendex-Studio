@@ -1,0 +1,74 @@
+{
+  "root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu",
+  "results": [
+    {
+      "tool": "FreeCAD",
+      "command": [
+        "C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe",
+        "--user-cfg",
+        "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu\\user.cfg",
+        "--system-cfg",
+        "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu\\system.cfg",
+        "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu\\generic_component.py"
+      ],
+      "cwd": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu",
+      "scope": "Direct native software component; NOT Studio adapter/UI integration",
+      "exit_code": 0,
+      "stdout": "FreeCAD 1.1.4, Libs: 1.1.4R20260928 (Git shallow)\n(C) 2001-2026 FreeCAD contributors\nFreeCAD is free and open-source software licensed under the terms of LGPL2+ license.\n\nRecompute......\n\t\t\t\t\t\t(100 %)\t\n\t\t\t\t\t\t\t\t\n*******************************************************************\n******        Statistics on Transfer (Write)                 ******\n\n*******************************************************************\n******        Transfer Mode = 0  I.E.  As Is       ******\n******        Transferring Shape, ShapeType = 0                      ******\n** WorkSession : Sending all data\n Step File Name : C:/Users/Sagar/AppData/Local/Temp/m100native-lzwnvbpu/synthetic-cube.step(170 ents)  Write  Done\n",
+      "stderr": "",
+      "output_exists": true,
+      "step_header_valid": true
+    },
+    {
+      "tool": "Jupyter",
+      "command": [
+        "C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+        "nbconvert",
+        "--execute",
+        "--to",
+        "notebook",
+        "--ExecutePreprocessor.timeout=15",
+        "--output",
+        "executed.ipynb",
+        "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu\\software-fixture.ipynb"
+      ],
+      "cwd": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu",
+      "scope": "Direct native software component; NOT Studio adapter/UI integration",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "[NbConvertApp] Converting notebook C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu\\software-fixture.ipynb to notebook\nC:\\Mendex studio\\.venv\\Lib\\site-packages\\zmq\\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.\n  self._get_loop()\n[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.\n[NbConvertApp] Writing 1120 bytes to C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100native-lzwnvbpu\\executed.ipynb\n",
+      "output_exists": true,
+      "cell_outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "MENDEX_SOFTWARE_FIXTURE\n",
+            "C:\\Mendex studio\\.venv\\Scripts\\python.exe\n"
+          ]
+        }
+      ],
+      "expected_marker_found": true
+    },
+    {
+      "artifact": "generic_component.py",
+      "sha256": "4e0bfe1ad1d6812237383220ea6c55280eb8154b8b42bca5265e3fa1d017ed8c",
+      "bytes": 310
+    },
+    {
+      "artifact": "synthetic-cube.step",
+      "sha256": "a19c909b5c01a1abc329e219b3004e14ed940beac95c07a5ee401e605e2eb440",
+      "bytes": 6827
+    },
+    {
+      "artifact": "software-fixture.ipynb",
+      "sha256": "1678004feedfdbb1f24020227dc677fb316b6c391ad635ea4842138d83e5be33",
+      "bytes": 381
+    },
+    {
+      "artifact": "executed.ipynb",
+      "sha256": "0bf112f23f5d15d9fdfcbe7c3cd0b6217360c0cb178dd4a643f992ba87b4ad84",
+      "bytes": 1173
+    }
+  ]
+}

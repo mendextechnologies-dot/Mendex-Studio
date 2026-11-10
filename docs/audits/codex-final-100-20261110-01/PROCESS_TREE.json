@@ -1,0 +1,13 @@
+{
+  "status": "TIMED_OUT",
+  "child_pid": 16240,
+  "child_still_running": false,
+  "stdout": "16240\r\n",
+  "stderr": "",
+  "command": [
+    "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+    "-c",
+    "import subprocess,sys,time;p=subprocess.Popen([sys.executable,'-c','import time;time.sleep(10)']);print(p.pid,flush=True);time.sleep(10)"
+  ],
+  "scope": "Audit-owned benign parent/child only"
+}

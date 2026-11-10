@@ -110,3 +110,17 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Unblocked GAP-OSS-01 (KiCad): Installed KiCad 10.0.7 at `C:\Program Files\KiCad\10.0\bin\kicad-cli.exe`; implemented adapter execution for version, ERC, and DRC; verified in `test_kicad_adapter.py`.
 - [x] Unblocked GAP-OSS-05 (OpenModelica): Installed OpenModelica 1.26.3 at `C:\Program Files\OpenModelica1.26.3-64bit\bin\omc.exe`; implemented adapter execution for version, model checking, and simulation; verified in `test_openmodelica_adapter.py`.
 - [x] 110 automated tests passing across adapters, contracts, UI, calculations, resilience, and parsers. All 18 approved tools truthfully classified with 100% test coverage.
+
+## v1.7 Enterprise Architecture & Modernization Milestone
+
+- [x] Product-Independent Architecture: Transitioned from product-first workflow to `Studio -> Workspace -> Engineering Activity -> Engineering Tools -> Results -> (Optional Product Association)`.
+- [x] Pydantic Models: Implemented `EngineeringWorkspace` and `EngineeringActivity` in `src/mendex_core/models.py`.
+- [x] Additive SQLite Schema v5: Implemented `migrate_v5()` in `src/mendex_core/integration_store.py` adding `description`, `owner`, `product_id`, `created_at`, `updated_at` to `integration_workspaces`, creating `activities` table with indices, and linking `integration_jobs` to `activities` without bumping `PRAGMA user_version`.
+- [x] Backend Services: Implemented workspace metadata management, activity CRUD, downstream product association, and file attachment in `src/mendex_core/integration_service.py`.
+- [x] Enterprise Design System: Built `DARK_THEME_QSS` and `LIGHT_THEME_QSS` with Catppuccin Mocha tokens, accessible typography, high-contrast states, and runtime theme switching in `src/mendex_ui/theme.py`.
+- [x] Enterprise Panels: Implemented `EnterpriseDashboardPanel`, `EngineeringWorkspaceManagerPanel`, `SimulationLabPanel`, `AIAssistantPanel`, `ResearchCenterPanel`, and `ResultsReportsPanel` in `src/mendex_ui/v17_panels.py`.
+- [x] UI Shell Modernization: Upgraded `src/mendex_ui/window.py` with global header bar (workspace switcher, command search, tool readiness badge, theme toggle) and dynamic Enterprise Dashboard while maintaining 100% backwards compatibility with all 14 canonical page indices.
+- [x] Multi-Solver Verification: 6 open-source native solvers fully operational and verified (LTspice 26.1, KiCad 10.0.7 CLI, FEMM 4.2 Lua FEA, FreeCAD 1.1.4 3D STEP, Qucs-S/ngspice 46, OpenModelica 1.26.3 OMC).
+- [x] Test Suite: **113 passed in 18.47s** with zero regressions (`test_v17_product_independent.py`, `test_window.py`, `test_v15_panels.py`, `test_workspace_panels.py`, etc.).
+- [x] Smoke Testing: Desktop smoke scripts verified (`scripts/desktop_smoke.py`, `scripts/v15_codex_smoke.py`, and `scripts/v17_enterprise_smoke.py`) capturing offscreen screenshots under `.mendex/qa/`.
+

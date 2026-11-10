@@ -1,0 +1,18 @@
+{
+  "total": 270,
+  "counts": {
+    "PASS": 100,
+    "PARTIAL": 86,
+    "FAIL": 57,
+    "UNVERIFIED": 9,
+    "BLOCKED": 18
+  },
+  "excluded": 40,
+  "verified_completion_percentage": 37.04,
+  "all_nonpass_have_files_cause_priority_owner_action": true,
+  "links_valid": true,
+  "actual_native_artifact_hashes_valid": true,
+  "application_source_unchanged": true,
+  "report_bytes": 282583,
+  "report_sha256": "def7a90f99dc9cce381effc60f927b156c9e8e1ccc0cdc22bb4e2c552da807f9"
+}

@@ -1,0 +1,229 @@
+Mendex Engineering Studio
+Next Steps Specification • v1.4
+10 November 2026  |  Implementation planning  |  Team-approved tool baseline
+1. Decision and scope
+Version 1.3 is reported implemented by the project owner. Version 1.4 extends the existing Studio, not a replacement or rewrite. Codex must first inspect the repository and verify actual implementation status, tests and architecture before making changes. No product-specific development is authorized.
+Existing reference: Mendex Engineering & Validation Platform Master Guide v1.3 and Mendex Studio Detailed Software Architecture/UI-UX Implementation Specification v1.0. Preserve the Windows-first, local-first, offline-capable, modular Python/PySide6 approach unless repository evidence or explicit approval requires a change.
+2. Outcomes and non-goals
+A reliable tool registry showing availability, version, license constraints, readiness and supported capabilities.
+A reusable adapter framework with safe local execution, timeouts, cancellation, logging and diagnostics.
+Common project artifact and evidence metadata, simulation-job records and reproducible report scaffolding.
+A functional workflow using supported tools and synthetic/demo inputs, without asserting engineering validity.
+No specific product design, certification, manufacturing release, mandatory cloud service, or unapproved paid-license purchase.
+3. Team-approved inventory (18 entries)
+Tool / resource
+Role
+Proposed adoption
+SwitchLossDB
+Dataset/analysis
+High
+MagNet Dataset
+Research dataset
+High
+MagNet ML Benchmarks
+Research benchmark
+High
+KiCad
+Schematic/PCB
+Essential
+FEMM
+Magnetic FEM
+Essential
+MagNet (Princeton University)
+Research resource; clarify overlap
+High
+LTspice
+Circuit simulation
+Core
+PLECS
+Converter simulation; licensed/optional
+Optional
+MATLAB / Simulink
+Modelling/control; licensed/optional
+Optional
+Ansys Maxwell
+EM fields; licensed/optional
+Optional
+Ansys Icepak
+Thermal; licensed/optional
+Optional
+FreeCAD
+Mechanical CAD
+Core
+Qucs-S
+Circuit simulation
+High
+OpenModelica
+System modelling
+High
+Python
+Automation runtime
+Core
+Jupyter Notebook
+Analysis/notebooks
+High
+Git
+Version control
+Core
+SolidWorks
+Mechanical CAD; licensed/optional
+Optional
+Note: The 18 names and their broad applications come from the team-approved reference. “Core”, “High”, and “Optional” classifications for the additional software are proposed Studio sequencing, not verified licensing or team sign-off. MagNet entries may represent related datasets/research rather than distinct installable applications.
+4. Implementation phases and acceptance gates
+Phase 0 — Baseline audit
+Work: Inspect repository, compare v1.3 commitments to code, run existing tests, record gaps and freeze a regression checklist.
+Exit gate: Signed baseline matrix; no regressions; docs/IMPLEMENTATION_STATUS.md updated.
+Phase 1 — Tool registry and discovery
+Work: Create catalog entries for all 18, tool/resource types, OS and license notes, detection, version probing, health checks and manual path configuration.
+Exit gate: All 18 visible; statuses distinguish NOT_INSTALLED, DETECTED, READY, UNSUPPORTED, ERROR and UNKNOWN; no false READY.
+Phase 2 — Adapter SDK and safe runner
+Work: Define typed contracts for discovery, configuration, launch, job submission, progress, cancellation, results and diagnostics. Use subprocess isolation and controlled working directories.
+Exit gate: Mock adapter passes contract tests; failures/timeouts/cancellation handled; no untrusted arbitrary code loading.
+Phase 3 — Core connectors
+Work: Implement and verify practical local integrations for KiCad, LTspice, FEMM, FreeCAD and Python, with Git support. Scope each by actual installed version and CLI/script capability.
+Exit gate: Per-tool smoke tests with synthetic inputs, logs, artifact manifests, explicit limits and version evidence.
+Phase 4 — Extended connectors and data
+Work: Evaluate Qucs-S, OpenModelica, Jupyter and MagNet/SwitchLossDB dataset workflows; import provenance and licensing metadata.
+Exit gate: At least one verified extended connector and one dataset import workflow; unsupported operations clearly marked.
+Phase 5 — Workflow and evidence UI
+Work: Build job queue, status, logs, result browser, artifact provenance, parameter metadata and exportable framework reports.
+Exit gate: Demo job can be started, monitored, cancelled/retried and reopened; reports cite actual evidence.
+Phase 6 — Optional commercial connectors
+Work: Design configuration-only or licensed adapters for PLECS, MATLAB/Simulink, Ansys Maxwell/Icepak and SolidWorks.
+Exit gate: No mandatory paid dependency; adapters report unavailable or unverified until licensed and tested.
+Phase 7 — Acceptance and handover
+Work: Run regression suite, security/path tests, documentation review and user walkthrough; maintain backlog.
+Exit gate: Owner accepts demonstrated functions and known limitations; no engineering certification implied.
+5. Technical contracts
+ToolDescriptor: id, name, kind (application/dataset/benchmark), supported OS, version, license status, capability declarations and source URL.
+ToolAdapter: detect(), verify(), capabilities(), configure(), launch() and optional submit_job(), cancel_job(), collect_results().
+JobRecord: job ID, workspace ID, tool/version, input hashes, parameters, timestamps, status, logs, output artifacts and failure reason.
+ArtifactManifest: relative path, file type, SHA-256, source job, provenance, creation time and review state.
+Security: explicit executable allowlist, path validation, no silent downloads, no arbitrary shell strings, safe process isolation and bounded resources.
+Status semantics: installed is not validated; a successful software self-test is not an engineering pass.
+6. UI and developer experience
+Add Tools & Integrations dashboard, tool detail/configuration screens, Jobs & Results view, evidence browser, and troubleshooting panel. Retain existing navigation, workspace lifecycle and VS Code/Codex integration. Show actionable diagnostics and avoid dead buttons. AI suggestions must remain reviewable, separate from verified simulation evidence, and provider-neutral.
+7. Codex implementation instruction
+Read existing v1.3 code and documentation first; do not assume this document reflects actual implementation.
+Produce a gap matrix and propose minimal incremental changes; preserve existing working functionality.
+Implement one phase at a time with tests and evidence; record decisions and dependency/license rationale.
+Never silently install commercial software, change global machine settings or execute unknown scripts.
+Update README, docs/IMPLEMENTATION_STATUS.md, docs/DECISIONS.md and integration documentation after each milestone.
+Do not start product-specific engineering work; defer CI/CD and cloud expansion unless explicitly approved.
+8. Release acceptance checklist
+☐ Existing v1.3 functions pass regression checks
+☐ 18 registry entries present with truthful statuses
+☐ Core adapter tests and selected real tool smoke tests documented
+☐ Job execution, cancellation, logs and evidence persistence demonstrated
+☐ Dataset licensing/provenance reviewed before use
+☐ Optional paid tools do not block application startup
+☐ No product-specific deliverables introduced
+☐ Owner approves v1.4 demonstration and open limitations
+Document status: Proposed next-step specification. User-reported v1.3 completion is not independently verified. Tool capabilities, licenses and installation support must be validated against official documentation and the local environment before adoption.
+
+9. Two-agent parallel delivery model (v1.5 addendum)
+Status: Execution assignment. v1.3 is treated as implemented per project-owner confirmation; both agents must verify actual repository state before changing code. This addendum supersedes single-agent instructions in section 7 where responsibilities conflict.
+Agent naming: Agent 1 = Codex (VS Code). Agent 2 = Agentforce / Antigravity (the second coding agent selected by the project owner). Agent 2 is a role label, not a requirement to use Salesforce Agentforce.
+9.1 Non-negotiable boundaries
+No specific engineering product design or product-specific simulation models. Build a reusable Studio only.
+No rebuilding of working v1.3 functionality; audit, preserve, extend and regression-test.
+Two independent Git worktrees/branches; never have both agents write to the same worktree.
+No simultaneous edits to shared files. Codex owns contracts, schemas, UI, DB migrations and integration merges.
+No claims that a tool works until installed-version checks and repeatable smoke tests demonstrate it.
+Commercial tools are optional, license-gated adapters; do not bundle proprietary executables, models or datasets.
+No automatic safety certification or equivalence claims between simulation and physical behavior.
+9.2 Exclusive ownership and deliverables
+Workstream
+Agent 1 — Codex (owner)
+Agent 2 — Agentforce/Antigravity (owner)
+Baseline audit
+Inventory existing UI, persistence, registry, tests; publish status
+Inventory installed engineering tools, automation capabilities, dependencies
+UI and navigation
+Tool Center, tool details, configure/detect/verify, jobs, logs, evidence, reports
+No UI edits; provide capability metadata and test fixtures
+Database and settings
+SQLite migrations, tool configurations, job/evidence metadata, paths and backups
+No DB schema edits; consume service contracts
+Shared contracts
+Own versioned ToolAdapter, JobRequest, JobResult, EvidenceManifest, error/status enums
+Review contract; propose changes by PR, implement against frozen versions
+Tool discovery
+Registry service, user settings, status semantics and presentation
+Per-tool executable/version detection and non-destructive health checks
+Execution
+Queue, cancel/retry controls, progress/status service, UI wiring
+Safe subprocess runner, timeout, process-tree cancellation, isolated workdirs, logs
+Core connectors
+Connect adapter service to Studio screens
+LTspice, KiCad, FEMM, FreeCAD: detect, verify, launch, then supported batch operations
+Extended connectors
+Display tool capability/availability and dataset metadata
+Qucs-S, OpenModelica; Python/Jupyter/Git; MagNet resources, SwitchLossDB
+Commercial integrations
+License/status UI and configuration fields
+PLECS, MATLAB/Simulink, Ansys Maxwell/Icepak, SolidWorks: capability research and optional stubs
+Validation and reporting
+Evidence viewer, report templates/export, audit metadata
+Output parsing, units, provenance, deterministic fixtures and adapter test evidence
+Tests
+UI, DB, contract, regression and end-to-end integration tests
+Adapter unit, fixture, executable smoke and failure-mode tests
+Release and merge
+Own final merge, compatibility, release notes and acceptance package
+Deliver isolated PRs, test logs, supported versions and known limitations
+9.3 Repository file ownership
+Illustrative paths below must be mapped to actual repository folders during Phase 0; do not create duplicate packages merely to match these examples.
+Codex exclusive: ui/**, application/workspaces/**, application/tool_registry/**, persistence/**, migrations/**, reporting/ui/**, tests/ui/**, docs/IMPLEMENTATION_STATUS.md, docs/CONTRACTS.md.
+Agent 2 exclusive: integrations/adapters/**, integrations/runners/**, integrations/parsers/**, integrations/datasets/**, tests/adapters/**, docs/TOOL_COMPATIBILITY.md.
+Shared/read-only after contract freeze: domain/contracts/**, domain/schemas/**, AGENTS.md, dependency manifests. Any change requires Codex-owned interface PR, review and version bump.
+Avoid editing pyproject.toml/requirements files in parallel. Agent 2 submits dependency requests in docs/DEPENDENCY_REQUESTS.md; Codex approves and applies.
+9.4 Contract freeze — prerequisite for parallel coding
+Codex publishes ToolDescriptor: stable ID, name, category, version, OS, license, capabilities, configuration schema.
+Codex publishes ToolAdapter interface: detect(), verify(), supported_operations(), execute(request, context) and optional launch().
+Codex publishes JobRequest: schema_version, job_id, workspace_id, tool_id, operation, input paths, parameters, timeout, provenance.
+Codex publishes JobResult: status, timestamps, exit code, structured diagnostics, outputs, evidence paths and tool/version.
+Codex publishes EvidenceManifest: file hashes, source labels, run metadata, unit conventions, raw-vs-derived distinction and review status.
+Agree error codes and status transitions: NOT_CONFIGURED, NOT_INSTALLED, DETECTED, READY, UNSUPPORTED, ERROR; QUEUED, RUNNING, SUCCEEDED, FAILED, CANCELLED, TIMED_OUT.
+Contract tests and JSON fixtures must pass for a fake adapter before Agent 2 begins implementing real adapters.
+9.5 Parallel sprint schedule and gates
+Gate A — Day 0: Audit and freeze
+Codex: map existing v1.3 modules and tests, establish branches/worktrees, publish contracts and fake adapter.
+Agent 2: audit tool availability, OS/license constraints and proposed adapter strategy; no shared-code changes.
+Exit: contract tests pass; owners and directories documented.
+Sprint 1 — Registry + execution foundation
+Codex: Tool Center and settings, registry persistence, job/evidence schemas and fake-adapter UI.
+Agent 2: safe runner and executable detection/verification framework with fixture tests.
+Exit: UI can execute fake job; runner handles success, failure, timeout, cancellation.
+Sprint 2 — Core tool integrations
+Codex: job list/details, progress, log viewer, tool configuration and report skeleton.
+Agent 2: LTspice, KiCad, FEMM and FreeCAD adapters, each gated by local support and licensing.
+Exit: each claimed supported operation has reproducible smoke evidence; unavailable tools clearly labeled.
+Sprint 3 — Extended tools + research
+Codex: dataset catalog, import UI, provenance, report exports and error recovery.
+Agent 2: Qucs-S, OpenModelica, Python, Jupyter, Git; SwitchLossDB and MagNet data/benchmarks with source/license checks.
+Exit: import and run traces recorded; research assets distinguished from executable simulators.
+Sprint 4 — Optional tools + acceptance
+Codex: optional-tool UI, final regression suite, docs, packaging only if approved.
+Agent 2: non-invasive discovery/stubs for PLECS, MATLAB/Simulink, Ansys Maxwell/Icepak and SolidWorks; no forced installation.
+Exit: end-to-end demonstration, evidence, known limitations and owner sign-off.
+9.6 Daily coordination and merge protocol
+Every work session: each agent posts Completed / In progress / Blocked / Changed files / Tests / Next handoff.
+Agent 2 raises a PR with adapter source, contract-test results, compatibility matrix, raw logs and sample output manifests.
+Codex runs contract tests first, then UI/integration/regression tests; resolves conflicts only in Codex-owned integration branch.
+If contract must change, pause affected Agent 2 adapter work; Codex versions the schema, updates fixtures and notifies Agent 2.
+No agent merges its own unreviewed cross-boundary changes; no force-push to shared branches.
+Mark an integration READY only for a tested version and specific operation, not merely because an executable was found.
+9.7 Exact instructions — paste into Codex
+You are Agent 1 (Codex), lead integrator for Mendex Engineering Studio v1.5. v1.3 is reported implemented. Read the v1.4 specification and the v1.5 two-agent addendum. Inspect the real repository and preserve completed features. You exclusively own UI, application services, registry, settings, persistence, contracts, reporting UI, regression tests, and merges. First publish an implementation audit, explicit file ownership, versioned adapter/job/result/evidence contracts, fake adapter, contract tests, and a stable contract freeze commit. Work in a separate Git worktree/branch. Then build tool configuration, job dashboard, evidence viewer and report UX while Agent 2 builds integrations. Do not edit Agent 2 files without an agreed PR. Review and merge Agent 2 PRs only after tests and reproducible evidence. Keep docs/IMPLEMENTATION_STATUS.md current. No specific product development, no unapproved CI/CD, no unsupported capability claims. Report completed work, tests, blockers and next handoffs at every milestone.
+9.8 Exact instructions — paste into Agent 2
+You are Agent 2 (Agentforce/Antigravity), engineering integration owner for Mendex Engineering Studio v1.5. Read v1.4 and the v1.5 two-agent addendum. v1.3 is reported implemented. Work in a separate Git worktree/branch. First inspect existing adapters and assess availability, version, OS compatibility, license and automation mechanisms for all 18 approved entries. Do not modify UI, database, shared contracts or dependency manifests. Wait for Codex contract freeze, then implement adapters against its versioned contracts. Own safe runner, tool detection/verification, execution, parsing, dataset provenance and adapter tests. Prioritize LTspice, KiCad, FEMM and FreeCAD; then Qucs-S, OpenModelica, Python/Jupyter/Git and research datasets. Treat commercial tools as optional license-gated integrations. For each adapter submit code, supported operations, tested version, reproducible smoke test, raw logs, failure tests and limitations as a PR. Never label unsupported or untested features READY. No product-specific design or models. Report completed work, tests, blockers and handoffs at each milestone.
+9.9 Final acceptance criteria for Studio v1.5
+All 18 approved entries appear in registry with correct category, availability, license and supported-operation status.
+Core executable integrations are actually tested where installed; missing tools remain safely configurable without crashing.
+A generic synthetic workflow runs through UI → job service → adapter → evidence → report.
+Cancellation, timeout, missing binary, invalid input and malformed output have automated failure tests.
+Raw outputs, hashes, provenance, versions, timestamps and review state are traceable.
+All v1.3 persistence/navigation functionality passes regression tests.
+Each agent supplies change log, test evidence and known limitations; Codex produces consolidated sign-off.
+No specific product development, manufacturing approval or safety certification is included.

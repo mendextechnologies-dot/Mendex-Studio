@@ -1,0 +1,162 @@
+[
+  {
+    "tool": "plecs",
+    "category": "application",
+    "before": {
+      "tool_id": "plecs",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.572114Z",
+      "executable_path": null,
+      "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+      "verified_operations": []
+    },
+    "saved_after_reopen": {
+      "executable_path": null,
+      "resource_path": null,
+      "license_reference": "AUDIT_REFERENCE_ONLY_NOT_ENTITLEMENT"
+    },
+    "after_reference_saved": {
+      "tool_id": "plecs",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.581461Z",
+      "executable_path": null,
+      "diagnostic": "PLECS is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    },
+    "unsupported_job_refused": {
+      "code": "UNSUPPORTED",
+      "message": "This exact tool operation/version has no verified execution connector. Use the synthetic demo or wait for Agent 2."
+    },
+    "capabilities": []
+  },
+  {
+    "tool": "matlab-simulink",
+    "category": "application",
+    "before": {
+      "tool_id": "matlab-simulink",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.596168Z",
+      "executable_path": null,
+      "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+      "verified_operations": []
+    },
+    "saved_after_reopen": {
+      "executable_path": null,
+      "resource_path": null,
+      "license_reference": "AUDIT_REFERENCE_ONLY_NOT_ENTITLEMENT"
+    },
+    "after_reference_saved": {
+      "tool_id": "matlab-simulink",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.605388Z",
+      "executable_path": null,
+      "diagnostic": "MATLAB / Simulink is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    },
+    "unsupported_job_refused": {
+      "code": "UNSUPPORTED",
+      "message": "This exact tool operation/version has no verified execution connector. Use the synthetic demo or wait for Agent 2."
+    },
+    "capabilities": []
+  },
+  {
+    "tool": "ansys-maxwell",
+    "category": "application",
+    "before": {
+      "tool_id": "ansys-maxwell",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.619428Z",
+      "executable_path": null,
+      "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+      "verified_operations": []
+    },
+    "saved_after_reopen": {
+      "executable_path": null,
+      "resource_path": null,
+      "license_reference": "AUDIT_REFERENCE_ONLY_NOT_ENTITLEMENT"
+    },
+    "after_reference_saved": {
+      "tool_id": "ansys-maxwell",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.628018Z",
+      "executable_path": null,
+      "diagnostic": "Ansys Maxwell is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    },
+    "unsupported_job_refused": {
+      "code": "UNSUPPORTED",
+      "message": "This exact tool operation/version has no verified execution connector. Use the synthetic demo or wait for Agent 2."
+    },
+    "capabilities": []
+  },
+  {
+    "tool": "ansys-icepak",
+    "category": "application",
+    "before": {
+      "tool_id": "ansys-icepak",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.646651Z",
+      "executable_path": null,
+      "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+      "verified_operations": []
+    },
+    "saved_after_reopen": {
+      "executable_path": null,
+      "resource_path": null,
+      "license_reference": "AUDIT_REFERENCE_ONLY_NOT_ENTITLEMENT"
+    },
+    "after_reference_saved": {
+      "tool_id": "ansys-icepak",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.655909Z",
+      "executable_path": null,
+      "diagnostic": "Ansys Icepak is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    },
+    "unsupported_job_refused": {
+      "code": "UNSUPPORTED",
+      "message": "This exact tool operation/version has no verified execution connector. Use the synthetic demo or wait for Agent 2."
+    },
+    "capabilities": []
+  },
+  {
+    "tool": "solidworks",
+    "category": "application",
+    "before": {
+      "tool_id": "solidworks",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.669471Z",
+      "executable_path": null,
+      "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+      "verified_operations": []
+    },
+    "saved_after_reopen": {
+      "executable_path": null,
+      "resource_path": null,
+      "license_reference": "AUDIT_REFERENCE_ONLY_NOT_ENTITLEMENT"
+    },
+    "after_reference_saved": {
+      "tool_id": "solidworks",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-10T09:32:23.682111Z",
+      "executable_path": null,
+      "diagnostic": "SolidWorks is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    },
+    "unsupported_job_refused": {
+      "code": "UNSUPPORTED",
+      "message": "This exact tool operation/version has no verified execution connector. Use the synthetic demo or wait for Agent 2."
+    },
+    "capabilities": []
+  }
+]

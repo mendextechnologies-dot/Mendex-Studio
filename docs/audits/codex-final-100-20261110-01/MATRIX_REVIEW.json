@@ -1,0 +1,10 @@
+{
+  "change": "CORE-021 classified PARTIAL because missing menu actions are established, rather than wholly unverified; exact compatibility metadata file references supplied",
+  "counts": {
+    "PASS": 100,
+    "PARTIAL": 86,
+    "FAIL": 57,
+    "UNVERIFIED": 9,
+    "BLOCKED": 18
+  }
+}
