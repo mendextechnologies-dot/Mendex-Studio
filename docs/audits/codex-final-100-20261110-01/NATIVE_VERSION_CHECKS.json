@@ -1,0 +1,28 @@
+[
+  {
+    "tool": "freecad",
+    "path": "C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe",
+    "exists": true,
+    "first_two_bytes_hex": "4d5a",
+    "command": [
+      "C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe",
+      "--version"
+    ],
+    "exit_code": 0,
+    "stdout": "FreeCAD 1.1.4 Revision: 20260928 (Git shallow)\n",
+    "stderr": ""
+  },
+  {
+    "tool": "jupyter",
+    "path": "C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+    "exists": true,
+    "first_two_bytes_hex": "4d5a",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+      "--version"
+    ],
+    "exit_code": 0,
+    "stdout": "Selected Jupyter core packages...\nIPython          : 9.18.1\nipykernel        : 7.4.0\nipywidgets       : 8.1.9\njupyter_client   : 8.10.0\njupyter_core     : 5.9.1\njupyter_server   : 2.21.1\njupyterlab       : 4.6.6\nnbclient         : 0.11.0\nnbconvert        : 7.17.2\nnbformat         : 5.11.1\nnotebook         : 7.6.5\nqtconsole        : not installed\ntraitlets        : 5.16.1\n",
+    "stderr": ""
+  }
+]

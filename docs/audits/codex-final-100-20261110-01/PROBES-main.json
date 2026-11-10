@@ -1,0 +1,728 @@
+{
+  "snapshot": "main",
+  "probe_root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvp-gdabjx0j",
+  "environment": {
+    "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "git": "git version 2.48.1.windows.1"
+  },
+  "fake_binary_application_verify": {
+    "tool_id": "ltspice",
+    "state": "READY",
+    "version": "26.1.1.0",
+    "checked_at": "2026-11-10T09:26:29.680955Z",
+    "executable_path": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvp-gdabjx0j\\fake.exe",
+    "diagnostic": "LTspice 26.1.1.0 verified with reproducible RC benchmark",
+    "verified_operations": [
+      "batch_simulate"
+    ]
+  },
+  "missing_python_verify": {
+    "tool_id": "python",
+    "state": "READY",
+    "version": "3.13.7",
+    "checked_at": "2026-11-10T09:26:29.686706Z",
+    "executable_path": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\fvp-gdabjx0j\\missing-python.exe",
+    "diagnostic": "Python 3.13.7 runtime verified",
+    "verified_operations": [
+      "run_script"
+    ]
+  },
+  "dataset_no_resource_health": {
+    "tool_id": "magnet-dataset",
+    "state": "READY",
+    "version": "1.0-dataset",
+    "checked_at": "2026-11-10T09:26:29.687686Z",
+    "executable_path": null,
+    "diagnostic": "MagNet Dataset verified with local sample benchmark",
+    "verified_operations": [
+      "verify_checksum"
+    ]
+  },
+  "dataset_no_input_job": {
+    "status": "SUCCEEDED",
+    "outputs": [],
+    "evidence_paths": [],
+    "integrity": true
+  },
+  "non_allowlisted_binary_accepted": "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+  "runner_log_boundary": {
+    "status": "JobState.SUCCEEDED",
+    "outside_workdir_written": true,
+    "sentinel_overwritten": true
+  },
+  "malformed_kicad": {
+    "violation_count": 0,
+    "unconnected_count": 0,
+    "total_issues": 0
+  },
+  "missing_magnet_measurements": [
+    {
+      "material": "N87",
+      "temperature_c": 25.0,
+      "frequency_hz": 100000.0,
+      "b_peak_t": 0.1,
+      "waveform": "sinusoidal",
+      "volumetric_loss_w_m3": 0.0
+    }
+  ],
+  "unrelated_switchloss_csv": [
+    {
+      "part_number": "",
+      "manufacturer": "",
+      "device_type": "MOSFET",
+      "v_ds_rated_v": 0.0,
+      "i_d_rated_a": 0.0,
+      "r_ds_on_mohm": null,
+      "e_on_uj": null,
+      "e_off_uj": null,
+      "v_test_v": null,
+      "i_test_a": null,
+      "t_j_c": null
+    }
+  ],
+  "report_interleaving": {
+    "hook_fired": true,
+    "report_hash": "b731250c1e22ead6dbe605667584249bbde288d99605868e770cc576bda7d074",
+    "report_vout": null,
+    "validation": [
+      [
+        "pass",
+        "ee653a26ff58dcec4e7056c001b9f39e7dece29d870a5e8704f693e9fad57cc7",
+        24.0
+      ]
+    ]
+  },
+  "windows_reserved_collision": {
+    "status": "SUCCEEDED",
+    "integrity": false,
+    "staged_input_preserved": false
+  },
+  "ui": {
+    "navigation": [
+      "Dashboard",
+      "Products",
+      "Transformer",
+      "DC\u2013DC Converter",
+      "Switching Devices",
+      "PCB Workspace",
+      "Simulations",
+      "Validation",
+      "Reports",
+      "Tool Manager",
+      "Knowledge Center",
+      "Tools & Integrations",
+      "Jobs & Results",
+      "Dataset Catalog"
+    ],
+    "default_cli_adapters": [
+      "studio-demo"
+    ],
+    "ui_adapters": [
+      "studio-demo",
+      "ltspice",
+      "python",
+      "git",
+      "switchlossdb",
+      "magnet-dataset",
+      "magnet-ml-benchmarks",
+      "magnet-princeton",
+      "kicad",
+      "femm",
+      "freecad",
+      "qucs-s",
+      "openmodelica",
+      "jupyter",
+      "plecs",
+      "matlab-simulink",
+      "ansys-maxwell",
+      "ansys-icepak",
+      "solidworks"
+    ],
+    "buttons": [
+      "New generic workspace",
+      "Attach input",
+      "Start synthetic demo",
+      "Cancel selected",
+      "Retry selected",
+      "Refresh",
+      "Export evidence report",
+      "Preview verified artifact",
+      "Open exported report"
+    ],
+    "menus": [],
+    "catalog_count": 18
+  },
+  "tool_health": {
+    "switchlossdb": {
+      "detect": {
+        "tool_id": "switchlossdb",
+        "state": "DETECTED",
+        "version": "1.0-dataset",
+        "checked_at": "2026-11-10T09:26:30.439846Z",
+        "executable_path": null,
+        "diagnostic": "SwitchLossDB dataset interface ready for ingestion",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "switchlossdb",
+        "state": "READY",
+        "version": "1.0-dataset",
+        "checked_at": "2026-11-10T09:26:30.440346Z",
+        "executable_path": null,
+        "diagnostic": "SwitchLossDB verified with local sample benchmark",
+        "verified_operations": [
+          "verify_checksum"
+        ]
+      }
+    },
+    "magnet-dataset": {
+      "detect": {
+        "tool_id": "magnet-dataset",
+        "state": "DETECTED",
+        "version": "1.0-dataset",
+        "checked_at": "2026-11-10T09:26:30.448481Z",
+        "executable_path": null,
+        "diagnostic": "MagNet Dataset dataset interface ready for ingestion",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "magnet-dataset",
+        "state": "READY",
+        "version": "1.0-dataset",
+        "checked_at": "2026-11-10T09:26:30.448934Z",
+        "executable_path": null,
+        "diagnostic": "MagNet Dataset verified with local sample benchmark",
+        "verified_operations": [
+          "verify_checksum"
+        ]
+      }
+    },
+    "magnet-ml-benchmarks": {
+      "detect": {
+        "tool_id": "magnet-ml-benchmarks",
+        "state": "DETECTED",
+        "version": "1.0-dataset",
+        "checked_at": "2026-11-10T09:26:30.460254Z",
+        "executable_path": null,
+        "diagnostic": "MagNet ML Benchmarks dataset interface ready for ingestion",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "magnet-ml-benchmarks",
+        "state": "READY",
+        "version": "1.0-dataset",
+        "checked_at": "2026-11-10T09:26:30.460716Z",
+        "executable_path": null,
+        "diagnostic": "MagNet ML Benchmarks verified with local sample benchmark",
+        "verified_operations": [
+          "verify_checksum"
+        ]
+      }
+    },
+    "kicad": {
+      "detect": {
+        "tool_id": "kicad",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.471001Z",
+        "executable_path": null,
+        "diagnostic": "KiCad is not installed on this machine.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "kicad",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.475478Z",
+        "executable_path": null,
+        "diagnostic": "KiCad is not installed on this machine.",
+        "verified_operations": []
+      }
+    },
+    "femm": {
+      "detect": {
+        "tool_id": "femm",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.482859Z",
+        "executable_path": null,
+        "diagnostic": "FEMM is not installed on this machine.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "femm",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.483283Z",
+        "executable_path": null,
+        "diagnostic": "FEMM is not installed on this machine.",
+        "verified_operations": []
+      }
+    },
+    "magnet-princeton": {
+      "detect": {
+        "tool_id": "magnet-princeton",
+        "state": "DETECTED",
+        "version": "1.0-dataset",
+        "checked_at": "2026-11-10T09:26:30.491800Z",
+        "executable_path": null,
+        "diagnostic": "MagNet (Princeton University) dataset interface ready for ingestion",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "magnet-princeton",
+        "state": "READY",
+        "version": "1.0-dataset",
+        "checked_at": "2026-11-10T09:26:30.492289Z",
+        "executable_path": null,
+        "diagnostic": "MagNet (Princeton University) verified with local sample benchmark",
+        "verified_operations": [
+          "verify_checksum"
+        ]
+      }
+    },
+    "ltspice": {
+      "detect": {
+        "tool_id": "ltspice",
+        "state": "DETECTED",
+        "version": "26.1.1.0",
+        "checked_at": "2026-11-10T09:26:30.500593Z",
+        "executable_path": "C:\\Program Files\\ADI\\LTspice\\LTspice.exe",
+        "diagnostic": "LTspice executable detected at C:\\Program Files\\ADI\\LTspice\\LTspice.exe",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "ltspice",
+        "state": "READY",
+        "version": "26.1.1.0",
+        "checked_at": "2026-11-10T09:26:30.501484Z",
+        "executable_path": "C:\\Program Files\\ADI\\LTspice\\LTspice.exe",
+        "diagnostic": "LTspice 26.1.1.0 verified with reproducible RC benchmark",
+        "verified_operations": [
+          "batch_simulate"
+        ]
+      }
+    },
+    "plecs": {
+      "detect": {
+        "tool_id": "plecs",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.512371Z",
+        "executable_path": null,
+        "diagnostic": "PLECS is an optional commercial connector. No license configured.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "plecs",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.512918Z",
+        "executable_path": null,
+        "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+        "verified_operations": []
+      }
+    },
+    "matlab-simulink": {
+      "detect": {
+        "tool_id": "matlab-simulink",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.513369Z",
+        "executable_path": null,
+        "diagnostic": "MATLAB / Simulink is an optional commercial connector. No license configured.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "matlab-simulink",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.513807Z",
+        "executable_path": null,
+        "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+        "verified_operations": []
+      }
+    },
+    "ansys-maxwell": {
+      "detect": {
+        "tool_id": "ansys-maxwell",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.514166Z",
+        "executable_path": null,
+        "diagnostic": "Ansys Maxwell is an optional commercial connector. No license configured.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "ansys-maxwell",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.514518Z",
+        "executable_path": null,
+        "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+        "verified_operations": []
+      }
+    },
+    "ansys-icepak": {
+      "detect": {
+        "tool_id": "ansys-icepak",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.514947Z",
+        "executable_path": null,
+        "diagnostic": "Ansys Icepak is an optional commercial connector. No license configured.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "ansys-icepak",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.515294Z",
+        "executable_path": null,
+        "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+        "verified_operations": []
+      }
+    },
+    "freecad": {
+      "detect": {
+        "tool_id": "freecad",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.515631Z",
+        "executable_path": null,
+        "diagnostic": "FreeCAD is not installed on this machine.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "freecad",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.516008Z",
+        "executable_path": null,
+        "diagnostic": "FreeCAD is not installed on this machine.",
+        "verified_operations": []
+      }
+    },
+    "qucs-s": {
+      "detect": {
+        "tool_id": "qucs-s",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.526219Z",
+        "executable_path": null,
+        "diagnostic": "Qucs-S is not installed on this machine.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "qucs-s",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.526767Z",
+        "executable_path": null,
+        "diagnostic": "Qucs-S is not installed on this machine.",
+        "verified_operations": []
+      }
+    },
+    "openmodelica": {
+      "detect": {
+        "tool_id": "openmodelica",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.535211Z",
+        "executable_path": null,
+        "diagnostic": "OpenModelica is not installed on this machine.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "openmodelica",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.535943Z",
+        "executable_path": null,
+        "diagnostic": "OpenModelica is not installed on this machine.",
+        "verified_operations": []
+      }
+    },
+    "python": {
+      "detect": {
+        "tool_id": "python",
+        "state": "DETECTED",
+        "version": "3.13.7",
+        "checked_at": "2026-11-10T09:26:30.546459Z",
+        "executable_path": "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+        "diagnostic": "Active Python interpreter at C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "python",
+        "state": "READY",
+        "version": "3.13.7",
+        "checked_at": "2026-11-10T09:26:30.547136Z",
+        "executable_path": "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+        "diagnostic": "Python 3.13.7 runtime verified",
+        "verified_operations": [
+          "run_script"
+        ]
+      }
+    },
+    "jupyter": {
+      "detect": {
+        "tool_id": "jupyter",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.554853Z",
+        "executable_path": null,
+        "diagnostic": "Jupyter Notebook is not installed on this machine.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "jupyter",
+        "state": "NOT_INSTALLED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.555320Z",
+        "executable_path": null,
+        "diagnostic": "Jupyter Notebook is not installed on this machine.",
+        "verified_operations": []
+      }
+    },
+    "git": {
+      "detect": {
+        "tool_id": "git",
+        "state": "DETECTED",
+        "version": "2.45.2.windows.1",
+        "checked_at": "2026-11-10T09:26:30.562744Z",
+        "executable_path": "C:\\Program Files\\Git\\cmd\\git.exe",
+        "diagnostic": "Git detected at C:\\Program Files\\Git\\cmd\\git.EXE",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "git",
+        "state": "READY",
+        "version": "2.45.2.windows.1",
+        "checked_at": "2026-11-10T09:26:30.563462Z",
+        "executable_path": "C:\\Program Files\\Git\\cmd\\git.exe",
+        "diagnostic": "Git CLI verified",
+        "verified_operations": [
+          "status"
+        ]
+      }
+    },
+    "solidworks": {
+      "detect": {
+        "tool_id": "solidworks",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.571742Z",
+        "executable_path": null,
+        "diagnostic": "SolidWorks is an optional commercial connector. No license configured.",
+        "verified_operations": []
+      },
+      "verify": {
+        "tool_id": "solidworks",
+        "state": "NOT_CONFIGURED",
+        "version": null,
+        "checked_at": "2026-11-10T09:26:30.572251Z",
+        "executable_path": null,
+        "diagnostic": "Optional licensed connector needs a local license-review reference; no purchase or activation is performed",
+        "verified_operations": []
+      }
+    }
+  },
+  "native_rc": {
+    "status": "SUCCEEDED",
+    "result": {
+      "schema_version": "1.5.0",
+      "job_id": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+      "tool_id": "ltspice",
+      "tool_version": "26.1.1.0",
+      "status": "SUCCEEDED",
+      "started_at": "2026-11-10T09:26:30.672608Z",
+      "ended_at": "2026-11-10T09:26:31.183397Z",
+      "exit_code": 0,
+      "diagnostics": [],
+      "outputs": [
+        "inputs/8f0fc34a9148.op.raw",
+        "inputs/8f0fc34a9148.raw",
+        "inputs/8f0fc34a9148.log"
+      ],
+      "evidence_paths": [
+        "inputs/8f0fc34a9148.net"
+      ]
+    },
+    "integrity": true,
+    "manifest": {
+      "schema_version": "1.5.0",
+      "job_id": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+      "request": {
+        "schema_version": "1.5.0",
+        "job_id": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+        "workspace_id": "58477523-3bdd-4d53-89d6-1ad6a0ea9aef",
+        "tool_id": "ltspice",
+        "operation": "batch_simulate",
+        "input_paths": [
+          "inputs\\8f0fc34a9148.net"
+        ],
+        "parameters": {},
+        "timeout_s": 15.0,
+        "provenance": "Existing generic RC software test fixture; no engineering qualification"
+      },
+      "result": {
+        "schema_version": "1.5.0",
+        "job_id": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+        "tool_id": "ltspice",
+        "tool_version": "26.1.1.0",
+        "status": "SUCCEEDED",
+        "started_at": "2026-11-10T09:26:30.672608Z",
+        "ended_at": "2026-11-10T09:26:31.183397Z",
+        "exit_code": 0,
+        "diagnostics": [],
+        "outputs": [
+          "inputs/8f0fc34a9148.op.raw",
+          "inputs/8f0fc34a9148.raw",
+          "inputs/8f0fc34a9148.log"
+        ],
+        "evidence_paths": [
+          "inputs/8f0fc34a9148.net"
+        ]
+      },
+      "input_hashes": {
+        "inputs\\8f0fc34a9148.net": "f505fcb1f1dbd639b719776ebbbe0f90a6c8bfb22ef1cbd8c856962f8890bb3f"
+      },
+      "artifacts": [
+        {
+          "relative_path": "inputs/8f0fc34a9148.op.raw",
+          "file_type": ".raw",
+          "sha256": "0b7cc2850fae312e2fe97b7fb8dde3c5f1d267049a752a3e37592614ec9dd4e8",
+          "size_bytes": 581,
+          "source_job": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+          "provenance": "Existing generic RC software test fixture; no engineering qualification",
+          "created_at": "2026-11-10T09:26:31.185760Z",
+          "source_label": "IMPORTED",
+          "raw_vs_derived": "derived",
+          "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+          "review_state": "NOT_REVIEWED"
+        },
+        {
+          "relative_path": "inputs/8f0fc34a9148.raw",
+          "file_type": ".raw",
+          "sha256": "a09349bd3ed38b506a56e70595404e4c39306f5c49d8d671081e0c436ea05c20",
+          "size_bytes": 155676,
+          "source_job": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+          "provenance": "Existing generic RC software test fixture; no engineering qualification",
+          "created_at": "2026-11-10T09:26:31.186278Z",
+          "source_label": "IMPORTED",
+          "raw_vs_derived": "derived",
+          "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+          "review_state": "NOT_REVIEWED"
+        },
+        {
+          "relative_path": "inputs/8f0fc34a9148.log",
+          "file_type": ".log",
+          "sha256": "e9e1a863e06e8dccfcbf3eaeb0beba8f59304f8048a445386695b6984df93579",
+          "size_bytes": 540,
+          "source_job": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+          "provenance": "Existing generic RC software test fixture; no engineering qualification",
+          "created_at": "2026-11-10T09:26:31.186576Z",
+          "source_label": "IMPORTED",
+          "raw_vs_derived": "derived",
+          "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+          "review_state": "NOT_REVIEWED"
+        },
+        {
+          "relative_path": "inputs/8f0fc34a9148.net",
+          "file_type": ".net",
+          "sha256": "f505fcb1f1dbd639b719776ebbbe0f90a6c8bfb22ef1cbd8c856962f8890bb3f",
+          "size_bytes": 104,
+          "source_job": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+          "provenance": "Existing generic RC software test fixture; no engineering qualification",
+          "created_at": "2026-11-10T09:26:31.186864Z",
+          "source_label": "IMPORTED",
+          "raw_vs_derived": "raw",
+          "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+          "review_state": "NOT_REVIEWED"
+        },
+        {
+          "relative_path": "request.json",
+          "file_type": ".json",
+          "sha256": "1c5e057bb1d5d99dd5157006ea471ae32fc422a409b34370a2afedaa6d0c9eaf",
+          "size_bytes": 397,
+          "source_job": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+          "provenance": "Existing generic RC software test fixture; no engineering qualification",
+          "created_at": "2026-11-10T09:26:31.201799Z",
+          "source_label": "IMPORTED",
+          "raw_vs_derived": "raw",
+          "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+          "review_state": "NOT_REVIEWED"
+        },
+        {
+          "relative_path": "job.log",
+          "file_type": ".log",
+          "sha256": "4ec04eca32ed27de76d3615e4381094b462374a9d96967bd93e6bb4ad93b08e3",
+          "size_bytes": 97,
+          "source_job": "fd73c6e6-8c9a-4aa9-a592-672b3870ea80",
+          "provenance": "Existing generic RC software test fixture; no engineering qualification",
+          "created_at": "2026-11-10T09:26:31.218425Z",
+          "source_label": "SOFTWARE_LOG",
+          "raw_vs_derived": "log",
+          "unit_conventions": "Not interpreted by orchestration; adapter-specific unit review required",
+          "review_state": "NOT_REVIEWED"
+        }
+      ],
+      "engineering_status": "NOT_EVALUATED"
+    },
+    "artifacts": [
+      {
+        "path": "inputs/8f0fc34a9148.op.raw",
+        "saved": "0-8f0fc34a9148.op.raw",
+        "sha256": "0b7cc2850fae312e2fe97b7fb8dde3c5f1d267049a752a3e37592614ec9dd4e8",
+        "bytes": 581
+      },
+      {
+        "path": "inputs/8f0fc34a9148.raw",
+        "saved": "1-8f0fc34a9148.raw",
+        "sha256": "a09349bd3ed38b506a56e70595404e4c39306f5c49d8d671081e0c436ea05c20",
+        "bytes": 155676
+      },
+      {
+        "path": "inputs/8f0fc34a9148.log",
+        "saved": "2-8f0fc34a9148.log",
+        "sha256": "e9e1a863e06e8dccfcbf3eaeb0beba8f59304f8048a445386695b6984df93579",
+        "bytes": 540
+      },
+      {
+        "path": "inputs/8f0fc34a9148.net",
+        "saved": "3-8f0fc34a9148.net",
+        "sha256": "f505fcb1f1dbd639b719776ebbbe0f90a6c8bfb22ef1cbd8c856962f8890bb3f",
+        "bytes": 104
+      },
+      {
+        "path": "request.json",
+        "saved": "4-request.json",
+        "sha256": "1c5e057bb1d5d99dd5157006ea471ae32fc422a409b34370a2afedaa6d0c9eaf",
+        "bytes": 397
+      },
+      {
+        "path": "job.log",
+        "saved": "5-job.log",
+        "sha256": "4ec04eca32ed27de76d3615e4381094b462374a9d96967bd93e6bb4ad93b08e3",
+        "bytes": 97
+      }
+    ],
+    "actual_files": [
+      "8f0fc34a9148_runner.log",
+      "job.log",
+      "manifest.json",
+      "request.json",
+      "inputs/8f0fc34a9148.log",
+      "inputs/8f0fc34a9148.net",
+      "inputs/8f0fc34a9148.op.raw",
+      "inputs/8f0fc34a9148.raw"
+    ]
+  },
+  "python_cancel": {
+    "event_after_s": 0.15,
+    "returned_after_s": 1.255,
+    "outcome": "ExecutionCancelled"
+  }
+}

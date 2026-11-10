@@ -1,0 +1,31 @@
+{
+  "frozen_at_utc": "2026-11-10T09:25:02.355525+00:00",
+  "items": [
+    {
+      "name": "working",
+      "commit": "0f299ddd92f96e128fa2ed16a8d7ba74e34110c7",
+      "root": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working",
+      "worktree": "C:\\Mendex studio",
+      "overlays": {}
+    },
+    {
+      "name": "committed-main",
+      "commit": "0f299ddd92f96e128fa2ed16a8d7ba74e34110c7",
+      "root": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\committed-main",
+      "worktree": "C:\\Mendex studio"
+    },
+    {
+      "name": "remediation",
+      "commit": "0312f5af10bfe43a4c48091920dfe33559ff0b4c",
+      "root": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\remediation",
+      "worktree": "C:\\Mendex studio remediation"
+    },
+    {
+      "name": "released",
+      "commit": "205567373799444b74c68d04c8eb4435de3cac05",
+      "root": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\released",
+      "worktree": "C:\\Mendex studio"
+    }
+  ],
+  "primary": "working includes uncommitted tracked overlays, not just HEAD"
+}

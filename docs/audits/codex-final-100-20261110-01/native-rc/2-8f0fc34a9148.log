@@ -1,0 +1,16 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\Users\Sagar\AppData\Local\Temp\fvp-gdabjx0j\ui\.mendex\ij\fd73c6e68c9a4aa9a592672b3870ea80\inputs\8f0fc34a9148.net
+Start Time: Tue Nov 10 14:56:30 2026
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.094 seconds.
+Total iterations: 2085
+
+Files loaded:
+C:\Users\Sagar\AppData\Local\Temp\fvp-gdabjx0j\ui\.mendex\ij\fd73c6e68c9a4aa9a592672b3870ea80\inputs\8f0fc34a9148.net
+

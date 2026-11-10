@@ -1,0 +1,122 @@
+[
+  {
+    "label": "working-short",
+    "snapshot": "working",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100-vof2cnxp\\tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working",
+    "log": "working-short.txt",
+    "exit_code": 0,
+    "elapsed_s": 10.472,
+    "tail": [
+      "........................................................................ [ 80%]",
+      "..................                                                       [100%]",
+      "90 passed in 10.04s"
+    ]
+  },
+  {
+    "label": "working-deep",
+    "snapshot": "working",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working",
+    "log": "working-deep.txt",
+    "exit_code": 1,
+    "elapsed_s": 9.902,
+    "tail": [
+      "FAILED tests/integration/test_day3.py::test_end_to_end_with_shell_free_editor_handoff",
+      "FAILED tests/integration/test_day3.py::test_launch_paths_and_missing_editor",
+      "FAILED tests/integration/test_restore.py::test_closed_database_and_evidence_backup_restore",
+      "FAILED tests/ui/test_window.py::test_real_service_editor_roundtrip_and_restart",
+      "13 failed, 77 passed in 9.47s"
+    ]
+  },
+  {
+    "label": "remediation-short",
+    "snapshot": "remediation",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100-st4gbs3q\\tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\remediation",
+    "log": "remediation-short.txt",
+    "exit_code": 1,
+    "elapsed_s": 13.368,
+    "tail": [
+      "",
+      "tests\\adapters\\test_tool_detection.py:47: AssertionError",
+      "=========================== short test summary info ===========================",
+      "FAILED tests/adapters/test_tool_detection.py::test_missing_tools_never_false_ready",
+      "1 failed, 112 passed in 12.93s"
+    ]
+  },
+  {
+    "label": "remediation-deep",
+    "snapshot": "remediation",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\remediation\\.audit-tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\remediation",
+    "log": "remediation-deep.txt",
+    "exit_code": 1,
+    "elapsed_s": 13.741,
+    "tail": [
+      "",
+      "tests\\adapters\\test_tool_detection.py:47: AssertionError",
+      "=========================== short test summary info ===========================",
+      "FAILED tests/adapters/test_tool_detection.py::test_missing_tools_never_false_ready",
+      "1 failed, 112 passed in 13.30s"
+    ]
+  },
+  {
+    "label": "released-short",
+    "snapshot": "released",
+    "command": [
+      "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--basetemp",
+      "C:\\Users\\Sagar\\AppData\\Local\\Temp\\m100-x_ska70u\\tests"
+    ],
+    "cwd": "C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\released",
+    "log": "released-short.txt",
+    "exit_code": 0,
+    "elapsed_s": 3.769,
+    "tail": [
+      "............................                                             [100%]",
+      "28 passed in 3.34s"
+    ]
+  }
+]

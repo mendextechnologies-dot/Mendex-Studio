@@ -1,0 +1,7 @@
+COMMAND: "C:\Mendex studio\.venv\Scripts\python.exe" -m pytest -q -p no:cacheprovider --basetemp C:\Users\Sagar\AppData\Local\Temp\m100-vof2cnxp\tests
+CWD: C:\Mendex studio\.mendex\qa\codex-final-100-20261110-01\working
+PYTHONPATH: C:\Mendex studio\.mendex\qa\codex-final-100-20261110-01\working\src
+
+........................................................................ [ 80%]
+..................                                                       [100%]
+90 passed in 10.04s

@@ -1,0 +1,658 @@
+COMMAND: "C:\Mendex studio\.venv\Scripts\python.exe" -m pytest -q -p no:cacheprovider --basetemp "C:\Mendex studio\.mendex\qa\codex-final-100-20261110-01\working\.audit-tests"
+CWD: C:\Mendex studio\.mendex\qa\codex-final-100-20261110-01\working
+PYTHONPATH: C:\Mendex studio\.mendex\qa\codex-final-100-20261110-01\working\src
+
+............................................F.FF.F..FFFFF.........FF..F. [ 80%]
+.............F....                                                       [100%]
+================================== FAILURES ===================================
+_____________ test_rules_ai_and_persisted_unavailable_simulation ______________
+
+tmp_path = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_rules_ai_and_persisted_un0')
+
+    def test_rules_ai_and_persisted_unavailable_simulation(tmp_path):
+        service = StudioService(tmp_path)
+        demo = product(service)
+        rules = service.list_rules(demo.active_revision_id)
+        assert any(rule.missing_fields for rule in rules)
+        assert all(rule.status in ("not_evaluated", "physical_verification_required") for rule in rules)
+        response = service.ai_advice(demo.active_revision_id, "What is available?")
+        assert response.status == "unavailable" and response.provider == "none"
+        with pytest.raises(ValidationError):
+            AIRequest(revision_id=demo.active_revision_id, question=" ")
+        run = service.request_simulation(demo.active_revision_id, "ltspice")
+        restarted = StudioService(tmp_path)
+        assert restarted.list_runs(demo.active_revision_id) == [run]
+        assert run.status == "not_supported" and run.started_at is None
+        assert run.artifacts == [] and run.log_path is None
+>       report = service.generate_report(demo.active_revision_id)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_completion.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:459: in generate_report
+    (folder / "snapshot.json").write_text(text, encoding="utf-8")
+C:\Python313\Lib\pathlib\_local.py:555: in write_text
+    return PathBase.write_text(self, data, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\pathlib\_abc.py:651: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_rules_ai_and_persisted_...b87cff70293/revisions/02e927f9-1337-4851-9f1e-a158a7ec4726/reports/2d1fde5c-b7c6-4075-a5c7-eae104cff382/snapshot.json')
+mode = 'w', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_rules_ai_and_persisted_un0\\products\\b62f0e29-c426-4bdd-8dc3-4b87cff70293\\revisions\\02e927f9-1337-4851-9f1e-a158a7ec4726\\reports\\2d1fde5c-b7c6-4075-a5c7-eae104cff382\\snapshot.json'
+
+C:\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+________________ test_atomic_edit_lifecycle_label_and_snapshot ________________
+
+tmp_path = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_atomic_edit_lifecycle_lab0')
+
+    def test_atomic_edit_lifecycle_label_and_snapshot(tmp_path):
+        service = StudioService(tmp_path)
+        demo = product(service)
+        with pytest.raises(ValidationError):
+            service.save_product_revision(demo.product_id, demo.active_revision_id, "Name", "", "", Specification(vin_nom_v=24))
+        assert service.get_revision(demo.active_revision_id).specification.vin_nom_v is None
+        renamed = service.rename_revision(demo.active_revision_id, "DRAFT-02")
+        assert renamed.revision_label == "DRAFT-02"
+>       path = service.export_specification(renamed.revision_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_completion.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:138: in export_specification
+    with destination.open("x", encoding="utf-8") as handle:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_atomic_edit_lifecycle_l...e/revisions/bf545cdf-ffee-495d-abac-c6c6f967197b/requirements/specification-5bffb61f-2fc4-4e5b-b125-b8c96290853d.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_atomic_edit_lifecycle_lab0\\products\\023e003c-ca17-4e2b-a9d1-1158ab6cafee\\revisions\\bf545cdf-ffee-495d-abac-c6c6f967197b\\requirements\\specification-5bffb61f-2fc4-4e5b-b125-b8c96290853d.json'
+
+C:\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+_________ test_v2_migration_preserves_evidence_and_rejects_empty_pass _________
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_v2_migration_preserves_...45f0-9584-642b4e03dfd6/revisions/9f0f6f1d-10dd-4adc-91a3-92c73b665d39/validation/5c0d5e8f-6a31-4b51-8389-3a60dc0c05a2')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_v2_migration_preserves_ev0\\products\\fd5c99a4-49ba-45f0-9584-642b4e03dfd6\\revisions\\9f0f6f1d-10dd-4adc-91a3-92c73b665d39\\validation\\5c0d5e8f-6a31-4b51-8389-3a60dc0c05a2'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_v2_migration_preserves_ev0')
+
+    def test_v2_migration_preserves_evidence_and_rejects_empty_pass(tmp_path):
+        service = StudioService(tmp_path)
+        demo = product(service)
+>       record = service.record_validation(demo.active_revision_id, ManualCheck(check_id="MISSING", reviewer="Test", notes="No evidence available"))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_completion.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_v2_migration_preserves_...45f0-9584-642b4e03dfd6/revisions/9f0f6f1d-10dd-4adc-91a3-92c73b665d39/validation/5c0d5e8f-6a31-4b51-8389-3a60dc0c05a2')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_v2_migration_preserves_ev0\\products\\fd5c99a4-49ba-45f0-9584-642b4e03dfd6\\revisions\\9f0f6f1d-10dd-4adc-91a3-92c73b665d39\\validation\\5c0d5e8f-6a31-4b51-8389-3a60dc0c05a2'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+___________ test_invalid_model_instance_and_evidence_manifest_name ____________
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_invalid_model_instance_...4d9c-9950-f8d52cfe69ef/revisions/f27d41bd-6cbc-4578-acf0-547ccba330ec/validation/2e5c0968-5da2-4071-a698-167ad21dc26a')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_invalid_model_instance_an0\\products\\a3d33474-e518-4d9c-9950-f8d52cfe69ef\\revisions\\f27d41bd-6cbc-4578-acf0-547ccba330ec\\validation\\2e5c0968-5da2-4071-a698-167ad21dc26a'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_invalid_model_instance_an0')
+
+    def test_invalid_model_instance_and_evidence_manifest_name(tmp_path):
+        service = StudioService(tmp_path)
+        demo = product(service)
+        invalid = Specification.model_construct(vin_nom_v=-24)
+        with pytest.raises(ValidationError):
+            service.update_specification(demo.active_revision_id, invalid)
+        source = tmp_path / "manifest.json"
+        source.write_text('{"fixture":"software evidence only"}')
+>       record = service.record_validation(demo.active_revision_id, ManualCheck(check_id="MANIFEST", reviewer="Test", notes="Unevaluated fixture"), source)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_completion.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_invalid_model_instance_...4d9c-9950-f8d52cfe69ef/revisions/f27d41bd-6cbc-4578-acf0-547ccba330ec/validation/2e5c0968-5da2-4071-a698-167ad21dc26a')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_invalid_model_instance_an0\\products\\a3d33474-e518-4d9c-9950-f8d52cfe69ef\\revisions\\f27d41bd-6cbc-4578-acf0-547ccba330ec\\validation\\2e5c0968-5da2-4071-a698-167ad21dc26a'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+_________________ test_unevaluated_persists_and_empty_report __________________
+
+studio = (<mendex_core.service.StudioService object at 0x000001668606F2F0>, UUID('ac865777-ebbe-409d-81bb-6c3b0badd72c'))
+
+    def test_unevaluated_persists_and_empty_report(studio):
+        service, revision_id = studio
+>       report = service.generate_report(revision_id)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_day2.py:58: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:459: in generate_report
+    (folder / "snapshot.json").write_text(text, encoding="utf-8")
+C:\Python313\Lib\pathlib\_local.py:555: in write_text
+    return PathBase.write_text(self, data, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\pathlib\_abc.py:651: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_unevaluated_persists_an...5c1cd7b93dc/revisions/ac865777-ebbe-409d-81bb-6c3b0badd72c/reports/d6567a02-cb9f-46be-a50e-fedfa32fdc5a/snapshot.json')
+mode = 'w', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_unevaluated_persists_and_0\\products\\fa0700be-eaf2-46fa-b24b-85c1cd7b93dc\\revisions\\ac865777-ebbe-409d-81bb-6c3b0badd72c\\reports\\d6567a02-cb9f-46be-a50e-fedfa32fdc5a\\snapshot.json'
+
+C:\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+_________________ test_pass_requires_rule_and_actual_evidence _________________
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_pass_requires_rule_and_...4040-a029-aa6676afc5b5/revisions/1921e948-7c2f-4ff0-a895-f902beb2e805/validation/3029720f-67c3-43db-9d23-d76cc4dba90e')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_pass_requires_rule_and_ac0\\products\\a0a7af3a-3891-4040-a029-aa6676afc5b5\\revisions\\1921e948-7c2f-4ff0-a895-f902beb2e805\\validation\\3029720f-67c3-43db-9d23-d76cc4dba90e'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+studio = (<mendex_core.service.StudioService object at 0x000001668606DC70>, UUID('1921e948-7c2f-4ff0-a895-f902beb2e805'))
+
+    def test_pass_requires_rule_and_actual_evidence(studio):
+        service, revision_id = studio
+        with pytest.raises(ValidationError):
+            ManualCheck(check_id="X", status="pass", reviewer="Reviewer", notes="No criterion")
+        with pytest.raises(ValidationError):
+            ManualCheck(check_id="X", status="pass", reviewer="Reviewer", notes="Contradiction", measured_value=30, unit="V", maximum=20)
+        check = ManualCheck(check_id="X", status="pass", reviewer="Reviewer", notes="Illustrative fixture only", measured_value=10, unit="V", maximum=20)
+        with pytest.raises(StudioError, match="evidence"):
+            service.record_validation(revision_id, check)
+        source = service.root / "fixture.txt"
+        source.write_text("Illustrative test fixture; not an engineering result")
+>       record = service.record_validation(revision_id, check, source)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_day2.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_pass_requires_rule_and_...4040-a029-aa6676afc5b5/revisions/1921e948-7c2f-4ff0-a895-f902beb2e805/validation/3029720f-67c3-43db-9d23-d76cc4dba90e')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_pass_requires_rule_and_ac0\\products\\a0a7af3a-3891-4040-a029-aa6676afc5b5\\revisions\\1921e948-7c2f-4ff0-a895-f902beb2e805\\validation\\3029720f-67c3-43db-9d23-d76cc4dba90e'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+___________ test_stale_evidence_archived_baseline_and_no_fake_runs ____________
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_stale_evidence_archived...464f-aac9-0a7bd3b83318/revisions/ce02d7a7-c5ad-4e92-861b-a2d91ef9f0a5/validation/f8a110c1-19a8-41ed-a725-9b28e5bbc15d')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_stale_evidence_archived_b0\\products\\d2366fac-b019-464f-aac9-0a7bd3b83318\\revisions\\ce02d7a7-c5ad-4e92-861b-a2d91ef9f0a5\\validation\\f8a110c1-19a8-41ed-a725-9b28e5bbc15d'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+studio = (<mendex_core.service.StudioService object at 0x00000166860367B0>, UUID('ce02d7a7-c5ad-4e92-861b-a2d91ef9f0a5'))
+
+    def test_stale_evidence_archived_baseline_and_no_fake_runs(studio):
+        service, revision_id = studio
+>       service.record_validation(revision_id, ManualCheck(check_id="X", reviewer="Reviewer", notes="No evidence"))
+
+tests\core\test_day2.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_stale_evidence_archived...464f-aac9-0a7bd3b83318/revisions/ce02d7a7-c5ad-4e92-861b-a2d91ef9f0a5/validation/f8a110c1-19a8-41ed-a725-9b28e5bbc15d')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_stale_evidence_archived_b0\\products\\d2366fac-b019-464f-aac9-0a7bd3b83318\\revisions\\ce02d7a7-c5ad-4e92-861b-a2d91ef9f0a5\\validation\\f8a110c1-19a8-41ed-a725-9b28e5bbc15d'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+_____ test_deliberate_failure_and_stale_pass_are_never_presented_as_pass ______
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_deliberate_failure_and_...4bed-bedc-649ac689c2ac/revisions/e9037cc3-3897-41ea-a22d-3f8ed952212d/validation/56baa269-5037-454e-bb88-4dc211e56653')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_deliberate_failure_and_st0\\products\\3d5462ed-c53d-4bed-bedc-649ac689c2ac\\revisions\\e9037cc3-3897-41ea-a22d-3f8ed952212d\\validation\\56baa269-5037-454e-bb88-4dc211e56653'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+studio = (<mendex_core.service.StudioService object at 0x000001668757FD90>, UUID('e9037cc3-3897-41ea-a22d-3f8ed952212d'))
+
+    def test_deliberate_failure_and_stale_pass_are_never_presented_as_pass(studio):
+        service, revision_id = studio
+        source = service.root / "illustrative-fixture.txt"
+        source.write_text("Test fixture only; contains no actual engineering result")
+        failed = ManualCheck(check_id="DELIBERATE-FAIL", status="fail", reviewer="Test reviewer", notes="Intentional regression fixture", measured_value=30, unit="V", maximum=20)
+>       service.record_validation(revision_id, failed, source)
+
+tests\core\test_day2.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_deliberate_failure_and_...4bed-bedc-649ac689c2ac/revisions/e9037cc3-3897-41ea-a22d-3f8ed952212d/validation/56baa269-5037-454e-bb88-4dc211e56653')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_deliberate_failure_and_st0\\products\\3d5462ed-c53d-4bed-bedc-649ac689c2ac\\revisions\\e9037cc3-3897-41ea-a22d-3f8ed952212d\\validation\\56baa269-5037-454e-bb88-4dc211e56653'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+______________ test_invalid_evidence_rolls_back_and_html_escapes ______________
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_invalid_evidence_rolls_...471c-917b-194006a014e5/revisions/adcbb44a-47cb-4e54-b98d-380a1a0d4ced/validation/6326ae45-6e95-4b9b-8103-8e373eef475d')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_invalid_evidence_rolls_ba0\\products\\662c53f4-4900-471c-917b-194006a014e5\\revisions\\adcbb44a-47cb-4e54-b98d-380a1a0d4ced\\validation\\6326ae45-6e95-4b9b-8103-8e373eef475d'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+studio = (<mendex_core.service.StudioService object at 0x0000016685E23AD0>, UUID('adcbb44a-47cb-4e54-b98d-380a1a0d4ced'))
+
+    def test_invalid_evidence_rolls_back_and_html_escapes(studio):
+        service, revision_id = studio
+        check = ManualCheck(check_id="<script>alert(1)</script>", reviewer="Reviewer", notes="<b>fixture</b>")
+        with pytest.raises(StudioError):
+>           service.record_validation(revision_id, check, Path("relative.txt"))
+
+tests\core\test_day2.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_invalid_evidence_rolls_...471c-917b-194006a014e5/revisions/adcbb44a-47cb-4e54-b98d-380a1a0d4ced/validation/6326ae45-6e95-4b9b-8103-8e373eef475d')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_invalid_evidence_rolls_ba0\\products\\662c53f4-4900-471c-917b-194006a014e5\\revisions\\adcbb44a-47cb-4e54-b98d-380a1a0d4ced\\validation\\6326ae45-6e95-4b9b-8103-8e373eef475d'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+_______________ test_end_to_end_with_shell_free_editor_handoff ________________
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_end_to_end_with_shell_f...4eb3-8bd5-3e49d6c33d10/revisions/47ada23e-35a4-4108-8e00-3a7003f68a74/validation/60d11ad3-7787-4ec2-9516-d257d8aae196')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_end_to_end_with_shell_fre0\\products\\fc3c5f27-4d5a-4eb3-8bd5-3e49d6c33d10\\revisions\\47ada23e-35a4-4108-8e00-3a7003f68a74\\validation\\60d11ad3-7787-4ec2-9516-d257d8aae196'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_end_to_end_with_shell_fre0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001668628FCE0>
+capsys = <_pytest.capture.CaptureFixture object at 0x000001668622FA10>
+
+    def test_end_to_end_with_shell_free_editor_handoff(tmp_path, monkeypatch, capsys):
+        service = StudioService(tmp_path)
+        product = service.create_product("MC-100", "Illustrative pilot", "transformer", "Test engineer")
+        service.update_specification(product.active_revision_id, Specification(vin_nom_v=24, source="Illustrative fixture only"))
+        revision = service.create_revision(product.product_id, "R002")
+        editor = tmp_path / "Code.exe"
+        editor.write_bytes(b"mock executable; never executed")
+        monkeypatch.setattr(launch, "find_vscode", lambda: editor)
+        requests = []
+        def spawn(argv, **kwargs):
+            requests.append((argv, kwargs))
+            return SimpleNamespace(pid=1234)
+        monkeypatch.setattr(launch.subprocess, "Popen", spawn)
+        result = service.open_in_vscode(revision.revision_id)
+        assert result["pid"] == 1234
+        assert requests[0][1]["shell"] is False
+        assert requests[0][0] == [str(editor), "--new-window", str(service.workspace_path(revision))]
+        assert service.list_tools()
+        evidence = tmp_path / "fixture.txt"
+        evidence.write_text("Automated regression fixture only. Not an engineering measurement.")
+        check = ManualCheck(check_id="INTENTIONAL-FAIL", status="fail", reviewer="Test engineer", notes="Deliberate failure fixture", measured_value=30, maximum=20, unit="V")
+>       service.record_validation(revision.revision_id, check, evidence)
+
+tests\integration\test_day3.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_end_to_end_with_shell_f...4eb3-8bd5-3e49d6c33d10/revisions/47ada23e-35a4-4108-8e00-3a7003f68a74/validation/60d11ad3-7787-4ec2-9516-d257d8aae196')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_end_to_end_with_shell_fre0\\products\\fc3c5f27-4d5a-4eb3-8bd5-3e49d6c33d10\\revisions\\47ada23e-35a4-4108-8e00-3a7003f68a74\\validation\\60d11ad3-7787-4ec2-9516-d257d8aae196'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+____________________ test_launch_paths_and_missing_editor _____________________
+
+tmp_path = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_launch_paths_and_missing_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016685E16F90>
+
+    def test_launch_paths_and_missing_editor(tmp_path, monkeypatch):
+        service = StudioService(tmp_path)
+        product = service.create_product("MC-100", "Pilot", "pcb", "Engineer")
+        revision = service.get_revision(product.active_revision_id)
+        monkeypatch.setattr(launch, "find_vscode", lambda: None)
+        with pytest.raises(StudioError, match="VS Code not found"):
+            service.open_in_vscode(revision.revision_id)
+        for path in ("../outside.txt", str(tmp_path / "outside.txt"), "missing.txt"):
+            with pytest.raises(StudioError):
+                service.open_project_file(revision.revision_id, path)
+        script = service.workspace_path(revision) / "unsafe.ps1"
+        script.write_text("# never executed")
+        with pytest.raises(StudioError, match="file type"):
+            service.open_project_file(revision.revision_id, "unsafe.ps1")
+        document = service.workspace_path(revision) / "requirements" / "spec.json"
+        document.write_text("{}")
+        opened = []
+        monkeypatch.setattr(launch, "open_native", opened.append)
+        service.open_project_file(revision.revision_id, "requirements/spec.json")
+        assert opened == [document.resolve()]
+>       report = service.generate_report(revision.revision_id)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\integration\test_day3.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:459: in generate_report
+    (folder / "snapshot.json").write_text(text, encoding="utf-8")
+C:\Python313\Lib\pathlib\_local.py:555: in write_text
+    return PathBase.write_text(self, data, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\pathlib\_abc.py:651: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_launch_paths_and_missin...8d48e6ba451/revisions/4ed4276d-43e0-4be1-8e31-9af69aa8a969/reports/6701d60a-0bad-4ce7-9df5-70ba515d232e/snapshot.json')
+mode = 'w', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_launch_paths_and_missing_0\\products\\814115b6-63dc-4edc-9f07-c8d48e6ba451\\revisions\\4ed4276d-43e0-4be1-8e31-9af69aa8a969\\reports\\6701d60a-0bad-4ce7-9df5-70ba515d232e\\snapshot.json'
+
+C:\Python313\Lib\pathlib\_local.py:537: FileNotFoundError
+______________ test_closed_database_and_evidence_backup_restore _______________
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_closed_database_and_evi...47b8-92e3-dd2bacb5d6f7/revisions/6a0a27fc-3349-4cc5-b1e6-97cd9e214f33/validation/d6acad7f-804c-46d4-b86c-44a39bbe87b6')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_closed_database_and_evide0\\original\\products\\f132cee8-0b70-47b8-92e3-dd2bacb5d6f7\\revisions\\6a0a27fc-3349-4cc5-b1e6-97cd9e214f33\\validation\\d6acad7f-804c-46d4-b86c-44a39bbe87b6'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_closed_database_and_evide0')
+
+    def test_closed_database_and_evidence_backup_restore(tmp_path):
+        original = StudioService(tmp_path / "original")
+        product = original.create_product("RESTORE", "Software fixture", "pcb", "Test engineer")
+        original.update_specification(product.active_revision_id, Specification(vout_v=12, source="Software fixture only"))
+        file = tmp_path / "fixture.txt"
+        file.write_text("Software fixture, not an actual engineering measurement")
+>       record = original.record_validation(product.active_revision_id, ManualCheck(check_id="REVIEW", reviewer="Test engineer", notes="Physical evidence unavailable", status="physical_verification_required"), file)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\integration\test_restore.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_closed_database_and_evi...47b8-92e3-dd2bacb5d6f7/revisions/6a0a27fc-3349-4cc5-b1e6-97cd9e214f33/validation/d6acad7f-804c-46d4-b86c-44a39bbe87b6')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_closed_database_and_evide0\\original\\products\\f132cee8-0b70-47b8-92e3-dd2bacb5d6f7\\revisions\\6a0a27fc-3349-4cc5-b1e6-97cd9e214f33\\validation\\d6acad7f-804c-46d4-b86c-44a39bbe87b6'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+_______________ test_real_service_editor_roundtrip_and_restart ________________
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_real_service_editor_rou...4e34-b358-09b1f117a7fd/revisions/cd02b521-0f06-47d1-b70b-0bc17656a4e4/validation/7c26d12f-2266-48fe-b2ec-2c6d47c58241')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_real_service_editor_round0\\products\\5124cf93-61cd-4e34-b358-09b1f117a7fd\\revisions\\cd02b521-0f06-47d1-b70b-0bc17656a4e4\\validation\\7c26d12f-2266-48fe-b2ec-2c6d47c58241'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_real_service_editor_round0')
+
+    def test_real_service_editor_roundtrip_and_restart(tmp_path):
+        app = QApplication.instance() or QApplication([])
+        service = StudioService(tmp_path)
+        product = service.create_product("MC-100", "Pilot", "transformer", "Engineer")
+        window = StudioWindow(service)
+        window.show()
+        app.processEvents()
+        assert window.product.product_id == product.product_id
+        window.specification.setPlainText(Specification(vin_nom_v=24, source="Test fixture").model_dump_json())
+        window.save()
+        window.close()
+        reopened = StudioWindow(StudioService(tmp_path))
+        assert '24.0' in reopened.specification.toPlainText()
+        assert reopened.pages.count() == 14
+        reopened.simulation_panel.request()
+        assert "not_supported" in reopened.simulation_panel.output.toPlainText()
+        assert "not_evaluated" in reopened.knowledge_panel.rules.toPlainText()
+        reopened.knowledge_panel.question.setText("What is available?")
+        reopened.knowledge_panel.ask()
+        assert "unavailable" in reopened.knowledge_panel.ai_output.toPlainText()
+>       reopened.service.record_validation(product.active_revision_id, ManualCheck(check_id="REQ-UI", reviewer="Test engineer", notes="No evidence available"))
+
+tests\ui\test_window.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\service.py:353: in record_validation
+    folder.mkdir(parents=True, exist_ok=False)
+C:\Python313\Lib\pathlib\_local.py:727: in mkdir
+    self.mkdir(mode, parents=False, exist_ok=exist_ok)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Mendex studio/.mendex/qa/codex-final-100-20261110-01/working/.audit-tests/test_real_service_editor_rou...4e34-b358-09b1f117a7fd/revisions/cd02b521-0f06-47d1-b70b-0bc17656a4e4/validation/7c26d12f-2266-48fe-b2ec-2c6d47c58241')
+mode = 511, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 206] The filename or extension is too long: 'C:\\Mendex studio\\.mendex\\qa\\codex-final-100-20261110-01\\working\\.audit-tests\\test_real_service_editor_round0\\products\\5124cf93-61cd-4e34-b358-09b1f117a7fd\\revisions\\cd02b521-0f06-47d1-b70b-0bc17656a4e4\\validation\\7c26d12f-2266-48fe-b2ec-2c6d47c58241'
+
+C:\Python313\Lib\pathlib\_local.py:722: FileNotFoundError
+=========================== short test summary info ===========================
+FAILED tests/core/test_completion.py::test_rules_ai_and_persisted_unavailable_simulation
+FAILED tests/core/test_completion.py::test_atomic_edit_lifecycle_label_and_snapshot
+FAILED tests/core/test_completion.py::test_v2_migration_preserves_evidence_and_rejects_empty_pass
+FAILED tests/core/test_completion.py::test_invalid_model_instance_and_evidence_manifest_name
+FAILED tests/core/test_day2.py::test_unevaluated_persists_and_empty_report - ...
+FAILED tests/core/test_day2.py::test_pass_requires_rule_and_actual_evidence
+FAILED tests/core/test_day2.py::test_stale_evidence_archived_baseline_and_no_fake_runs
+FAILED tests/core/test_day2.py::test_deliberate_failure_and_stale_pass_are_never_presented_as_pass
+FAILED tests/core/test_day2.py::test_invalid_evidence_rolls_back_and_html_escapes
+FAILED tests/integration/test_day3.py::test_end_to_end_with_shell_free_editor_handoff
+FAILED tests/integration/test_day3.py::test_launch_paths_and_missing_editor
+FAILED tests/integration/test_restore.py::test_closed_database_and_evidence_backup_restore
+FAILED tests/ui/test_window.py::test_real_service_editor_roundtrip_and_restart
+13 failed, 77 passed in 9.47s
