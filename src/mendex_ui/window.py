@@ -368,6 +368,7 @@ class StudioWindow(QMainWindow):
         cp.register_command("Toggle Dark / Light Theme", "view", "Ctrl+T", self.toggle_theme, "🌓")
         cp.register_command("Open Workspace Folder in Explorer", "workspace", "", lambda: self.product_lifecycle._open_workspace_folder(), "📂")
         cp.register_command("Re-Assess Engineering Lifecycle", "lifecycle", "F5", lambda: self.product_lifecycle.refresh_assessment(), "🔄")
+        cp.register_command("Configure AI Provider & API Key", "ai", "Ctrl+Shift+A", self._open_ai_key_dialog, "⚙️")
 
     def _focus_search(self):
         self.search_box.setFocus()
@@ -416,7 +417,7 @@ class StudioWindow(QMainWindow):
             self.navigation.setCurrentRow(12)  # Jobs & Results
         elif any(k in lower for k in ("dataset", "research")):
             self.navigation.setCurrentRow(13)  # Dataset Catalog
-        elif "knowledge" in lower:
+        elif any(k in lower for k in ("knowledge", "api", "key", "gemini", "openai", "ai")):
             self.navigation.setCurrentRow(10)  # Knowledge Center
         elif "workflow" in lower:
             self.navigation.setCurrentRow(14)  # Workflow Studio
@@ -470,6 +471,11 @@ class StudioWindow(QMainWindow):
         mapping = {1: 12, 2: 11, 3: 6, 4: 10, 5: 13, 6: 14, 15: 15}
         dest = mapping.get(target, 15 if target == 15 else 0)
         self.navigation.setCurrentRow(dest)
+
+    def _open_ai_key_dialog(self):
+        from .ai_config_dialog import AIKeySetupDialog
+        dlg = AIKeySetupDialog(self.service.root, self)
+        dlg.exec()
 
     def _create_header_design(self):
         active_ws_id = self.workspace_selector.currentData() if self.workspace_selector.count() > 0 else "default"

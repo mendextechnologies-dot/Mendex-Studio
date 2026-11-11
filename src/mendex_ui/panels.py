@@ -72,6 +72,15 @@ class KnowledgePanel(QTabWidget):
             self.addTab(self.ai_assistant, "Engineering AI Assistant")
         except Exception:
             self.ai_assistant = None
+
+        # Dedicated AI & API Key Settings Tab
+        try:
+            from .ai_config_dialog import AIKeySetupWidget
+            self.ai_config_widget = AIKeySetupWidget(service.root, self)
+            self.addTab(self.ai_config_widget, "AI & API Key Settings")
+        except Exception:
+            self.ai_config_widget = None
+
         guidelines = QTextEdit()
         guidelines.setReadOnly(True)
         guidelines.setPlainText(f"Engineering guidelines · revision {GUIDELINES_REVISION}\n\n" + "\n\n".join(f"{title}\n{body}" for title, body in GUIDELINES))

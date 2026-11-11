@@ -1065,6 +1065,12 @@ class AIAssistantPanel(QWidget):
         badge.setProperty("class", "badge_ready")
         header.addWidget(badge)
         header.addStretch()
+
+        btn_api_key = QPushButton("⚙️ Configure API Key")
+        btn_api_key.setStyleSheet("background-color: #313244; color: #89b4fa; font-weight: 700; padding: 5px 12px; border-radius: 4px;")
+        btn_api_key.clicked.connect(self._open_api_key_dialog)
+        header.addWidget(btn_api_key)
+
         layout.addLayout(header)
 
         # Conversation History
@@ -1122,6 +1128,11 @@ class AIAssistantPanel(QWidget):
         else:
             reply = f"<b>AI Assistant:</b> Recorded query regarding '{text}'."
         self.history.append(reply)
+
+    def _open_api_key_dialog(self):
+        from .ai_config_dialog import AIKeySetupDialog
+        dlg = AIKeySetupDialog(self.service.root, self)
+        dlg.exec()
 
 
 class ResearchCenterPanel(QWidget):
