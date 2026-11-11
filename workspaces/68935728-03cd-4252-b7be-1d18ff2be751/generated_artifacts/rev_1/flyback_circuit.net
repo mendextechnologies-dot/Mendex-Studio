@@ -1,0 +1,28 @@
+* MENDEX ENGINEERING STUDIO v1.9 — SPICE NETLIST
+* Title: Push-Pull Inverter 100W
+* Topology: Flyback
+* Generated from Canonical Design IR
+
+V1 VIN 0 48
+L_pri_T1 VIN DRAIN 1.62926e-05
+L_sec_T1 0 SEC_ANODE 1.00698e-05
+K_T1 L_pri_T1 L_sec_T1 0.998
+M_Q1 DRAIN GATE 0 0 NMOS_DEFAULT_Q1
+D1 SEC_ANODE VOUT D_IDEAL
+C1 VOUT 0 0.0001
+R_LOAD VOUT 0 5.71429
+
+* Gate Drive Pulse Sources & Commutation
+V_G1 GATE_HI SW PULSE(0 10 0 10n 10n 6.250000e-06 1.250000e-05)
+V_G2 GATE_LO 0 PULSE(0 10 6.300000e-06 10n 10n 6.150000e-06 1.250000e-05)
+D_FW 0 SW D_IDEAL
+
+* Models & Controls
+.model D_IDEAL D(Ron=0.005 Roff=1Meg Vfwd=0.35)
+.model BSC026N08NS5 VDMOS(Rg=1.0 Vto=3.0 Rd=0.015)
+.model NMOS_DEFAULT_Q1 VDMOS(Rg=1.0 Vto=3.0 Rd=0.025)
+.model NMOS_DEFAULT_Q2 VDMOS(Rg=1.0 Vto=3.0 Rd=0.015)
+
+.tran 0 0.005 0 10u
+.backanno
+.end

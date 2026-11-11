@@ -42,10 +42,17 @@ def _safe_open_path(target_path: Path, parent_widget=None):
         ext = p.suffix.lower()
         if ext in (".step", ".stp", ".stl", ".kicad_sch", ".kicad_pcb", ".kicad_pro", ".asc", ".net", ".cir", ".raw", ".fem", ".ans", ".mo"):
             from PySide6.QtWidgets import QMessageBox
+            from mendex_core.launch import get_tool_for_extension
+            tool_info = get_tool_for_extension(p)
+            tool_name = tool_info[1] if tool_info else "the dedicated engineering tool"
             QMessageBox.critical(
                 parent_widget,
                 "Tool Launch Error",
-                f"Could not open {p.name} with its dedicated engineering tool:\n\n{exc}\n\nPlease verify that the required tool is installed.",
+                f"Could not open '{p.name}' with {tool_name}:\n\n{exc}\n\n"
+                f"Requirements to proceed:\n"
+                f"• Verify that {tool_name} is installed on this host.\n"
+                f"• Check that the file was generated and is not corrupted.\n"
+                f"• Review Tools & Integrations to confirm the detected executable path.",
             )
         else:
             try:

@@ -181,6 +181,35 @@ NATIVE_EXTENSIONS = {
 }
 
 
+def get_tool_for_extension(path: Path | str) -> tuple[str, str] | None:
+    """Returns the dedicated (tool_id, display_name) tuple for a given file path based on extension."""
+    ext = Path(path).suffix.lower()
+    mapping = {
+        ".step": ("freecad", "FreeCAD 3D CAD"),
+        ".stp": ("freecad", "FreeCAD 3D CAD"),
+        ".stl": ("freecad", "FreeCAD 3D CAD"),
+        ".fcstd": ("freecad", "FreeCAD 3D CAD"),
+        ".kicad_sch": ("kicad_sch", "KiCad Schematic Editor"),
+        ".sch": ("kicad_sch", "KiCad Schematic Editor"),
+        ".kicad_pcb": ("kicad_pcb", "KiCad PCB Editor"),
+        ".kicad_pro": ("kicad", "KiCad Project Manager"),
+        ".pro": ("kicad", "KiCad Project Manager"),
+        ".asc": ("ltspice", "ADI LTspice (Schematic)"),
+        ".net": ("ltspice", "ADI LTspice (Netlist)"),
+        ".cir": ("ltspice", "ADI LTspice (Circuit)"),
+        ".raw": ("ltspice", "ADI LTspice (Waveforms)"),
+        ".op.raw": ("ltspice", "ADI LTspice (Operating Point)"),
+        ".fem": ("femm", "FEMM 4.2 Magnetics"),
+        ".ans": ("femm", "FEMM 4.2 Magnetics"),
+        ".fee": ("femm", "FEMM 4.2 Electrostatics"),
+        ".mo": ("omedit", "OpenModelica OMEdit"),
+        ".moe": ("omedit", "OpenModelica OMEdit"),
+        ".gbr": ("kicad_gerbview", "KiCad GerbView"),
+        ".drl": ("kicad_gerbview", "KiCad GerbView"),
+    }
+    return mapping.get(ext)
+
+
 def launch_tool(tool_id: str, path: Path) -> dict:
     """Launches a specific engineering tool directly with the target file as input.
     
