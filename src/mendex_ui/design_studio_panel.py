@@ -8,6 +8,8 @@ Provides:
 from __future__ import annotations
 
 import json
+import re
+import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -38,6 +40,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from mendex_core.models import Category, Specification
+from mendex_core.design.naming import clean_title, sanitize_filename
 from mendex_core.design.models import (
     EngineeringDesign,
     DesignRevision,
@@ -121,6 +125,15 @@ class NewEngineeringDesignDialog(QDialog):
         ])
         form_layout.addRow("Converter Category:", self.combo_category)
 
+        self.chk_create_product = QCheckBox("Register as Product in Lifecycle Catalog (Products tab)")
+        self.chk_create_product.setChecked(True)
+        self.chk_create_product.stateChanged.connect(self._toggle_product_fields)
+        form_layout.addRow("", self.chk_create_product)
+
+        self.lbl_prod_code = QLabel("Product Code:")
+        self.txt_prod_code = QLineEdit("BC-20W")
+        form_layout.addRow(self.lbl_prod_code, self.txt_prod_code)
+
         # Technical Grid
         grid_group = QGroupBox("Electrical Specifications (SI Units)")
         grid_layout = QGridLayout(grid_group)
@@ -201,8 +214,13 @@ class NewEngineeringDesignDialog(QDialog):
         except Exception:
             self.combo_workspace.addItem("Default Workspace", "default")
 
+    def _toggle_product_fields(self, state):
+        self.txt_prod_code.setEnabled(bool(state))
+        self.lbl_prod_code.setEnabled(bool(state))
+
     def _apply_buck_preset(self):
         self.txt_title.setText("Synchronous Buck Converter 20W")
+        self.txt_prod_code.setText("BC-20W")
         self.combo_category.setCurrentIndex(0)
         self.txt_vin.setText("24.0")
         self.txt_vin_min.setText("18.0")
@@ -215,6 +233,7 @@ class NewEngineeringDesignDialog(QDialog):
 
     def _apply_flyback_preset(self):
         self.txt_title.setText("Isolated Offline Flyback 36W")
+        self.txt_prod_code.setText("FB-36W")
         self.combo_category.setCurrentIndex(1)
         self.txt_vin.setText("24.0")
         self.txt_vin_min.setText("18.0")
@@ -228,6 +247,7 @@ class NewEngineeringDesignDialog(QDialog):
 
     def _apply_pushpull_preset(self):
         self.txt_title.setText("Push-Pull Inverter 100W")
+        self.txt_prod_code.setText("PP-100W")
         self.combo_category.setCurrentIndex(2)
         self.txt_vin.setText("48.0")
         self.txt_vin_min.setText("36.0")
@@ -282,8 +302,71 @@ class NewEngineeringDesignDialog(QDialog):
             return
 
         ws_id = self.combo_workspace.currentData() or "default"
-        title = self.txt_title.text().strip() or "Untitled Engineering Design"
+        title_raw = self.txt_title.text().strip()
+        title = clean_title(title_raw, fallback="Synchronous Buck Converter 20W")
+        self.txt_title.setText(title)
         cat_key = self.combo_category.currentText().split()[0]
+
+        prod_id = None
+        registered_code = None
+        if hasattr(self, "chk_create_product") and self.chk_create_product.isChecked():
+            raw_code = self.txt_prod_code.text().strip() if hasattr(self, "txt_prod_code") else "BC-20W"
+            safe_code = re.sub(r"[^A-Za-z0-9_-]+", "-", raw_code).strip("-_")
+            if not safe_code or not safe_code[0].isalnum():
+                safe_code = f"PRD-{safe_code}" if safe_code else "PRD-01"
+
+            existing_codes = {p.code for p in self.service.list_products()}
+            candidate_code = safe_code
+            suffix = 1
+            while candidate_code in existing_codes:
+                candidate_code = f"{safe_code}-{suffix}"
+                suffix += 1
+
+            cat_enum = Category.DC_DC
+            if any(x in cat_key.lower() for x in ("flyback", "transformer", "isolated")):
+                cat_enum = Category.TRANSFORMER
+            elif "device" in cat_key.lower() or "semiconductor" in cat_key.lower():
+                cat_enum = Category.DEVICE
+
+            try:
+                product = self.service.create_product(
+                    code=candidate_code,
+                    name=title,
+                    category=cat_enum,
+                    owner="Lead Engineer",
+                    description=f"Synthesized from {cat_key} technical requirements",
+                )
+                prod_id = str(product.product_id)
+                registered_code = candidate_code
+
+                revs = self.service.list_revisions(product.product_id)
+                if revs:
+                    active_rev = revs[0]
+                    vin = float(self.txt_vin.text().strip())
+                    vin_min = float(self.txt_vin_min.text().strip())
+                    vin_max = float(self.txt_vin_max.text().strip())
+                    vout = float(self.txt_vout.text().strip())
+                    iout = float(self.txt_iout.text().strip())
+                    fsw_khz = float(self.txt_fsw.text().strip())
+                    spec = Specification(
+                        vin_min_v=vin_min,
+                        vin_nom_v=vin,
+                        vin_max_v=vin_max,
+                        vout_v=vout,
+                        iout_a=iout,
+                        switching_frequency_hz=fsw_khz * 1000.0,
+                        topology=cat_key,
+                    )
+                    self.service.save_product_revision(
+                        product.product_id,
+                        active_rev.revision_id,
+                        product.name,
+                        product.owner,
+                        product.description,
+                        spec,
+                    )
+            except Exception:
+                pass
 
         try:
             design = self.service.design.create_design_from_requirements(
@@ -291,20 +374,45 @@ class NewEngineeringDesignDialog(QDialog):
                 title=title,
                 category=cat_key,
                 requirements=reqs,
+                product_id=prod_id,
             )
             # Automatically generate native artifacts
             ws_path = self.service.root / "workspaces" / ws_id
             ws_path.mkdir(parents=True, exist_ok=True)
             self.service.design.generate_native_artifacts(design.id, ws_path)
 
+            # Copy generated artifacts into product workspace if product created
+            if prod_id:
+                try:
+                    product = self.service.get_product(prod_id)
+                    revs = self.service.list_revisions(product.product_id)
+                    if revs:
+                        prod_ws = self.service.workspace_path(revs[0])
+                        (prod_ws / "pcb").mkdir(parents=True, exist_ok=True)
+                        (prod_ws / "circuit").mkdir(parents=True, exist_ok=True)
+                        (prod_ws / "simulations").mkdir(parents=True, exist_ok=True)
+                        (prod_ws / "mechanical").mkdir(parents=True, exist_ok=True)
+                        for art_file in ws_path.glob("**/*"):
+                            if art_file.is_file():
+                                if art_file.suffix in (".kicad_sch", ".kicad_pcb", ".kicad_pro"):
+                                    shutil.copy2(art_file, prod_ws / "pcb" / art_file.name)
+                                elif art_file.suffix in (".asc", ".net", ".cir"):
+                                    shutil.copy2(art_file, prod_ws / "circuit" / art_file.name)
+                                    shutil.copy2(art_file, prod_ws / "simulations" / art_file.name)
+                                elif art_file.suffix in (".step", ".stp"):
+                                    shutil.copy2(art_file, prod_ws / "mechanical" / art_file.name)
+                except Exception:
+                    pass
+
             self.created_design = design
             self.design_created.emit(design.id)
+            prod_info = f"\n• Registered in Product Lifecycle Catalog as [{registered_code}] '{title}'" if registered_code else ""
             QMessageBox.information(
                 self,
                 "Design Synthesized Successfully",
                 f"Engineering Design '{title}' created!\n\n"
                 f"• Top Candidate: {design.get_active_revision().topology if design.get_active_revision() else 'Synthesized'}\n"
-                f"• Generated Artifacts: SPICE netlist (.net), graphical schematic (.asc), KiCad project (.kicad_sch), PCB (.kicad_pcb).\n\n"
+                f"• Generated Artifacts: SPICE netlist (.net), graphical schematic (.asc), KiCad project (.kicad_sch), PCB (.kicad_pcb).{prod_info}\n\n"
                 "Navigating to Design Studio workspace.",
             )
             self.accept()

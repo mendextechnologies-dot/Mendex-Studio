@@ -151,32 +151,6 @@ class StudioWindow(QMainWindow):
         sidebar_layout.setContentsMargins(0, 0, 0, 0)
         sidebar_layout.setSpacing(0)
 
-        # Branded Header in Sidebar
-        brand_card = QFrame()
-        brand_card.setObjectName("sidebar_brand")
-        brand_card.setStyleSheet("background-color: #11111b; border-bottom: 1px solid #313244; padding: 12px 14px;")
-        b_layout = QHBoxLayout(brand_card)
-        b_layout.setContentsMargins(0, 0, 0, 0)
-        b_layout.setSpacing(10)
-
-        if SHIELD_TRANSPARENT_PATH.exists():
-            s_label = QLabel()
-            s_label.setPixmap(QPixmap(str(SHIELD_TRANSPARENT_PATH)).scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            b_layout.addWidget(s_label)
-
-        t_box = QVBoxLayout()
-        t_box.setSpacing(1)
-        t1 = QLabel("MENDEX")
-        t1.setStyleSheet("font-weight: 800; font-size: 13px; color: #cdd6f4; letter-spacing: 1px;")
-        t2 = QLabel("TECHNOLOGIES")
-        t2.setStyleSheet("font-size: 9px; font-weight: 600; color: #a6e3a1; letter-spacing: 0.5px;")
-        t_box.addWidget(t1)
-        t_box.addWidget(t2)
-        b_layout.addLayout(t_box)
-        b_layout.addStretch()
-
-        sidebar_layout.addWidget(brand_card)
-
         nav = QListWidget()
         self.navigation = nav
         nav.setObjectName("nav_sidebar")
@@ -208,22 +182,97 @@ class StudioWindow(QMainWindow):
 
         # Page 1: Products
         products = QWidget()
+        products.setStyleSheet("background-color: #11111b;")
         pane = QVBoxLayout(products)
-        actions = QHBoxLayout()
-        create = QPushButton("New product")
-        create.clicked.connect(self.create_product)
-        actions.addWidget(create)
-        refresh = QPushButton("Refresh")
-        refresh.clicked.connect(self.refresh)
-        actions.addWidget(refresh)
-        actions.addStretch()
-        pane.addLayout(actions)
+        pane.setContentsMargins(12, 12, 12, 12)
+        pane.setSpacing(10)
+
         split = QSplitter()
+        split.setStyleSheet("QSplitter { background-color: #11111b; } QSplitter::handle { background-color: #313244; width: 4px; }")
+
+        # Left Column: Styled Catalog Sidebar
+        catalog_card = QFrame()
+        catalog_card.setStyleSheet("background-color: #181825; border: 1px solid #313244; border-radius: 8px;")
+        catalog_layout = QVBoxLayout(catalog_card)
+        catalog_layout.setContentsMargins(12, 12, 12, 12)
+        catalog_layout.setSpacing(10)
+
+        cat_header = QHBoxLayout()
+        cat_title = QLabel("📦 Product Catalog")
+        cat_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #cdd6f4;")
+        cat_header.addWidget(cat_title)
+        cat_header.addStretch()
+        self.lbl_product_count = QLabel("0 Products")
+        self.lbl_product_count.setStyleSheet("background: #313244; color: #89b4fa; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;")
+        cat_header.addWidget(self.lbl_product_count)
+        catalog_layout.addLayout(cat_header)
+
+        btn_row = QHBoxLayout()
+        btn_new_prod = QPushButton("➕ New Product")
+        btn_new_prod.setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: 700; padding: 6px 12px; border-radius: 4px; border: none;")
+        btn_new_prod.clicked.connect(self.create_product)
+        btn_row.addWidget(btn_new_prod, 1)
+
+        btn_refresh_prod = QPushButton("🔄")
+        btn_refresh_prod.setToolTip("Refresh products")
+        btn_refresh_prod.setStyleSheet("background-color: #313244; color: #cdd6f4; font-weight: bold; padding: 6px 10px; border-radius: 4px;")
+        btn_refresh_prod.clicked.connect(self.refresh)
+        btn_row.addWidget(btn_refresh_prod)
+        catalog_layout.addLayout(btn_row)
+
         self.products = QListWidget()
+        self.products.setStyleSheet("""
+            QListWidget {
+                background-color: #11111b;
+                color: #cdd6f4;
+                border: 1px solid #313244;
+                border-radius: 6px;
+                padding: 4px;
+                outline: none;
+            }
+            QListWidget::item {
+                background-color: #1e1e2e;
+                color: #cdd6f4;
+                border: 1px solid #313244;
+                border-radius: 6px;
+                margin: 3px 2px;
+                padding: 10px;
+            }
+            QListWidget::item:hover {
+                background-color: #313244;
+                border-color: #89b4fa;
+            }
+            QListWidget::item:selected {
+                background-color: #24273a;
+                border: 1.5px solid #89b4fa;
+                color: #ffffff;
+            }
+        """)
         self.products.currentRowChanged.connect(self.select_product)
-        split.addWidget(self.products)
+        catalog_layout.addWidget(self.products, 1)
+
+        self.lbl_empty_catalog = QLabel("No products in workspace.\n\nClick '+ New Product' above\nto begin your first design.")
+        self.lbl_empty_catalog.setAlignment(Qt.AlignCenter)
+        self.lbl_empty_catalog.setStyleSheet("color: #a6adc8; font-size: 12px; padding: 30px 10px; line-height: 1.6;")
+        catalog_layout.addWidget(self.lbl_empty_catalog)
+
+        split.addWidget(catalog_card)
+
+        # Right Column: Overview & Revisions
         editor = QWidget()
+        editor.setStyleSheet("background-color: #181825;")
         form = QVBoxLayout(editor)
+
+        top_editor_bar = QHBoxLayout()
+        btn_back_to_overview = QPushButton("⬅ Back to 12-Stage Lifecycle Overview")
+        btn_back_to_overview.setStyleSheet(
+            "background-color: #24273a; color: #89b4fa; font-weight: 700; padding: 6px 14px; border-radius: 4px; border: 1px solid #45475a;"
+        )
+        btn_back_to_overview.clicked.connect(lambda: self.product_tabs.setCurrentIndex(0))
+        top_editor_bar.addWidget(btn_back_to_overview)
+        top_editor_bar.addStretch()
+        form.addLayout(top_editor_bar)
+
         self.detail = QLabel("Select or create a product")
         self.detail.setWordWrap(True)
         form.addWidget(self.detail)
@@ -242,7 +291,8 @@ class StudioWindow(QMainWindow):
         self.specification = QTextEdit()
         self.specification.setAcceptRichText(False)
         form.addWidget(self.specification)
-        save = QPushButton("Save draft specification")
+        save = QPushButton("💾 Save draft specification")
+        save.setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: 700; font-size: 13px; padding: 8px 16px; border-radius: 4px; border: none;")
         save.clicked.connect(self.save)
         form.addWidget(save)
         revision = QPushButton("Create revision from active baseline")
@@ -262,10 +312,45 @@ class StudioWindow(QMainWindow):
         form.addLayout(handoff)
 
         self.product_tabs = QTabWidget()
+        self.product_tabs.setObjectName("product_main_tabs")
+        self.product_tabs.setStyleSheet("""
+            QTabWidget#product_main_tabs::pane {
+                border: 1px solid #313244;
+                background-color: #181825;
+                top: -1px;
+            }
+            QTabWidget#product_main_tabs > QTabBar::tab {
+                background-color: #11111b;
+                color: #cdd6f4;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 10px 22px;
+                border: 1px solid #313244;
+                border-bottom: none;
+                margin-right: 4px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+            }
+            QTabWidget#product_main_tabs > QTabBar::tab:hover {
+                background-color: #313244;
+                color: #89b4fa;
+                border-color: #89b4fa;
+            }
+            QTabWidget#product_main_tabs > QTabBar::tab:selected {
+                background-color: #24273a;
+                color: #89b4fa;
+                border: 1.5px solid #89b4fa;
+                border-bottom: 2px solid #24273a;
+                font-weight: 700;
+            }
+        """)
         self.product_lifecycle = ProductEngineeringOverviewPanel(service)
         self.product_lifecycle.navigate_requested.connect(self._handle_overview_navigate)
-        self.product_tabs.addTab(self.product_lifecycle, "Engineering Overview")
-        self.product_tabs.addTab(editor, "Specification & Revisions")
+        self.product_lifecycle.new_product_requested.connect(self.create_product)
+        self.product_lifecycle.new_design_requested.connect(self._create_header_design)
+        self.product_lifecycle.edit_specification_requested.connect(lambda: self.product_tabs.setCurrentIndex(1))
+        self.product_tabs.addTab(self.product_lifecycle, "📊 12-Stage Lifecycle Overview")
+        self.product_tabs.addTab(editor, "📝 Specification && Revisions Editor")
 
         split.addWidget(self.product_tabs)
         split.setStretchFactor(0, 1)
@@ -300,6 +385,7 @@ class StudioWindow(QMainWindow):
         for panel in (self.validation_panel, self.reports_panel, self.tool_panel):
             self.pages.addWidget(panel)
         self.knowledge_panel = KnowledgePanel(service, self.guarded)
+        self.knowledge_panel.navigate_requested.connect(self._handle_dashboard_navigate)
         self.pages.addWidget(self.knowledge_panel)
 
         # Pages 11-13: Tools & Integrations, Jobs & Results, Dataset Catalog
@@ -484,6 +570,9 @@ class StudioWindow(QMainWindow):
         dlg.exec()
 
     def _on_design_created_from_dialog(self, design_id: str):
+        self.refresh()  # Refresh product catalog if product was registered
+        self.refresh_workspace_selector()
+        self.enterprise_dashboard.refresh_metrics()
         self.navigation.setCurrentRow(15)  # Switch to Design Studio
         self.design_studio.refresh_designs()
         if self.design_studio.combo_designs.findData(design_id) != -1:
@@ -549,16 +638,38 @@ class StudioWindow(QMainWindow):
         self.dashboard.setText(f"Mendex Engineering Studio\n\nv1.7 · Integrated foundation\n\n{len(self.items)} local products\n\nNext action: select a product, review specifications, open its workspace, discover tools, and record manual evidence.\n\nEngineering modules: framework only\nValidation: manual records available per revision\nTool qualification: pending · discovery and doctor available\n\nNo automated engineering results or approvals are generated.")
         index = next((i for i, p in enumerate(self.items) if p.product_id == selected), 0)
         if self.items:
+            if hasattr(self, "lbl_empty_catalog"):
+                self.lbl_empty_catalog.setVisible(False)
+            self.products.setVisible(True)
+            if hasattr(self, "lbl_product_count"):
+                self.lbl_product_count.setText(f"{len(self.items)} Product{'s' if len(self.items) > 1 else ''}")
             self.products.setCurrentRow(index)
+        else:
+            self.products.setVisible(False)
+            if hasattr(self, "lbl_empty_catalog"):
+                self.lbl_empty_catalog.setVisible(True)
+            if hasattr(self, "lbl_product_count"):
+                self.lbl_product_count.setText("0 Products")
+            self.select_product(-1)
         self.refresh_workspace_selector()
         if hasattr(self, "enterprise_dashboard"):
             self.enterprise_dashboard.refresh_metrics()
 
     def select_product(self, row):
-        if row < 0:
+        if row < 0 or not self.items:
             self.product = None
             self.revision = None
             self.pcb_ws.set_revision(None)
+            self.name.clear()
+            self.owner.clear()
+            self.description.clear()
+            self.specification.clear()
+            self.revisions.blockSignals(True)
+            self.revisions.clear()
+            self.revisions.blockSignals(False)
+            self.detail.setText("Select or create a product to begin")
+            if hasattr(self, "product_lifecycle"):
+                self.product_lifecycle.set_product(None)
             return
         self.product = self.items[row]
         self.name.setText(self.product.name)

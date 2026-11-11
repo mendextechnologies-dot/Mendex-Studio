@@ -11,6 +11,7 @@ from typing import Dict, List
 from uuid import uuid4
 
 from ..ir import DesignIntermediateRepresentation, ComponentType
+from ..naming import sanitize_filename, clean_title
 
 
 class KiCadSchematicGenerator:
@@ -20,11 +21,12 @@ class KiCadSchematicGenerator:
     def generate_schematic_sexpr(ir: DesignIntermediateRepresentation) -> str:
         """Generates valid KiCad 9 S-expression schematic string."""
         sch_uuid = str(uuid4())
+        safe_title = clean_title(ir.title or "Mendex Schematic")
         lines = [
             f'(kicad_sch (version 20231120) (generator "Mendex Studio v1.9") (generator_version "1.9.0") (uuid "{sch_uuid}")',
             '  (paper "A4")',
             '  (title_block',
-            f'    (title "{ir.title}")',
+            f'    (title "{safe_title}")',
             f'    (comment 1 "Topology: {ir.topology}")',
             '    (comment 2 "Generated from Mendex Design Intermediate Representation")',
             '  )',
@@ -78,6 +80,7 @@ class KiCadSchematicGenerator:
     @staticmethod
     def generate_project_json(title: str) -> str:
         """Generates standard KiCad 9 .kicad_pro file JSON."""
+        safe_base = sanitize_filename(title, fallback="kicad_project")
         pro_dict = {
             "board": {
                 "design_settings": {
@@ -88,7 +91,7 @@ class KiCadSchematicGenerator:
                 }
             },
             "meta": {
-                "filename": f"{title}.kicad_pro",
+                "filename": f"{safe_base}.kicad_pro",
                 "version": 1
             },
             "schematic": {
@@ -105,13 +108,13 @@ class KiCadSchematicGenerator:
     def export_project(ir: DesignIntermediateRepresentation, target_dir: Path) -> Dict[str, Path]:
         """Exports complete KiCad project files into destination directory."""
         target_dir.mkdir(parents=True, exist_ok=True)
-        base_name = ir.title.lower().replace(" ", "_").replace("-", "_")
+        base_name = sanitize_filename(ir.title or ir.topology, fallback="kicad_project")
 
         sch_path = target_dir / f"{base_name}.kicad_sch"
         pro_path = target_dir / f"{base_name}.kicad_pro"
 
         sch_path.write_text(KiCadSchematicGenerator.generate_schematic_sexpr(ir), encoding="utf-8")
-        pro_path.write_text(KiCadSchematicGenerator.generate_project_json(ir.title), encoding="utf-8")
+        pro_path.write_text(KiCadSchematicGenerator.generate_project_json(base_name), encoding="utf-8")
 
         return {
             "schematic": sch_path,

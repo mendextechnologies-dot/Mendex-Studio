@@ -77,7 +77,7 @@ class StudioService:
         from .integration_service import IntegrationService
         self.integrations = IntegrationService(self)
         from .intelligence import EngineeringReasoningOrchestrator
-        self.intelligence = EngineeringReasoningOrchestrator()
+        self.intelligence = EngineeringReasoningOrchestrator(data_root=self.root)
         from .workflows import WorkflowStorageService, migrate_workflows_table, WorkflowExecutionEngine
         with self.connection() as db:
             migrate_workflows_table(db)

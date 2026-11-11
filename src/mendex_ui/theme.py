@@ -109,11 +109,40 @@ QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus, QComboBox:focus {
 }
 
 /* Tables & Lists */
-QTableWidget, QTreeWidget {
+QTableWidget, QTreeWidget, QListWidget {
     background-color: #181825;
+    color: #cdd6f4;
     border: 1px solid #313244;
     border-radius: 6px;
     gridline-color: #272838;
+}
+
+QListWidget::item {
+    background-color: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin: 2px 2px;
+}
+
+QListWidget::item:hover {
+    background-color: #313244;
+    color: #ffffff;
+}
+
+QListWidget::item:selected {
+    background-color: #24273a;
+    border-left: 3px solid #89b4fa;
+    color: #89b4fa;
+}
+
+QStackedWidget {
+    background-color: #181825;
+}
+
+QScrollArea {
+    background-color: transparent;
+    border: none;
 }
 
 QHeaderView::section {

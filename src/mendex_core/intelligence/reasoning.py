@@ -32,10 +32,12 @@ class EngineeringReasoningOrchestrator:
         knowledge_service: Optional[EngineeringKnowledgeService] = None,
         calculation_service: Optional[DeterministicCalculationService] = None,
         model_registry: Optional[ModelRegistry] = None,
+        data_root: Optional[Path] = None,
     ):
+        self.data_root = data_root
         self.knowledge = knowledge_service or EngineeringKnowledgeService()
         self.calculations = calculation_service or DeterministicCalculationService()
-        self.models = model_registry or ModelRegistry()
+        self.models = model_registry or ModelRegistry(data_root)
 
     def process_query(
         self,

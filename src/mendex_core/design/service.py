@@ -30,6 +30,7 @@ from .generators import (
 from .ltspice_runner import LTspiceRunner, LTspiceSimulationResult
 from .femm_runner import FEMMRunner, FEMMSimulationResult
 from .iteration import DesignIterationEngine, DesignIterationProposal
+from .naming import sanitize_filename, clean_title
 
 
 class EngineeringDesignService:
@@ -72,10 +73,11 @@ class EngineeringDesignService:
         """Synthesizes candidate topologies from requirements and initializes a new design."""
         candidates = CandidateSynthesisEngine.synthesize_candidates(requirements)
         clean_prod_id = str(product_id) if product_id is not None else None
+        safe_title = clean_title(title, fallback="Untitled Engineering Design")
 
         design = EngineeringDesign(
             workspace_id=str(workspace_id),
-            title=title,
+            title=safe_title,
             category=category,
             product_id=clean_prod_id,
             requirements=requirements,
@@ -86,7 +88,7 @@ class EngineeringDesignService:
         if candidates and candidates[0].ir_snapshot:
             selected_cand = candidates[0]
             ir = selected_cand.ir_snapshot.model_copy(deep=True)
-            ir.title = title
+            ir.title = safe_title
 
             rev = DesignRevision(
                 design_id=design.id,
@@ -179,7 +181,7 @@ class EngineeringDesignService:
         new_artifacts.append(art_sch)
 
         # 2b. KiCad Populated PCB Layout (.kicad_pcb)
-        base_title = ir.title.lower().replace(" ", "_").replace("-", "_")
+        base_title = sanitize_filename(ir.title or ir.topology, fallback="kicad_pcb")
         pcb_path = artifacts_dir / "kicad" / f"{base_title}.kicad_pcb"
         KiCadPCBGenerator.export_pcb(ir, pcb_path)
         pcb_hash = CrossToolSyncService.compute_sha256(pcb_path)

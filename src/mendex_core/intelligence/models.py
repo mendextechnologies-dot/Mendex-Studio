@@ -5,7 +5,9 @@ Defines pluggable model backends, local execution runners, and provider health c
 from __future__ import annotations
 
 import json
+import time
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
@@ -140,19 +142,203 @@ class LocalRuleEngineBackend(ModelBackend):
         )
 
 
+class OpenAIBackend(ModelBackend):
+    """Real OpenAI API integration (GPT-4o, GPT-4o-mini)."""
+
+    def __init__(self, api_key: str, model_name: str = "gpt-4o-mini", custom_endpoint: Optional[str] = None):
+        self._api_key = api_key
+        self._model_name = model_name or "gpt-4o-mini"
+        self._custom_endpoint = custom_endpoint
+
+    @property
+    def provider_id(self) -> str:
+        return "openai"
+
+    @property
+    def model_name(self) -> str:
+        return self._model_name
+
+    def health_check(self) -> Dict[str, Any]:
+        return {
+            "status": "READY" if self._api_key else "MISSING_KEY",
+            "provider": self.provider_id,
+            "model": self.model_name,
+            "mode": "cloud_openai",
+            "network_required": True,
+        }
+
+    def generate_response(
+        self,
+        messages: List[PromptMessage],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> ModelResponse:
+        from openai import OpenAI
+
+        client = OpenAI(api_key=self._api_key, base_url=self._custom_endpoint)
+        t0 = time.time()
+        oai_messages = [{"role": m.role, "content": m.content} for m in messages]
+
+        # Inject workspace context if provided
+        if context:
+            ctx_summary = f"Engineering Context: Active Workspace: {context.get('workspace_id', 'Active')}, Available Tools: {context.get('available_tools', [])}"
+            oai_messages.insert(1, {"role": "system", "content": ctx_summary})
+
+        model = self._model_name if self._model_name not in ("local_engineering_rules", "") else "gpt-4o-mini"
+        try:
+            resp = client.chat.completions.create(
+                model=model,
+                messages=oai_messages,
+                max_tokens=1024,
+            )
+            reply = resp.choices[0].message.content or ""
+            latency = (time.time() - t0) * 1000.0
+            return ModelResponse(
+                provider="OpenAI",
+                model_name=model,
+                reply_text=reply,
+                latency_ms=latency,
+                confidence=0.99,
+                limitations=["AI-generated engineering reasoning. Verify power electronics calculations with Mendex simulation solvers."],
+            )
+        except Exception as exc:
+            return ModelResponse(
+                provider="OpenAI",
+                model_name=model,
+                reply_text=f"**OpenAI API Error:** {exc}\n\nPlease verify your API key and connection.",
+                latency_ms=(time.time() - t0) * 1000.0,
+                confidence=0.0,
+                limitations=[str(exc)],
+            )
+
+
+class GeminiBackend(ModelBackend):
+    """Real Google Gemini API integration (Gemini 2.0 Flash, Gemini 1.5 Pro)."""
+
+    def __init__(self, api_key: str, model_name: str = "gemini-2.0-flash"):
+        self._api_key = api_key
+        self._model_name = model_name or "gemini-2.0-flash"
+
+    @property
+    def provider_id(self) -> str:
+        return "gemini"
+
+    @property
+    def model_name(self) -> str:
+        return self._model_name
+
+    def health_check(self) -> Dict[str, Any]:
+        return {
+            "status": "READY" if self._api_key else "MISSING_KEY",
+            "provider": self.provider_id,
+            "model": self.model_name,
+            "mode": "cloud_gemini",
+            "network_required": True,
+        }
+
+    def generate_response(
+        self,
+        messages: List[PromptMessage],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> ModelResponse:
+        import requests
+
+        t0 = time.time()
+        model = self._model_name if self._model_name not in ("local_engineering_rules", "") else "gemini-2.0-flash"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self._api_key}"
+
+        # Format messages for Gemini API
+        contents = []
+        for m in messages:
+            role = "user" if m.role in ("user", "system") else "model"
+            contents.append({"role": role, "parts": [{"text": m.content}]})
+
+        try:
+            resp = requests.post(url, json={"contents": contents}, timeout=30)
+            latency = (time.time() - t0) * 1000.0
+            if resp.status_code == 200:
+                data = resp.json()
+                reply = data["candidates"][0]["content"]["parts"][0]["text"]
+                return ModelResponse(
+                    provider="Google Gemini",
+                    model_name=model,
+                    reply_text=reply,
+                    latency_ms=latency,
+                    confidence=0.99,
+                    limitations=["AI-generated engineering reasoning. Verify calculations with Mendex simulation solvers."],
+                )
+            else:
+                return ModelResponse(
+                    provider="Google Gemini",
+                    model_name=model,
+                    reply_text=f"**Gemini API Error (HTTP {resp.status_code}):** {resp.text}",
+                    latency_ms=latency,
+                    confidence=0.0,
+                    limitations=[resp.text],
+                )
+        except Exception as exc:
+            return ModelResponse(
+                provider="Google Gemini",
+                model_name=model,
+                reply_text=f"**Gemini Connection Error:** {exc}",
+                latency_ms=(time.time() - t0) * 1000.0,
+                confidence=0.0,
+                limitations=[str(exc)],
+            )
+
+
 class ModelRegistry:
     """Manages available intelligence backends and active model selection."""
 
-    def __init__(self):
+    def __init__(self, data_root: Optional[Path] = None):
+        self._data_root = data_root
+        self._last_cfg_mtime: float = -1.0
         self._backends: Dict[str, ModelBackend] = {}
         self._active_backend_id: str = "local_engineering_rules"
         # Register default local rule engine
         self.register_backend(LocalRuleEngineBackend())
+        self.load_configured_backends(data_root)
+
+    def load_configured_backends(self, data_root: Optional[Path] = None):
+        if data_root is not None:
+            self._data_root = data_root
+        try:
+            from mendex_core.ai.config import load_ai_config, get_config_path
+            cfg_path = get_config_path(self._data_root)
+            if cfg_path.exists():
+                self._last_cfg_mtime = cfg_path.stat().st_mtime
+            cfg = load_ai_config(self._data_root)
+            if cfg.api_key:
+                if cfg.provider == "openai":
+                    model = cfg.model if cfg.model not in ("local_engineering_rules", "") else "gpt-4o-mini"
+                    self.register_backend(OpenAIBackend(api_key=cfg.api_key, model_name=model, custom_endpoint=cfg.custom_endpoint))
+                    self._active_backend_id = "openai"
+                elif cfg.provider == "gemini":
+                    model = cfg.model if cfg.model not in ("local_engineering_rules", "") else "gemini-2.0-flash"
+                    self.register_backend(GeminiBackend(api_key=cfg.api_key, model_name=model))
+                    self._active_backend_id = "gemini"
+                else:
+                    self._active_backend_id = "local_engineering_rules"
+            else:
+                self._active_backend_id = "local_engineering_rules"
+        except Exception:
+            pass
+
+    def _check_and_reload(self):
+        try:
+            from mendex_core.ai.config import get_config_path
+            cfg_path = get_config_path(self._data_root)
+            if cfg_path.exists():
+                mtime = cfg_path.stat().st_mtime
+                if mtime != self._last_cfg_mtime:
+                    self.load_configured_backends(self._data_root)
+        except Exception:
+            pass
 
     def register_backend(self, backend: ModelBackend):
         self._backends[backend.provider_id] = backend
 
     def get_backend(self, provider_id: Optional[str] = None) -> ModelBackend:
+        self._check_and_reload()
         pid = provider_id or self._active_backend_id
         if pid not in self._backends:
             return self._backends["local_engineering_rules"]

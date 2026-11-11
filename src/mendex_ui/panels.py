@@ -1,5 +1,6 @@
 """Desktop views consume core services; engineering policy stays in the core."""
 import json
+from PySide6.QtCore import Signal
 
 from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout,
@@ -63,12 +64,15 @@ class SimulationPanel(QWidget):
 
 
 class KnowledgePanel(QTabWidget):
+    navigate_requested = Signal(int)
+
     def __init__(self, service, guarded):
         super().__init__()
         self.service, self.guarded, self.revision = service, guarded, None
         try:
             from .v17_panels import AIAssistantPanel
             self.ai_assistant = AIAssistantPanel(service)
+            self.ai_assistant.navigate_requested.connect(self.navigate_requested)
             self.addTab(self.ai_assistant, "Engineering AI Assistant")
         except Exception:
             self.ai_assistant = None

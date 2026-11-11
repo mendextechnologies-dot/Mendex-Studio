@@ -224,3 +224,43 @@ def test_ai_copilot_gateway_gating(tmp_path):
     res_approved = service.ai_copilot.execute_action(action, reqs)
     assert res_approved.approval_status == ActionApprovalStatus.EXECUTED
     assert "candidates_generated" in res_approved.execution_result
+
+
+def test_design_synthesis_with_invalid_characters_and_newlines(tmp_path: Path):
+    """Verify synthesis and artifact export succeed with newlines, arrows, and special characters in title."""
+    service = StudioService(tmp_path)
+    messy_title = "buck_converter_(e.g._24v_dc_in_\n→\n_5v_dc_@_5a,_25w,_200_khz)"
+    reqs = [
+        Requirement(parameter="vin_nom", target_value=24.0, unit="V"),
+        Requirement(parameter="vin_min", target_value=18.0, unit="V"),
+        Requirement(parameter="vin_max", target_value=32.0, unit="V"),
+        Requirement(parameter="vout", target_value=5.0, unit="V"),
+        Requirement(parameter="iout", target_value=4.0, unit="A"),
+        Requirement(parameter="fsw", target_value=100000.0, unit="Hz"),
+        Requirement(parameter="ripple", target_value=0.05, unit="V"),
+    ]
+    design = service.design.create_design_from_requirements(
+        workspace_id="test_ws",
+        title=messy_title,
+        category="dc_dc_converter",
+        requirements=reqs,
+    )
+    assert design.id is not None
+
+    # Generating native artifacts must not raise Errno 22
+    ws_dir = tmp_path / "workspaces" / "test_ws"
+    ws_dir.mkdir(parents=True, exist_ok=True)
+    artifacts = service.design.generate_native_artifacts(design.id, ws_dir)
+    assert len(artifacts) >= 3
+
+    # Check generated files exist on disk
+    sch_files = list(ws_dir.glob("**/*.kicad_sch"))
+    assert len(sch_files) == 1
+    assert "\n" not in str(sch_files[0])
+    assert "→" not in str(sch_files[0])
+    assert sch_files[0].exists()
+
+    pcb_files = list(ws_dir.glob("**/*.kicad_pcb"))
+    assert len(pcb_files) == 1
+    assert pcb_files[0].exists()
+

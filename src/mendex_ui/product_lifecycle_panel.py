@@ -16,7 +16,7 @@ from PySide6.QtGui import QColor, QFont, QDesktopServices
 from PySide6.QtWidgets import (
     QComboBox, QFileDialog, QFormLayout, QFrame, QGridLayout, QGroupBox,
     QHBoxLayout, QHeaderView, QLabel, QLineEdit, QMessageBox, QPushButton,
-    QScrollArea, QSplitter, QTabWidget, QTableWidget, QTableWidgetItem,
+    QScrollArea, QSplitter, QStackedWidget, QTabWidget, QTableWidget, QTableWidgetItem,
     QTextEdit, QVBoxLayout, QWidget,
 )
 
@@ -147,6 +147,9 @@ class ProductEngineeringOverviewPanel(QWidget):
     """Complete product engineering dashboard displaying lifecycle maturity, simulation history, PCB status, and evidence."""
 
     navigate_requested = Signal(str)
+    new_product_requested = Signal()
+    new_design_requested = Signal()
+    edit_specification_requested = Signal()
 
     STAGE_TAB_MAP = {
         LifecycleStage.REQUIREMENTS.value: 8,              # Stage Detail & Approvals
@@ -191,7 +194,14 @@ class ProductEngineeringOverviewPanel(QWidget):
         main_layout.setContentsMargins(14, 14, 14, 14)
         main_layout.setSpacing(12)
         self.scroll_area.setWidget(self.content_widget)
-        root_layout.addWidget(self.scroll_area)
+
+        # Primary Stack: Page 0 = Empty State, Page 1 = Full Lifecycle Assessment
+        self.main_stack = QStackedWidget(self)
+        self.empty_state_widget = self._create_empty_state_widget()
+        self.main_stack.addWidget(self.empty_state_widget)
+        self.main_stack.addWidget(self.scroll_area)
+        root_layout.addWidget(self.main_stack)
+        self.main_stack.setCurrentIndex(0)
 
         # 2. Top Header Banner
         header = QFrame()
@@ -237,6 +247,12 @@ class ProductEngineeringOverviewPanel(QWidget):
         btn_refresh.clicked.connect(self.refresh_assessment)
         sub_row.addWidget(btn_refresh)
 
+        btn_edit_spec = QPushButton("📝 Edit Specifications")
+        btn_edit_spec.setStyleSheet("font-weight: 700; color: #89b4fa; background-color: #24273a; border: 1px solid #45475a; padding: 4px 10px; border-radius: 4px;")
+        btn_edit_spec.setToolTip("Open Specification JSON editor to supply Vin, Vout, Iout, and frequency")
+        btn_edit_spec.clicked.connect(self.edit_specification_requested.emit)
+        sub_row.addWidget(btn_edit_spec)
+
         btn_dossier = QPushButton("📄 Export Engineering Dossier")
         btn_dossier.setStyleSheet("font-weight: 700; color: #a6e3a1;")
         btn_dossier.clicked.connect(self._generate_dossier)
@@ -256,6 +272,7 @@ class ProductEngineeringOverviewPanel(QWidget):
         quick_nav_row.addWidget(quick_nav_lbl)
 
         pills = [
+            ("📝 Specifications (SI)", -1),
             ("📐 KiCad PCB & Schematics", 0),
             ("⚡ Simulations & Waveforms", 1),
             ("📋 Bill of Materials (BOM)", 2),
@@ -273,7 +290,10 @@ class ProductEngineeringOverviewPanel(QWidget):
                 "border: 1px solid #313244; border-radius: 4px; padding: 2px 8px; } "
                 "QPushButton:hover { background: #313244; border-color: #89b4fa; color: #ffffff; }"
             )
-            btn_pill.clicked.connect(lambda checked, idx=tab_idx: self.detail_tabs.setCurrentIndex(idx))
+            if tab_idx == -1:
+                btn_pill.clicked.connect(self.edit_specification_requested.emit)
+            else:
+                btn_pill.clicked.connect(lambda checked, idx=tab_idx: self.detail_tabs.setCurrentIndex(idx))
             quick_nav_row.addWidget(btn_pill)
 
         quick_nav_row.addStretch()
@@ -1224,6 +1244,11 @@ class ProductEngineeringOverviewPanel(QWidget):
         form.addRow("Actual Evidence:", self.lbl_stage_act)
         layout.addLayout(form)
 
+        self.btn_stage_action_spec = QPushButton("📝 Open Specification & Revisions Editor")
+        self.btn_stage_action_spec.setStyleSheet("font-weight: 700; color: #89b4fa; background: #24273a; border: 1px solid #45475a; padding: 6px 14px; border-radius: 4px;")
+        self.btn_stage_action_spec.clicked.connect(self.edit_specification_requested.emit)
+        layout.addWidget(self.btn_stage_action_spec)
+
         # Blockers
         lbl_blk_title = QLabel("Recorded Stage Blockers:")
         lbl_blk_title.setStyleSheet("font-weight: 600; color: #f38ba8;")
@@ -1297,11 +1322,103 @@ class ProductEngineeringOverviewPanel(QWidget):
         except Exception as e:
             QMessageBox.warning(self, "Error Recording Approval", str(e))
 
+    def _create_empty_state_widget(self) -> QWidget:
+        """Renders a clean, modern onboarding card when no product is currently loaded."""
+        empty_widget = QWidget()
+        empty_widget.setStyleSheet("background-color: #181825;")
+        layout = QVBoxLayout(empty_widget)
+        layout.setContentsMargins(30, 40, 30, 40)
+        layout.setSpacing(20)
+        layout.setAlignment(Qt.AlignCenter)
+
+        card = QFrame()
+        card.setMaximumWidth(820)
+        card.setStyleSheet("background-color: #181825; border: 1px solid #313244; border-radius: 12px; padding: 32px;")
+        card_layout = QVBoxLayout(card)
+        card_layout.setSpacing(16)
+        card_layout.setAlignment(Qt.AlignCenter)
+
+        icon_lbl = QLabel("📐")
+        icon_lbl.setAlignment(Qt.AlignCenter)
+        icon_lbl.setStyleSheet("font-size: 46px; margin-bottom: 2px;")
+        card_layout.addWidget(icon_lbl)
+
+        title_lbl = QLabel("No Product Selected")
+        title_lbl.setAlignment(Qt.AlignCenter)
+        title_lbl.setStyleSheet("font-size: 20px; font-weight: 700; color: #89b4fa;")
+        card_layout.addWidget(title_lbl)
+
+        desc_lbl = QLabel(
+            "Select an existing product from the catalog on the left, or create a new "
+            "power electronics product to begin specifications, circuit topology synthesis, "
+            "SPICE simulation, and KiCad PCB generation."
+        )
+        desc_lbl.setAlignment(Qt.AlignCenter)
+        desc_lbl.setWordWrap(True)
+        desc_lbl.setStyleSheet("font-size: 13px; color: #a6adc8; line-height: 1.5; max-width: 640px;")
+        card_layout.addWidget(desc_lbl)
+
+        # Quick Action Buttons
+        btn_layout = QHBoxLayout()
+        btn_layout.setSpacing(12)
+        btn_layout.setAlignment(Qt.AlignCenter)
+
+        btn_new_prod = QPushButton("➕ Create New Product")
+        btn_new_prod.setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: 700; padding: 10px 22px; border-radius: 6px; font-size: 13px;")
+        btn_new_prod.clicked.connect(self.new_product_requested.emit)
+        btn_layout.addWidget(btn_new_prod)
+
+        btn_new_design = QPushButton("⚡ Launch Design Wizard")
+        btn_new_design.setStyleSheet("background-color: #313244; color: #89b4fa; font-weight: 700; padding: 10px 22px; border-radius: 6px; font-size: 13px; border: 1px solid #45475a;")
+        btn_new_design.clicked.connect(self.new_design_requested.emit)
+        btn_layout.addWidget(btn_new_design)
+
+        card_layout.addLayout(btn_layout)
+
+        # 3 Step Feature Cards
+        steps_box = QHBoxLayout()
+        steps_box.setSpacing(12)
+        steps_box.setContentsMargins(0, 16, 0, 0)
+
+        step_data = [
+            ("📋 1. Specifications", "Enter Vin, Vout, load power, switching frequency, and ripple requirements."),
+            ("⚡ 2. Automated Sizing", "Deterministic Buck, Flyback, and Push-Pull component synthesis and formulas."),
+            ("🛡️ 3. Verification & EDA", "Simulate in LTspice, FEA in FEMM, and generate populated KiCad PCBs."),
+        ]
+
+        for s_title, s_desc in step_data:
+            step_frame = QFrame()
+            step_frame.setStyleSheet("background: #11111b; border: 1px solid #313244; border-radius: 8px; padding: 14px;")
+            sf_layout = QVBoxLayout(step_frame)
+            sf_layout.setSpacing(6)
+            st_lbl = QLabel(s_title)
+            st_lbl.setStyleSheet("font-weight: 700; color: #cdd6f4; font-size: 12px;")
+            sf_layout.addWidget(st_lbl)
+            sd_lbl = QLabel(s_desc)
+            sd_lbl.setWordWrap(True)
+            sd_lbl.setStyleSheet("color: #a6adc8; font-size: 11px; line-height: 1.4;")
+            sf_layout.addWidget(sd_lbl)
+            steps_box.addWidget(step_frame)
+
+        card_layout.addLayout(steps_box)
+        layout.addWidget(card)
+        return empty_widget
+
     # -------------------------------------------------------------------------
     # LIFECYCLE REFRESH & NAVIGATION
     # -------------------------------------------------------------------------
-    def set_product(self, product_id: UUID, revision_id: Optional[UUID] = None):
+    def set_product(self, product_id: Optional[UUID], revision_id: Optional[UUID] = None):
         """Sets the active product and revision, populates revision combo, and executes lifecycle assessment."""
+        if product_id is None:
+            self.current_product_id = None
+            self.current_revision_id = None
+            self.combo_revisions.clear()
+            self.lbl_title.setText("No Product Selected")
+            self.lbl_meta.setText("Select or create a product to begin engineering lifecycle assessment.")
+            self.main_stack.setCurrentIndex(0)
+            return
+
+        self.main_stack.setCurrentIndex(1)
         self.current_product_id = product_id
         product = self.service.get_product(product_id)
         revisions = self.service.list_revisions(product_id)

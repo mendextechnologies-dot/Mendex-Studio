@@ -28,6 +28,7 @@ from .ltspice_runner import LTspiceRunner, LTspiceSimulationResult
 from .femm_runner import FEMMRunner, FEMMSimulationResult
 from .iteration import DesignIterationEngine, DesignIterationProposal
 from .generators import KiCadPCBGenerator
+from .naming import sanitize_filename, clean_title
 
 __all__ = [
     "DesignIntermediateRepresentation",
@@ -59,4 +60,6 @@ __all__ = [
     "DesignIterationEngine",
     "DesignIterationProposal",
     "KiCadPCBGenerator",
+    "sanitize_filename",
+    "clean_title",
 ]
