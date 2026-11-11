@@ -64,6 +64,14 @@ class DesignCandidate(BaseModel):
     reviewer_notes: Optional[str] = None
     ir_snapshot: Optional[DesignIntermediateRepresentation] = None
 
+    @property
+    def topology_name(self) -> str:
+        return self.name or self.topology
+
+    @property
+    def score(self) -> float:
+        return self.feasibility_score
+
 
 class ArtifactKind(str, Enum):
     NETLIST = "netlist"
@@ -107,6 +115,10 @@ class DesignRevision(BaseModel):
     artifacts: List[DesignArtifact] = Field(default_factory=list)
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     created_by: str = "Engineer"
+
+    @property
+    def topology(self) -> str:
+        return self.ir.topology if self.ir else "UNSPECIFIED"
 
 
 class EngineeringDesign(BaseModel):

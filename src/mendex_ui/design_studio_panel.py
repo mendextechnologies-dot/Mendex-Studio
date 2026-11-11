@@ -566,7 +566,7 @@ class EngineeringDesignStudioPanel(QWidget):
             return
 
         active_rev = design.get_active_revision()
-        topo = active_rev.topology if active_rev else "UNSPECIFIED"
+        topo = (active_rev.ir.topology if (active_rev and active_rev.ir) else "UNSPECIFIED") if active_rev else "UNSPECIFIED"
         status = design.status.value if hasattr(design.status, "value") else str(design.status)
 
         self.lbl_topology_badge.setText(f"TOPOLOGY: {topo.upper()}")
@@ -596,7 +596,10 @@ class EngineeringDesignStudioPanel(QWidget):
             if design.candidates:
                 calc_text.extend(["", "Synthesized Topology Candidates:"])
                 for cand in design.candidates:
-                    calc_text.append(f"  • {cand.topology_name} (Score: {cand.score:.2f}) — Status: {cand.status.value}")
+                    top_name = getattr(cand, "name", getattr(cand, "topology", "Candidate"))
+                    score = getattr(cand, "feasibility_score", getattr(cand, "score", 1.0))
+                    stat = cand.status.value if hasattr(cand.status, "value") else str(cand.status)
+                    calc_text.append(f"  • {top_name} (Score: {score:.2f}) — Status: {stat}")
                     calc_text.append(f"    Rationale: {cand.rationale}")
 
             self.txt_calc_details.setPlainText("\n".join(calc_text))
