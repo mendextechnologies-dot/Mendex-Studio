@@ -33,10 +33,17 @@ def open_native(path: Path):
     if os.name != "nt":
         raise OSError("Native file opening is implemented for Windows only")
     p = Path(path).resolve()
+    if not p.exists():
+        raise FileNotFoundError(f"File or directory does not exist: {p}")
     ext = p.suffix.lower()
 
-    # Route 3D CAD (.step / .stp) directly to FreeCAD to prevent improper association with KiCad schematic editor
-    if ext in (".step", ".stp"):
+    # Route directories directly to explorer.exe
+    if p.is_dir():
+        subprocess.Popen(["explorer.exe", str(p)])
+        return
+
+    # Route 3D CAD (.step / .stp / .stl / .fcstd) directly to FreeCAD
+    if ext in (".step", ".stp", ".stl", ".fcstd"):
         fc_paths = [
             Path(r"C:\Program Files\FreeCAD 1.1\bin\freecad.exe"),
             Path(r"C:\Program Files\FreeCAD 1.0\bin\freecad.exe"),
@@ -48,6 +55,9 @@ def open_native(path: Path):
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(p)])
                 return
+        raise FileNotFoundError(
+            f"FreeCAD is required to open 3D model '{p.name}'. No compatible FreeCAD installation was found at C:\\Program Files\\FreeCAD."
+        )
 
     # Route KiCad schematic to eeschema.exe
     if ext == ".kicad_sch":
@@ -62,6 +72,7 @@ def open_native(path: Path):
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(p)])
                 return
+        raise FileNotFoundError(f"KiCad Schematic Editor (eeschema.exe) not found to open '{p.name}'.")
 
     # Route KiCad PCB to pcbnew.exe
     if ext == ".kicad_pcb":
@@ -76,6 +87,7 @@ def open_native(path: Path):
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(p)])
                 return
+        raise FileNotFoundError(f"KiCad PCB Editor (pcbnew.exe) not found to open '{p.name}'.")
 
     # Route SPICE circuits / waveforms to LTspice.exe
     if ext in (".raw", ".net", ".cir", ".asc", ".op.raw"):
@@ -89,9 +101,10 @@ def open_native(path: Path):
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(p)])
                 return
+        raise FileNotFoundError(f"LTspice was not found to open simulation file '{p.name}'.")
 
     # Route FEMM magnetics & electrostatics models to femm.exe
-    if ext in (".fem", ".ans"):
+    if ext in (".fem", ".ans", ".fee"):
         femm_paths = [
             Path(r"C:\femm42\bin\femm.exe"),
             Path(r"C:\Program Files\femm42\bin\femm.exe"),
@@ -103,6 +116,7 @@ def open_native(path: Path):
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(p)])
                 return
+        raise FileNotFoundError(f"FEMM 4.2 was not found to open magnetics model '{p.name}'.")
 
     # Route OpenModelica models to OMEdit.exe
     if ext in (".mo", ".moe"):
@@ -116,6 +130,7 @@ def open_native(path: Path):
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(p)])
                 return
+        raise FileNotFoundError(f"OpenModelica OMEdit was not found to open '{p.name}'.")
 
     # Route KiCad Project Manager (.kicad_pro / .pro)
     if ext in (".kicad_pro", ".pro"):
@@ -130,6 +145,7 @@ def open_native(path: Path):
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(p)])
                 return
+        raise FileNotFoundError(f"KiCad Project Manager was not found to open '{p.name}'.")
 
     # Route Gerbers & drill files to KiCad GerbView
     if ext in (".gbr", ".gtl", ".gbl", ".gts", ".gbs", ".gto", ".gbo", ".gm1", ".drl"):
@@ -144,17 +160,158 @@ def open_native(path: Path):
             if candidate.exists():
                 subprocess.Popen([str(candidate), str(p)])
                 return
+        raise FileNotFoundError(f"KiCad GerbView was not found to open Gerber file '{p.name}'.")
 
-    # Route directories directly to explorer.exe
-    if p.is_dir():
-        subprocess.Popen(["explorer.exe", str(p)])
-        return
-
+    # Safe general files (HTML, PDF, TXT, JSON, CSV, MD)
     os.startfile(str(p))
 
 
 NATIVE_EXTENSIONS = {
     ".kicad_pro", ".kicad_pcb", ".kicad_sch", ".asc", ".cir", ".net", ".raw", ".op.raw",
-    ".fem", ".ans", ".step", ".stp", ".mo", ".moe", ".gbr", ".gtl", ".gbl", ".drl",
+    ".fem", ".ans", ".fee", ".step", ".stp", ".stl", ".fcstd", ".mo", ".moe",
+    ".gbr", ".gtl", ".gbl", ".drl",
     ".txt", ".json", ".md", ".csv", ".html", ".pdf"
 }
+
+
+def launch_tool(tool_id: str, path: Path) -> dict:
+    """Launches a specific engineering tool directly with the target file as input.
+    
+    Supported tool_ids:
+      - 'ltspice': ADI LTspice GUI (.asc, .net, .cir, .raw)
+      - 'freecad': FreeCAD 3D CAD GUI (.step, .stp, .stl, .fcstd)
+      - 'kicad_sch': KiCad Schematic Editor eeschema (.kicad_sch)
+      - 'kicad_pcb': KiCad PCB Editor pcbnew (.kicad_pcb)
+      - 'kicad_project': KiCad Project Manager (.kicad_pro)
+      - 'kicad_gerbview': KiCad GerbView (.gbr, .drl)
+      - 'femm': FEMM 4.2 GUI (.fem, .ans)
+      - 'omedit': OpenModelica OMEdit (.mo)
+      - 'vscode': Visual Studio Code (directory or files)
+    """
+    p = Path(path).resolve()
+    if not p.exists():
+        raise FileNotFoundError(f"Target path does not exist: {p}")
+
+    tool_id = tool_id.lower().strip()
+    executable: Path | None = None
+    args: list[str] = []
+
+    if tool_id in ("ltspice", "spice"):
+        for cand in [
+            Path(r"C:\Program Files\ADI\LTspice\LTspice.exe"),
+            Path(r"C:\Program Files\LTC\LTspiceXVII\XVIIx64.exe"),
+        ]:
+            if cand.exists():
+                executable = cand
+                break
+        if not executable and (found := shutil.which("LTspice")):
+            executable = Path(found)
+        if not executable:
+            raise FileNotFoundError("LTspice executable was not found on this system.")
+        args = [str(executable), str(p)]
+
+    elif tool_id in ("freecad", "cad"):
+        for cand in [
+            Path(r"C:\Program Files\FreeCAD 1.1\bin\freecad.exe"),
+            Path(r"C:\Program Files\FreeCAD 1.0\bin\freecad.exe"),
+            Path(r"C:\Program Files\FreeCAD 0.21\bin\freecad.exe"),
+        ]:
+            if cand.exists():
+                executable = cand
+                break
+        if not executable and (found := shutil.which("freecad")):
+            executable = Path(found)
+        if not executable:
+            raise FileNotFoundError("FreeCAD executable was not found on this system.")
+        args = [str(executable), str(p)]
+
+    elif tool_id in ("kicad_sch", "eeschema"):
+        for cand in [
+            Path(r"C:\Program Files\KiCad\10.0\bin\eeschema.exe"),
+            Path(r"C:\Program Files\KiCad\9.0\bin\eeschema.exe"),
+            Path(r"C:\Program Files\KiCad\8.0\bin\eeschema.exe"),
+        ]:
+            if cand.exists():
+                executable = cand
+                break
+        if not executable and (found := shutil.which("eeschema")):
+            executable = Path(found)
+        if not executable:
+            raise FileNotFoundError("KiCad Schematic Editor (eeschema.exe) was not found.")
+        args = [str(executable), str(p)]
+
+    elif tool_id in ("kicad_pcb", "pcbnew"):
+        for cand in [
+            Path(r"C:\Program Files\KiCad\10.0\bin\pcbnew.exe"),
+            Path(r"C:\Program Files\KiCad\9.0\bin\pcbnew.exe"),
+            Path(r"C:\Program Files\KiCad\8.0\bin\pcbnew.exe"),
+        ]:
+            if cand.exists():
+                executable = cand
+                break
+        if not executable and (found := shutil.which("pcbnew")):
+            executable = Path(found)
+        if not executable:
+            raise FileNotFoundError("KiCad PCB Editor (pcbnew.exe) was not found.")
+        args = [str(executable), str(p)]
+
+    elif tool_id in ("kicad", "kicad_project"):
+        for cand in [
+            Path(r"C:\Program Files\KiCad\10.0\bin\kicad.exe"),
+            Path(r"C:\Program Files\KiCad\9.0\bin\kicad.exe"),
+            Path(r"C:\Program Files\KiCad\8.0\bin\kicad.exe"),
+        ]:
+            if cand.exists():
+                executable = cand
+                break
+        if not executable and (found := shutil.which("kicad")):
+            executable = Path(found)
+        if not executable:
+            raise FileNotFoundError("KiCad Project Manager (kicad.exe) was not found.")
+        args = [str(executable), str(p)]
+
+    elif tool_id in ("femm", "magnetics"):
+        for cand in [
+            Path(r"C:\femm42\bin\femm.exe"),
+            Path(r"C:\Program Files\femm42\bin\femm.exe"),
+        ]:
+            if cand.exists():
+                executable = cand
+                break
+        if not executable and (found := shutil.which("femm")):
+            executable = Path(found)
+        if not executable:
+            raise FileNotFoundError("FEMM 4.2 executable was not found.")
+        args = [str(executable), str(p)]
+
+    elif tool_id in ("omedit", "openmodelica"):
+        for cand in [
+            Path(r"C:\Program Files\OpenModelica1.26.3-64bit\bin\OMEdit.exe"),
+            Path(r"C:\Program Files\OpenModelica\bin\OMEdit.exe"),
+        ]:
+            if cand.exists():
+                executable = cand
+                break
+        if not executable and (found := shutil.which("OMEdit")):
+            executable = Path(found)
+        if not executable:
+            raise FileNotFoundError("OpenModelica OMEdit was not found.")
+        args = [str(executable), str(p)]
+
+    elif tool_id in ("vscode", "code"):
+        return launch_vscode(p if p.is_dir() else p.parent)
+
+    else:
+        # Fall back to native extension routing
+        open_native(p)
+        return {"tool": tool_id, "file": str(p), "status": "dispatched"}
+
+    proc = subprocess.Popen(args, shell=False)
+    return {
+        "tool": tool_id,
+        "executable": str(executable),
+        "target_file": str(p),
+        "pid": proc.pid,
+        "status": "launched",
+    }
+

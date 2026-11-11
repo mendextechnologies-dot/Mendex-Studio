@@ -39,7 +39,12 @@ class CandidateSynthesisEngine:
         iout = req_map.get("iout", req_map.get("pout", 24.0) / max(vout, 0.1))
         pout = vout * iout
         fsw = req_map.get("frequency_hz", req_map.get("fsw", 100000.0))
-        isolated = bool(req_map.get("isolation", 0.0) > 0 or req_map.get("isolated", 0.0) > 0)
+        isolated = bool(
+            req_map.get("isolation", 0.0) > 0
+            or req_map.get("isolated", 0.0) > 0
+            or req_map.get("isolation_v", 0.0) > 0
+            or req_map.get("isolation_voltage", 0.0) > 0
+        )
 
         candidates: List[DesignCandidate] = []
 
@@ -228,6 +233,10 @@ class CandidateSynthesisEngine:
         ir.add_net_connection("GND", q2_comp.id, "s")
         ir.add_net_connection("GND", c1_comp.id, "2")
         ir.add_net_connection("GND", r_load_comp.id, "2")
+
+        # Gate Control Nets
+        ir.add_net_connection("GATE_HI", q1_comp.id, "g")
+        ir.add_net_connection("GATE_LO", q2_comp.id, "g")
 
         # Ports
         ir.ports = [

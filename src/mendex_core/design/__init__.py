@@ -24,6 +24,11 @@ from .synthesis import CandidateSynthesisEngine
 from .parametric import ParametricDesignEngine, ParametricChangeImpact
 from .sync import CrossToolSyncService, SyncStatus
 
+from .ltspice_runner import LTspiceRunner, LTspiceSimulationResult
+from .femm_runner import FEMMRunner, FEMMSimulationResult
+from .iteration import DesignIterationEngine, DesignIterationProposal
+from .generators import KiCadPCBGenerator
+
 __all__ = [
     "DesignIntermediateRepresentation",
     "IRComponent",
@@ -47,4 +52,11 @@ __all__ = [
     "ParametricChangeImpact",
     "CrossToolSyncService",
     "SyncStatus",
+    "LTspiceRunner",
+    "LTspiceSimulationResult",
+    "FEMMRunner",
+    "FEMMSimulationResult",
+    "DesignIterationEngine",
+    "DesignIterationProposal",
+    "KiCadPCBGenerator",
 ]

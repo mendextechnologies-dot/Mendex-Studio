@@ -108,6 +108,7 @@ class IRMagneticGeometry(BaseModel):
     bobbin_height_mm: float = 21.0
     flange_od_mm: float = 34.0
     barrel_od_mm: float = 18.0
+    core_id_mm: float = 16.0
 
 
 class DesignIntermediateRepresentation(BaseModel):

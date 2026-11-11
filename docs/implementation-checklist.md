@@ -374,3 +374,35 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
   - [x] `COMPONENT_LIBRARY_AND_TEMPLATES.md`, `CROSS_TOOL_REVISION_SYNC.md`
   - [x] `ENGINEERING_LIFECYCLE_AND_BOM.md`, `VALIDATION_EVIDENCE_POLICY.md`
   - [x] `END_TO_END_ACCEPTANCE.md`, `RELEASE_READINESS.md`, `FINAL_IMPLEMENTATION_REPORT.md`
+
+## Mendex Engineering Studio v2.0 — Real Engineering Workflow Qualification & Design Automation (11 November 2026)
+
+- [x] Phase 1: Baseline Verification & Gap Analysis:
+  - [x] Baseline audit completed across existing v1.9 branch and evidence registers.
+  - [x] Authored `docs/V20_BASELINE_AND_GAP_ANALYSIS.md` and `docs/V20_IMPLEMENTATION_PLAN.md`.
+- [x] Phase 2: Real LTspice Design Experience & Batch Execution:
+  - [x] Implemented `src/mendex_core/design/ltspice_runner.py` with batch simulation (`-b -ascii`), log parsing, and waveform extraction.
+  - [x] Extended `LTspiceNetlistGenerator` with native `.asc` graphical schematic compiler and active PWM switching controls.
+  - [x] Authored `docs/V20_LTSPICE_EXECUTION_REPORT.md`.
+- [x] Phase 3: Real FEMM 4.2 Magnetics FEA Automation:
+  - [x] Implemented `src/mendex_core/design/femm_runner.py` via official `create(0)` filelink IPC protocol.
+  - [x] Automated meshing (~4,400 elements) and finite element solving, extracting $B_{\max}$ and verifying $B_{\max} < B_{sat}$.
+  - [x] Authored `docs/V20_FEMM_EXECUTION_REPORT.md`.
+- [x] Phase 4: Real KiCad EDA & FreeCAD 3D CAD Artifact Generation:
+  - [x] Implemented `KiCadPCBGenerator` (`src/mendex_core/design/generators/kicad_pcb_generator.py`) creating populated `.kicad_pcb` layouts with `Edge.Cuts` boundary (60x45mm), SMD footprints, and copper nets.
+  - [x] Implemented headless FreeCAD 1.1 STEP solid generation via `freecadcmd.exe`.
+  - [x] Authored `docs/V20_KICAD_WORKFLOW_REPORT.md`.
+- [x] Phase 5: Closed-Loop AI Engineering Design Iteration:
+  - [x] Implemented `DesignIterationEngine` (`src/mendex_core/design/iteration.py`) for automated violation diagnosis and analytical capacitor/inductor resizing.
+  - [x] Implemented human-in-the-loop approval gate, Rev 2 branching, and re-simulation comparison.
+  - [x] Authored `docs/V20_AI_ENGINEERING_ITERATION_REPORT.md`.
+- [x] Phase 6: Native Tool Launch Routing & Misassociation Elimination:
+  - [x] Strengthened `src/mendex_core/launch.py` and `_safe_open_path` to strictly route `.step` to FreeCAD, `.kicad_sch` to eeschema, `.kicad_pcb` to pcbnew, and `.asc`/`.raw` to LTspice.
+  - [x] Blocked fallback to generic shell associations for CAD/EDA file types, permanently eliminating KiCad eeschema opening `.step` files.
+- [x] Phase 7: Automated Qualification Suite:
+  - [x] Authored `tests/integration/test_v20_qualification.py` (7/7 tests passed in 6.61s).
+  - [x] Full regression test suite: **202 passed, 2 skipped, 0 failed** in 80.04s.
+- [x] Phase 8: Deliverables & Milestone Certification:
+  - [x] `docs/V20_END_TO_END_QUALIFICATION.md`
+  - [x] `docs/V20_FINAL_READINESS_REPORT.md`
+

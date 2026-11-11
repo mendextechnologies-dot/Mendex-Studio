@@ -32,16 +32,27 @@ from mendex_core.service import StudioService
 from .waveform_viewer import WaveformViewerWidget
 
 
-def _safe_open_path(target_path: Path):
-    """Safely opens a file or directory using the dedicated engineering tool or system default."""
+def _safe_open_path(target_path: Path, parent_widget=None):
+    """Safely opens a file or directory using the dedicated engineering tool."""
+    p = Path(target_path).resolve()
     try:
         from mendex_core.launch import open_native
-        open_native(Path(target_path))
-    except Exception:
-        try:
-            QDesktopServices.openUrl(QUrl.fromLocalFile(str(target_path)))
-        except Exception:
-            pass
+        open_native(p)
+    except Exception as exc:
+        ext = p.suffix.lower()
+        if ext in (".step", ".stp", ".stl", ".kicad_sch", ".kicad_pcb", ".kicad_pro", ".asc", ".net", ".cir", ".raw", ".fem", ".ans", ".mo"):
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.critical(
+                parent_widget,
+                "Tool Launch Error",
+                f"Could not open {p.name} with its dedicated engineering tool:\n\n{exc}\n\nPlease verify that the required tool is installed.",
+            )
+        else:
+            try:
+                QDesktopServices.openUrl(QUrl.fromLocalFile(str(p)))
+            except Exception as e2:
+                from PySide6.QtWidgets import QMessageBox
+                QMessageBox.critical(parent_widget, "Open Error", f"Could not open {p.name}:\n{e2}")
 
 
 class StageCardWidget(QFrame):

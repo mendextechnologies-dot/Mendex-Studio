@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
@@ -22,8 +24,12 @@ from .sync import CrossToolSyncService
 from .generators import (
     LTspiceNetlistGenerator,
     KiCadSchematicGenerator,
+    KiCadPCBGenerator,
     FEMMMagneticGenerator,
 )
+from .ltspice_runner import LTspiceRunner, LTspiceSimulationResult
+from .femm_runner import FEMMRunner, FEMMSimulationResult
+from .iteration import DesignIterationEngine, DesignIterationProposal
 
 
 class EngineeringDesignService:
@@ -34,6 +40,8 @@ class EngineeringDesignService:
         self.designs_dir = self.data_root / "engineering_designs"
         self.designs_dir.mkdir(parents=True, exist_ok=True)
         self._designs_cache: Dict[str, EngineeringDesign] = {}
+        self.ltspice_runner = LTspiceRunner()
+        self.femm_runner = FEMMRunner()
         self._load_all()
 
     def _get_design_file(self, design_id: str) -> Path:
@@ -136,6 +144,23 @@ class EngineeringDesignService:
         )
         new_artifacts.append(art_net)
 
+        # 1b. LTspice Graphical Schematic (.asc)
+        asc_content = LTspiceNetlistGenerator.generate_asc_schematic(ir)
+        asc_path = artifacts_dir / f"{ir.topology.lower()}_schematic.asc"
+        asc_path.write_text(asc_content, encoding="utf-8")
+        asc_hash = CrossToolSyncService.compute_sha256(asc_path)
+        art_asc = DesignArtifact(
+            design_id=design.id,
+            revision_id=active_rev.id,
+            kind=ArtifactKind.NETLIST,
+            name="LTspice Graphical Schematic",
+            path=str(asc_path.relative_to(self.data_root)) if asc_path.is_relative_to(self.data_root) else str(asc_path),
+            format="LTspice Schematic (.asc)",
+            sha256=asc_hash,
+            source_service="LTspiceNetlistGenerator",
+        )
+        new_artifacts.append(art_asc)
+
         # 2. KiCad 9 Schematic (.kicad_sch)
         kicad_files = KiCadSchematicGenerator.export_project(ir, artifacts_dir / "kicad")
         sch_path = kicad_files["schematic"]
@@ -152,6 +177,23 @@ class EngineeringDesignService:
             source_service="KiCadSchematicGenerator",
         )
         new_artifacts.append(art_sch)
+
+        # 2b. KiCad Populated PCB Layout (.kicad_pcb)
+        base_title = ir.title.lower().replace(" ", "_").replace("-", "_")
+        pcb_path = artifacts_dir / "kicad" / f"{base_title}.kicad_pcb"
+        KiCadPCBGenerator.export_pcb(ir, pcb_path)
+        pcb_hash = CrossToolSyncService.compute_sha256(pcb_path)
+        art_pcb = DesignArtifact(
+            design_id=design.id,
+            revision_id=active_rev.id,
+            kind=ArtifactKind.KICAD_PCB,
+            name="KiCad 9 Populated PCB Layout",
+            path=str(pcb_path.relative_to(self.data_root)) if pcb_path.is_relative_to(self.data_root) else str(pcb_path),
+            format="KiCad PCB (.kicad_pcb)",
+            sha256=pcb_hash,
+            source_service="KiCadPCBGenerator",
+        )
+        new_artifacts.append(art_pcb)
 
         # 3. FEMM Magnetic Model (.lua) if magnetic geometry exists
         if ir.magnetic_geometry:
@@ -172,9 +214,89 @@ class EngineeringDesignService:
             )
             new_artifacts.append(art_femm)
 
+            # 4. FreeCAD 3D Bobbin STEP Model
+            from integrations.generators.freecad_generator import generate_freecad_bobbin_script
+            geom = ir.magnetic_geometry
+            step_path = artifacts_dir / "bobbin.step"
+            freecad_script_path = artifacts_dir / "generate_bobbin.py"
+            fc_script = generate_freecad_bobbin_script(
+                flange_od_mm=geom.flange_od_mm,
+                core_id_mm=getattr(geom, "core_id_mm", geom.barrel_od_mm - 2.0),
+                height_mm=geom.bobbin_height_mm,
+                output_step_path=str(step_path),
+            )
+            freecad_script_path.write_text(fc_script, encoding="utf-8")
+
+            fc_cmd = Path(r"C:\Program Files\FreeCAD 1.1\bin\freecadcmd.exe")
+            if not fc_cmd.exists() and (found_fc := shutil.which("freecadcmd")):
+                fc_cmd = Path(found_fc)
+            if fc_cmd.exists():
+                try:
+                    subprocess.run([str(fc_cmd), str(freecad_script_path)], capture_output=True, timeout=30)
+                except Exception:
+                    pass
+            if step_path.exists():
+                step_hash = CrossToolSyncService.compute_sha256(step_path)
+                art_step = DesignArtifact(
+                    design_id=design.id,
+                    revision_id=active_rev.id,
+                    kind=ArtifactKind.STEP_SOLID,
+                    name="FreeCAD 3D Bobbin Model",
+                    path=str(step_path.relative_to(self.data_root)) if step_path.is_relative_to(self.data_root) else str(step_path),
+                    format="ISO 10303 STEP (.step)",
+                    sha256=step_hash,
+                    source_service="FreeCADBobbinGenerator",
+                )
+                new_artifacts.append(art_step)
+
         active_rev.artifacts = new_artifacts
         self._persist(design)
         return new_artifacts
+
+    def run_ltspice_simulation(self, design_id: str, workspace_dir: Path) -> LTspiceSimulationResult:
+        """Executes real LTspice batch simulation and parses numerical waveforms and metrics."""
+        design = self.get_design(design_id)
+        if not design or not design.get_active_revision():
+            raise KeyError(f"Design '{design_id}' or active revision not found.")
+
+        active_rev = design.get_active_revision()
+        artifacts_dir = workspace_dir / "generated_artifacts" / f"rev_{active_rev.revision_index}"
+        net_path = artifacts_dir / f"{active_rev.ir.topology.lower()}_circuit.net"
+
+        # Ensure artifacts generated if not already on disk
+        if not net_path.exists():
+            self.generate_native_artifacts(design_id, workspace_dir)
+
+        return self.ltspice_runner.run_simulation(net_path, requirements=design.requirements)
+
+    def run_femm_simulation(self, design_id: str, workspace_dir: Path) -> FEMMSimulationResult:
+        """Executes real FEMM 4.2 magnetic FEA and verifies flux density."""
+        design = self.get_design(design_id)
+        if not design or not design.get_active_revision():
+            raise KeyError(f"Design '{design_id}' or active revision not found.")
+
+        active_rev = design.get_active_revision()
+        if not active_rev.ir.magnetic_geometry:
+            raise ValueError("Design does not have magnetic geometry defined.")
+
+        artifacts_dir = workspace_dir / "generated_artifacts" / f"rev_{active_rev.revision_index}"
+        return self.femm_runner.run_magnetic_analysis(active_rev.ir.magnetic_geometry, artifacts_dir)
+
+    def propose_iteration(self, design_id: str, sim_result: LTspiceSimulationResult) -> Optional[DesignIterationProposal]:
+        """Formulates an engineering improvement proposal when a requirement fails."""
+        design = self.get_design(design_id)
+        if not design:
+            raise KeyError(f"Design '{design_id}' not found.")
+        return DesignIterationEngine.analyze_simulation_and_propose(design, sim_result)
+
+    def apply_iteration(self, design_id: str, proposal: DesignIterationProposal) -> Dict[str, Any]:
+        """Applies approved proposal, branches new revision, and re-simulates."""
+        design = self.get_design(design_id)
+        if not design:
+            raise KeyError(f"Design '{design_id}' not found.")
+        res = DesignIterationEngine.apply_iteration_proposal(design, proposal, self.data_root, self.ltspice_runner)
+        self._persist(design)
+        return res
 
     def recalculate_parameters(self, design_id: str) -> Dict[str, float]:
         """Recalculates parametric relationships in the active IR."""
@@ -195,3 +317,30 @@ class EngineeringDesignService:
 
         engine = ParametricDesignEngine(design.get_active_revision().ir)
         return engine.analyze_impact(param_name, new_value)
+
+    def open_artifact(self, design_id: str, artifact_name: str) -> Dict[str, Any]:
+        """Launches the native engineering tool for a specific artifact with verified inputs."""
+        from mendex_core.launch import open_native
+        design = self.get_design(design_id)
+        if not design or not design.get_active_revision():
+            raise KeyError("Design or active revision not found.")
+
+        target_art = None
+        for art in design.get_active_revision().artifacts:
+            if art.name.lower() == artifact_name.lower() or art.kind.value == artifact_name.lower() or Path(art.path).name.lower() == artifact_name.lower():
+                target_art = art
+                break
+        if not target_art:
+            raise FileNotFoundError(f"Artifact '{artifact_name}' not found in active revision.")
+
+        art_path = self.data_root / target_art.path if not Path(target_art.path).is_absolute() else Path(target_art.path)
+        if not art_path.exists():
+            raise FileNotFoundError(f"Artifact file does not exist on disk: {art_path}")
+
+        open_native(art_path)
+        return {
+            "design_id": design_id,
+            "artifact_name": target_art.name,
+            "path": str(art_path),
+            "status": "opened_in_native_tool",
+        }
