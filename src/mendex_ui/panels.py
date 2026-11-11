@@ -4,7 +4,7 @@ import json
 from PySide6.QtWidgets import (
     QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout,
     QLabel, QLineEdit, QListWidget, QPushButton, QTextEdit,
-    QVBoxLayout, QWidget, QTabWidget,
+    QVBoxLayout, QWidget, QTabWidget, QGroupBox, QCheckBox, QMessageBox,
 )
 
 from mendex_core.evidence import ManualCheck
@@ -85,18 +85,114 @@ class KnowledgePanel(QTabWidget):
         self.addTab(self.plugins, "Plugins")
         ai_page = QWidget()
         layout = QVBoxLayout(ai_page)
-        layout.addWidget(QLabel("Read-only AI interface · provider unavailable · no network requests or engineering outputs"))
+
+        # AI Provider & API Key Setup Group
+        cfg_group = QGroupBox("AI Copilot & Cloud Provider Configuration")
+        cfg_form = QFormLayout(cfg_group)
+
+        self.ai_provider_combo = QComboBox()
+        self.ai_provider_combo.addItems([
+            "Offline Deterministic Engine (Default / Zero Cost)",
+            "Google Gemini API (Cloud)",
+            "OpenAI API (Cloud)",
+        ])
+        cfg_form.addRow("Provider:", self.ai_provider_combo)
+
+        self.api_key_input = QLineEdit()
+        self.api_key_input.setEchoMode(QLineEdit.Password)
+        self.api_key_input.setPlaceholderText("Enter API Key (e.g. AIzaSy... or sk-...)")
+
+        key_row = QHBoxLayout()
+        key_row.addWidget(self.api_key_input)
+        self.btn_toggle_key = QPushButton("👁️ Show")
+        self.btn_toggle_key.setFixedWidth(70)
+        self.btn_toggle_key.clicked.connect(self._toggle_key_visibility)
+        key_row.addWidget(self.btn_toggle_key)
+        cfg_form.addRow("API Key:", key_row)
+
+        self.ai_model_input = QLineEdit()
+        self.ai_model_input.setPlaceholderText("e.g. gemini-2.0-flash or gpt-4o")
+        cfg_form.addRow("Model Name:", self.ai_model_input)
+
+        self.chk_cloud_opt_in = QCheckBox("Explicit Cloud Opt-In (allow technical requirements to be processed by cloud provider)")
+        cfg_form.addRow("", self.chk_cloud_opt_in)
+
+        self.btn_save_ai = QPushButton("💾 Save API Key & Provider Settings")
+        self.btn_save_ai.setStyleSheet("font-weight: 700; color: #89b4fa; padding: 6px;")
+        self.btn_save_ai.clicked.connect(self._save_ai_settings)
+        cfg_form.addRow("", self.btn_save_ai)
+
+        self.lbl_ai_status = QLabel("Status: Local Offline Engine")
+        self.lbl_ai_status.setStyleSheet("color: #a6e3a1; font-weight: 600;")
+        cfg_form.addRow("Active Backend:", self.lbl_ai_status)
+        layout.addWidget(cfg_group)
+
+        # AI Interface Query Section
+        query_group = QGroupBox("Engineering Query & Diagnostics")
+        q_layout = QVBoxLayout(query_group)
+        q_layout.addWidget(QLabel("Query active engineering intelligence rules and configured provider:"))
         self.question = QLineEdit()
-        self.question.setPlaceholderText("Question for a future configured provider")
-        layout.addWidget(self.question)
-        button = QPushButton("Check AI availability")
+        self.question.setPlaceholderText("Ask a question about circuit topology, loss calculations, or component rules...")
+        q_layout.addWidget(self.question)
+        button = QPushButton("Ask Engineering Intelligence")
         button.clicked.connect(lambda: guarded(self.ask))
-        layout.addWidget(button)
+        q_layout.addWidget(button)
         self.ai_output = QTextEdit()
         self.ai_output.setReadOnly(True)
-        layout.addWidget(self.ai_output)
+        q_layout.addWidget(self.ai_output)
+        layout.addWidget(query_group, 1)
+
         self.addTab(ai_page, "AI interface")
         self.rules.setPlainText(json.dumps([rule.model_dump(mode="json") for rule in service.list_rules()], indent=2))
+        self._load_ai_settings()
+
+    def _toggle_key_visibility(self):
+        if self.api_key_input.echoMode() == QLineEdit.Password:
+            self.api_key_input.setEchoMode(QLineEdit.Normal)
+            self.btn_toggle_key.setText("🔒 Hide")
+        else:
+            self.api_key_input.setEchoMode(QLineEdit.Password)
+            self.btn_toggle_key.setText("👁️ Show")
+
+    def _load_ai_settings(self):
+        try:
+            from mendex_core.ai.config import load_ai_config
+            cfg = load_ai_config(self.service.root)
+            if cfg.provider == "gemini":
+                self.ai_provider_combo.setCurrentIndex(1)
+            elif cfg.provider == "openai":
+                self.ai_provider_combo.setCurrentIndex(2)
+            else:
+                self.ai_provider_combo.setCurrentIndex(0)
+
+            self.api_key_input.setText(cfg.api_key)
+            self.ai_model_input.setText(cfg.model)
+            self.chk_cloud_opt_in.setChecked(cfg.cloud_opt_in)
+
+            if cfg.api_key and cfg.provider in ("gemini", "openai"):
+                masked = cfg.api_key[:6] + "..." + cfg.api_key[-4:] if len(cfg.api_key) > 10 else "***"
+                self.lbl_ai_status.setText(f"● Connected to {cfg.provider.upper()} ({cfg.model}) [{masked}]")
+            else:
+                self.lbl_ai_status.setText("● Local Offline Engine (Deterministic, Zero Cost)")
+        except Exception:
+            self.lbl_ai_status.setText("● Local Offline Engine (Default)")
+
+    def _save_ai_settings(self):
+        try:
+            from mendex_core.ai.config import save_ai_config, AIProviderConfig
+            prov_idx = self.ai_provider_combo.currentIndex()
+            prov = "gemini" if prov_idx == 1 else "openai" if prov_idx == 2 else "offline"
+            cfg = AIProviderConfig(
+                provider=prov,
+                model=self.ai_model_input.text().strip() or ("gemini-2.0-flash" if prov == "gemini" else "gpt-4o" if prov == "openai" else "local_engineering_rules"),
+                api_key=self.api_key_input.text().strip(),
+                cloud_opt_in=self.chk_cloud_opt_in.isChecked(),
+            )
+            save_ai_config(cfg, self.service.root)
+            self._load_ai_settings()
+            QMessageBox.information(self, "AI Settings Saved", f"AI Provider '{prov.upper()}' configuration saved to .mendex/ai_config.json.")
+        except Exception as exc:
+            QMessageBox.critical(self, "Save Error", f"Could not save AI settings:\n\n{exc}")
 
     def set_revision(self, revision):
         self.revision = revision
