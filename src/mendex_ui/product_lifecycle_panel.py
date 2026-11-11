@@ -493,9 +493,9 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(self.service.get_revision(self.current_revision_id))
         schs = list(ws_path.glob("**/*.kicad_sch"))
         if schs:
-            _safe_open_path(schs[0])
+            _safe_open_path(schs[0], self)
         else:
-            QMessageBox.warning(self, "Not Found", "No .kicad_sch file found in workspace.")
+            QMessageBox.warning(self, "Schematic Input Required", "No KiCad schematic (.kicad_sch) file was found in this workspace. Please synthesize or import a schematic before opening KiCad.")
 
     def _open_kicad_pcb(self):
         if not self.current_revision_id:
@@ -503,9 +503,9 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(self.service.get_revision(self.current_revision_id))
         pcbs = list(ws_path.glob("**/*.kicad_pcb"))
         if pcbs:
-            _safe_open_path(pcbs[0])
+            _safe_open_path(pcbs[0], self)
         else:
-            QMessageBox.warning(self, "Not Found", "No .kicad_pcb file found in workspace.")
+            QMessageBox.warning(self, "PCB Input Required", "No KiCad board layout (.kicad_pcb) file was found in this workspace. Please synthesize or import a PCB layout before opening KiCad.")
 
     def _open_cad_directory(self):
         if not self.current_revision_id:
@@ -514,7 +514,7 @@ class ProductEngineeringOverviewPanel(QWidget):
         cad_dir = ws_path / "pcb"
         if not cad_dir.exists():
             cad_dir = ws_path
-        _safe_open_path(cad_dir)
+        _safe_open_path(cad_dir, self)
 
     def _on_cad_file_double_clicked(self, item):
         row = item.row()
@@ -522,7 +522,7 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(self.service.get_revision(self.current_revision_id))
         matches = list(ws_path.glob(f"**/{fname}"))
         if matches:
-            _safe_open_path(matches[0])
+            _safe_open_path(matches[0], self)
 
     def _refresh_pcb_tab(self):
         if not self.current_revision_id:
@@ -734,9 +734,9 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(self.service.get_revision(self.current_revision_id))
         raws = list(ws_path.glob("**/*.raw"))
         if raws:
-            _safe_open_path(raws[0])
+            _safe_open_path(raws[0], self)
         else:
-            QMessageBox.warning(self, "Not Found", "No .raw simulation file found.")
+            QMessageBox.warning(self, "Waveform File Required", "No SPICE simulation raw waveform (.raw) was found. Please run the simulation first.")
 
     def _open_simulation_net(self):
         if not self.current_revision_id:
@@ -744,9 +744,9 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(self.service.get_revision(self.current_revision_id))
         nets = list(ws_path.glob("**/*.net")) + list(ws_path.glob("**/*.cir"))
         if nets:
-            _safe_open_path(nets[0])
+            _safe_open_path(nets[0], self)
         else:
-            QMessageBox.warning(self, "Not Found", "No netlist file found.")
+            QMessageBox.warning(self, "Netlist File Required", "No SPICE netlist (.net / .cir) was found. Please generate or import a circuit model first.")
 
     def _open_simulation_log(self):
         if not self.current_revision_id:
@@ -754,9 +754,9 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(self.service.get_revision(self.current_revision_id))
         logs = list(ws_path.glob("**/*.log"))
         if logs:
-            _safe_open_path(logs[0])
+            _safe_open_path(logs[0], self)
         else:
-            QMessageBox.warning(self, "Not Found", "No simulation log file found.")
+            QMessageBox.warning(self, "Solver Log Required", "No solver log (.log) was found. Please execute a simulation run first.")
 
     def _run_ltspice(self):
         self.navigate_requested.emit("Simulations")
@@ -977,9 +977,9 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(self.service.get_revision(self.current_revision_id))
         steps = list(ws_path.glob("**/*.step")) + list(ws_path.glob("**/*.stp"))
         if steps:
-            _safe_open_path(steps[0])
+            _safe_open_path(steps[0], self)
         else:
-            QMessageBox.warning(self, "Not Found", "No 3D STEP model found in workspace.")
+            QMessageBox.warning(self, "3D CAD Model Required", "No 3D STEP model (.step / .stp) was found in workspace. FreeCAD requires an exported STEP model to open.")
 
     def _open_mech_directory(self):
         if not self.current_revision_id:
@@ -988,7 +988,7 @@ class ProductEngineeringOverviewPanel(QWidget):
         mech_dir = ws_path / "mechanical"
         if not mech_dir.exists():
             mech_dir = ws_path
-        _safe_open_path(mech_dir)
+        _safe_open_path(mech_dir, self)
 
     def _refresh_mech_tab(self):
         if not self.current_revision_id:
@@ -1180,7 +1180,7 @@ class ProductEngineeringOverviewPanel(QWidget):
         ws_path = self.service.workspace_path(revision)
         matches = list(ws_path.glob(f"**/{fname}"))
         if matches and matches[0].exists():
-            _safe_open_path(matches[0])
+            _safe_open_path(matches[0], self)
         else:
             QMessageBox.information(self, "File Info", f"Evidence file reference: {fname}")
 

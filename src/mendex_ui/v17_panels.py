@@ -373,6 +373,13 @@ class EnterpriseDashboardPanel(QWidget):
         action_layout = QHBoxLayout(action_frame)
         action_layout.addWidget(QLabel("Quick Actions:"))
 
+        btn_new_design = QPushButton("➕ New Engineering Design")
+        btn_new_design.setStyleSheet(
+            "background-color: #89b4fa; color: #11111b; font-weight: 700; padding: 6px 14px; border-radius: 4px;"
+        )
+        btn_new_design.clicked.connect(self._open_new_design_dialog)
+        action_layout.addWidget(btn_new_design)
+
         btn_new_ws = QPushButton("+ New Workspace")
         btn_new_ws.setProperty("class", "primary_btn")
         btn_new_ws.clicked.connect(lambda: self.navigate_requested.emit(1))
@@ -530,6 +537,16 @@ class EnterpriseDashboardPanel(QWidget):
         for i, btn in enumerate(self.scope_btns):
             btn.setChecked(i == idx)
         self._apply_filters()
+
+    def _open_new_design_dialog(self):
+        try:
+            from .design_studio_panel import NewEngineeringDesignDialog
+            dlg = NewEngineeringDesignDialog(self.service, parent=self)
+            dlg.design_created.connect(lambda d_id: self.navigate_requested.emit(15))
+            dlg.exec()
+        except Exception as exc:
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.critical(self, "Error", f"Could not open New Engineering Design wizard:\n{exc}")
 
     def refresh_metrics(self):
         try:

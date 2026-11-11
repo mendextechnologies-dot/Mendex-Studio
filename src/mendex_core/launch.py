@@ -162,15 +162,22 @@ def open_native(path: Path):
                 return
         raise FileNotFoundError(f"KiCad GerbView was not found to open Gerber file '{p.name}'.")
 
-    # Safe general files (HTML, PDF, TXT, JSON, CSV, MD)
-    os.startfile(str(p))
+    # Safe general documentation & data files (HTML, PDF, TXT, JSON, CSV, MD, LOG)
+    if ext in (".txt", ".json", ".md", ".csv", ".html", ".htm", ".pdf", ".log"):
+        os.startfile(str(p))
+        return
+
+    raise ValueError(
+        f"Unsupported or unrecognized engineering file type '{ext}' for file '{p.name}'. "
+        "Native tool routing only dispatches recognized CAD, EDA, SPICE, FEA, and system simulation artifacts."
+    )
 
 
 NATIVE_EXTENSIONS = {
     ".kicad_pro", ".kicad_pcb", ".kicad_sch", ".asc", ".cir", ".net", ".raw", ".op.raw",
     ".fem", ".ans", ".fee", ".step", ".stp", ".stl", ".fcstd", ".mo", ".moe",
     ".gbr", ".gtl", ".gbl", ".drl",
-    ".txt", ".json", ".md", ".csv", ".html", ".pdf"
+    ".txt", ".json", ".md", ".csv", ".html", ".pdf", ".log"
 }
 
 
@@ -192,11 +199,14 @@ def launch_tool(tool_id: str, path: Path) -> dict:
     if not p.exists():
         raise FileNotFoundError(f"Target path does not exist: {p}")
 
+    ext = p.suffix.lower()
     tool_id = tool_id.lower().strip()
     executable: Path | None = None
     args: list[str] = []
 
     if tool_id in ("ltspice", "spice"):
+        if ext not in (".asc", ".net", ".cir", ".raw", ".op.raw"):
+            raise ValueError(f"LTspice requires a SPICE schematic (.asc), netlist (.net/.cir), or waveform (.raw), but received '{p.name}' ({ext}).")
         for cand in [
             Path(r"C:\Program Files\ADI\LTspice\LTspice.exe"),
             Path(r"C:\Program Files\LTC\LTspiceXVII\XVIIx64.exe"),
@@ -211,6 +221,8 @@ def launch_tool(tool_id: str, path: Path) -> dict:
         args = [str(executable), str(p)]
 
     elif tool_id in ("freecad", "cad"):
+        if ext not in (".step", ".stp", ".stl", ".fcstd"):
+            raise ValueError(f"FreeCAD requires a 3D CAD model (.step, .stp, .stl, .fcstd), but received '{p.name}' ({ext}).")
         for cand in [
             Path(r"C:\Program Files\FreeCAD 1.1\bin\freecad.exe"),
             Path(r"C:\Program Files\FreeCAD 1.0\bin\freecad.exe"),
@@ -226,6 +238,8 @@ def launch_tool(tool_id: str, path: Path) -> dict:
         args = [str(executable), str(p)]
 
     elif tool_id in ("kicad_sch", "eeschema"):
+        if ext not in (".kicad_sch", ".sch"):
+            raise ValueError(f"KiCad Schematic Editor requires a schematic file (.kicad_sch), but received '{p.name}' ({ext}). For 3D CAD models, open in FreeCAD.")
         for cand in [
             Path(r"C:\Program Files\KiCad\10.0\bin\eeschema.exe"),
             Path(r"C:\Program Files\KiCad\9.0\bin\eeschema.exe"),
@@ -241,6 +255,8 @@ def launch_tool(tool_id: str, path: Path) -> dict:
         args = [str(executable), str(p)]
 
     elif tool_id in ("kicad_pcb", "pcbnew"):
+        if ext not in (".kicad_pcb",):
+            raise ValueError(f"KiCad PCB Editor requires a board layout file (.kicad_pcb), but received '{p.name}' ({ext}).")
         for cand in [
             Path(r"C:\Program Files\KiCad\10.0\bin\pcbnew.exe"),
             Path(r"C:\Program Files\KiCad\9.0\bin\pcbnew.exe"),
@@ -256,6 +272,12 @@ def launch_tool(tool_id: str, path: Path) -> dict:
         args = [str(executable), str(p)]
 
     elif tool_id in ("kicad", "kicad_project"):
+        if ext in (".kicad_sch", ".sch"):
+            return launch_tool("kicad_sch", p)
+        if ext in (".kicad_pcb",):
+            return launch_tool("kicad_pcb", p)
+        if ext not in (".kicad_pro", ".pro") and not p.is_dir():
+            raise ValueError(f"KiCad Project Manager requires a project file (.kicad_pro) or directory, but received '{p.name}' ({ext}). For 3D CAD models, open in FreeCAD.")
         for cand in [
             Path(r"C:\Program Files\KiCad\10.0\bin\kicad.exe"),
             Path(r"C:\Program Files\KiCad\9.0\bin\kicad.exe"),
@@ -271,6 +293,8 @@ def launch_tool(tool_id: str, path: Path) -> dict:
         args = [str(executable), str(p)]
 
     elif tool_id in ("femm", "magnetics"):
+        if ext not in (".fem", ".ans", ".fee"):
+            raise ValueError(f"FEMM 4.2 requires a finite element magnetics model (.fem, .ans), but received '{p.name}' ({ext}).")
         for cand in [
             Path(r"C:\femm42\bin\femm.exe"),
             Path(r"C:\Program Files\femm42\bin\femm.exe"),
@@ -285,6 +309,8 @@ def launch_tool(tool_id: str, path: Path) -> dict:
         args = [str(executable), str(p)]
 
     elif tool_id in ("omedit", "openmodelica"):
+        if ext not in (".mo", ".moe"):
+            raise ValueError(f"OpenModelica OMEdit requires a Modelica model (.mo), but received '{p.name}' ({ext}).")
         for cand in [
             Path(r"C:\Program Files\OpenModelica1.26.3-64bit\bin\OMEdit.exe"),
             Path(r"C:\Program Files\OpenModelica\bin\OMEdit.exe"),

@@ -405,4 +405,10 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
 - [x] Phase 8: Deliverables & Milestone Certification:
   - [x] `docs/V20_END_TO_END_QUALIFICATION.md`
   - [x] `docs/V20_FINAL_READINESS_REPORT.md`
+- [x] Phase 9: UI Engineering Design Studio & Strict Tool Input Validation:
+  - [x] Added first-class **"➕ New Engineering Design"** button in Top Header, Dashboard Quick Actions, Left Sidebar Navigation (Page 15: Design Studio), and Command Palette (`Ctrl+N`).
+  - [x] Created `EngineeringDesignStudioPanel` (`src/mendex_ui/design_studio_panel.py`) with 4 dedicated tabs: Architecture & Calculations, Simulation & Waveforms, AI Iteration, and Native Artifacts.
+  - [x] Enforced strict file-extension validation in `launch_tool` (`src/mendex_core/launch.py`): KiCad Schematic Editor strictly requires `.kicad_sch` (rejects `.step` with actionable error), KiCad PCB Editor strictly requires `.kicad_pcb`, FreeCAD strictly requires `.step`/`.fcstd`, and LTspice strictly requires `.asc`/`.net`/`.raw`.
+  - [x] Enhanced artifact launch handoff in `design_studio_panel.py` and `product_lifecycle_panel.py` to prompt/compile required native models on demand when missing.
+  - [x] All 205 local tests green (15/15 UI tests in `tests/ui/`, 7/7 qualification tests in `tests/integration/`).
 

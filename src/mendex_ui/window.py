@@ -27,6 +27,7 @@ from .product_lifecycle_panel import ProductEngineeringOverviewPanel
 from .pcb_panel import PCBWorkspacePanel
 from .command_palette import CommandPaletteDialog
 from .notification_center import NotificationCenterDialog
+from .design_studio_panel import EngineeringDesignStudioPanel, NewEngineeringDesignDialog
 
 
 class ProductDialog(QDialog):
@@ -100,6 +101,11 @@ class StudioWindow(QMainWindow):
         btn_new_ws = QPushButton("+ New Workspace")
         btn_new_ws.clicked.connect(self._create_header_workspace)
         header_layout.addWidget(btn_new_ws)
+
+        btn_new_design = QPushButton("➕ New Engineering Design")
+        btn_new_design.setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: 700; padding: 5px 12px; border-radius: 4px;")
+        btn_new_design.clicked.connect(self._create_header_design)
+        header_layout.addWidget(btn_new_design)
 
         self.search_box = QLineEdit()
         self.search_box.setPlaceholderText("Search tools, activities, waveforms, jobs... (Ctrl+K)")
@@ -309,6 +315,11 @@ class StudioWindow(QMainWindow):
         nav.addItem("Workflow Studio")
         self.pages.addWidget(self.workflow_studio)
 
+        # Page 15: Engineering Design Studio
+        self.design_studio = EngineeringDesignStudioPanel(service, self.guarded)
+        nav.addItem("Design Studio")
+        self.pages.addWidget(self.design_studio)
+
         nav.currentRowChanged.connect(self.pages.setCurrentIndex)
         nav.setCurrentRow(0)
 
@@ -342,6 +353,8 @@ class StudioWindow(QMainWindow):
 
     def _init_command_palette_actions(self):
         cp = self.command_palette
+        cp.register_command("New Engineering Design", "design", "Ctrl+N", self._create_header_design, "⚙")
+        cp.register_command("Open Engineering Design Studio", "view", "", lambda: self.navigation.setCurrentRow(15), "📐")
         cp.register_command("Run LTspice Batch Simulation", "simulation", "Ctrl+Shift+S", lambda: self.pages.setCurrentIndex(5), "⚡")
         cp.register_command("Run KiCad Schematic ERC", "pcb", "Ctrl+Shift+E", lambda: self.product_lifecycle._run_kicad_erc(), "⚡")
         cp.register_command("Run KiCad PCB DRC", "pcb", "Ctrl+Shift+D", lambda: self.product_lifecycle._run_kicad_drc(), "🛡️")
@@ -407,6 +420,8 @@ class StudioWindow(QMainWindow):
             self.navigation.setCurrentRow(10)  # Knowledge Center
         elif "workflow" in lower:
             self.navigation.setCurrentRow(14)  # Workflow Studio
+        elif any(k in lower for k in ("design", "spec", "studio", "circuit")):
+            self.navigation.setCurrentRow(15)  # Design Studio
         elif "dashboard" in lower:
             self.navigation.setCurrentRow(0)
         self.search_box.clear()
@@ -452,9 +467,22 @@ class StudioWindow(QMainWindow):
             self.btn_theme_toggle.setText("☀️ Light")
 
     def _handle_dashboard_navigate(self, target: int):
-        mapping = {1: 12, 2: 11, 3: 6, 4: 10, 5: 13, 6: 14}
-        dest = mapping.get(target, 0)
+        mapping = {1: 12, 2: 11, 3: 6, 4: 10, 5: 13, 6: 14, 15: 15}
+        dest = mapping.get(target, 15 if target == 15 else 0)
         self.navigation.setCurrentRow(dest)
+
+    def _create_header_design(self):
+        active_ws_id = self.workspace_selector.currentData() if self.workspace_selector.count() > 0 else "default"
+        dlg = NewEngineeringDesignDialog(self.service, current_workspace_id=active_ws_id, parent=self)
+        dlg.design_created.connect(self._on_design_created_from_dialog)
+        dlg.exec()
+
+    def _on_design_created_from_dialog(self, design_id: str):
+        self.navigation.setCurrentRow(15)  # Switch to Design Studio
+        self.design_studio.refresh_designs()
+        if self.design_studio.combo_designs.findData(design_id) != -1:
+            idx = self.design_studio.combo_designs.findData(design_id)
+            self.design_studio.combo_designs.setCurrentIndex(idx)
 
     def _handle_overview_navigate(self, target_name: str):
         mapping = {
