@@ -18,17 +18,10 @@ from .research_adapters import (
     MagNetMLBenchmarksAdapter,
     MagNetPrincetonAdapter,
 )
-from .commercial_stubs import (
-    PLECSAdapter,
-    MATLABAdapter,
-    AnsysMaxwellAdapter,
-    AnsysIcepakAdapter,
-    SolidWorksAdapter,
-)
 
 
 class ToolRegistry:
-    """Unified registry for all 18 team-approved engineering tools, datasets, and platforms."""
+    """Registry for currently supported engineering tools, datasets, and platforms."""
 
     def __init__(self):
         self._adapters: Dict[str, ToolAdapter] = {}
@@ -52,12 +45,6 @@ class ToolRegistry:
         self.register(MagNetMLBenchmarksAdapter())
         self.register(MagNetPrincetonAdapter())
 
-        # 3. Optional Commercial Platforms (License-gated stubs)
-        self.register(PLECSAdapter())
-        self.register(MATLABAdapter())
-        self.register(AnsysMaxwellAdapter())
-        self.register(AnsysIcepakAdapter())
-        self.register(SolidWorksAdapter())
 
     def register(self, adapter: ToolAdapter):
         tool_id = adapter.descriptor.tool_id

@@ -1,5 +1,14 @@
 # Architecture v0.1
 
+Current integration scope (11 November 2026): commercial license-gated PLECS,
+MATLAB/Simulink, Ansys Maxwell, Ansys Icepak and SolidWorks integrations are retired.
+Their adapters, registry entries and desktop inventory/filter controls are removed.
+The shared catalog contains 13 retained tools/research resources; the dashboard also
+includes the existing optional ngspice adapter (14 rows). Existing settings, jobs,
+reports and evidence are preserved for historical traceability. Retired tool IDs
+cannot be configured or executed through the current service. Reintroduction needs
+an explicit implementation change; old saved settings do not reactivate a connector.
+
 The final foundation addendum in the supplied master guide governs scope. The filename says v1.3 but internal document control ends at v1.2. Earlier enterprise scope and embedded agent task briefs are reference material; the user assigns the entire application to this implementation.
 
 `mendex_core` owns typed contracts, SQLite persistence, migrations and application services. `mendex_ui` consumes those services in-process. CLI commands use the same services. No UI business rules or second database.

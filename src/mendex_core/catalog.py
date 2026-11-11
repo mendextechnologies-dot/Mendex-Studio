@@ -9,8 +9,8 @@ from .integration_contracts import ToolDescriptor, ToolHealth, ToolState
 def descriptors():
     entries = json.loads(files("mendex_core.config").joinpath("integration_catalog.json").read_text(encoding="utf-8"))
     result = [ToolDescriptor.model_validate(entry) for entry in entries]
-    if len(result) != 18 or len({entry.tool_id for entry in result}) != 18:
-        raise ValueError("Expected the exact 18-entry approved inventory")
+    if len(result) != len({entry.tool_id for entry in result}):
+        raise ValueError("Integration catalog contains duplicate tool IDs")
     return {entry.tool_id: entry for entry in result}
 
 

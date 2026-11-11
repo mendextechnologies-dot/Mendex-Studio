@@ -22,7 +22,7 @@ from .waveform_viewer import WaveformViewerWidget
 
 
 # -----------------------------------------------------------------------------
-# 18 Team-Approved Resources + Additional Native Integrations (19 Total)
+# Supported engineering resources plus the optional ngspice adapter
 # -----------------------------------------------------------------------------
 INVENTORY_DEFINITIONS = [
     # 1. SwitchLossDB
@@ -130,66 +130,6 @@ INVENTORY_DEFINITIONS = [
         "last_verification": "Verified Batch RC Simulation (2.75 µV accuracy)",
         "nav_target": 3,
     },
-    # 8. PLECS
-    {
-        "id": "plecs",
-        "name": "PLECS Standalone",
-        "category": "Commercial integrations",
-        "type": "application",
-        "install_status": "LICENSE REQUIRED",
-        "status": "LICENSE REQUIRED",
-        "version": "—",
-        "license": "Commercial Proprietary (Plexim)",
-        "capabilities": "simulate_converter, thermal_loss_calculation",
-        "location": "License review reference required",
-        "last_verification": "Unlicensed Stub; Awaiting License Reference",
-        "nav_target": 2,
-    },
-    # 9. MATLAB / Simulink
-    {
-        "id": "matlab-simulink",
-        "name": "MATLAB / Simulink",
-        "category": "Commercial integrations",
-        "type": "application",
-        "install_status": "LICENSE REQUIRED",
-        "status": "LICENSE REQUIRED",
-        "version": "—",
-        "license": "Commercial Proprietary (MathWorks)",
-        "capabilities": "run_m_script, simulate_simulink",
-        "location": "License review reference required",
-        "last_verification": "Unlicensed Stub; Awaiting License Reference",
-        "nav_target": 2,
-    },
-    # 10. Ansys Maxwell
-    {
-        "id": "ansys-maxwell",
-        "name": "Ansys Maxwell",
-        "category": "Commercial integrations",
-        "type": "application",
-        "install_status": "LICENSE REQUIRED",
-        "status": "LICENSE REQUIRED",
-        "version": "—",
-        "license": "Commercial Proprietary (Ansys)",
-        "capabilities": "solve_3d_em_field, core_loss_extraction",
-        "location": "License review reference required",
-        "last_verification": "Unlicensed Stub; Awaiting License Reference",
-        "nav_target": 2,
-    },
-    # 11. Ansys Icepak
-    {
-        "id": "ansys-icepak",
-        "name": "Ansys Icepak",
-        "category": "Commercial integrations",
-        "type": "application",
-        "install_status": "LICENSE REQUIRED",
-        "status": "LICENSE REQUIRED",
-        "version": "—",
-        "license": "Commercial Proprietary (Ansys)",
-        "capabilities": "thermal_cfd_simulation, junction_temperature_solve",
-        "location": "License review reference required",
-        "last_verification": "Unlicensed Stub; Awaiting License Reference",
-        "nav_target": 2,
-    },
     # 12. FreeCAD
     {
         "id": "freecad",
@@ -280,21 +220,6 @@ INVENTORY_DEFINITIONS = [
         "last_verification": "Verified Status & Revision Queries",
         "nav_target": 2,
     },
-    # 18. SolidWorks
-    {
-        "id": "solidworks",
-        "name": "SolidWorks",
-        "category": "Commercial integrations",
-        "type": "application",
-        "install_status": "LICENSE REQUIRED",
-        "status": "LICENSE REQUIRED",
-        "version": "—",
-        "license": "Commercial Proprietary (Dassault)",
-        "capabilities": "export_step, mechanical_clearance_check",
-        "location": "License review reference required",
-        "last_verification": "Unlicensed Stub; Awaiting License Reference",
-        "nav_target": 2,
-    },
     # Discovered Native Addition: ngspice
     {
         "id": "ngspice",
@@ -339,7 +264,7 @@ class EnterpriseDashboardPanel(QWidget):
         title_box = QVBoxLayout()
         title = QLabel("Engineering Operations Dashboard")
         title.setStyleSheet("font-size: 20px; font-weight: 700; color: #cdd6f4;")
-        subtitle = QLabel("Complete 18-Resource Integration Ecosystem & Operational Health")
+        subtitle = QLabel("Engineering Tools & Resource Health")
         subtitle.setStyleSheet("font-size: 11px; color: #a6adc8;")
         title_box.addWidget(title)
         title_box.addWidget(subtitle)
@@ -355,10 +280,10 @@ class EnterpriseDashboardPanel(QWidget):
         kpi_layout = QHBoxLayout()
         kpi_layout.setSpacing(14)
 
-        self.card_workspaces = self._create_kpi_card("ACTIVE WORKSPACES", "0", "General-purpose workspaces")
-        self.card_operational = self._create_kpi_card("VERIFIED OPERATIONAL", "4 / 19", "Automated validation passing")
-        self.card_installed = self._create_kpi_card("INSTALLED ON HOST", "10 / 19", "Native executables discovered")
-        self.card_inventory = self._create_kpi_card("ECOSYSTEM INVENTORY", "19 Resources", "18 Approved + ngspice")
+        self.card_workspaces = self._create_kpi_card("ACTIVE PROJECTS", "0", "Authoritative engineering projects")
+        self.card_operational = self._create_kpi_card("VERIFIED OPERATIONAL", f"0 / {len(INVENTORY_DEFINITIONS)}", "Automated validation passing")
+        self.card_installed = self._create_kpi_card("INSTALLED ON HOST", f"0 / {len(INVENTORY_DEFINITIONS)}", "Native executables discovered")
+        self.card_inventory = self._create_kpi_card("ECOSYSTEM INVENTORY", f"{len(INVENTORY_DEFINITIONS)} Resources", "Current integration inventory")
         self.card_tools = self.card_operational  # Backwards compatibility reference
 
         kpi_layout.addWidget(self.card_workspaces)
@@ -366,43 +291,6 @@ class EnterpriseDashboardPanel(QWidget):
         kpi_layout.addWidget(self.card_installed)
         kpi_layout.addWidget(self.card_inventory)
         layout.addLayout(kpi_layout)
-
-        # Quick Engineering Action Bar
-        action_frame = QFrame()
-        action_frame.setProperty("class", "card_surface")
-        action_layout = QHBoxLayout(action_frame)
-        action_layout.addWidget(QLabel("Quick Actions:"))
-
-        btn_new_design = QPushButton("➕ New Engineering Design")
-        btn_new_design.setStyleSheet(
-            "background-color: #89b4fa; color: #11111b; font-weight: 700; padding: 6px 14px; border-radius: 4px;"
-        )
-        btn_new_design.clicked.connect(self._open_new_design_dialog)
-        action_layout.addWidget(btn_new_design)
-
-        btn_new_ws = QPushButton("+ New Workspace")
-        btn_new_ws.setProperty("class", "primary_btn")
-        btn_new_ws.clicked.connect(lambda: self.navigate_requested.emit(1))
-        action_layout.addWidget(btn_new_ws)
-
-        btn_run_sim = QPushButton("Launch Simulation Lab")
-        btn_run_sim.clicked.connect(lambda: self.navigate_requested.emit(3))
-        action_layout.addWidget(btn_run_sim)
-
-        btn_tools = QPushButton("Manage Tool Center")
-        btn_tools.clicked.connect(lambda: self.navigate_requested.emit(2))
-        action_layout.addWidget(btn_tools)
-
-        btn_ai = QPushButton("Ask AI Assistant")
-        btn_ai.clicked.connect(lambda: self.navigate_requested.emit(4))
-        action_layout.addWidget(btn_ai)
-
-        btn_research = QPushButton("Explore Research Datasets")
-        btn_research.clicked.connect(lambda: self.navigate_requested.emit(5))
-        action_layout.addWidget(btn_research)
-
-        action_layout.addStretch()
-        layout.addWidget(action_frame)
 
         # Main Split Content: Complete Ecosystem Inventory & Recent Jobs
         content_split = QSplitter(Qt.Horizontal)
@@ -420,21 +308,20 @@ class EnterpriseDashboardPanel(QWidget):
         table_top_box.addWidget(table_title)
         table_top_box.addStretch()
 
-        self.inventory_badge = QLabel("18 Approved + ngspice (19 Total)")
+        self.inventory_badge = QLabel(f"{len(INVENTORY_DEFINITIONS)} Resources")
         self.inventory_badge.setStyleSheet("background: #313244; color: #a6e3a1; font-weight: 600; padding: 2px 8px; border-radius: 4px; font-size: 11px;")
         table_top_box.addWidget(self.inventory_badge)
         left_layout.addLayout(table_top_box)
 
-        # Scope Tabs separating executable solvers, research datasets, and commercial tools
+        # Scope tabs for executable tools and research datasets
         self.scope_bar = QHBoxLayout()
         self.scope_bar.setSpacing(6)
         self.scope_btns = []
         for s_idx, s_title in enumerate([
-            "All Resources (19)",
+            f"All Resources ({len(INVENTORY_DEFINITIONS)})",
             "Simulation Solvers & CAD (7)",
             "Frameworks & Dev (3)",
             "Research Datasets & Benchmarks (4)",
-            "Commercial Stubs (5)",
         ]):
             btn = QPushButton(s_title)
             btn.setCheckable(True)
@@ -457,14 +344,13 @@ class EnterpriseDashboardPanel(QWidget):
 
         self.category_filter = QComboBox()
         self.category_filter.addItems([
-            "All Categories (19)",
+            f"All Categories ({len(INVENTORY_DEFINITIONS)})",
             "Simulation Solvers",
             "CAD and PCB Tools",
             "Engineering Frameworks",
             "Development Tools",
             "Research Datasets",
             "Benchmark Resources",
-            "Commercial Integrations",
         ])
         self.category_filter.currentIndexChanged.connect(self._apply_filters)
         filter_bar.addWidget(self.category_filter, 1)
@@ -475,7 +361,6 @@ class EnterpriseDashboardPanel(QWidget):
             "VERIFIED OPERATIONAL",
             "INSTALLED — NOT VALIDATED",
             "REGISTERED ONLY",
-            "LICENSE REQUIRED",
         ])
         self.status_filter.currentIndexChanged.connect(self._apply_filters)
         filter_bar.addWidget(self.status_filter, 1)
@@ -538,15 +423,6 @@ class EnterpriseDashboardPanel(QWidget):
             btn.setChecked(i == idx)
         self._apply_filters()
 
-    def _open_new_design_dialog(self):
-        try:
-            from .design_studio_panel import NewEngineeringDesignDialog
-            dlg = NewEngineeringDesignDialog(self.service, parent=self)
-            dlg.design_created.connect(lambda d_id: self.navigate_requested.emit(15))
-            dlg.exec()
-        except Exception as exc:
-            from PySide6.QtWidgets import QMessageBox
-            QMessageBox.critical(self, "Error", f"Could not open New Engineering Design wizard:\n{exc}")
 
     def refresh_metrics(self):
         try:
@@ -557,7 +433,7 @@ class EnterpriseDashboardPanel(QWidget):
                 if isinstance(child, QLabel) and child.property("class") == "metric_value":
                     child.setText(str(len(workspaces)))
 
-            # Populate 18 approved resources + ngspice
+            # Populate supported resources
             self._all_inventory_rows = []
             operational_count = 0
             installed_count = 0
@@ -587,9 +463,24 @@ class EnterpriseDashboardPanel(QWidget):
                         row_data["install_status"] = "INSTALLED"
                         installed_count += 1
 
-                # Operational status check
-                if row_data["status"] == "VERIFIED OPERATIONAL":
+                # Operational status check: derive from verified health state (F10)
+                is_ready = False
+                try:
+                    h_stat = self.service.integrations.verify(tid)
+                    st_val = h_stat.state.value if hasattr(h_stat.state, "value") else str(h_stat.state)
+                    if st_val == "READY" and len(getattr(h_stat, "verified_operations", [])) > 0:
+                        is_ready = True
+                except Exception:
+                    pass
+
+                if is_ready:
+                    row_data["status"] = "VERIFIED OPERATIONAL"
                     operational_count += 1
+                else:
+                    if row_data.get("install_status") == "INSTALLED":
+                        row_data["status"] = "INSTALLED (NOT VERIFIED)"
+                    else:
+                        row_data["status"] = "NOT EVALUATED"
 
                 self._all_inventory_rows.append(row_data)
 
@@ -638,11 +529,6 @@ class EnterpriseDashboardPanel(QWidget):
                 # Research Datasets & Benchmarks
                 if r["category"] not in ("Research datasets", "Benchmark resources"):
                     continue
-            elif self._current_scope_idx == 4:
-                # Commercial Stubs
-                if r["category"] != "Commercial integrations":
-                    continue
-
             # Category Combo match
             if not selected_cat.startswith("All Categories") and r["category"].lower() != selected_cat.lower():
                 continue
@@ -698,7 +584,7 @@ class EnterpriseDashboardPanel(QWidget):
         name = self.tools_table.item(row, 0).text()
         for r in self._all_inventory_rows:
             if r["name"] == name:
-                target = r.get("nav_target", 2)
+                target = 3 if r["type"] in ("dataset", "benchmark", "research_resource") else 4
                 self.navigate_requested.emit(target)
                 break
 
@@ -1036,358 +922,6 @@ class SimulationLabPanel(QWidget):
                             break
         if not loaded and st != "SUCCEEDED":
             self.waveform_viewer.clear()
-
-
-class AIAssistantPanel(QWidget):
-    """Contextual AI Assistant for engineering calculation, model formulation, and error diagnosis."""
-    navigate_requested = Signal(int)
-
-    def __init__(self, service: StudioService, parent=None):
-        super().__init__(parent)
-        self.service = service
-        self._current_worker = None
-        self.init_ui()
-
-    def init_ui(self):
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(12, 12, 12, 12)
-        main_layout.setSpacing(8)
-
-        # Header Banner
-        header = QHBoxLayout()
-        header.setSpacing(10)
-        if SHIELD_TRANSPARENT_PATH.exists():
-            ai_logo = QLabel()
-            ai_logo.setPixmap(QPixmap(str(SHIELD_TRANSPARENT_PATH)).scaled(26, 26, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            header.addWidget(ai_logo)
-        title = QLabel("AI Engineering Assistant")
-        title.setStyleSheet("font-size: 16px; font-weight: 700; color: #89b4fa;")
-        header.addWidget(title)
-        self.badge = QLabel("Context: Active Workspace & Verified Solvers")
-        self.badge.setProperty("class", "badge_ready")
-        header.addWidget(self.badge)
-        header.addStretch()
-
-        btn_copy_all = QPushButton("📋 Copy Chat")
-        btn_copy_all.setStyleSheet("background-color: #313244; color: #cdd6f4; padding: 4px 10px; border-radius: 4px; font-size: 11px;")
-        btn_copy_all.clicked.connect(self._copy_chat_history)
-        header.addWidget(btn_copy_all)
-
-        btn_clear = QPushButton("🧹 Clear")
-        btn_clear.setStyleSheet("background-color: #313244; color: #f38ba8; padding: 4px 10px; border-radius: 4px; font-size: 11px;")
-        btn_clear.clicked.connect(self._clear_chat)
-        header.addWidget(btn_clear)
-
-        btn_api_key = QPushButton("⚙️ Configure API Key")
-        btn_api_key.setStyleSheet("background-color: #313244; color: #89b4fa; font-weight: 700; padding: 4px 12px; border-radius: 4px;")
-        btn_api_key.clicked.connect(self._open_api_key_dialog)
-        header.addWidget(btn_api_key)
-
-        main_layout.addLayout(header)
-        self.refresh_badge()
-
-        # Splitter: Left (Interactive Chat Stream) vs Right (Live Parameter Sandbox)
-        self.splitter = QSplitter(Qt.Horizontal)
-
-        # Left Container (Chat & Input)
-        chat_container = QWidget()
-        chat_layout = QVBoxLayout(chat_container)
-        chat_layout.setContentsMargins(0, 0, 0, 0)
-        chat_layout.setSpacing(8)
-
-        # Interactive Chat History (QTextBrowser supporting rich HTML & action anchors)
-        self.history = QTextBrowser()
-        self.history.setOpenExternalLinks(False)
-        self.history.anchorClicked.connect(self._handle_action_anchor)
-        self.history.setStyleSheet("""
-            QTextBrowser {
-                background-color: #181825;
-                color: #cdd6f4;
-                border: 1px solid #313244;
-                border-radius: 6px;
-                padding: 12px;
-                font-family: 'Segoe UI', system-ui, sans-serif;
-                font-size: 13px;
-            }
-        """)
-        self._load_initial_welcome()
-        chat_layout.addWidget(self.history, 1)
-
-        # Status / Typing Indicator Label
-        self.lbl_typing = QLabel("")
-        self.lbl_typing.setStyleSheet("color: #89b4fa; font-size: 11px; font-style: italic; padding: 2px 4px;")
-        self.lbl_typing.setVisible(False)
-        chat_layout.addWidget(self.lbl_typing)
-
-        # Quick Suggestion Chips (Dynamic)
-        self.chips_widget = QWidget()
-        self.chips_layout = QHBoxLayout(self.chips_widget)
-        self.chips_layout.setContentsMargins(0, 0, 0, 0)
-        self.chips_layout.setSpacing(6)
-        self._update_suggestion_chips("initial")
-        chat_layout.addWidget(self.chips_widget)
-
-        # Input Bar
-        input_layout = QHBoxLayout()
-        input_layout.setSpacing(6)
-        self.prompt_input = QLineEdit()
-        self.prompt_input.setPlaceholderText("Ask a question about your active circuit, transformer, or simulation...")
-        self.prompt_input.setStyleSheet("padding: 7px 10px; font-size: 13px; background: #11111b; border: 1px solid #313244; border-radius: 4px; color: #cdd6f4;")
-        self.prompt_input.returnPressed.connect(self.on_send)
-        input_layout.addWidget(self.prompt_input, 1)
-
-        self.btn_send = QPushButton("Send")
-        self.btn_send.setProperty("class", "primary_btn")
-        self.btn_send.setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: 700; padding: 7px 18px; border-radius: 4px;")
-        self.btn_send.clicked.connect(self.on_send)
-        input_layout.addWidget(self.btn_send)
-
-        chat_layout.addLayout(input_layout)
-        self.splitter.addWidget(chat_container)
-
-        # Right Container: Live Parameter Sandbox & Solver Bridge
-        from .ai_interactive import InteractiveParameterSandboxWidget
-        self.sandbox = InteractiveParameterSandboxWidget(self)
-        self.sandbox.ask_ai_requested.connect(self.send_prompt)
-        self.sandbox.simulate_requested.connect(self._handle_sandbox_simulate)
-        self.sandbox.create_design_requested.connect(self._handle_sandbox_create_candidate)
-        self.splitter.addWidget(self.sandbox)
-
-        # 60% chat, 40% sandbox
-        self.splitter.setStretchFactor(0, 3)
-        self.splitter.setStretchFactor(1, 2)
-        main_layout.addWidget(self.splitter, 1)
-
-    def _load_initial_welcome(self):
-        welcome_html = (
-            '<div style="background: #1e1e2e; border: 1px solid #313244; border-radius: 8px; padding: 14px 18px; margin-bottom: 12px;">'
-            '<div style="font-size: 14px; font-weight: bold; color: #89b4fa; margin-bottom: 6px;">⚡ Welcome to Mendex Engineering AI Assistant</div>'
-            '<div style="color: #a6adc8; line-height: 1.5; font-size: 12.5px;">'
-            'I can assist you with power electronics topology tradeoffs, transformer magnetic sizing, SPICE simulation debugging, and OpenModelica formulations.<br><br>'
-            '• <b>Interactive Formatting:</b> LaTeX formulas, circuit diagrams, and calculation parameters are formatted live.<br>'
-            '• <b>Live Parameter Sandbox:</b> Use the panel on the right to adjust parameters in real-time and observe CCM/DCM boundary transitions.<br>'
-            '• <b>Direct Studio Actions:</b> Click the embedded action buttons inside responses to simulate in LTspice, open KiCad, or create design candidates.'
-            '</div></div>'
-        )
-        self.history.setHtml(welcome_html)
-
-    def _update_suggestion_chips(self, context: str):
-        while self.chips_layout.count():
-            item = self.chips_layout.takeAt(0)
-            widget = item.widget()
-            if widget:
-                widget.deleteLater()
-
-        lower = context.lower()
-        if "flyback" in lower or "dcm" in lower or "ccm" in lower:
-            chips = [
-                ("📐 Compute CCM/DCM Boundary", "Compute the critical boundary inductance L_crit for 24V to 12V Flyback"),
-                ("⚡ Minimize Peak MOSFET Current", "How can I reduce peak MOSFET turn-off stress in DCM operation?"),
-                ("🧲 DCM Transformer Core Sizing", "How does operating in DCM impact core geometry and saturation flux density?"),
-                ("📊 CCM vs DCM Conduction Loss", "Compare conduction and core losses between CCM and DCM modes"),
-            ]
-        elif "buck" in lower:
-            chips = [
-                ("📐 Size LC Filter for <1% Ripple", "Size output inductor and capacitor for 24V to 5V 5A Buck with <1% ripple"),
-                ("⚡ Inductor Ripple Ratio (r=0.4)", "What are the trade-offs of choosing inductor ripple ratio r=0.4 vs r=0.2 in Buck?"),
-                ("🔬 SiC vs Si MOSFET Loss in Buck", "Evaluate switching and conduction loss between Si and SiC MOSFETs at 200kHz"),
-                ("🏃 Buck Transient Load Step", "How to optimize loop compensation for 50% load step transient response?"),
-            ]
-        elif "dowell" in lower or "winding" in lower or "skin" in lower:
-            chips = [
-                ("🧲 Calculate Dowell AC Factor", "Calculate Transformer Dowell AC Factor for 2 layers at 100kHz"),
-                ("⚡ Foil vs Round Wire at 100kHz", "Compare AC resistance between copper foil and stranded round wire at 100kHz"),
-                ("📐 Winding Interleaving Strategy", "Explain how primary-secondary interleaving reduces Dowell proximity factor m"),
-                ("🔬 Steinmetz MagNet Core Loss", "Estimate Steinmetz core loss parameters using MagNet dataset curves"),
-            ]
-        else:
-            chips = [
-                ("📐 Flyback CCM vs DCM Boundary", "What is the difference between CCM and DCM in a Flyback converter?"),
-                ("🧲 Calculate Transformer Dowell Factor", "Calculate Transformer Dowell AC Factor"),
-                ("⚡ Size Buck Converter Output Filter", "How to size the inductor and output capacitor for a 24V to 5V Buck?"),
-                ("🔬 Lookup SiC MOSFET Switching Loss", "Lookup SiC MOSFET Switching Loss in SwitchLossDB"),
-            ]
-
-        for chip_title, chip_prompt in chips:
-            btn = QPushButton(chip_title)
-            btn.setStyleSheet("""
-                QPushButton {
-                    background-color: #1e1e2e;
-                    color: #cdd6f4;
-                    border: 1px solid #313244;
-                    border-radius: 4px;
-                    padding: 4px 10px;
-                    font-size: 11px;
-                    font-weight: 500;
-                }
-                QPushButton:hover {
-                    background-color: #313244;
-                    color: #89b4fa;
-                    border-color: #89b4fa;
-                }
-            """)
-            btn.clicked.connect(lambda _, p=chip_prompt: self.send_prompt(p))
-            self.chips_layout.addWidget(btn)
-
-        self.chips_layout.addStretch()
-
-    def on_send(self):
-        text = self.prompt_input.text().strip()
-        if text:
-            self.send_prompt(text)
-
-    def send_prompt(self, text: str):
-        if not text.strip():
-            return
-        escaped_user = html.escape(text).replace("\n", "<br>")
-        user_bubble = (
-            f'<div style="margin: 10px 0; text-align: right;">'
-            f'<div style="display: inline-block; background: #313244; color: #cdd6f4; border: 1px solid #45475a; '
-            f'border-radius: 12px 12px 2px 12px; padding: 10px 16px; max-width: 80%; text-align: left; font-size: 13px;">'
-            f'<div style="font-size: 11px; font-weight: bold; color: #89b4fa; margin-bottom: 4px;">👤 Lead Engineer</div>'
-            f'{escaped_user}'
-            f'</div></div>'
-        )
-        self.history.append(user_bubble)
-        self.prompt_input.clear()
-
-        # Update suggestion chips
-        self._update_suggestion_chips(text)
-
-        # Synchronize sandbox topology if relevant
-        lower = text.lower()
-        if "flyback" in lower or "dcm" in lower or "ccm" in lower:
-            self.sandbox.select_mode("flyback")
-        elif "buck" in lower:
-            self.sandbox.select_mode("buck")
-        elif "dowell" in lower or "skin" in lower or "winding" in lower:
-            self.sandbox.select_mode("dowell")
-
-        # Show typing indicator
-        provider_name = "AI Copilot"
-        try:
-            backend = self.service.intelligence.models.get_backend()
-            provider_name = f"{backend.provider_id.upper()} ({backend.model_name})"
-        except Exception:
-            pass
-
-        self.lbl_typing.setText(f"⏳ <b>{provider_name}</b> is analyzing engineering formulas and calculating parameters...")
-        self.lbl_typing.setVisible(True)
-        self.btn_send.setEnabled(False)
-
-        # Launch async query worker
-        from .ai_interactive import AIQueryWorker
-        self._current_worker = AIQueryWorker(self.service, text)
-        self._current_worker.response_ready.connect(self._on_ai_response_ready)
-        self._current_worker.error_occurred.connect(self._on_ai_error)
-        self._current_worker.start()
-
-    def _on_ai_response_ready(self, res: dict):
-        self.lbl_typing.setVisible(False)
-        self.btn_send.setEnabled(True)
-
-        from .ai_interactive import format_engineering_markdown, build_interactive_actions_html
-
-        provider = res.get("provider", "AI Assistant")
-        model = res.get("model", "")
-        raw_reply = res.get("reply", "")
-
-        formatted_reply = format_engineering_markdown(raw_reply)
-        actions_html = build_interactive_actions_html(raw_reply + " " + res.get("query", ""))
-
-        recs_html = ""
-        if res.get("recommendations"):
-            recs_html = '<div style="margin-top:10px; background:#11111b; border:1px solid #313244; border-radius:4px; padding:8px 12px;"><b style="color:#a6e3a1; font-size:11.5px;">Recommended Engineering Solvers:</b><ul style="margin:4px 0 2px 0; padding-left:18px;">'
-            for rec in res["recommendations"]:
-                recs_html += f'<li style="margin-bottom:3px;"><b style="color:#cdd6f4;">{rec["headline"]}</b> <span style="background:#313244; color:#89b4fa; padding:1px 5px; border-radius:3px; font-size:10px;">[{rec["target_tool_or_module"].upper()}]</span>: <span style="color:#a6adc8;">{rec["description"]}</span></li>'
-            recs_html += "</ul></div>"
-
-        ai_bubble = (
-            f'<div style="margin: 12px 0; text-align: left;">'
-            f'<div style="display: inline-block; background: #1e1e2e; color: #cdd6f4; border: 1px solid #313244; '
-            f'border-radius: 12px 12px 12px 2px; padding: 12px 18px; max-width: 95%; font-size: 13px; line-height: 1.5;">'
-            f'<div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: #89b4fa; border-bottom: 1px solid #313244; padding-bottom: 6px; margin-bottom: 8px;">'
-            f'<span>🤖 {provider} ({model})</span>'
-            f'<span style="color: #a6e3a1; font-weight: 600;">● Verified Engineering Intelligence</span>'
-            f'</div>'
-            f'{formatted_reply}'
-            f'{recs_html}'
-            f'{actions_html}'
-            f'</div></div>'
-        )
-        self.history.append(ai_bubble)
-        self.refresh_badge()
-
-    def _on_ai_error(self, err: str):
-        self.lbl_typing.setVisible(False)
-        self.btn_send.setEnabled(True)
-        err_bubble = (
-            f'<div style="margin: 10px 0; background: #3e1f2b; color: #f38ba8; border: 1px solid #f38ba8; '
-            f'border-radius: 6px; padding: 10px 14px; font-size: 12px;">'
-            f'<b>Error:</b> {html.escape(err)}'
-            f'</div>'
-        )
-        self.history.append(err_bubble)
-
-    def _handle_action_anchor(self, url):
-        act = url.toString()
-        if act.startswith("action:"):
-            target = act[len("action:"):]
-            if target == "launch_ltspice":
-                self.navigate_requested.emit(15)
-            elif target == "open_design_studio":
-                self.navigate_requested.emit(15)
-            elif target == "open_kicad":
-                self.navigate_requested.emit(5)
-            elif target == "open_femm":
-                self.navigate_requested.emit(2)
-            elif target == "open_datasets":
-                self.navigate_requested.emit(13)
-            elif target == "sandbox_flyback":
-                self.sandbox.select_mode("flyback")
-            elif target == "sandbox_buck":
-                self.sandbox.select_mode("buck")
-            elif target == "sandbox_dowell":
-                self.sandbox.select_mode("dowell")
-
-    def _handle_sandbox_simulate(self, params: dict):
-        self.send_prompt(f"Simulate this {params.get('topology', 'circuit')} design in LTspice with Vin={params.get('vin_v', 24)}V, Vout={params.get('vout_v', 12)}V")
-        self.navigate_requested.emit(15)
-
-    def _handle_sandbox_create_candidate(self, params: dict):
-        self.send_prompt(f"Synthesize an engineering candidate for {params.get('topology')} with Vin={params.get('vin_nom_v', 24)}V, Vout={params.get('vout_nom_v', 12)}V")
-        self.navigate_requested.emit(15)
-
-    def _copy_chat_history(self):
-        from PySide6.QtGui import QGuiApplication
-        clip = QGuiApplication.clipboard()
-        if clip:
-            clip.setText(self.history.toPlainText())
-            QMessageBox.information(self, "Chat Copied", "Conversation copied to system clipboard.")
-
-    def _clear_chat(self):
-        self.history.clear()
-        self._load_initial_welcome()
-
-    def refresh_badge(self):
-        try:
-            from mendex_core.ai.config import load_ai_config
-            cfg = load_ai_config(getattr(self.service, "root", None))
-            if cfg.api_key and cfg.provider in ("gemini", "openai"):
-                prov_str = cfg.provider.upper()
-                self.badge.setText(f"Connected: {prov_str} ({cfg.model})")
-                self.badge.setStyleSheet("background: #1e3a5f; color: #89b4fa; font-weight: 700; padding: 4px 10px; border-radius: 4px; font-size: 11px; border: 1px solid #3b82f6;")
-            else:
-                self.badge.setText("Active: Local Engineering Rules (Offline)")
-                self.badge.setStyleSheet("background: #1e3a2f; color: #a6e3a1; font-weight: 600; padding: 4px 10px; border-radius: 4px; font-size: 11px;")
-        except Exception:
-            self.badge.setText("Context: Active Workspace & Verified Solvers")
-
-    def _open_api_key_dialog(self):
-        from .ai_config_dialog import AIKeySetupDialog
-        dlg = AIKeySetupDialog(self.service.root, self)
-        dlg.exec()
-        self.refresh_badge()
 
 
 class ResearchCenterPanel(QWidget):

@@ -1,5 +1,10 @@
 # Application service contract v0.1
 
+Integration scope update (11 November 2026): PLECS, MATLAB/Simulink, Ansys Maxwell,
+Ansys Icepak and SolidWorks are no longer registered. Shared catalog/discovery APIs
+exclude these five tools; configuring/verifying a retired ID returns NOT_FOUND.
+Historical persisted records are retained, with no destructive database migration.
+
 Canonical Pydantic models: `src/mendex_core/models.py`, `src/mendex_core/evidence.py` and `src/mendex_core/adapters/registry.py`. Generated JSON schemas and an illustrative payload live here. UI and CLI use `StudioService(root)`.
 
 Day 1 operations: create_product(code, name, category, owner, description), list_products(), get_product(id), get_revision(id), list_revisions(product_id), update_specification(revision_id, Specification), create_revision(product_id, label), create_workspace(revision_id), update_product(id, name, owner, description).
@@ -12,7 +17,7 @@ Tools expose discovery only; detected executables remain FOUND_UNVERIFIED. Windo
 
 The JSON-only plugin loader reads `<data-root>/.mendex/plugins/*.json`. PluginManifest and AdapterDefinition reject unknown fields, traversal and duplicate IDs; incompatible manifests are rejected atomically and reported to the UI. Plugins can extend discovery and engineering rules without editing the service, but cannot execute Python or grant approval. Packaged default rules carry versioned evidence requirements and report missing inputs/physical verification; they do not invent numerical acceptance thresholds.
 
-SimulationRun is now persisted by request_simulation(revision_id, tool_id). These availability requests snapshot the specification/hash and available tool version, remain NOT_SUPPORTED and never claim a solver started or produced artifacts. list_runs returns the actual history. AIRequest, AIResponse and AIService form a provider-neutral read-only contract. The default provider returns UNAVAILABLE without network calls, text advice or engineering outputs. Reports include rule assessments, plugin inventory and simulation request history and remain draft HTML + frozen JSON, never RELEASED.
+SimulationRun is now persisted by request_simulation(revision_id, tool_id). These availability requests snapshot the specification/hash and available tool version, remain NOT_SUPPORTED and never claim a solver started or produced artifacts. list_runs returns the actual history. AIRequest, AIResponse and AIService are **retired** (2026-11-11): Mendex Core contains no AI provider or copilot. AI coding agents operate Mendex only through the CLI and MCP server. The AIRequest/AIResponse schema files are kept as historical records and are no longer generated. Reports include rule assessments, plugin inventory and simulation request history and remain draft HTML + frozen JSON, never RELEASED.
 
 Day 3 operations: open_in_vscode(revision_id), open_project_file(revision_id, relative_path="."), open_report(report_id), diagnostics(), export_diagnostics(). Launching validates paths and uses a shell-free VS Code executable or Windows document associations. No model scripts or executable project files are launched. Doctor reads runtime/package/SQLite state and tool discovery without running solvers. framework_ready and workstation status are separate; exit 0 means core framework usable, not qualified engineering tools. Diagnostic exports contain environment paths but no product specifications or credentials.
 

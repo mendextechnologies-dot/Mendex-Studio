@@ -1,0 +1,11 @@
+=== Command: C:\Program Files\KiCad\10.0\bin\kicad-cli.exe pcb drc --output C:\Mendex studio\docs\v2.1-validation\evidence\native-kicad-drc\drc_report.json --format json C:\Mendex studio\docs\v2.1-validation\evidence\audit-data\workspaces\7db6e368-cc56-4429-98f4-7dd40a68c8d3\generated_artifacts\rev_1\kicad\independent_buck_reference.kicad_pcb ===
+=== Started: 2026-11-11T15:52:39.195887+00:00 ===
+=== Working Directory: C:\Mendex studio\docs\v2.1-validation\evidence\native-kicad-drc ===
+=== Exit Code: 0 ===
+
+--- STDOUT ---
+Found 10 violations
+Found 8 unconnected items
+Saved DRC Report to C:/Mendex studio/docs/v2.1-validation/evidence/native-kicad-drc/drc_report.json
+
+--- STDERR ---

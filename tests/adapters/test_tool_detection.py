@@ -4,15 +4,14 @@ from integrations.contracts import ToolState, ToolKind
 from integrations.adapters.registry import ToolRegistry
 
 
-def test_registry_contains_all_18_entries():
+def test_registry_contains_supported_entries():
     registry = ToolRegistry()
-    assert registry.count() == 18
+    assert registry.count() == 13
 
     expected_ids = {
         "ltspice", "python", "git", "kicad", "femm", "freecad",
         "qucs-s", "openmodelica", "jupyter", "switchlossdb",
         "magnet-dataset", "magnet-ml-benchmarks", "magnet-princeton",
-        "plecs", "matlab-simulink", "ansys-maxwell", "ansys-icepak", "solidworks",
     }
     registered_ids = {d.tool_id for d in registry.list_descriptors()}
     assert registered_ids == expected_ids
@@ -47,13 +46,3 @@ def test_missing_tools_never_false_ready():
         assert desc.state in (ToolState.READY, ToolState.DETECTED)
         assert desc.executable_path is not None
         assert Path(desc.executable_path).exists()
-
-
-def test_commercial_tools_are_unlicensed_stubs():
-    registry = ToolRegistry()
-    commercial_ids = ["plecs", "matlab-simulink", "ansys-maxwell", "ansys-icepak", "solidworks"]
-
-    for tool_id in commercial_ids:
-        desc = registry.get(tool_id).descriptor
-        assert desc.category == "optional"
-        assert desc.state in (ToolState.OPTIONAL_UNLICENSED, ToolState.DETECTED)

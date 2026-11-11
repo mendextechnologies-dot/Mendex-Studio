@@ -5,12 +5,13 @@ from pathlib import Path
 import sys
 
 from .integration_contracts import JobRequest
+from .paths import default_data_root
 from .service import StudioService, StudioError
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Mendex integration catalog and generic synthetic jobs")
-    parser.add_argument("--root", type=Path, default=Path.cwd())
+    parser.add_argument("--root", type=Path, default=None)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("catalog")
     commands.add_parser("workspaces")
@@ -30,7 +31,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     engine = None
     try:
-        engine = StudioService(args.root).integrations
+        engine = StudioService(args.root or default_data_root()).integrations
         if args.command == "catalog":
             value = [{"descriptor": item.model_dump(mode="json"), "health": engine.detect(item.tool_id).model_dump(mode="json")} for item in engine.list_tools()]
         elif args.command == "workspaces":

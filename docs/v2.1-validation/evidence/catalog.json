@@ -1,0 +1,532 @@
+[
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "switchlossdb",
+      "name": "SwitchLossDB",
+      "category": "dataset",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Canonical upstream identity, distribution and dataset terms remain unresolved; metadata registration only.",
+      "optional_paid": false,
+      "source_url": "https://github.com/IEEE-PELS/awesome-PELS-open-source-editors-pick",
+      "source_notes": "Inventory reference, not a verified dataset download. Agent 2 must resolve source/license before interpreting data.",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "switchlossdb",
+      "state": "DETECTED",
+      "version": "1.0-dataset",
+      "checked_at": "2026-11-11T14:42:57.578395Z",
+      "executable_path": null,
+      "diagnostic": "SwitchLossDB dataset interface ready for ingestion",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "magnet-dataset",
+      "name": "MagNet Dataset",
+      "category": "dataset",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Review the license accompanying the exact dataset release; no data is bundled.",
+      "optional_paid": false,
+      "source_url": "https://github.com/PrincetonUniversity/magnet",
+      "source_notes": "Related to the MagNet Princeton resource; separate inventory label, not a distinct installed application.",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "magnet-dataset",
+      "state": "DETECTED",
+      "version": "1.0-dataset",
+      "checked_at": "2026-11-11T14:42:57.579522Z",
+      "executable_path": null,
+      "diagnostic": "MagNet Dataset dataset interface ready for ingestion",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "magnet-ml-benchmarks",
+      "name": "MagNet ML Benchmarks",
+      "category": "benchmark",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Benchmark/code/data terms must be reviewed separately for the exact release.",
+      "optional_paid": false,
+      "source_url": "https://github.com/minjiechen/magnetchallenge",
+      "source_notes": "Research benchmark; no simulator executable or engineering readiness claim.",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "magnet-ml-benchmarks",
+      "state": "DETECTED",
+      "version": "1.0-dataset",
+      "checked_at": "2026-11-11T14:42:57.580341Z",
+      "executable_path": null,
+      "diagnostic": "MagNet ML Benchmarks dataset interface ready for ingestion",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "kicad",
+      "name": "KiCad",
+      "category": "application",
+      "supported_os": [
+        "Windows"
+      ],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Official source documents GPL program licensing and separate library/document terms; installed distribution review remains required.",
+      "optional_paid": false,
+      "source_url": "https://www.kicad.org/about/licenses/",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "kicad",
+      "state": "DETECTED",
+      "version": "10.0.7.51283",
+      "checked_at": "2026-11-11T14:42:57.595513Z",
+      "executable_path": "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+      "diagnostic": "Executable found at C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe (Version: 10.0.7.51283)",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "femm",
+      "name": "FEMM",
+      "category": "application",
+      "supported_os": [
+        "Windows"
+      ],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Review the exact FEMM distribution and automation binding terms.",
+      "optional_paid": false,
+      "source_url": "https://www.femm.info/",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "femm",
+      "state": "DETECTED",
+      "version": "1.0.0.1",
+      "checked_at": "2026-11-11T14:42:57.603840Z",
+      "executable_path": "C:\\femm42\\bin\\femm.exe",
+      "diagnostic": "Executable found at C:\\femm42\\bin\\femm.exe (Version: 1.0.0.1)",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "magnet-princeton",
+      "name": "MagNet (Princeton University)",
+      "category": "research_resource",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Research portal overlaps dataset/benchmark entries; review release-specific data and code terms.",
+      "optional_paid": false,
+      "source_url": "https://github.com/PrincetonUniversity/magnet",
+      "source_notes": "Related research resource, not an additional installable simulator.",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "magnet-princeton",
+      "state": "DETECTED",
+      "version": "1.0-dataset",
+      "checked_at": "2026-11-11T14:42:57.604596Z",
+      "executable_path": null,
+      "diagnostic": "MagNet (Princeton University) dataset interface ready for ingestion",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "ltspice",
+      "name": "LTspice",
+      "category": "application",
+      "supported_os": [
+        "Windows"
+      ],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Vendor software license and restrictions apply; no installer, models or executable is redistributed.",
+      "optional_paid": false,
+      "source_url": "https://www.analog.com/ltspice",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "ltspice",
+      "state": "DETECTED",
+      "version": "26.1.1.0",
+      "checked_at": "2026-11-11T14:42:57.605348Z",
+      "executable_path": "C:\\Program Files\\ADI\\LTspice\\LTspice.exe",
+      "diagnostic": "LTspice executable detected at C:\\Program Files\\ADI\\LTspice\\LTspice.exe",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "plecs",
+      "name": "PLECS",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Optional commercial integration. User-supplied valid license and verified installed-version operations required.",
+      "optional_paid": true,
+      "source_url": "https://www.plexim.com/plecs",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "plecs",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-11T14:42:57.605916Z",
+      "executable_path": null,
+      "diagnostic": "PLECS is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "matlab-simulink",
+      "name": "MATLAB / Simulink",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Optional commercial products/toolboxes. No license is purchased, stored or activated by Studio.",
+      "optional_paid": true,
+      "source_url": "https://www.mathworks.com/products/simulink.html",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "matlab-simulink",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-11T14:42:57.606423Z",
+      "executable_path": null,
+      "diagnostic": "MATLAB / Simulink is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "ansys-maxwell",
+      "name": "Ansys Maxwell",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Optional commercial integration; edition, automation and license entitlement require Agent 2 verification.",
+      "optional_paid": true,
+      "source_url": "https://www.ansys.com/products/electronics/ansys-maxwell",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "ansys-maxwell",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-11T14:42:57.606971Z",
+      "executable_path": null,
+      "diagnostic": "Ansys Maxwell is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "ansys-icepak",
+      "name": "Ansys Icepak",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Optional commercial thermal integration; installation is not license verification.",
+      "optional_paid": true,
+      "source_url": "https://www.ansys.com/products/electronics/ansys-icepak",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "ansys-icepak",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-11T14:42:57.607569Z",
+      "executable_path": null,
+      "diagnostic": "Ansys Icepak is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "freecad",
+      "name": "FreeCAD",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Review exact software/dependency distribution terms before redistribution; no binaries bundled.",
+      "optional_paid": false,
+      "source_url": "https://www.freecad.org/",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "freecad",
+      "state": "DETECTED",
+      "version": "1.1.4.0",
+      "checked_at": "2026-11-11T14:42:57.618661Z",
+      "executable_path": "C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe",
+      "diagnostic": "Executable found at C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe (Version: 1.1.4.0)",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "qucs-s",
+      "name": "Qucs-S",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Review exact Qucs-S and backend-simulator distribution licenses and supported operations.",
+      "optional_paid": false,
+      "source_url": "https://ra3xdh.github.io/",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "qucs-s",
+      "state": "DETECTED",
+      "version": "25.1.0",
+      "checked_at": "2026-11-11T14:42:57.631298Z",
+      "executable_path": "C:\\Users\\Sagar\\AppData\\Local\\Programs\\qucs-s\\bin\\qucs-s.exe",
+      "diagnostic": "Executable found at C:\\Users\\Sagar\\AppData\\Local\\Programs\\qucs-s\\bin\\qucs-s.exe",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "openmodelica",
+      "name": "OpenModelica",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Review exact OpenModelica distribution under its applicable OSMC/other stated license options.",
+      "optional_paid": false,
+      "source_url": "https://openmodelica.org/useresresources/license/",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "openmodelica",
+      "state": "DETECTED",
+      "version": "1.26.3",
+      "checked_at": "2026-11-11T14:42:57.642721Z",
+      "executable_path": "C:\\Program Files\\OpenModelica1.26.3-64bit\\bin\\omc.exe",
+      "diagnostic": "Executable found at C:\\Program Files\\OpenModelica1.26.3-64bit\\bin\\omc.exe",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "python",
+      "name": "Python",
+      "category": "runtime",
+      "supported_os": [
+        "Windows"
+      ],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Python is distributed under PSF and incorporated-software terms; installed runtime metadata is not connector verification.",
+      "optional_paid": false,
+      "source_url": "https://www.python.org/psf/license/",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "python",
+      "state": "DETECTED",
+      "version": "3.13.7",
+      "checked_at": "2026-11-11T14:42:57.643790Z",
+      "executable_path": "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "diagnostic": "Active Python interpreter at C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "jupyter",
+      "name": "Jupyter Notebook",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Project Jupyter describes modified-BSD licensing; verify installed notebook/kernel dependencies separately.",
+      "optional_paid": false,
+      "source_url": "https://jupyter.org/about",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "jupyter",
+      "state": "DETECTED",
+      "version": "7.0.0",
+      "checked_at": "2026-11-11T14:42:57.655058Z",
+      "executable_path": "C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+      "diagnostic": "Executable found at C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "git",
+      "name": "Git",
+      "category": "developer_tool",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Review the installed Git distribution's software/third-party notices; no executable bundled.",
+      "optional_paid": false,
+      "source_url": "https://git-scm.com/",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "git",
+      "state": "DETECTED",
+      "version": "2.45.2.windows.1",
+      "checked_at": "2026-11-11T14:42:57.655901Z",
+      "executable_path": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "diagnostic": "Git detected at C:\\Program Files\\Git\\cmd\\git.EXE",
+      "verified_operations": []
+    }
+  },
+  {
+    "descriptor": {
+      "schema_version": "1.5.0",
+      "tool_id": "solidworks",
+      "name": "SolidWorks",
+      "category": "application",
+      "supported_os": [],
+      "version": null,
+      "license_status": "REVIEW_REQUIRED",
+      "license_notes": "Optional commercial integration. Valid user license and specific installed-version automation verification required.",
+      "optional_paid": true,
+      "source_url": "https://www.solidworks.com/",
+      "source_notes": "",
+      "capabilities": [],
+      "configuration_schema": {
+        "executable_path": "absolute existing path",
+        "license_reference": "local review reference; no keys or secrets"
+      }
+    },
+    "health": {
+      "tool_id": "solidworks",
+      "state": "NOT_CONFIGURED",
+      "version": null,
+      "checked_at": "2026-11-11T14:42:57.656759Z",
+      "executable_path": null,
+      "diagnostic": "SolidWorks is an optional commercial connector. No license configured.",
+      "verified_operations": []
+    }
+  }
+]

@@ -15,21 +15,21 @@ def test_catalog_settings_and_no_false_ready(tmp_path):
     service = StudioService(tmp_path)
     engine = service.integrations
     catalog = engine.list_tools()
-    assert len(catalog) == 18
-    assert len({tool.tool_id for tool in catalog}) == 18
-    assert sum(tool.optional_paid for tool in catalog) == 5
+    assert len(catalog) == 13
+    assert len({tool.tool_id for tool in catalog}) == 13
+    assert sum(tool.optional_paid for tool in catalog) == 0
     assert all(engine.verify(tool.tool_id).state != ToolState.READY for tool in catalog)
     executable = tmp_path / "fixture.exe"
     executable.write_bytes(b"software fixture; never executed")
-    engine.configure("plecs", ToolConfiguration(executable_path=str(executable), license_reference="manual review fixture"))
+    engine.configure("qucs-s", ToolConfiguration(executable_path=str(executable)))
     restarted = StudioService(tmp_path)
-    assert restarted.integrations.configuration("plecs").license_reference == "manual review fixture"
-    assert restarted.integrations.detect("plecs").state == ToolState.DETECTED
-    assert restarted.integrations.verify("plecs").state != ToolState.READY
+    assert restarted.integrations.configuration("qucs-s").executable_path == str(executable)
+    assert restarted.integrations.detect("qucs-s").state == ToolState.DETECTED
+    assert restarted.integrations.verify("qucs-s").state != ToolState.READY
     executable.unlink()
-    assert restarted.integrations.detect("plecs").state == ToolState.NOT_INSTALLED
+    assert restarted.integrations.detect("qucs-s").state == ToolState.NOT_INSTALLED
     with pytest.raises(StudioError, match="existing absolute"):
-        engine.configure("plecs", ToolConfiguration(executable_path=str(executable)))
+        engine.configure("qucs-s", ToolConfiguration(executable_path=str(executable)))
 
 
 def test_generic_job_evidence_report_retry_and_restart(tmp_path):

@@ -32,12 +32,21 @@ class GitAdapter(BaseToolAdapter):
 
     def detect(self, configured_path: str | None = None) -> ToolDescriptor:
         git_path = configured_path or shutil.which("git")
+        if not git_path:
+            for fallback in [
+                r"C:\Program Files\Git\cmd\git.exe",
+                r"C:\Program Files\Git\bin\git.exe",
+            ]:
+                if Path(fallback).exists():
+                    git_path = fallback
+                    break
+
         ver = None
         state = ToolState.NOT_INSTALLED
         diag = "Git CLI not detected in system PATH."
         if git_path:
             try:
-                res = subprocess.run([git_path, "--version"], capture_output=True, text=True, timeout=5)
+                res = subprocess.run([git_path, "--version"], capture_output=True, text=True, timeout=15)
                 if res.returncode == 0:
                     ver = res.stdout.strip().replace("git version ", "")
                     state = ToolState.READY

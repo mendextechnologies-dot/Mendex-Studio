@@ -48,54 +48,43 @@ def test_scenario_a_product_independent_workspace(tmp_path):
 
 
 def test_scenario_b_ltspice_analytical_reference(tmp_path):
-    """Scenario B: Execute a real LTspice reference simulation and compare against analytical formula."""
-    service = StudioService(tmp_path)
-    # Check if LTspice is verified available
-    tool = service.integrations.verify("ltspice")
-    if str(tool.state) != "READY":
-        pytest.skip("LTspice not installed on host machine")
+    """Scenario B: Execute a real LTspice simulation and compare against the analytical RC step response."""
+    from mendex_core.design.ltspice_runner import LTspiceRunner
+    runner = LTspiceRunner()
+    if not runner.is_available:
+        pytest.skip("LTspice executable not found on host machine")
 
-    # Analytical test circuit: RC low-pass filter (R=1k, C=1uF, Tau=1ms, Vin=10V step)
-    netlist = (
+    # RC low-pass: R=1k, C=1uF, tau=1ms, 10 V step. Analytical Vout(1 ms) = 10 * (1 - 1/e) = 6.3212 V
+    net_path = tmp_path / "rc_filter.net"
+    net_path.write_text(
         "* Analytical RC Step Response Test\n"
         "V1 in 0 PULSE(0 10 0 1n 1n 10m 20m)\n"
         "R1 in out 1k\n"
         "C1 out 0 1u\n"
         ".tran 0 5m 0 10u\n"
-        ".backanno\n"
-        ".end\n"
+        ".end\n",
+        encoding="utf-8",
     )
-    ws = service.integrations.create_workspace("LTSpice_Analytical_WS")
-    ws_dir = service.root / "workspaces" / ws["workspace_id"]
-    ws_dir.mkdir(parents=True, exist_ok=True)
-    net_path = ws_dir / "rc_filter.net"
-    net_path.write_text(netlist, encoding="utf-8")
-
-    job = service.integrations.run(
-        tool_id="ltspice",
-        command_args=[str(net_path)],
-        workspace_id=ws["workspace_id"],
-    )
-    assert job["status"] in ("COMPLETED", "PASSED")
-    assert job["exit_code"] == 0
-
-    # Verify analytical expectation: at t = 1 Tau (1ms), Vout = 10 * (1 - 1/e) = 6.3212 V
-    raw_files = list(ws_dir.glob("*.raw"))
-    assert len(raw_files) >= 1
-    assert raw_files[0].stat().st_size > 0
+    result = runner.run_simulation(net_path, timeout_s=60)
+    assert result.success, result.error_message
+    assert result.log_errors == []
+    assert result.summary_verdict == "NOT_EVALUATED"  # no requirements were supplied
+    times, vout, _ = runner._parse_ascii_raw(result.raw_file)
+    assert len(times) == len(vout) > 10
+    t_target = 1e-3
+    k = next(i for i, t in enumerate(times) if t >= t_target)
+    t0, t1, v0, v1 = times[k - 1], times[k], vout[k - 1], vout[k]
+    v_at_tau = v0 + (v1 - v0) * (t_target - t0) / (t1 - t0)
+    expected = 10.0 * (1.0 - math.exp(-1.0))
+    assert abs(v_at_tau - expected) / expected < 0.01, (v_at_tau, expected)
 
 
 def test_scenario_c_femm_magnetic_simulation(tmp_path):
-    """Scenario C: Execute a real FEMM magnetic reference simulation and verify numerical results."""
-    service = StudioService(tmp_path)
-    tool = service.integrations.verify("femm")
-    if str(tool.state) != "READY":
-        pytest.skip("FEMM not installed on host machine")
-
-    # Run FEMM adapter self-test / reference solve
-    from mendex_core.adapters.registry import AdapterRegistry
-    femm_adapter = service.integrations.adapters.get("femm")
-    assert femm_adapter is not None
+    """Scenario C: real FEMM magnetic reference simulation with verified numerical results."""
+    pytest.skip(
+        "NOT_EVALUATED: no excited FEMM reference model (winding current + boundary conditions) exists yet. "
+        "The un-excited core model is covered by test_v20_qualification::test_real_femm_magnetic_simulation."
+    )
 
 
 def test_scenario_d_kicad_erc_valid_and_invalid(tmp_path):
@@ -110,6 +99,8 @@ def test_scenario_d_kicad_erc_valid_and_invalid(tmp_path):
     res = kicad.run_erc(sch_file)
     assert "exit_code" in res
     assert res["exit_code"] == 0
+    # An empty sheet has nothing to check: it must not be reported as a pass
+    assert res["evaluation"] == "NOT_EVALUATED" and res["passed"] is False
 
 
 def test_scenario_e_kicad_pcb_drc(tmp_path):
@@ -123,6 +114,7 @@ def test_scenario_e_kicad_pcb_drc(tmp_path):
     res = kicad.run_drc(pcb_file)
     assert "exit_code" in res
     assert res["exit_code"] == 0
+    assert res["evaluation"] == "NOT_EVALUATED" and res["passed"] is False
 
 
 def test_scenario_f_freecad_model_export(tmp_path):
@@ -275,9 +267,10 @@ def test_scenario_l_existing_product_linked_compatibility(tmp_path):
 def test_scenario_m_failure_recovery_unavailable_tools(tmp_path):
     """Scenario M: Verify failure recovery and safe handling of unavailable tools."""
     service = StudioService(tmp_path)
-    h = service.integrations.verify("plecs")
-    # Unavailable tools must safely report UNAVAILABLE / LICENSE_REQUIRED without crashing
-    assert str(h.state) in ("UNAVAILABLE", "LICENSE_REQUIRED", "NOT_CONFIGURED", "NOT_INSTALLED", "UNSUPPORTED")
+    import pytest
+    from mendex_core.service import StudioError
+    with pytest.raises(StudioError, match="not registered"):
+        service.integrations.verify("plecs")
 
 
 def test_scenario_n_installer_and_wizard(tmp_path):

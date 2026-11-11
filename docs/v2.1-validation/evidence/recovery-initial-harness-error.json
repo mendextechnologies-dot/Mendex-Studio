@@ -1,0 +1,3 @@
+{
+  "exception": "Traceback (most recent call last):\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\recovery_probe.py\", line 12, in <module>\n    out['before_second_client']=s.integrations.get_job(job.request.job_id).model_dump(mode='json')\n                                ^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'IntegrationService' object has no attribute 'get_job'\n"
+}

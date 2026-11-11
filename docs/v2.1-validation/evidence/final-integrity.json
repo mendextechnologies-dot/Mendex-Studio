@@ -1,0 +1,11 @@
+{
+  "scope": "Existing products, workspaces, engineering_designs, reports, top-level .mendex files; excludes historical .mendex subdirectories",
+  "compared_files": 165,
+  "removed": [],
+  "modified": [
+    ".mendex\\studio.sqlite3"
+  ],
+  "added": [
+    "reports\\workflow_report_8481499b.html"
+  ]
+}

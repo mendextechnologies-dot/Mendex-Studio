@@ -628,51 +628,6 @@ class UninstalledToolV15Connector:
         raise FileNotFoundError(f"{self.name} is NOT_INSTALLED and cannot execute jobs")
 
 
-class CommercialStubV15Connector:
-    """Graceful connector for optional commercial platforms (PLECS, MATLAB, Ansys, SolidWorks)."""
-
-    def __init__(self, tool_id: str, name: str, vendor: str, official_url: str):
-        self.tool_id = tool_id
-        self.name = name
-        self.vendor = vendor
-        self.official_url = official_url
-
-    @property
-    def descriptor(self) -> ToolDescriptor:
-        return ToolDescriptor(
-            schema_version="1.5.0",
-            tool_id=self.tool_id,
-            name=self.name,
-            category="application",
-            supported_os=["Windows"],
-            version=None,
-            license_status="REVIEW_REQUIRED",
-            license_notes=f"Commercial proprietary ({self.vendor}). User must supply a valid license.",
-            optional_paid=True,
-            source_url=self.official_url,
-            source_notes=f"Proprietary platform from {self.vendor}.",
-            capabilities=[],
-            configuration_schema={
-                "executable_path": f"Path to {self.name} binary",
-                "license_reference": "Local license review reference",
-            },
-        )
-
-    def supported_operations(self) -> list[Capability]:
-        return []
-
-    def detect(self, configuration: ToolConfiguration) -> ToolHealth:
-        return ToolHealth(
-            tool_id=self.tool_id,
-            state="NOT_CONFIGURED",
-            diagnostic=f"{self.name} is an optional commercial connector. No license configured.",
-        )
-
-    def verify(self, configuration: ToolConfiguration) -> ToolHealth:
-        return self.detect(configuration)
-
-    def execute(self, request: JobRequest, context: Any) -> JobResult:
-        raise PermissionError(f"{self.name} requires a licensed installation and human review")
 
 
 class DatasetV15Connector:
@@ -749,7 +704,7 @@ class DatasetV15Connector:
 
 
 class V15ConnectorRegistry:
-    """Factory providing all 18 team-approved v1.5 connectors."""
+    """Factory providing the currently supported v1.5 connectors."""
 
     @staticmethod
     def all() -> list[Any]:
@@ -783,12 +738,4 @@ class V15ConnectorRegistry:
             except Exception:
                 connectors.append(UninstalledToolV15Connector(tid, name, cat, url))
 
-        # Optional Commercial Stubs
-        connectors.extend([
-            CommercialStubV15Connector("plecs", "PLECS", "Plexim", "https://www.plexim.com/plecs"),
-            CommercialStubV15Connector("matlab-simulink", "MATLAB / Simulink", "MathWorks", "https://www.mathworks.com/"),
-            CommercialStubV15Connector("ansys-maxwell", "Ansys Maxwell", "Ansys", "https://www.ansys.com/"),
-            CommercialStubV15Connector("ansys-icepak", "Ansys Icepak", "Ansys", "https://www.ansys.com/"),
-            CommercialStubV15Connector("solidworks", "SolidWorks", "Dassault", "https://www.solidworks.com/"),
-        ])
         return connectors

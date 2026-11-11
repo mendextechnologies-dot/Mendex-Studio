@@ -22,14 +22,49 @@ def test_waveform_viewer_widget():
     assert "Flyback" in viewer.chart.title()
 
     # Test custom data
+    x_pts = [i * 1e-4 for i in range(20)]
+    y_pts = [5.0 if i >= 10 else 0.0 for i in range(20)]
     viewer.set_waveform_data(
         "Custom Transient",
-        [0.0, 1e-3, 2e-3],
-        {"V_out": [0.0, 5.0, 5.0]},
+        x_pts,
+        {"V_out": y_pts},
     )
     app.processEvents()
     assert viewer.chart.title() == "Custom Transient"
     assert "V_out" in viewer.series_map
+
+    # Test automated signal metrics
+    assert "Peak" in viewer.lbl_vmax.text()
+    assert "5.0" in viewer.lbl_vmax.text()
+    assert "Ripple" in viewer.lbl_vpp.text()
+
+    # Test interactive cursors
+    viewer.btn_cursors.setChecked(True)
+    app.processEvents()
+    assert viewer.cursor_panel.isVisible()
+    assert viewer._cursor_a_series is not None
+    assert viewer._cursor_b_series is not None
+
+    viewer.slider_a.setValue(100)
+    viewer.slider_b.setValue(900)
+    app.processEvents()
+    assert "Δt:" in viewer.lbl_delta_t.text()
+    assert "Freq" in viewer.lbl_freq.text()
+    assert "ΔV:" in viewer.lbl_delta_v.text()
+
+    # Toggle cursors off
+    viewer.btn_cursors.setChecked(False)
+    app.processEvents()
+    assert not viewer.cursor_panel.isVisible()
+
+    # Test FFT Harmonic Spectrum
+    viewer.btn_fft.setChecked(True)
+    app.processEvents()
+    assert "FFT" in viewer.chart.title()
+
+    viewer.btn_fft.setChecked(False)
+    app.processEvents()
+    assert "Custom Transient" in viewer.chart.title()
 
     # Test theme toggle
     viewer.apply_theme(False)  # Light

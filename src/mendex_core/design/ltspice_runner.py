@@ -36,10 +36,34 @@ class LTspiceSimulationResult(BaseModel):
     vout_min_v: float = 0.0
     vout_max_v: float = 0.0
     i_peak_a: float = 0.0
-    convergence_status: str = "CONVERGED"
+    convergence_status: str = "NOT_EVALUATED"
+    log_errors: List[str] = Field(default_factory=list)
+    log_warnings: List[str] = Field(default_factory=list)
     requirements_evaluated: Dict[str, str] = Field(default_factory=dict)
     summary_verdict: str = "PENDING"
     error_message: Optional[str] = None
+
+    @property
+    def raw_file(self) -> Optional[Path]:
+        return Path(self.raw_file_path) if self.raw_file_path else None
+
+    @property
+    def log_file(self) -> Optional[Path]:
+        return Path(self.log_file_path) if self.log_file_path else None
+
+    @property
+    def execution_time_s(self) -> float:
+        return self.elapsed_time_s
+
+    @property
+    def steady_state_metrics(self) -> Dict[str, float]:
+        return {
+            "vout_mean_v": self.vout_mean_v,
+            "vout_ripple_pk_pk_v": self.vout_ripple_pk_pk_v,
+            "vout_min_v": self.vout_min_v,
+            "vout_max_v": self.vout_max_v,
+            "i_peak_a": self.i_peak_a,
+        }
 
 
 class LTspiceRunner:
@@ -65,11 +89,31 @@ class LTspiceRunner:
     def is_available(self) -> bool:
         return self.exe_path is not None and self.exe_path.exists()
 
+    @classmethod
+    def run_transient(
+        cls,
+        netlist_path: Path,
+        sim_time_s: float = 0.002,
+        time_step_s: Optional[float] = None,
+        working_dir: Optional[Path] = None,
+    ) -> LTspiceSimulationResult:
+        """Convenience classmethod reconciling public simulation runner interface."""
+        runner = cls()
+        return runner.run_simulation(
+            netlist_path=netlist_path,
+            stop_time_s=sim_time_s,
+            time_step_s=time_step_s,
+            working_dir=working_dir,
+        )
+
     def run_simulation(
         self,
         netlist_path: Path,
         requirements: Optional[List[Requirement]] = None,
         timeout_s: float = 60.0,
+        stop_time_s: Optional[float] = None,
+        time_step_s: Optional[float] = None,
+        working_dir: Optional[Path] = None,
     ) -> LTspiceSimulationResult:
         """Executes LTspice on netlist file and parses real simulation metrics."""
         if not self.is_available:
@@ -85,7 +129,7 @@ class LTspiceRunner:
         if not net_file.exists():
             raise FileNotFoundError(f"Netlist file not found: {net_file}")
 
-        work_dir = net_file.parent
+        work_dir = Path(working_dir).resolve() if working_dir else net_file.parent
         cmd = [str(self.exe_path), "-b", "-ascii", str(net_file)]
 
         try:
@@ -113,15 +157,20 @@ class LTspiceRunner:
         log_path_str = str(log_file) if log_file.exists() else None
         raw_path_str = str(raw_file) if raw_file.exists() else None
 
+        log_errors, log_warnings = self._parse_log(log_file)
+
         if proc.returncode != 0 or not raw_file.exists():
+            detail = "; ".join(log_errors) if log_errors else "Output raw missing."
             return LTspiceSimulationResult(
                 success=False,
                 exit_code=proc.returncode,
                 log_file_path=log_path_str,
                 raw_file_path=raw_path_str,
                 convergence_status="SOLVER_FAILED",
+                log_errors=log_errors,
+                log_warnings=log_warnings,
                 summary_verdict="FAILED",
-                error_message=f"Solver exited with code {proc.returncode}. Output raw missing.",
+                error_message=f"Solver exited with code {proc.returncode}. {detail}",
             )
 
         # Parse ASCII raw file
@@ -130,12 +179,15 @@ class LTspiceRunner:
         if not time_vals or not vout_vals:
             # Fallback if raw parse failed
             return LTspiceSimulationResult(
-                success=True,
+                success=False,
                 exit_code=0,
                 log_file_path=log_path_str,
                 raw_file_path=raw_path_str,
                 convergence_status="RAW_EMPTY",
+                log_errors=log_errors,
+                log_warnings=log_warnings,
                 summary_verdict="FAILED",
+                error_message="Solver produced no parseable output waveform.",
             )
 
         # Analyze steady-state metrics (use last 30% of simulation for steady state)
@@ -147,7 +199,9 @@ class LTspiceRunner:
         v_min = min(ss_vout) if ss_vout else 0.0
         v_max = max(ss_vout) if ss_vout else 0.0
         v_ripple = v_max - v_min
-        i_pk = max(iin_vals) if iin_vals else 0.0
+        # Peak current over the same steady-state window (excludes start-up inrush).
+        ss_iin = iin_vals[int(len(iin_vals) * 0.70):] if iin_vals else []
+        i_pk = max((abs(v) for v in ss_iin), default=0.0)
 
         # Evaluate requirements
         verdicts: Dict[str, str] = {}
@@ -172,7 +226,16 @@ class LTspiceRunner:
                     if not passed:
                         all_passed = False
 
-        overall_verdict = "PASSED" if all_passed else "FAILED"
+        if log_errors:
+            convergence = "SOLVER_ERRORS"
+            overall_verdict = "FAILED"
+        elif not verdicts:
+            # A run with no evaluated requirement proves nothing about the design.
+            convergence = "COMPLETED_WITH_WARNINGS" if log_warnings else "COMPLETED"
+            overall_verdict = "NOT_EVALUATED"
+        else:
+            convergence = "COMPLETED_WITH_WARNINGS" if log_warnings else "COMPLETED"
+            overall_verdict = "PASSED" if all_passed else "FAILED"
 
         return LTspiceSimulationResult(
             success=True,
@@ -187,10 +250,44 @@ class LTspiceRunner:
             vout_min_v=round(v_min, 4),
             vout_max_v=round(v_max, 4),
             i_peak_a=round(i_pk, 4),
-            convergence_status="CONVERGED",
+            convergence_status=convergence,
+            log_errors=log_errors,
+            log_warnings=log_warnings,
             requirements_evaluated=verdicts,
             summary_verdict=overall_verdict,
         )
+
+    ERROR_MARKERS = ("error", "singular matrix", "time step too small", "timestep too small", "convergence failed", "unknown", "can't find")
+    WARNING_MARKERS = ("warning", "floating", "questionable use")
+
+    @classmethod
+    def _parse_log(cls, log_path: Path) -> tuple[List[str], List[str]]:
+        """Extracts solver errors and warnings from the LTspice .log (UTF-16 or 8-bit)."""
+        if not log_path.exists():
+            return [], ["Solver log file missing."]
+        data = log_path.read_bytes()
+        text = None
+        if data[:2] in (b"\xff\xfe", b"\xfe\xff") or (len(data) > 1 and data[1:2] == b"\x00"):
+            try:
+                text = data.decode("utf-16")
+            except UnicodeDecodeError:
+                text = None
+        if text is None:
+            text = data.decode("latin-1")
+        errors: List[str] = []
+        warnings: List[str] = []
+        for raw in text.splitlines():
+            line = raw.strip()
+            low = line.lower()
+            if not line:
+                continue
+            if "is floating" in low:
+                errors.append(line)  # a floating node (e.g. undriven gate) invalidates the circuit
+            elif any(m in low for m in cls.WARNING_MARKERS):
+                warnings.append(line)
+            elif any(m in low for m in cls.ERROR_MARKERS):
+                errors.append(line)
+        return errors, warnings
 
     def _parse_ascii_raw(self, raw_path: Path) -> tuple[List[float], List[float], List[float]]:
         """Parses ASCII .raw file generated with -ascii flag."""
@@ -206,6 +303,7 @@ class LTspiceRunner:
 
         # Find Variables and Values section
         var_indices: Dict[str, int] = {}
+        var_types: Dict[int, str] = {}
         in_vars = False
         in_values = False
 
@@ -224,15 +322,40 @@ class LTspiceRunner:
                 if len(parts) >= 3 and parts[0].isdigit():
                     idx = int(parts[0])
                     var_name = parts[1].upper()
+                    var_type = parts[2].lower() if len(parts) >= 3 else ""
                     var_indices[var_name] = idx
+                    var_types[idx] = var_type
 
         if not in_values:
             return [], [], []
 
-        # Find which indices correspond to V(out), V(in), Time
+        # Find indices: V(out) must be a voltage signal, I(in) must be an actual current signal!
         t_idx = 0
-        v_out_idx = next((idx for name, idx in var_indices.items() if "OUT" in name or "VOUT" in name), 1)
-        v_in_idx = next((idx for name, idx in var_indices.items() if "IN" in name or "VIN" in name), 2)
+        v_out_idx = None
+        for name, idx in var_indices.items():
+            is_volt = var_types.get(idx) == "voltage" or name.startswith("V(")
+            if is_volt and any(k in name for k in ("OUT", "VOUT")):
+                v_out_idx = idx
+                break
+        if v_out_idx is None:
+            for name, idx in var_indices.items():
+                is_volt = var_types.get(idx) == "voltage" or name.startswith("V(")
+                if is_volt and not any(k in name for k in ("VIN", "V(IN)")):
+                    v_out_idx = idx
+                    break
+
+        # Current extraction: NEVER select V(vin) as input current! Only true current signals.
+        i_in_idx = None
+        for name, idx in var_indices.items():
+            is_curr = var_types.get(idx) == "current" or name.startswith("I(")
+            if is_curr and any(k in name for k in ("IN", "VIN", "V1", "L1", "PRI")):
+                i_in_idx = idx
+                break
+        if i_in_idx is None:
+            for name, idx in var_indices.items():
+                if var_types.get(idx) == "current" or name.startswith("I("):
+                    i_in_idx = idx
+                    break
         n_vars = len(var_indices)
 
         # Parse data points
@@ -264,10 +387,8 @@ class LTspiceRunner:
                     else:
                         vout_vals.append(0.0)
 
-                    if v_in_idx - 1 < len(point_vars):
-                        iin_vals.append(point_vars[v_in_idx - 1])
-                    else:
-                        iin_vals.append(0.0)
+                    if i_in_idx is not None and (i_in_idx - 1) < len(point_vars):
+                        iin_vals.append(point_vars[i_in_idx - 1])
                 except Exception:
                     pass
             i += 1

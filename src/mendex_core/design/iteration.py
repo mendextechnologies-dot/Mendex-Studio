@@ -18,7 +18,7 @@ from .generators import LTspiceNetlistGenerator, KiCadSchematicGenerator
 
 
 class DesignIterationProposal(BaseModel):
-    """Proposal formulated by AI Copilot to fix an unmet requirement."""
+    """Deterministic rule-based proposal to fix an unmet requirement (requires engineer approval)."""
     parameter_to_change: str
     current_value: float
     proposed_value: float

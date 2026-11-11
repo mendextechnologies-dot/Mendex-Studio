@@ -1,0 +1,103 @@
+{
+  "before_second_client": {
+    "request": {
+      "schema_version": "1.5.0",
+      "job_id": "deda573f-4fca-4f3c-abd5-e848f5855969",
+      "workspace_id": "9ae3e3f9-e1dc-4605-8bc8-cf48a6ff03fd",
+      "tool_id": "studio-demo",
+      "operation": "synthetic-echo",
+      "input_paths": [],
+      "parameters": {
+        "steps": 100,
+        "delay_s": 0.05
+      },
+      "timeout_s": 20.0,
+      "provenance": "SYNTHETIC SOFTWARE FIXTURE; engineering NOT_EVALUATED"
+    },
+    "status": "RUNNING",
+    "created_at": "2026-11-11T15:48:40.921311Z",
+    "started_at": "2026-11-11T15:48:40.928790Z",
+    "progress": 0.02,
+    "result": null,
+    "retry_of": null,
+    "manifest_path": null
+  },
+  "after_second_client": {
+    "request": {
+      "schema_version": "1.5.0",
+      "job_id": "deda573f-4fca-4f3c-abd5-e848f5855969",
+      "workspace_id": "9ae3e3f9-e1dc-4605-8bc8-cf48a6ff03fd",
+      "tool_id": "studio-demo",
+      "operation": "synthetic-echo",
+      "input_paths": [],
+      "parameters": {
+        "steps": 100,
+        "delay_s": 0.05
+      },
+      "timeout_s": 20.0,
+      "provenance": "SYNTHETIC SOFTWARE FIXTURE; engineering NOT_EVALUATED"
+    },
+    "status": "FAILED",
+    "created_at": "2026-11-11T15:48:40.921311Z",
+    "started_at": "2026-11-11T15:48:40.928790Z",
+    "progress": 0.03,
+    "result": {
+      "schema_version": "1.5.0",
+      "job_id": "deda573f-4fca-4f3c-abd5-e848f5855969",
+      "tool_id": "studio-demo",
+      "tool_version": null,
+      "status": "FAILED",
+      "started_at": "2026-11-11T15:48:40.928790Z",
+      "ended_at": "2026-11-11T15:48:41.157206Z",
+      "exit_code": null,
+      "diagnostics": [
+        {
+          "code": "INTERRUPTED",
+          "message": "Process terminated unexpectedly; session interrupted before completion"
+        }
+      ],
+      "outputs": [],
+      "evidence_paths": []
+    },
+    "retry_of": null,
+    "manifest_path": null
+  },
+  "executor_still_running": "key format differs",
+  "eventual_state": {
+    "request": {
+      "schema_version": "1.5.0",
+      "job_id": "deda573f-4fca-4f3c-abd5-e848f5855969",
+      "workspace_id": "9ae3e3f9-e1dc-4605-8bc8-cf48a6ff03fd",
+      "tool_id": "studio-demo",
+      "operation": "synthetic-echo",
+      "input_paths": [],
+      "parameters": {
+        "steps": 100,
+        "delay_s": 0.05
+      },
+      "timeout_s": 20.0,
+      "provenance": "SYNTHETIC SOFTWARE FIXTURE; engineering NOT_EVALUATED"
+    },
+    "status": "SUCCEEDED",
+    "created_at": "2026-11-11T15:48:40.921311Z",
+    "started_at": "2026-11-11T15:48:40.928790Z",
+    "progress": 1.0,
+    "result": {
+      "schema_version": "1.5.0",
+      "job_id": "deda573f-4fca-4f3c-abd5-e848f5855969",
+      "tool_id": "studio-demo",
+      "tool_version": "1.5.0",
+      "status": "SUCCEEDED",
+      "started_at": "2026-11-11T15:48:40.935986Z",
+      "ended_at": "2026-11-11T15:48:47.995496Z",
+      "exit_code": 0,
+      "diagnostics": [],
+      "outputs": [
+        "synthetic.json"
+      ],
+      "evidence_paths": []
+    },
+    "retry_of": null,
+    "manifest_path": ".mendex\\ij\\deda573f4fca4f3cabd5e848f5855969\\manifest.json"
+  }
+}

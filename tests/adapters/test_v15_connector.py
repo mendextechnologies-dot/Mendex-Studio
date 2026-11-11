@@ -20,16 +20,16 @@ class MockExecutionContext:
         pass
 
 
-def test_v15_registry_contains_18_connectors():
+def test_v15_registry_contains_supported_connectors():
     connectors = V15ConnectorRegistry.all()
-    assert len(connectors) == 18
+    assert len(connectors) == 13
 
     tool_ids = {c.descriptor.tool_id for c in connectors}
     expected_ids = {
         "switchlossdb", "magnet-dataset", "magnet-ml-benchmarks", "kicad", "femm",
-        "magnet-princeton", "ltspice", "plecs", "matlab-simulink", "ansys-maxwell",
-        "ansys-icepak", "freecad", "qucs-s", "openmodelica", "python", "jupyter",
-        "git", "solidworks",
+        "magnet-princeton", "ltspice",
+        "freecad", "qucs-s", "openmodelica", "python", "jupyter",
+        "git",
     }
     assert tool_ids == expected_ids
 

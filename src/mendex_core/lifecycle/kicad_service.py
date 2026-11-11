@@ -12,6 +12,15 @@ from uuid import uuid4
 from integrations.parsers.kicad_parser import parse_kicad_drc_json
 
 
+def _structure(path: Path) -> Dict[str, Any]:
+    """Native population check (symbols / footprints with pads); failures count as unpopulated."""
+    from ..pcb import native_structure
+    try:
+        return native_structure(path)
+    except (ValueError, OSError, UnicodeDecodeError) as exc:
+        return {"populated": False, "reason": f"Document could not be inspected: {exc}"}
+
+
 class KiCadLifecycleService:
     """Manages KiCad schematic capture, PCB layout, ERC/DRC runs, and manufacturing exports."""
 
@@ -80,6 +89,7 @@ class KiCadLifecycleService:
             str(sch),
         ]
         res = subprocess.run(cmd, capture_output=True, text=True, timeout=60, shell=False)
+        structure = _structure(sch)
         
         parsed = {}
         diagnostic = ""
@@ -99,7 +109,10 @@ class KiCadLifecycleService:
             "parsed": parsed,
             "command": cmd,
             "diagnostic": diagnostic,
-            "passed": res.returncode == 0 and parsed.get("total_issues", 1) == 0,
+            "structure": structure,
+            # Rule checks on an unpopulated document check nothing: never report them as a pass.
+            "evaluation": "NOT_EVALUATED" if not structure.get("populated") else ("PASSED" if res.returncode == 0 and parsed.get("total_issues", 1) == 0 else "FAILED"),
+            "passed": bool(structure.get("populated")) and res.returncode == 0 and parsed.get("total_issues", 1) == 0,
         }
 
     def run_drc(self, pcb_path: Path, output_json: Optional[Path] = None, timeout: int = 300) -> Dict[str, Any]:
@@ -124,6 +137,7 @@ class KiCadLifecycleService:
             str(board),
         ]
         res = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, shell=False)
+        structure = _structure(board)
 
         parsed = {}
         diagnostic = ""
@@ -143,7 +157,10 @@ class KiCadLifecycleService:
             "parsed": parsed,
             "command": cmd,
             "diagnostic": diagnostic,
-            "passed": res.returncode == 0 and parsed.get("total_issues", 1) == 0,
+            "structure": structure,
+            # Rule checks on an unpopulated document check nothing: never report them as a pass.
+            "evaluation": "NOT_EVALUATED" if not structure.get("populated") else ("PASSED" if res.returncode == 0 and parsed.get("total_issues", 1) == 0 else "FAILED"),
+            "passed": bool(structure.get("populated")) and res.returncode == 0 and parsed.get("total_issues", 1) == 0,
         }
 
     def export_gerbers(self, pcb_path: Path, output_dir: Optional[Path] = None) -> Path:

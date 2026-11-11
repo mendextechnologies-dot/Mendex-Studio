@@ -46,4 +46,5 @@ mo_savebitmap("{safe_ans}.bmp")
 mo_close()
 mi_close()
 print("FEMM solve complete: {safe_ans}")
+exit()
 """

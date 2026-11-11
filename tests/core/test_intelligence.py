@@ -3,9 +3,6 @@ import pytest
 from mendex_core.intelligence import (
     EngineeringKnowledgeService,
     DeterministicCalculationService,
-    ModelRegistry,
-    LocalRuleEngineBackend,
-    EngineeringReasoningOrchestrator,
     EngineeringBenchmarkRegistry,
 )
 from mendex_core.service import StudioService
@@ -76,25 +73,6 @@ def test_deterministic_calculation_service():
         calc.calculate_skin_depth(-10)
     with pytest.raises(ValueError):
         calc.calculate_lc_resonance(0, 10)
-
-
-def test_reasoning_orchestrator_and_studio_service(tmp_path):
-    svc = StudioService(tmp_path)
-    assert hasattr(svc, "intelligence")
-
-    # Ask Dowell question
-    resp_dowell = svc.advise_engineering("How does Dowell calculate AC winding loss?")
-    assert resp_dowell["provider"] == "local_engineering_rules"
-    assert "F_R" in resp_dowell["reply"]
-    assert len(resp_dowell["suggested_actions"]) > 0
-
-    # Ask SPICE circuit question
-    resp_spice = svc.advise_engineering("I want to simulate transient ripple for my DC-DC converter")
-    assert any(r["target_tool_or_module"] == "ltspice" for r in resp_spice["recommendations"])
-
-    # Ask PCB safety question
-    resp_pcb = svc.advise_engineering("What is the clearance requirement for 400V high voltage PCB?")
-    assert any(r["target_tool_or_module"] == "kicad" for r in resp_pcb["recommendations"])
 
 
 def test_engineering_benchmark_evaluation():

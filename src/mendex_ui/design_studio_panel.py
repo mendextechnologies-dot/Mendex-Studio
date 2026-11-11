@@ -511,10 +511,10 @@ class EngineeringDesignStudioPanel(QWidget):
         self._init_sim_tab()
         self.tabs.addTab(self.tab_sim, "Simulation & Waveforms")
 
-        # Tab 3: AI Copilot Closed-Loop Iteration
+        # Tab 3: Deterministic Closed-Loop Iteration
         self.tab_ai = QWidget()
         self._init_ai_tab()
-        self.tabs.addTab(self.tab_ai, "AI Copilot Iteration")
+        self.tabs.addTab(self.tab_ai, "Design Iteration")
 
         # Tab 4: Native Engineering Artifacts
         self.tab_artifacts = QWidget()
@@ -572,7 +572,7 @@ class EngineeringDesignStudioPanel(QWidget):
         layout.addWidget(self.txt_sim_metrics)
 
     # -------------------------------------------------------------------------
-    # Tab 3: AI Copilot Iteration
+    # Tab 3: Design Iteration
     # -------------------------------------------------------------------------
     def _init_ai_tab(self):
         layout = QVBoxLayout(self.tab_ai)
@@ -825,7 +825,7 @@ class EngineeringDesignStudioPanel(QWidget):
                 self.txt_ai_proposal.setPlainText(
                     f"Requirement Violation Detected:\n  {proposal.target_requirement}\n"
                     f"Observed Metric: {proposal.observed_metric:.4g} vs Threshold: {proposal.required_metric:.4g}\n\n"
-                    f"AI Copilot Analytical Recommendation:\n"
+                    f"Rule-Based Analytical Recommendation:\n"
                     f"  • Parameter to Adjust: {proposal.parameter_to_change}\n"
                     f"  • Current Value: {proposal.current_value:.6g} {proposal.unit}\n"
                     f"  • Proposed Value: {proposal.proposed_value:.6g} {proposal.unit}\n\n"

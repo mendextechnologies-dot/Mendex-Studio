@@ -1,0 +1,10 @@
+=== Command: C:\Program Files\KiCad\10.0\bin\kicad-cli.exe sch erc --output C:\Mendex studio\docs\v2.1-validation\evidence\native-kicad-erc\erc_report.json --format json C:\Mendex studio\docs\v2.1-validation\evidence\audit-data\workspaces\7db6e368-cc56-4429-98f4-7dd40a68c8d3\generated_artifacts\rev_1\kicad\independent_buck_reference.kicad_sch ===
+=== Started: 2026-11-11T15:52:37.438895+00:00 ===
+=== Working Directory: C:\Mendex studio\docs\v2.1-validation\evidence\native-kicad-erc ===
+=== Exit Code: 0 ===
+
+--- STDOUT ---
+Found 6 violations
+Saved ERC Report to C:/Mendex studio/docs/v2.1-validation/evidence/native-kicad-erc/erc_report.json
+
+--- STDERR ---

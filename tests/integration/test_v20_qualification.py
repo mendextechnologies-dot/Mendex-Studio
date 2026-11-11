@@ -148,10 +148,11 @@ def test_real_femm_magnetic_simulation(temp_design_env):
     workspace.mkdir(parents=True, exist_ok=True)
 
     result = service.run_femm_simulation(design.id, workspace)
-    assert result.success is True
-    assert result.b_max_tesla > 0.0
-    assert result.b_max_tesla < result.saturation_threshold_t
-    assert result.is_saturated is False
+    # The generated core model carries no winding excitation, so the solver field is zero.
+    # The runner must report NOT_EVALUATED rather than substitute an estimated flux density.
+    assert result.summary_verdict == "NOT_EVALUATED"
+    assert result.success is False
+    assert result.b_max_tesla == 0.0
 
 
 def test_closed_loop_ai_design_iteration(temp_design_env):

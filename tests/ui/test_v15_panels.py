@@ -13,9 +13,11 @@ def test_generic_ui_to_job_evidence_report_without_product(tmp_path):
     window = StudioWindow(studio)
     window.show()
     app.processEvents()
-    assert window.tool_center.list.count() == 18
+    assert window.tool_center.list.count() == 13
     assert window.navigation.item(0).text() == "Dashboard"
-    assert window.navigation.item(10).text() == "Knowledge Center"
+    assert window.navigation.count() == 7
+    assert window.navigation.item(1).text() == "Engineering Projects"
+    assert window.navigation.item(4).text() == "Engineering Tools"
     window.jobs_panel.create_workspace()
     window.jobs_panel.parameters.setText('{"steps":1,"delay_s":0}')
     window.jobs_panel.start()

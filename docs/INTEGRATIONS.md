@@ -1,5 +1,11 @@
 # Codex v1.5 integration workflow
 
+Current scope (11 November 2026): PLECS, MATLAB/Simulink, Ansys Maxwell,
+Ansys Icepak and SolidWorks integrations have been removed from active catalogs,
+connectors and UI. There are 13 retained catalog resources (14 on the dashboard
+with ngspice). Historical settings/jobs/evidence are retained; old settings do not
+reactivate removed tools. Free/open-source tools and freeware LTspice remain.
+
 This branch adds the Codex-owned application half of the two-agent plan. It preserves the original v0.1 workflows and does not claim all native connectors are implemented.
 
 ## Run and demonstrate

@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "mendex": {
+      "command": "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+      "args": [
+        "-m",
+        "mendex_core.mcp",
+        "--root",
+        "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\codex-data"
+      ],
+      "env": {
+        "PYTHONPATH": "C:\\Mendex studio\\src"
+      }
+    }
+  }
+}

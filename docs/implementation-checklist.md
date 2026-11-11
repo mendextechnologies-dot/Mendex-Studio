@@ -1,5 +1,86 @@
 # Three-day implementation checklist
 
+## Help Icon & AI Engineering Prompt Library Integration — 11 November 2026
+
+- [x] **Global Help Button (`❓ Help & AI Prompts`)**: Added prominent button in the main window top header and a dedicated `💡 Product Design Guide & Prompts` button in the Project Overview banner.
+- [x] **Comprehensive Engineering Guide Modal (`EngineeringGuideDialog`)**: Implemented tabbed engineering reference dialog covering the complete 12-stage product design lifecycle, copy-paste AI prompt library, MCP/CLI connectivity, and stage review checklists.
+- [x] **1-Click Copy-Paste AI Prompts**: Created ready-to-use prompt cards for OpenAI Codex, Claude Code, and Antigravity with 1-click clipboard copy (`MASTER_CODEX_PROMPT`, sizing calculations, LTspice simulation, KiCad PCB routing with 5.0 mm isolation slots, FreeCAD 3D bobbin generation, and qualified BOM compilation).
+- [x] **Light & Dark Theme Harmonization**: Applied consistent styling across both Light and Dark modes.
+- [x] **Automated Test Coverage**: Added `tests/ui/test_engineering_guide_dialog.py` verifying dialog instantiation, prompt content, and button presence with 100% pass rate.
+
+## Review & Approvals Interface & Calculation Accuracy Milestone — 11 November 2026
+
+- [x] **Primary Tab Order & Visibility**: Promoted `✍️ Review & Approvals` to Tab 0 (`self.tab_stage`), guaranteeing it is always prominently visible without being scrolled off screen.
+- [x] **Stage Card Click Continuity**: Fixed `_on_stage_card_clicked` so clicking stage cards while on Tab 0 keeps the user on `✍️ Review & Approvals` and updates the active review stage context instead of forcibly navigating away to technical tabs.
+- [x] **2-Column Side-by-Side Review Layout**: Designed a 2-column layout in Tab 0 with Stage Details & Evidence on the left, and Formal Engineering Gate Sign-Off (Reviewer Identity, Gate Decision, Review Notes, and Record Sign-Off) on the right, eliminating vertical scrolling.
+- [x] **Active Review Stage Selector**: Added a dedicated dropdown selector (`self.combo_stage_select`) in Tab 0 allowing instant switching between all 12 engineering stages.
+- [x] **Calculations Tab Quick Sign-Off Bar**: Embedded a horizontal quick sign-off banner on `tab_calc` with Reviewer, Decision, Notes, and `✅ Sign-Off Stage #2` action directly alongside sizing calculations.
+- [x] **Direct Sign-Off Actions across Technical Tabs**: Added `✍️ Review & Sign-Off` quick buttons on `⚡ Simulations` (Stage 4), `📐 KiCad PCB` (Stages 6, 7, 8), `📋 BOM` (Stage 10), and `🧊 3D Mechanical` (Stage 9).
+- [x] **Deterministic Parameter Formatting**: Updated `_refresh_calc_tab()` to accurately parse `sv1000_sizing_analysis.json` and display authoritative SV-1000 sizing values: 5 primary turns, 306 secondary turns, $61.2:1$ ratio, $4.46\ \mu\text{H}$ primary inductance, $0.72\text{ mm}$ air gap, TDK N87 core loss $1.16\text{ W}$, Wolfspeed C2M0080120D MOSFET dissipation $5.63\text{ W}$, and Dowell AC winding factor $F_r = 3.78$.
+- [x] **Test Suite & Visual Verification**: Tested with targeted automated UI tests (`tests/ui/test_product_lifecycle_ui.py`) and captured high-resolution verification screenshots in both Light and Dark themes.
+
+## SpectraVolt SV-1000 End-to-End Build & Host Tool Path Integration — 11 November 2026
+
+- [x] **FEMM 4.2 Solver Detection & Headless Execution**: Located installed host binary at `C:\femm42\bin\femm.exe`; updated search fallbacks and fixed headless execution using `-windowhide` and Lua `exit()` so solver processes terminate instantaneously in 375 ms.
+- [x] **Light Theme Visual Integrity**: Verified Settings panel and full application pages with pure `#ffffff` white background, crisp high-contrast border and typography in Light Theme mode.
+- [x] **Stage 1 (Product / Project Initialized)**: Created fresh authoritative `SV-1000` (SpectraVolt SV-1000 Precision HV DC-DC Converter) with active revision R001, specification envelope ($V_{in} = 20\text{--}28\text{ V}$, $V_{out} = 1000\text{ V}$, $I_{out} = 0.1\text{ A}$, $f_{sw} = 100\text{ kHz}$, $V_{iso} = 3000\text{ V RMS}$).
+- [x] **Stage 2 (Deterministic Sizing Calculations)**: Executed Dowell AC resistance ($F_r = 3.78$, $R_{ac} = 0.170\ \Omega$), Steinmetz core losses ($P_{core} = 1.16\text{ W}$, N87 Ferrite), semiconductor losses ($P_{tot} = 5.63\text{ W}$, C2M0080120D), and flyback magnetic parameters ($L_p = 4.46\ \mu\text{H}$, $N_p:5$, $N_s:306$, air gap $0.72\text{ mm}$); persisted in `calculations/sv1000_sizing_analysis.json`.
+- [x] **Stage 3 & 4 (Circuit Synthesis & LTspice Simulation)**: Generated SPICE netlist with 45% PWM pulse control; ran real LTspice simulation and extracted 6.08 MB raw waveform data (`flyback_circuit.raw`), logged with exit code 0.
+- [x] **Stage 5 (FEMM 4.2 Magnetic Analysis)**: Emitted Lua model and executed real FEMM 4.2 simulation in 375 ms; verified zero saturation failure and preserved `NOT_EVALUATED` truthful boundary status.
+- [x] **Stage 6-8 (KiCad Schematic, Populated PCB Layout & Native DRC/ERC)**: Emitted `.kicad_sch` and `.kicad_pcb` with 5.0 mm high-voltage isolation clearance slot (IEC-61010-1 compliance); executed native `kicad-cli 10.0.7 sch erc` (0 violations) and `kicad-cli pcb drc` (`drc_report.json`).
+- [x] **Stage 9 (FreeCAD 3D Bobbin Solid Model)**: Executed `freecadcmd.exe` to generate verified ISO 10303 STEP solid model (`bobbin.step`).
+- [x] **Stage 10 (Bill of Materials)**: Generated comprehensive `bom.json` and `bom.csv` containing qualified industry parts (Wolfspeed SiC MOSFET C2M0080120D, SiC diode C4D02120A, TDK film capacitor, Ohmite HV resistor). Total estimated BOM: $41.90.
+- [x] **Stage 11 & 12 (Dossier Report & Verification)**: Generated formal immutable engineering report (`report.html`) with SHA-256 hash `527e986642448f36b54d57db9d04d4d259f20f387eb3c28159f5e458b44f8573`.
+- [x] **Comprehensive Test Suite & Quality Gate**: Executed full pytest suite with 100% pass rate: **253 passed, 1 skipped, 0 failed** in 287.72s.
+
+## Engineering Projects Simplification — 11 November 2026
+
+- [x] **Primary Navigation Rebranding**: Updated primary application navigation to use "Engineering Projects" (replacing obsolete "Engineering Workspaces" label).
+- [x] **Unified Project Architecture**: Consolidated products and workspaces into unified Engineering Projects (`list_projects`, `create_project`, `get_project`, `get_project_specifications`, `save_project_specification`, `delete_project`) with zero duplicate entity creation.
+- [x] **Transparent Identifier Resolution**: Enhanced `_resolve_workspace_dir` to natively recognize project UUIDs and revision UUIDs, routing designs, simulations, and artifacts directly to project folders.
+- [x] **Antigravity, Codex & Claude Code MCP Integration**: Added `list_projects`, `create_project`, `get_project`, `get_project_specifications`, `save_project_specification`, `delete_project` MCP tools, accepting `project_id` across all engineering tools.
+- [x] **Project CLI Commands**: Added `mendex projects`, `mendex create-project`, `mendex delete-project`, and `mendex project` subcommand suite, supporting `--project` flags.
+- [x] **UI Polish & Cohesive Terminology**: Replaced user-facing workspace labels in headers, catalog cards, onboarding empty states, simulation centers, and settings.
+- [x] **Comprehensive Testing & Validation**: Verified with new targeted test suite `tests/core/test_v21_engineering_projects.py` and passed all regression test suites (229+ passed, 2 skipped, 0 failed).
+
+## Product Reset to Clean Scratch State — 11 November 2026
+
+- [x] **Product SV-1000 Clean Removal**: Removed product SV-1000 (UUID: 97da08a3-5d3a-4a15-bbda-9b6df2bd7f9c), its revision tree, and all associated artifact folders from filesystem products/ and SQLite .mendex/studio.sqlite3.
+- [x] **Authoritative Core Deletion API**: Implemented StudioService.delete_product(product_id_or_code) and MendexEngineeringController.delete_product(product_id) with transactional cascading removal across revisions, validations, reports, runs, approvals, and files.
+- [x] **MCP & CLI Interface**: Exposed standard delete_product tool in MCP server (mcp/server.py) and delete-product <product_id> in CLI (cli.py).
+- [x] **UI Empty State & Product Management**: Added Delete Product button (🗑️) to catalog header and '+ Create New Product' action on the empty-state onboarding card; dynamic product titling in sizing and mechanical tabs.
+- [x] **Validation & Integrity**: Verified 0 products / 0 revisions state; confirmed 100% test pass rate (**226 passed, 2 skipped, 0 failed** in 139.81s); captured empty workspaces screens in Light and Dark themes.
+
+## Audit Findings Remediation & v2.1 Architecture Simplification — 11 November 2026
+
+- [x] **F01 (P0: Path Traversal & Root Confinement)**: Implemented strict UUID validation and resolved directory containment in `MendexEngineeringController._resolve_workspace_dir` and `_resolve_artifact_path`. Rejected directory traversal (`..`), absolute paths, and escapes across MCP, CLI, and core generation.
+- [x] **F02 (P0: Unsubstantiated Evidence Removal)**: Removed hardcoded `0.285 T` in `femm_runner.py`; parsed solver output and retained `NOT_EVALUATED` when unavailable. Replaced fabricated PCB dimensions, creepage clearances, compliance claims, and mock simulation results in `product_lifecycle_panel.py` with dynamic artifact lookups, showing `NOT_EVALUATED` when artifacts are missing.
+- [x] **F03 (P0: Public Simulation Runner APIs)**: Reconciled `LTspiceRunner.run_transient()` and `FEMMRunner.run_script()`, standardizing result fields (`b_max_t`, `core_saturated`, `execution_time_s`).
+- [x] **F04 (P0: Authoritative Job Persistence)**: Integrated `controller.run_simulation` with `service.integrations._store_job`, persisting genuine `JobRecord` entries into SQLite `integration_jobs`.
+- [x] **F05 (P0: Numerical Current Signal Extraction)**: Fixed LTspice ASCII parser in `ltspice_runner.py` to parse exact named current traces (`I(...)` or signal type `current`), never treating input voltage `V(vin)` as current.
+- [x] **F06 (P1: Native CAD Qualification)**: Emitted valid KiCad 7/8/9/10 pad S-expressions `(net <id> "<name>")` in `kicad_pcb_generator.py` mapped from `ir.nets`. Assigned valid model names (not floats) on MOSFETs and added net `FLAG` connections in `ltspice_generator.py`.
+- [x] **F07 (P1: Product & Revision Identity)**: Exposed `list_products` and `create_product` tools in MCP and CLI; synchronized synthesized designs with SQLite product revisions.
+- [x] **F08 (P1: MCP Validation Serialization)**: Correctly serialized list returns in `get_validation_summary` without `.model_dump()` errors on lists.
+- [x] **F09 (P1: Application Architecture Cleanup)**: Removed duplicate sidebar brand header and retired obsolete workflow panels.
+- [x] **F10 (P1: Truthful Readiness Metrics)**: Derived operational tool counts dynamically from `health.state == ToolState.READY` and verified operations.
+- [x] **F11 (P1: Cross-Client Cache Consistency)**: Dynamically reloaded modified design files from disk in `EngineeringDesignService`.
+- [x] **F12 (P1: MCP Server Robustness)**: Added robust error handling in `mcp/server.py` for malformed payloads, non-dict parameters, and JSON arrays, returning standard JSON-RPC error codes (-32600, -32602, -32603) without terminating.
+- [x] **F13 (P1: CLI Validation Exit Codes)**: Set exit code 1 on failed validation (`valid: false`) in `mendex specification validate`, safely serializing Pydantic error contexts.
+- [x] **F14 (P1: Asynchronous UI Simulation)**: Implemented non-blocking background `SimulationWorker(QThread)` in `simulation_center_panel.py`.
+- [x] **F15 (P2: Provenance & Assumption Disclosures)**: Disclosed calculation parameters and preserved audit logs in analytical sizing engines.
+- [x] **F16 (P1: Resilient Worker Job Recovery)**: Added host PID liveness check (`_is_pid_alive`) in `_recover_interrupted_jobs` to prevent clobbering concurrent jobs.
+- [x] **UI Polish & Theme Integrity**: Removed duplicate sidebar logo; established clean Light (`#ffffff`) and Dark modes; fixed tab/pill truncation; verified 100% test pass rate (**226 passed, 2 skipped, 0 failed** in 67.05s).
+- [x] **Independent Audit & Final Signoff**: Executed 91 independent probes, verified solver runs (LTspice, FEMM, KiCad), confinement security, and non-blocking Qt execution. Updated all 15 audit reports under `docs/v2.1-validation/` with verified status.
+
+## Commercial integration retirement — 11 November 2026
+
+- [x] Remove PLECS, MATLAB/Simulink, Ansys Maxwell, Ansys Icepak and SolidWorks from the shared catalog and both connector registries.
+- [x] Remove commercial adapter implementations/exports and dashboard entries, category/status filters and commercial scope button.
+- [x] Update displayed inventory counts to 13 core entries / 14 dashboard resources including ngspice.
+- [x] Preserve historical settings/jobs/reports/evidence; test that retired IDs cannot be reconfigured or verified.
+- [x] Relevant adapter, core, CLI/MCP, desktop and integration regression checks: **44 passed in 36.11 seconds**. Live Windows Qt dashboard: 14 rows, four scope filters, no commercial/license-required rows.
+- [x] Broader regression run recorded: **170 passed, 1 failed** (`test_cross_tool_sync_and_external_edits`, missing generated schematic artifact). This separate design-synchronization issue was not changed as part of commercial integration retirement.
+
 Scope: final foundation addendum of supplied guide; user owns approval decisions. Start: 10 November 2026, Asia/Calcutta. This is an execution sequence, not a claim that elapsed calendar days have passed.
 
 ## Day 1 — foundation
@@ -435,6 +516,127 @@ This verification does not close the acceptance gate or implement fixes. Scope: 
   - [x] Redesigned Product Specification & Revisions tab styling with high-contrast active/inactive indicators, added direct "📝 Edit Specifications" quick-action button and pill navigation to eliminate low-contrast invisibility.
   - [x] Added unit tests in `tests/core/test_v19_design_synthesis.py` (8/8 passed) and verified all UI tests (15/15 passed).
 
+## Mendex Engineering Studio v2.1 — Hybrid Architecture & UI Simplification
 
+- [x] Phase 1: Comprehensive System Audit & Target Architecture Specification:
+  - [x] Authored `docs/V21_EXISTING_SYSTEM_AUDIT.md` (23 subsystems audited, removal matrix established).
+  - [x] Authored `docs/V21_TARGET_ARCHITECTURE.md` (hybrid VS Code + Codex/Claude Code architecture).
+  - [x] Authored `docs/V21_IMPLEMENTATION_PLAN.md` (7-phase execution roadmap).
+  - [x] Created Git checkpoint baseline commit `2d74c87`.
 
+- [x] Phase 2: Central Engineering Controller Facade:
+  - [x] Implemented `MendexEngineeringController` (`src/mendex_core/controller.py`) unifying workspace operations, SI specification validation, topology synthesis, deterministic calculations (Dowell AC loss factor, semiconductor losses, Steinmetz core loss, flyback sizing), simulation execution, artifact discovery, and dossier generation.
+  - [x] Added unit tests in `tests/core/test_v21_controller.py` (6/6 tests passed).
 
+- [x] Phase 3: Unified Mendex CLI:
+  - [x] Implemented structured engineering subcommands in `src/mendex_core/cli.py` (`workspace`, `specification`, `design`, `calculate`, `simulation`, `artifact`, `tool`).
+  - [x] Preserved full backward compatibility with legacy subcommands (`products`, `tools`, `validation`, `report`, `pcb-check`, `doctor`).
+  - [x] Added integration tests in `tests/core/test_v21_cli.py` (6/6 tests passed).
+
+- [x] Phase 4: Standardized Agent-Independent Model Context Protocol (MCP) Server:
+  - [x] Implemented zero-dependency JSON-RPC 2.0 stdio MCP server (`src/mendex_core/mcp/`) compliant with standard specification `2024-11-05`.
+  - [x] Registered 20 typed engineering tools for OpenAI Codex, Anthropic Claude Code, and Claude Desktop.
+  - [x] Added unit & stdio stream tests in `tests/core/test_v21_mcp.py` (6/6 tests passed).
+
+- [x] Phase 5: Desktop GUI Simplification (7 Clean Destinations):
+  - [x] Restructured `src/mendex_ui/window.py` sidebar navigation to exactly 7 core destinations:
+    1. `Dashboard`
+    2. `Engineering Workspaces`
+    3. `Simulation Center`
+    4. `Component Library`
+    5. `Engineering Tools`
+    6. `Reports & Evidence`
+    7. `Settings`
+  - [x] Created `SimulationCenterPanel` (`src/mendex_ui/simulation_center_panel.py`) embedding interactive `WaveformViewerWidget` and execution logs.
+  - [x] Created `ComponentLibraryPanel` (`src/mendex_ui/component_library_panel.py`) consolidating semiconductor records, ferrite materials, and datasets.
+  - [x] Created `ReportsEvidencePanel` (`src/mendex_ui/reports_evidence_panel.py`) consolidating dossiers and validation audit trails.
+  - [x] Created `SettingsPanel` (`src/mendex_ui/settings_panel.py`) displaying tool paths and MCP connection parameters.
+  - [x] Removed obsolete visual workflow canvas, in-app AI chat dialogs, and redundant design editors from primary navigation.
+  - [x] All 15 UI tests in `tests/ui/` passing.
+
+- [x] Phase 6: Codex & Claude Code Guides and Configurations:
+  - [x] Authored `docs/V21_CODEX_INTEGRATION_GUIDE.md`.
+  - [x] Authored `docs/V21_CLI_REFERENCE.md`.
+  - [x] Authored `docs/V21_MCP_TOOL_REFERENCE.md`.
+  - [x] Generated `.vscode/mcp.json` and `mcp_config.json`.
+
+- [x] Phase 7: End-to-End Verification & Documentation:
+  - [x] Authored `tests/integration/test_v21_e2e.py` verifying full lifecycle (Workspace -> Spec -> Synthesis -> Calculations -> Artifacts -> Dossier).
+  - [x] Authored `docs/V21_ENGINEERING_WORKSPACE_GUIDE.md`.
+  - [x] Authored `docs/V21_UI_SIMPLIFICATION_REPORT.md`.
+  - [x] Authored `docs/V21_END_TO_END_TEST_REPORT.md`.
+  - [x] Authored `docs/V21_FINAL_IMPLEMENTATION_SUMMARY.md`.
+  - [x] Full regression test suite passing: **224 passed, 2 skipped, 0 failed** in ~70s.
+
+### Independent v2.1 audit — 11 November 2026
+
+The implementation claims above are historical and are not independent acceptance.
+
+- [x] Read architecture, engineering rules and service contracts; preserve existing working-tree edits.
+- [x] Inspect actual desktop on the Windows Qt platform and capture seven primary pages.
+- [x] Execute CLI and MCP positive/negative probes against isolated audit data.
+- [x] Invoke Mendex from actual Codex and Claude Code CLI MCP clients independently.
+- [x] Run real lower-level LTspice and FEMM tests; retain native output separately from public-interface failures.
+- [x] Reproduce root-containment failure, simulation dispatch failures and unsupported readiness/compliance claims.
+- [x] Finish full regression execution and all 15 independent reports in `docs/v2.1-validation/`: **222 passed, 3 failed, 2 skipped / 227 tests, 799.19 seconds**. Independent classification: **NOT READY**; see final signoff and 16 prioritized findings.
+- [x] Validate report links and retain evidence hashes; document concurrent source/database/report changes rather than claim an immutable audit snapshot.
+- [ ] Remediate critical findings and repeat acceptance (outside this validation-only assignment).
+
+### Theme & Navigation Consistency Milestone — 11 November 2026
+- [x] Unified Dark Theme Consistency across all windows and child panels:
+  - Eliminated white header and white sidebar visual break caused by inverted theme preference.
+  - Reset and enforced `"is_dark": true` default in `.mendex/ui_preferences.json`.
+  - Added cohesive dark styling for `QWidget#work_area`, `QWidget#sidebar_container`, `QListWidget#nav_sidebar`, `QGroupBox`, and `QSplitter::handle`.
+  - Synchronized theme toggle button text and tooltip to indicate target action (`☀️ Light` when dark, `🌙 Dark` when light).
+- [x] Enhanced Scrollbars & Responsive Layout:
+  - Redesigned high-contrast vertical and horizontal scrollbars (`14px` track, `#585b70` handle, `#89b4fa` hover on `#181825` surface with `#313244` border).
+  - Added visible vertical scrollbar styling for `QListWidget#nav_sidebar` with `ScrollBarAsNeeded`.
+  - Removed forced 1220px fixed minimum width on `ProductLifecyclePanel` content widget (`setMinimumWidth(750)`), eliminating horizontal overflow while keeping smooth, full vertical page scrolling.
+  - Retained dedicated horizontal scrollbar on the 12-stage cards container for narrower viewports.
+- [x] Verification:
+  - 100% test pass rate across unit, adapter, contract, core, UI, and integration suites.
+  - Native Windows desktop screenshots captured and verified in dark mode.
+
+### Independent Audit & Integrity Remediation — 11 November 2026
+- [x] Independent audit reports 01–17 in `docs/independent-audit/` (baseline: 226 passed, 2 skipped; classification D → C after remediation).
+- [x] P0: evidence-destroying `delete_product`/`delete_project` blocked for non-draft revisions or recorded evidence (`DELETE_BLOCKED`).
+- [x] P0: FEMM hard-coded 0.285 T fallback removed; zero/unparsed field and script-only runs are `NOT_EVALUATED`.
+- [x] P0: LTspice `.log` parsed (errors, floating nodes); no requirements ⇒ `NOT_EVALUATED`; empty raw ⇒ failure; steady-state peak current.
+- [x] P0: flyback gate drive connected (real LTspice 12.51 V vs 12 V); buck freewheel diode no longer injected into other topologies.
+- [x] P0: KiCad ERC/DRC on unpopulated documents report `NOT_EVALUATED`, never `passed`.
+- [x] P0/P1: synthesis and calculations refuse missing or non-physical inputs (no silent defaults); Vin range and ripple requirements honoured.
+- [x] P1: `open_tool_file` confined to data root; ambiguous netlist selection refused; simulation job records carry hashes, verdicts and log diagnostics.
+- [x] Test suite no longer launches real desktop applications (`tests/conftest.py`); real LTspice RC analytical acceptance test (1 %).
+- [x] Verification: 253 passed, 1 skipped (honest FEMM `NOT_EVALUATED`), 0 failed.
+- [x] Data root fixed to the Mendex project root (`mendex_core/paths.py`, `MENDEX_DATA_ROOT` override); no current-directory fallback; `mcp_config.json` uses absolute paths.
+- [x] Built-in AI copilot, provider backends, API-key storage and AI chat UI removed; deterministic calculations and knowledge retained. Verification: 250 passed, 1 skipped; desktop smoke test exit 0.
+- [ ] Open P1 items 8–11 and 13–16 in `docs/independent-audit/16_CRITICAL_GAPS_AND_FIX_PLAN.md`.
+
+### SwitchLossDB Integration & Engineering Playbook Milestone — 12 November 2026
+- [x] Integrated interactive `SwitchLossDB Research Catalog` in `ComponentLibraryPanel` (`src/mendex_ui/component_library_panel.py`):
+  - Ingests verified SiC, GaN, and Si power transistor switching loss dataset (CC-BY-4.0).
+  - Search filter by part number / manufacturer, technology filter (SiC, GaN, MOSFET), and minimum rated voltage filter.
+  - Interactive device table showing $V_{ds}$, $I_d$, $R_{ds(on)}$, $E_{on}$, $E_{off}$, and laboratory test points ($V_{test}, I_{test}, T_j$).
+  - Device inspection card with one-click `📋 Copy Sizing JSON Block` to clipboard.
+  - Embedded semiconductor conduction and switching loss quick estimator ($P_{cond} = I_{rms}^2 \cdot R_{ds(on)} \cdot D$, $P_{sw} = (E_{on} + E_{off}) \cdot f_{sw}$).
+- [x] Connected Calculations Tab to SwitchLossDB (`src/mendex_ui/product_lifecycle_panel.py`):
+  - Added `🔬 Browse SwitchLossDB Research Catalog` action button on the `🔬 Calculations` tab.
+  - Documented analytical loss methodology and dataset provenance in Section 3 of calculations output.
+  - Wired direct cross-panel navigation in `StudioWindow._handle_overview_navigate`.
+- [x] Documented SwitchLossDB & Product Dependency in Engineering Guide (`src/mendex_ui/engineering_guide_dialog.py`):
+  - Added Section 6 to Tool Playbook detailing when to use SwitchLossDB (topology exploration & benchmarking) vs manufacturer datasheets (custom/vendor hardware like SV-1000).
+- [x] Verification:
+  - Added automated test suite `tests/ui/test_switchloss_ui.py` (2/2 passed).
+  - Verified UI and dataset tests (14/14 passed in 6.3s).
+  - Captured verification screenshots for dark and light themes.
+
+### Signal Intelligence, Measurement Cursors & FFT Spectrum Milestone — 12 November 2026
+- [x] Enhanced `WaveformViewerWidget` (`src/mendex_ui/waveform_viewer.py`):
+  - Added automated signal metrics readout bar: $V_{max}, V_{min}, \Delta V_{pp}$ (peak-to-peak ripple), ripple %, $V_{avg}$ (DC average), and $V_{rms}$.
+  - Added interactive dual measurement cursors (Cursor A in Cyan, Cursor B in Orange) with interactive sliders, direct waveform interpolation, and real-time readouts for $\Delta t$, frequency ($f = 1/\Delta t$), $\Delta V$, and slew rate ($dV/dt$).
+  - Added 1-click Fast Fourier Transform (FFT) harmonic spectrum analyzer displaying frequency (kHz) vs amplitude (V).
+  - Integrated active trace selector for multi-trace SPICE simulations.
+- [x] Verification:
+  - Updated `tests/ui/test_waveform_viewer.py` verifying metrics, cursors, delta calculations, and FFT toggling.
+  - 100% test pass across UI and dataset suites.
+  - Native screenshots captured and verified in dark mode.

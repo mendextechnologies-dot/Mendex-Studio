@@ -1,0 +1,3 @@
+primary_current=1
+primary_flux_linkage=0.0001274437087629309
+primary_inductance_h=0.0001274437087629309

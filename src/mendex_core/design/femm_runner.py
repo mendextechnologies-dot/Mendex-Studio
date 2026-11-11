@@ -21,9 +21,18 @@ class FEMMSimulationResult(BaseModel):
     saturation_threshold_t: float = 0.49
     is_saturated: bool = False
     core_fem_path: Optional[str] = None
-    solver_status: str = "COMPLETED"
-    summary_verdict: str = "PASSED"
+    solver_status: str = "NOT_EVALUATED"
+    summary_verdict: str = "NOT_EVALUATED"
     error_message: Optional[str] = None
+    execution_time_s: float = 0.0
+
+    @property
+    def b_max_t(self) -> float:
+        return self.b_max_tesla
+
+    @property
+    def core_saturated(self) -> bool:
+        return self.is_saturated
 
 
 class FEMMRunner:
@@ -125,11 +134,40 @@ class FEMMRunner:
             _call_femm("mi_close()")
             _call_femm("exit()")
 
-            # Parse flux density magnitude: if zero or default point, estimate from excitation
-            # In typical ferrite core, B_pk = Vin * D / (Np * Ae * fsw)
-            b_measured = 0.285  # Realistic calculated operating B field
-            is_sat = b_measured >= saturation_limit_t
+            # Parse flux density magnitude from solver output
+            b_measured = None
+            if raw_pt and raw_pt.strip():
+                try:
+                    import json
+                    nums = json.loads(raw_pt)
+                    if isinstance(nums, list) and len(nums) >= 3:
+                        b1 = float(nums[1])
+                        b2 = float(nums[2])
+                        b_calc = math.sqrt(b1**2 + b2**2)
+                        # A zero field means the model carries no excitation; never substitute an estimate.
+                        if b_calc > 1e-6:
+                            b_measured = b_calc
+                    elif isinstance(nums, (int, float)):
+                        b_measured = abs(float(nums))
+                except Exception:
+                    b_measured = None
 
+            if b_measured is None:
+                return FEMMSimulationResult(
+                    success=False,
+                    b_max_tesla=0.0,
+                    saturation_threshold_t=saturation_limit_t,
+                    is_saturated=False,
+                    core_fem_path=str(core_fem),
+                    solver_status="NOT_EVALUATED",
+                    summary_verdict="NOT_EVALUATED",
+                    error_message=(
+                        "No verified flux density: solver returned no or zero field. The generated model has no "
+                        "winding excitation or boundary conditions, so saturation was not evaluated."
+                    ),
+                )
+
+            is_sat = b_measured >= saturation_limit_t
             return FEMMSimulationResult(
                 success=True,
                 b_max_tesla=b_measured,
@@ -162,3 +200,38 @@ class FEMMRunner:
                     ofile.unlink()
                 except Exception:
                     pass
+
+    @classmethod
+    def run_script(cls, script_path: Path, working_dir: Optional[Path] = None) -> FEMMSimulationResult:
+        """Executes a Lua script headlessly in FEMM."""
+        runner = cls()
+        script = Path(script_path).resolve()
+        if not script.exists():
+            return FEMMSimulationResult(
+                success=False,
+                solver_status="NOT_FOUND",
+                summary_verdict="NOT_EVALUATED",
+                error_message=f"Script file '{script}' not found.",
+            )
+        wdir = working_dir or script.parent
+        executable = str(runner.exe_path) if runner.exe_path.exists() else "femm.exe"
+        cmd = [executable, "-windowhide", f"-lua-script={script}"]
+        start = time.perf_counter()
+        try:
+            res = subprocess.run(cmd, cwd=str(wdir), capture_output=True, text=True, timeout=60)
+            elapsed = time.perf_counter() - start
+            # Exit code 0 only proves the script ran; no field quantity is extracted here.
+            return FEMMSimulationResult(
+                success=(res.returncode == 0),
+                solver_status="SCRIPT_COMPLETED" if res.returncode == 0 else "SOLVER_ERROR",
+                summary_verdict="NOT_EVALUATED" if res.returncode == 0 else "FAILED",
+                execution_time_s=elapsed,
+                error_message=res.stderr if res.returncode != 0 else None,
+            )
+        except Exception as exc:
+            return FEMMSimulationResult(
+                success=False,
+                solver_status="SOLVER_ERROR",
+                summary_verdict="NOT_EVALUATED",
+                error_message=str(exc),
+            )

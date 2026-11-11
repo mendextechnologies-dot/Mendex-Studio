@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "mendex-engineering": {
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-m", "mendex_core.mcp", "--root", "${workspaceFolder}"],
+      "env": {
+        "PYTHONPATH": "src"
+      }
+    }
+  }
+}

@@ -153,8 +153,9 @@ def test_window_integration_with_workspace_panels(tmp_path):
     window.show()
     app.processEvents()
 
-    assert window.pages.count() == 16
-    assert hasattr(window, "design_studio")
+    assert window.pages.count() == 7
+    assert not hasattr(window, "design_studio")
+    assert not hasattr(window, "workflow_studio")
     assert hasattr(window, "transformer_ws")
     assert hasattr(window, "dcdc_ws")
     assert hasattr(window, "semiconductor_ws")

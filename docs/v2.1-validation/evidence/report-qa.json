@@ -1,0 +1,40 @@
+{
+  "reports": [
+    "01_ARCHITECTURE_AUDIT.md",
+    "02_APPLICATION_CLEANUP_AUDIT.md",
+    "03_UI_VALIDATION.md",
+    "04_ENGINEERING_CORE_VALIDATION.md",
+    "05_CLI_VALIDATION.md",
+    "06_MCP_VALIDATION.md",
+    "07_CODEX_INTEGRATION.md",
+    "08_CLAUDE_CODE_INTEGRATION.md",
+    "09_ENGINEERING_TOOLS_VALIDATION.md",
+    "10_WORKSPACE_SYNC_VALIDATION.md",
+    "11_SECURITY_AND_RECOVERY.md",
+    "12_AUTOMATED_TEST_RESULTS.md",
+    "13_END_TO_END_EVIDENCE.md",
+    "14_REMAINING_GAPS.md",
+    "15_FINAL_INDEPENDENT_SIGNOFF.md"
+  ],
+  "report_count": 15,
+  "broken_local_links": [],
+  "test_summary": {
+    "collected_in_report": 227,
+    "passed": 222,
+    "failed": 3,
+    "errors": 0,
+    "skipped": 2,
+    "duration_s": 799.005
+  },
+  "preservation": {
+    "scope": "Existing products, workspaces, engineering_designs, reports, top-level .mendex files; excludes historical .mendex subdirectories",
+    "compared_files": 165,
+    "removed": [],
+    "modified": [
+      ".mendex\\studio.sqlite3"
+    ],
+    "added": [
+      "reports\\workflow_report_8481499b.html"
+    ]
+  }
+}

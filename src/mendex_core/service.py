@@ -11,7 +11,6 @@ from .models import Category, Lifecycle, Product, Revision, Specification, now
 from .adapters import AdapterRegistry
 from .evidence import ManualCheck, ValidationRecord, ValidationStatus, Report, SimulationRun, digest, specification_hash
 from .rules import RuleRegistry
-from .ai import AIRequest, UnavailableAIService
 
 
 class StudioError(Exception):
@@ -29,7 +28,6 @@ class StudioService:
         metadata.mkdir(exist_ok=True)
         self.database = metadata / "studio.sqlite3"
         self.rules = RuleRegistry.defaults()
-        self.ai = UnavailableAIService()
         self.plugin_status = []
         from .plugins import load_plugin_file
         loaded_plugin_ids = set()
@@ -76,8 +74,6 @@ class StudioService:
                 migrate_v5(db)
         from .integration_service import IntegrationService
         self.integrations = IntegrationService(self)
-        from .intelligence import EngineeringReasoningOrchestrator
-        self.intelligence = EngineeringReasoningOrchestrator(data_root=self.root)
         from .workflows import WorkflowStorageService, migrate_workflows_table, WorkflowExecutionEngine
         with self.connection() as db:
             migrate_workflows_table(db)
@@ -95,8 +91,6 @@ class StudioService:
         self.design = EngineeringDesignService(self.root)
         from .components import ComponentLibraryService
         self.components = ComponentLibraryService()
-        from .ai import AICopilotGateway
-        self.ai_copilot = AICopilotGateway()
 
     @contextmanager
     def connection(self):
@@ -239,6 +233,83 @@ class StudioService:
             db.execute("UPDATE products SET payload=? WHERE id=?", (product.model_dump_json(), str(product_id)))
         return product
 
+    def delete_product(self, product_id_or_code):
+        try:
+            product_uuid = UUID(str(product_id_or_code))
+            product = self.get_product(product_uuid)
+        except (ValueError, StudioError):
+            with self.connection() as db:
+                row = db.execute("SELECT id FROM products WHERE code=? COLLATE NOCASE", (str(product_id_or_code),)).fetchone()
+            if not row:
+                raise StudioError("NOT_FOUND", f"Product '{product_id_or_code}' not found")
+            product_uuid = UUID(row[0])
+            product = self.get_product(product_uuid)
+
+        pid_str = str(product_uuid)
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            rev_rows = db.execute("SELECT id, payload FROM revisions WHERE product_id=?", (pid_str,)).fetchall()
+            rev_ids = [row[0] for row in rev_rows]
+            # Frozen baselines and recorded evidence are immutable: only empty draft projects may be deleted.
+            blockers = []
+            for rid, payload in rev_rows:
+                status = json.loads(payload).get("lifecycle_status", Lifecycle.DRAFT.value)
+                if status != Lifecycle.DRAFT.value:
+                    blockers.append(f"revision {rid} is {status}")
+            evidence_queries = [
+                ("runs", "SELECT COUNT(*) FROM runs WHERE revision_id=?"),
+                ("validations", "SELECT COUNT(*) FROM validations WHERE revision_id=?"),
+                ("reports", "SELECT COUNT(*) FROM reports WHERE revision_id=?"),
+                ("lifecycle approvals", "SELECT COUNT(*) FROM lifecycle_approvals WHERE revision_id=?"),
+                ("measurements", "SELECT COUNT(*) FROM measurements WHERE revision_id=?"),
+                ("change requests", "SELECT COUNT(*) FROM engineering_change_requests WHERE revision_id=?"),
+            ]
+            for rid in rev_ids:
+                for label, query in evidence_queries:
+                    try:
+                        count = db.execute(query, (rid,)).fetchone()[0]
+                    except sqlite3.OperationalError:
+                        continue  # table not created in this data root
+                    if count:
+                        blockers.append(f"revision {rid} has {count} {label}")
+            if blockers:
+                raise StudioError("DELETE_BLOCKED", "Product has frozen baselines or recorded evidence and cannot be deleted: " + "; ".join(blockers))
+            for rid in rev_ids:
+                db.execute("DELETE FROM validations WHERE revision_id=?", (rid,))
+                db.execute("DELETE FROM reports WHERE revision_id=?", (rid,))
+                db.execute("DELETE FROM runs WHERE revision_id=?", (rid,))
+                try:
+                    db.execute("DELETE FROM lifecycle_approvals WHERE revision_id=?", (rid,))
+                except Exception:
+                    pass
+                try:
+                    db.execute("DELETE FROM measurements WHERE revision_id=? OR product_id=?", (rid, pid_str))
+                except Exception:
+                    pass
+                try:
+                    db.execute("DELETE FROM engineering_change_requests WHERE revision_id=? OR product_id=?", (rid, pid_str))
+                except Exception:
+                    pass
+            try:
+                db.execute("UPDATE integration_workspaces SET product_id=NULL WHERE product_id=?", (pid_str,))
+            except Exception:
+                pass
+            try:
+                db.execute("UPDATE activities SET product_id=NULL WHERE product_id=?", (pid_str,))
+            except Exception:
+                pass
+            try:
+                db.execute("UPDATE workflows SET product_id=NULL WHERE product_id=?", (pid_str,))
+            except Exception:
+                pass
+            db.execute("DELETE FROM revisions WHERE product_id=?", (pid_str,))
+            db.execute("DELETE FROM products WHERE id=?", (pid_str,))
+
+        p_dir = (self.root / "products" / pid_str).resolve()
+        if p_dir.is_relative_to(self.root / "products") and p_dir.exists():
+            shutil.rmtree(p_dir, ignore_errors=True)
+        return True
+
     def save_product_revision(self, product_id, revision_id, name, owner, description, specification):
         spec = Specification.model_validate(specification)
         with self.connection() as db:
@@ -328,13 +399,6 @@ class StudioService:
             return self.rules.list()
         revision = self.get_revision(revision_id)
         return self.rules.assess(self.get_product(revision.product_id).category, revision.specification)
-
-    def ai_advice(self, revision_id, question):
-        revision = self.get_revision(revision_id)
-        return self.ai.advise(AIRequest(revision_id=revision.revision_id, question=question, context={"specification": revision.specification.model_dump(mode="json")}))
-
-    def advise_engineering(self, question, workspace_context=None, provider_id=None):
-        return self.intelligence.process_query(question, workspace_context, provider_id)
 
     def list_plugins(self):
         return self.plugin_status

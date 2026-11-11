@@ -14,14 +14,6 @@ from .research_adapters import (
     MagNetMLBenchmarksAdapter,
     MagNetPrincetonAdapter,
 )
-from .commercial_stubs import (
-    CommercialStubAdapter,
-    PLECSAdapter,
-    MATLABAdapter,
-    AnsysMaxwellAdapter,
-    AnsysIcepakAdapter,
-    SolidWorksAdapter,
-)
 from .registry import ToolRegistry
 
 __all__ = [
@@ -39,11 +31,5 @@ __all__ = [
     "MagNetDatasetAdapter",
     "MagNetMLBenchmarksAdapter",
     "MagNetPrincetonAdapter",
-    "CommercialStubAdapter",
-    "PLECSAdapter",
-    "MATLABAdapter",
-    "AnsysMaxwellAdapter",
-    "AnsysIcepakAdapter",
-    "SolidWorksAdapter",
     "ToolRegistry",
 ]

@@ -4,7 +4,6 @@ import sqlite3
 import pytest
 from pydantic import ValidationError
 
-from mendex_core.ai import AIRequest
 from mendex_core.models import Specification
 from mendex_core.service import StudioError, StudioService
 from mendex_core.evidence import ManualCheck
@@ -14,16 +13,14 @@ def product(service):
     return service.create_product("DEMO", "Illustrative software fixture", "transformer", "Test engineer")
 
 
-def test_rules_ai_and_persisted_unavailable_simulation(tmp_path):
+def test_rules_and_persisted_unavailable_simulation(tmp_path):
     service = StudioService(tmp_path)
     demo = product(service)
     rules = service.list_rules(demo.active_revision_id)
     assert any(rule.missing_fields for rule in rules)
     assert all(rule.status in ("not_evaluated", "physical_verification_required") for rule in rules)
-    response = service.ai_advice(demo.active_revision_id, "What is available?")
-    assert response.status == "unavailable" and response.provider == "none"
-    with pytest.raises(ValidationError):
-        AIRequest(revision_id=demo.active_revision_id, question=" ")
+    # The built-in AI advisor was retired: Core exposes no AI provider surface
+    assert not hasattr(service, "ai_advice") and not hasattr(service, "ai_copilot")
     run = service.request_simulation(demo.active_revision_id, "ltspice")
     restarted = StudioService(tmp_path)
     assert restarted.list_runs(demo.active_revision_id) == [run]

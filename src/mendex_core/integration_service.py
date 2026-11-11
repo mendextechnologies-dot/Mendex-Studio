@@ -18,6 +18,35 @@ from .models import now
 from .service import StudioError
 
 
+def _is_pid_alive(pid: int) -> bool:
+    """Checks whether a process PID is currently alive on the host system."""
+    if pid <= 0:
+        return False
+    try:
+        import os, sys
+        if sys.platform == "win32":
+            import ctypes
+            from ctypes import wintypes
+            PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+            STILL_ACTIVE = 259
+            kernel32 = ctypes.windll.kernel32
+            handle = kernel32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, False, wintypes.DWORD(pid))
+            if not handle:
+                return False
+            try:
+                exit_code = wintypes.DWORD()
+                if kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+                    return exit_code.value == STILL_ACTIVE
+                return False
+            finally:
+                kernel32.CloseHandle(handle)
+        else:
+            os.kill(pid, 0)
+            return True
+    except Exception:
+        return False
+
+
 class IntegrationService:
     def __init__(self, studio):
         self.studio = studio
@@ -37,6 +66,13 @@ class IntegrationService:
                 for (payload_str,) in rows:
                     try:
                         record = JobRecord.model_validate_json(payload_str)
+                        worker_pid = record.request.parameters.get("worker_pid") if record.request and record.request.parameters else None
+                        if worker_pid is not None:
+                            try:
+                                if _is_pid_alive(int(worker_pid)):
+                                    continue
+                            except (ValueError, TypeError):
+                                pass
                         record.status = JobStatus.FAILED
                         result = self._failure(
                             record,
@@ -296,7 +332,12 @@ class IntegrationService:
 
     def _store_job(self, record, manifest_hash=None):
         with self.studio.connection() as db:
-            db.execute("UPDATE integration_jobs SET status=?,payload=?,manifest_sha256=COALESCE(?,manifest_sha256) WHERE id=?", (record.status.value, record.model_dump_json(), manifest_hash, str(record.request.job_id)))
+            cur = db.execute("UPDATE integration_jobs SET status=?,payload=?,manifest_sha256=COALESCE(?,manifest_sha256) WHERE id=?", (record.status.value, record.model_dump_json(), manifest_hash, str(record.request.job_id)))
+            if cur.rowcount == 0:
+                db.execute(
+                    "INSERT INTO integration_jobs (id,workspace_id,status,payload,manifest_sha256) VALUES (?,?,?,?,?)",
+                    (str(record.request.job_id), str(record.request.workspace_id), record.status.value, record.model_dump_json(), manifest_hash)
+                )
 
     def submit(self, request, retry_of=None):
         if self._closed:

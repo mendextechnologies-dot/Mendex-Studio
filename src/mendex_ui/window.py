@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 
 from mendex_core.models import Category, Specification
 from mendex_core.knowledge import GUIDELINES, GUIDELINES_REVISION
-from .panels import ToolPanel, ValidationPanel, ReportsPanel, SimulationPanel, KnowledgePanel
+from .panels import ToolPanel, ValidationPanel, ReportsPanel, SimulationPanel
 from .integration_panels import ToolCenter, JobsPanel, DatasetPanel
 from .workspace_panels import (
     TransformerWorkspacePanel,
@@ -22,12 +22,14 @@ from .workspace_panels import (
 )
 from .theme import DARK_THEME_QSS, LIGHT_THEME_QSS
 from .v17_panels import EnterpriseDashboardPanel
-from .workflow_canvas import WorkflowStudioPanel
 from .product_lifecycle_panel import ProductEngineeringOverviewPanel
 from .pcb_panel import PCBWorkspacePanel
 from .command_palette import CommandPaletteDialog
 from .notification_center import NotificationCenterDialog
-from .design_studio_panel import EngineeringDesignStudioPanel, NewEngineeringDesignDialog
+from .settings_panel import SettingsPanel
+from .simulation_center_panel import SimulationCenterPanel
+from .component_library_panel import ComponentLibraryPanel
+from .reports_evidence_panel import ReportsEvidencePanel
 
 
 class ProductDialog(QDialog):
@@ -54,7 +56,7 @@ class StudioWindow(QMainWindow):
         self.service = service
         self.product = None
         self.revision = None
-        self.setWindowTitle("Mendex Engineering Studio v2.0 · Enterprise Edition")
+        self.setWindowTitle("Mendex Engineering Studio v2.1")
         if ICON_PATH.exists():
             self.setWindowIcon(QIcon(str(ICON_PATH)))
         self.resize(1380, 880)
@@ -85,11 +87,11 @@ class StudioWindow(QMainWindow):
             logo_label.setToolTip("Mendex Technologies — Engineering Studio")
             header_layout.addWidget(logo_label)
 
-        brand_title = QLabel("MENDEX STUDIO v2.0")
+        brand_title = QLabel("MENDEX STUDIO v2.1")
         brand_title.setStyleSheet("font-weight: 700; font-size: 13px; color: #89b4fa; letter-spacing: 0.5px;")
         header_layout.addWidget(brand_title)
 
-        ws_label = QLabel("Active Workspace:")
+        ws_label = QLabel("Active Project:")
         ws_label.setStyleSheet("color: #a6adc8; font-weight: 500;")
         header_layout.addWidget(ws_label)
 
@@ -97,15 +99,6 @@ class StudioWindow(QMainWindow):
         self.workspace_selector.setMinimumWidth(220)
         self.workspace_selector.currentIndexChanged.connect(self._on_workspace_selected_header)
         header_layout.addWidget(self.workspace_selector)
-
-        btn_new_ws = QPushButton("+ New Workspace")
-        btn_new_ws.clicked.connect(self._create_header_workspace)
-        header_layout.addWidget(btn_new_ws)
-
-        btn_new_design = QPushButton("➕ New Engineering Design")
-        btn_new_design.setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: 700; padding: 5px 12px; border-radius: 4px;")
-        btn_new_design.clicked.connect(self._create_header_design)
-        header_layout.addWidget(btn_new_design)
 
         self.search_box = QLineEdit()
         self.search_box.setPlaceholderText("Search tools, activities, waveforms, jobs... (Ctrl+K)")
@@ -131,8 +124,16 @@ class StudioWindow(QMainWindow):
         self.btn_notices.clicked.connect(self.notification_center.exec)
         header_layout.addWidget(self.btn_notices)
 
+        self.btn_help_guide = QPushButton("❓ Help & AI Prompts")
+        self.btn_help_guide.setObjectName("btn_help_guide")
+        self.btn_help_guide.setStyleSheet("font-weight: 700; color: #f9e2af; background-color: #3b321a; border: 1px solid #755b1f; padding: 4px 10px; border-radius: 4px;")
+        self.btn_help_guide.setToolTip("Open Complete Product Design Guide & AI Engineering Prompts (Codex / Claude / Antigravity)")
+        self.btn_help_guide.clicked.connect(self._open_help_guide)
+        header_layout.addWidget(self.btn_help_guide)
+
         self._dark_theme = True
-        self.btn_theme_toggle = QPushButton("🌙 Dark")
+        self.btn_theme_toggle = QPushButton("☀️ Light")
+        self.btn_theme_toggle.setToolTip("Switch to Light Theme")
         self.btn_theme_toggle.clicked.connect(self.toggle_theme)
         header_layout.addWidget(self.btn_theme_toggle)
 
@@ -140,6 +141,7 @@ class StudioWindow(QMainWindow):
 
         # 2. Main Work Area (Sidebar Navigation + Stacked Pages)
         work_area = QWidget()
+        work_area.setObjectName("work_area")
         layout = QHBoxLayout(work_area)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
@@ -155,7 +157,17 @@ class StudioWindow(QMainWindow):
         self.navigation = nav
         nav.setObjectName("nav_sidebar")
         nav.setFixedWidth(220)
-        nav.addItems(["Dashboard", "Products", "Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace", "Simulations", "Validation", "Reports", "Tool Manager", "Knowledge Center"])
+        nav.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        nav.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        nav.addItems([
+            "Dashboard",
+            "Engineering Projects",
+            "Simulation Center",
+            "Component Library",
+            "Engineering Tools",
+            "Reports & Evidence",
+            "Settings",
+        ])
         sidebar_layout.addWidget(nav, 1)
 
         self.pages = QStackedWidget()
@@ -182,76 +194,63 @@ class StudioWindow(QMainWindow):
 
         # Page 1: Products
         products = QWidget()
-        products.setStyleSheet("background-color: #11111b;")
+        products.setObjectName("products_container")
         pane = QVBoxLayout(products)
         pane.setContentsMargins(12, 12, 12, 12)
         pane.setSpacing(10)
 
+        workspace_actions = QHBoxLayout()
+        workspace_actions.addWidget(QLabel("Engineering Projects"))
+        workspace_actions.addStretch()
+        self.btn_new_workspace = QPushButton("+ New Project")
+        self.btn_new_workspace.setObjectName("create_workspace")
+        self.btn_new_workspace.clicked.connect(lambda: self.guarded(self._create_workspace))
+        workspace_actions.addWidget(self.btn_new_workspace)
+        pane.addLayout(workspace_actions)
+
         split = QSplitter()
-        split.setStyleSheet("QSplitter { background-color: #11111b; } QSplitter::handle { background-color: #313244; width: 4px; }")
+        split.setObjectName("products_splitter")
 
         # Left Column: Styled Catalog Sidebar
         catalog_card = QFrame()
-        catalog_card.setStyleSheet("background-color: #181825; border: 1px solid #313244; border-radius: 8px;")
+        catalog_card.setObjectName("catalog_card")
         catalog_layout = QVBoxLayout(catalog_card)
         catalog_layout.setContentsMargins(12, 12, 12, 12)
         catalog_layout.setSpacing(10)
 
         cat_header = QHBoxLayout()
-        cat_title = QLabel("📦 Product Catalog")
-        cat_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #cdd6f4;")
+        cat_title = QLabel("📁 Project Catalog")
+        cat_title.setStyleSheet("font-size: 14px; font-weight: 700;")
         cat_header.addWidget(cat_title)
         cat_header.addStretch()
-        self.lbl_product_count = QLabel("0 Products")
-        self.lbl_product_count.setStyleSheet("background: #313244; color: #89b4fa; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;")
+        self.lbl_product_count = QLabel("0 Projects")
+        self.lbl_product_count.setStyleSheet("padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;")
         cat_header.addWidget(self.lbl_product_count)
         catalog_layout.addLayout(cat_header)
 
         btn_row = QHBoxLayout()
-        btn_new_prod = QPushButton("➕ New Product")
-        btn_new_prod.setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: 700; padding: 6px 12px; border-radius: 4px; border: none;")
+        btn_new_prod = QPushButton("➕ New Project")
+        btn_new_prod.setProperty("class", "primary_btn")
         btn_new_prod.clicked.connect(self.create_product)
         btn_row.addWidget(btn_new_prod, 1)
 
         btn_refresh_prod = QPushButton("🔄")
-        btn_refresh_prod.setToolTip("Refresh products")
-        btn_refresh_prod.setStyleSheet("background-color: #313244; color: #cdd6f4; font-weight: bold; padding: 6px 10px; border-radius: 4px;")
+        btn_refresh_prod.setToolTip("Refresh projects")
         btn_refresh_prod.clicked.connect(self.refresh)
         btn_row.addWidget(btn_refresh_prod)
+
+        self.btn_del_prod = QPushButton("🗑️")
+        self.btn_del_prod.setToolTip("Delete selected project")
+        self.btn_del_prod.clicked.connect(self.delete_current_product)
+        btn_row.addWidget(self.btn_del_prod)
         catalog_layout.addLayout(btn_row)
 
         self.products = QListWidget()
-        self.products.setStyleSheet("""
-            QListWidget {
-                background-color: #11111b;
-                color: #cdd6f4;
-                border: 1px solid #313244;
-                border-radius: 6px;
-                padding: 4px;
-                outline: none;
-            }
-            QListWidget::item {
-                background-color: #1e1e2e;
-                color: #cdd6f4;
-                border: 1px solid #313244;
-                border-radius: 6px;
-                margin: 3px 2px;
-                padding: 10px;
-            }
-            QListWidget::item:hover {
-                background-color: #313244;
-                border-color: #89b4fa;
-            }
-            QListWidget::item:selected {
-                background-color: #24273a;
-                border: 1.5px solid #89b4fa;
-                color: #ffffff;
-            }
-        """)
+        self.products.setObjectName("products_list")
         self.products.currentRowChanged.connect(self.select_product)
         catalog_layout.addWidget(self.products, 1)
 
-        self.lbl_empty_catalog = QLabel("No products in workspace.\n\nClick '+ New Product' above\nto begin your first design.")
+        self.lbl_empty_catalog = QLabel("No engineering projects yet.\n\nUse Antigravity, Codex, or Claude Code to create designs.\nOr click '+ New Project' to define project specifications.")
         self.lbl_empty_catalog.setAlignment(Qt.AlignCenter)
         self.lbl_empty_catalog.setStyleSheet("color: #a6adc8; font-size: 12px; padding: 30px 10px; line-height: 1.6;")
         catalog_layout.addWidget(self.lbl_empty_catalog)
@@ -260,14 +259,11 @@ class StudioWindow(QMainWindow):
 
         # Right Column: Overview & Revisions
         editor = QWidget()
-        editor.setStyleSheet("background-color: #181825;")
+        editor.setObjectName("editor_container")
         form = QVBoxLayout(editor)
 
         top_editor_bar = QHBoxLayout()
         btn_back_to_overview = QPushButton("⬅ Back to 12-Stage Lifecycle Overview")
-        btn_back_to_overview.setStyleSheet(
-            "background-color: #24273a; color: #89b4fa; font-weight: 700; padding: 6px 14px; border-radius: 4px; border: 1px solid #45475a;"
-        )
         btn_back_to_overview.clicked.connect(lambda: self.product_tabs.setCurrentIndex(0))
         top_editor_bar.addWidget(btn_back_to_overview)
         top_editor_bar.addStretch()
@@ -292,7 +288,7 @@ class StudioWindow(QMainWindow):
         self.specification.setAcceptRichText(False)
         form.addWidget(self.specification)
         save = QPushButton("💾 Save draft specification")
-        save.setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: 700; font-size: 13px; padding: 8px 16px; border-radius: 4px; border: none;")
+        save.setProperty("class", "primary_btn")
         save.clicked.connect(self.save)
         form.addWidget(save)
         revision = QPushButton("Create revision from active baseline")
@@ -305,7 +301,7 @@ class StudioWindow(QMainWindow):
             revision_actions.addWidget(button)
         form.addLayout(revision_actions)
         handoff = QHBoxLayout()
-        for title, callback in [("Open in VS Code", self.open_vscode), ("Open workspace", self.open_workspace), ("Open project file", self.open_file)]:
+        for title, callback in [("Open in VS Code", self.open_vscode), ("Open Project Folder", self.open_workspace), ("Open Project File", self.open_file)]:
             button = QPushButton(title)
             button.clicked.connect(lambda checked=False, callback=callback: self.guarded(callback))
             handoff.addWidget(button)
@@ -313,52 +309,48 @@ class StudioWindow(QMainWindow):
 
         self.product_tabs = QTabWidget()
         self.product_tabs.setObjectName("product_main_tabs")
-        self.product_tabs.setStyleSheet("""
-            QTabWidget#product_main_tabs::pane {
-                border: 1px solid #313244;
-                background-color: #181825;
-                top: -1px;
-            }
-            QTabWidget#product_main_tabs > QTabBar::tab {
-                background-color: #11111b;
-                color: #cdd6f4;
-                font-size: 12px;
-                font-weight: 600;
-                padding: 10px 22px;
-                border: 1px solid #313244;
-                border-bottom: none;
-                margin-right: 4px;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
-            }
-            QTabWidget#product_main_tabs > QTabBar::tab:hover {
-                background-color: #313244;
-                color: #89b4fa;
-                border-color: #89b4fa;
-            }
-            QTabWidget#product_main_tabs > QTabBar::tab:selected {
-                background-color: #24273a;
-                color: #89b4fa;
-                border: 1.5px solid #89b4fa;
-                border-bottom: 2px solid #24273a;
-                font-weight: 700;
-            }
-        """)
         self.product_lifecycle = ProductEngineeringOverviewPanel(service)
         self.product_lifecycle.navigate_requested.connect(self._handle_overview_navigate)
-        self.product_lifecycle.new_product_requested.connect(self.create_product)
-        self.product_lifecycle.new_design_requested.connect(self._create_header_design)
         self.product_lifecycle.edit_specification_requested.connect(lambda: self.product_tabs.setCurrentIndex(1))
-        self.product_tabs.addTab(self.product_lifecycle, "📊 12-Stage Lifecycle Overview")
-        self.product_tabs.addTab(editor, "📝 Specification && Revisions Editor")
+        self.product_lifecycle.create_product_requested.connect(self.create_product)
+        self.product_tabs.addTab(self.product_lifecycle, "📊 12-Stage Project Lifecycle Overview")
+        self.product_tabs.addTab(editor, "📝 Specifications & Revisions")
 
         split.addWidget(self.product_tabs)
         split.setStretchFactor(0, 1)
         split.setStretchFactor(1, 4)
         pane.addWidget(split)
-        self.pages.addWidget(products)
+        self.pages.addWidget(products)  # Page 1: Engineering Workspaces
 
-        # Pages 2-5: Engineering Workspaces
+        # Page 2: Simulation Center
+        self.simulation_center = SimulationCenterPanel(service, self.guarded)
+        self.pages.addWidget(self.simulation_center)
+
+        # Page 3: Component Library
+        self.component_library = ComponentLibraryPanel(service, self.guarded)
+        self.pages.addWidget(self.component_library)
+
+        # Page 4: Engineering Tools
+        self.tool_center = ToolCenter(service, self.guarded)
+        self.pages.addWidget(self.tool_center)
+
+        # Page 5: Reports & Evidence
+        self.reports_evidence = ReportsEvidencePanel(service, self.guarded)
+        self.pages.addWidget(self.reports_evidence)
+
+        # Page 6: Settings
+        self.settings_panel = SettingsPanel(service, self.toggle_theme)
+        self.settings_panel.apply_theme(self._dark_theme)
+        self.pages.addWidget(self.settings_panel)
+
+        # Preserved attributes for backward-compatible test access
+        self.simulation_panel = SimulationPanel(service, self.guarded)
+        self.reports_panel = self.reports_evidence.reports_panel
+        self.validation_panel = self.reports_evidence.validation_panel
+        self.tool_panel = ToolPanel(service, self.guarded)
+        self.jobs_panel = JobsPanel(service, self.guarded)
+        self.dataset_panel = self.component_library.dataset_panel
+
         self.module_pages = []
         labels = {}
         for title in ("Transformer", "DC–DC Converter", "Switching Devices", "PCB Workspace"):
@@ -372,39 +364,6 @@ class StudioWindow(QMainWindow):
         self.dcdc_ws = DCDCWorkspacePanel(service, self.guarded, labels["DC–DC Converter"])
         self.semiconductor_ws = SemiconductorWorkspacePanel(service, self.guarded, labels["Switching Devices"])
         self.pcb_ws = PCBWorkspacePanel(service, self.guarded)
-
-        for ws in (self.transformer_ws, self.dcdc_ws, self.semiconductor_ws, self.pcb_ws):
-            self.pages.addWidget(ws)
-
-        # Pages 6-10: Simulations, Validation, Reports, Tools, Knowledge
-        self.simulation_panel = SimulationPanel(service, self.guarded)
-        self.pages.addWidget(self.simulation_panel)
-        self.validation_panel = ValidationPanel(service, self.guarded)
-        self.reports_panel = ReportsPanel(service, self.guarded)
-        self.tool_panel = ToolPanel(service, self.guarded)
-        for panel in (self.validation_panel, self.reports_panel, self.tool_panel):
-            self.pages.addWidget(panel)
-        self.knowledge_panel = KnowledgePanel(service, self.guarded)
-        self.knowledge_panel.navigate_requested.connect(self._handle_dashboard_navigate)
-        self.pages.addWidget(self.knowledge_panel)
-
-        # Pages 11-13: Tools & Integrations, Jobs & Results, Dataset Catalog
-        self.tool_center = ToolCenter(service, self.guarded)
-        self.jobs_panel = JobsPanel(service, self.guarded)
-        self.dataset_panel = DatasetPanel(service, self.guarded)
-        for title, panel in [("Tools & Integrations", self.tool_center), ("Jobs & Results", self.jobs_panel), ("Dataset Catalog", self.dataset_panel)]:
-            nav.addItem(title)
-            self.pages.addWidget(panel)
-
-        # Page 14: Visual Workflow Studio
-        self.workflow_studio = WorkflowStudioPanel(service)
-        nav.addItem("Workflow Studio")
-        self.pages.addWidget(self.workflow_studio)
-
-        # Page 15: Engineering Design Studio
-        self.design_studio = EngineeringDesignStudioPanel(service, self.guarded)
-        nav.addItem("Design Studio")
-        self.pages.addWidget(self.design_studio)
 
         nav.currentRowChanged.connect(self.pages.setCurrentIndex)
         nav.setCurrentRow(0)
@@ -439,52 +398,41 @@ class StudioWindow(QMainWindow):
 
     def _init_command_palette_actions(self):
         cp = self.command_palette
-        cp.register_command("New Engineering Design", "design", "Ctrl+N", self._create_header_design, "⚙")
-        cp.register_command("Open Engineering Design Studio", "view", "", lambda: self.navigation.setCurrentRow(15), "📐")
-        cp.register_command("Run LTspice Batch Simulation", "simulation", "Ctrl+Shift+S", lambda: self.pages.setCurrentIndex(5), "⚡")
+        cp.register_command("Open Engineering Projects", "view", "", lambda: self.navigation.setCurrentRow(1), "📐")
+        cp.register_command("Open Simulation Center", "simulation", "Ctrl+Shift+S", lambda: self.navigation.setCurrentRow(2), "⚡")
+        cp.register_command("Open Component Library", "view", "", lambda: self.navigation.setCurrentRow(3), "🧲")
+        cp.register_command("Open Engineering Tools", "view", "", lambda: self.navigation.setCurrentRow(4), "🛠")
+        cp.register_command("Open Reports & Evidence", "reports", "Ctrl+Shift+P", lambda: self.navigation.setCurrentRow(5), "📄")
+        cp.register_command("Open Settings & Connections", "settings", "", lambda: self.navigation.setCurrentRow(6), "⚙️")
         cp.register_command("Run KiCad Schematic ERC", "pcb", "Ctrl+Shift+E", lambda: self.product_lifecycle._run_kicad_erc(), "⚡")
         cp.register_command("Run KiCad PCB DRC", "pcb", "Ctrl+Shift+D", lambda: self.product_lifecycle._run_kicad_drc(), "🛡️")
         cp.register_command("Export Manufacturing Gerbers", "pcb", "", lambda: self.product_lifecycle._export_gerbers(), "📦")
-        cp.register_command("Export Engineering Verification Dossier", "reports", "Ctrl+Shift+P", lambda: self.product_lifecycle._generate_dossier(), "📄")
+        cp.register_command("Export Engineering Verification Dossier", "reports", "", lambda: self.product_lifecycle._generate_dossier(), "📄")
         cp.register_command("Open FreeCAD 3D Bobbin Solid", "cad", "", lambda: self.product_lifecycle._open_step_model(), "📐")
         cp.register_command("Open Sizing & Calculations Inspector", "analysis", "", lambda: self.product_lifecycle.detail_tabs.setCurrentIndex(3), "🔬")
         cp.register_command("Open Bill of Materials (BOM)", "bom", "", lambda: self.product_lifecycle.detail_tabs.setCurrentIndex(2), "📋")
-        cp.register_command("Open PCB Workspace", "view", "", lambda: self.pages.setCurrentIndex(4), "📐")
-        cp.register_command("Open Visual Workflow Studio", "view", "", lambda: self.pages.setCurrentIndex(13), "🔄")
         cp.register_command("Toggle Dark / Light Theme", "view", "Ctrl+T", self.toggle_theme, "🌓")
-        cp.register_command("Open Workspace Folder in Explorer", "workspace", "", lambda: self.product_lifecycle._open_workspace_folder(), "📂")
+        cp.register_command("Open Project Folder in Explorer", "workspace", "", lambda: self.product_lifecycle._open_workspace_folder(), "📂")
         cp.register_command("Re-Assess Engineering Lifecycle", "lifecycle", "F5", lambda: self.product_lifecycle.refresh_assessment(), "🔄")
-        cp.register_command("Configure AI Provider & API Key", "ai", "Ctrl+Shift+A", self._open_ai_key_dialog, "⚙️")
 
     def _focus_search(self):
         self.search_box.setFocus()
         self.search_box.selectAll()
 
     def _init_search_completer(self):
-        items = []
-        try:
-            from .v17_panels import INVENTORY_DEFINITIONS
-            for res in INVENTORY_DEFINITIONS:
-                items.append(f"Resource: {res['name']} ({res['status']})")
-        except Exception:
-            pass
-
-        items.extend([
-            "View: Dashboard",
-            "View: Tools & Integrations",
-            "View: Jobs & Simulations",
-            "View: Research Datasets",
-            "View: Knowledge Center",
-            "View: Workflow Studio",
-            "Action: + New Visual Workflow",
-            "Action: + New Engineering Workspace",
-            "Action: Toggle Dark / Light Theme",
-        ])
+        from .v17_panels import INVENTORY_DEFINITIONS
+        items = [f"Resource: {resource['name']}" for resource in INVENTORY_DEFINITIONS]
+        items.extend(f"View: {page}" for page in (
+            "Dashboard", "Engineering Projects", "Simulation Center", "Component Library",
+            "Engineering Tools", "Reports & Evidence", "Settings",
+        ))
+        items.append("Action: Toggle Dark / Light Theme")
         self.search_completer = QCompleter(items, self)
         self.search_completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.search_completer.setFilterMode(Qt.MatchContains)
         self.search_completer.activated.connect(self._on_search_item_activated)
         self.search_box.setCompleter(self.search_completer)
+
 
     def _on_search_submitted(self):
         text = self.search_box.text().strip()
@@ -493,25 +441,24 @@ class StudioWindow(QMainWindow):
 
     def _on_search_item_activated(self, text: str):
         lower = text.lower()
-        if "workspace" in lower and "action" in lower:
-            self._create_header_workspace()
-        elif "theme" in lower:
+        if "theme" in lower:
             self.toggle_theme()
-        elif any(k in lower for k in ("tool", "ltspice", "kicad", "femm", "freecad", "openmodelica", "ngspice")):
-            self.navigation.setCurrentRow(11)  # Tools & Integrations
-        elif any(k in lower for k in ("job", "simulation")):
-            self.navigation.setCurrentRow(12)  # Jobs & Results
-        elif any(k in lower for k in ("dataset", "research")):
-            self.navigation.setCurrentRow(13)  # Dataset Catalog
-        elif any(k in lower for k in ("knowledge", "api", "key", "gemini", "openai", "ai")):
-            self.navigation.setCurrentRow(10)  # Knowledge Center
-        elif "workflow" in lower:
-            self.navigation.setCurrentRow(14)  # Workflow Studio
-        elif any(k in lower for k in ("design", "spec", "studio", "circuit")):
-            self.navigation.setCurrentRow(15)  # Design Studio
-        elif "dashboard" in lower:
+        elif any(word in lower for word in ("dataset", "research", "component", "magnet", "switchloss")):
+            self.navigation.setCurrentRow(3)
+        elif any(word in lower for word in ("tool", "resource:", "ltspice", "kicad", "femm", "freecad", "openmodelica", "ngspice")):
+            self.navigation.setCurrentRow(4)
+        elif any(word in lower for word in ("job", "simulation", "waveform")):
+            self.navigation.setCurrentRow(2)
+        elif any(word in lower for word in ("report", "evidence", "validation")):
+            self.navigation.setCurrentRow(5)
+        elif any(word in lower for word in ("settings", "connection")):
+            self.navigation.setCurrentRow(6)
+        elif any(word in lower for word in ("project", "workspace", "design", "specification", "revision")):
+            self.navigation.setCurrentRow(1)
+        else:
             self.navigation.setCurrentRow(0)
         self.search_box.clear()
+
 
     def _pref_file(self) -> Path:
         return self.service.root / ".mendex" / "ui_preferences.json"
@@ -526,6 +473,9 @@ class StudioWindow(QMainWindow):
                     self.resize(int(data["width"]), int(data["height"]))
                 if "is_dark" in data and not data["is_dark"]:
                     self.toggle_theme()
+                else:
+                    if hasattr(self, "product_lifecycle"):
+                        self.product_lifecycle.apply_theme(self._dark_theme)
             except Exception:
                 pass
 
@@ -544,73 +494,84 @@ class StudioWindow(QMainWindow):
         except Exception:
             pass
 
+    def _open_help_guide(self):
+        from .engineering_guide_dialog import EngineeringGuideDialog
+        dlg = EngineeringGuideDialog(is_dark=self._dark_theme, parent=self)
+        dlg.exec()
+
     def toggle_theme(self):
         self._dark_theme = not self._dark_theme
         if self._dark_theme:
             self.setStyleSheet(DARK_THEME_QSS)
-            self.btn_theme_toggle.setText("🌙 Dark")
+            self.btn_theme_toggle.setText("☀️ Light")
+            self.btn_theme_toggle.setToolTip("Switch to Light Theme")
         else:
             self.setStyleSheet(LIGHT_THEME_QSS)
-            self.btn_theme_toggle.setText("☀️ Light")
+            self.btn_theme_toggle.setText("🌙 Dark")
+            self.btn_theme_toggle.setToolTip("Switch to Dark Theme")
+        if hasattr(self, "product_lifecycle"):
+            self.product_lifecycle.apply_theme(self._dark_theme)
+        if hasattr(self, "settings_panel"):
+            self.settings_panel.apply_theme(self._dark_theme)
+        if hasattr(self, "btn_help_guide") and self.btn_help_guide:
+            if self._dark_theme:
+                self.btn_help_guide.setStyleSheet("font-weight: 700; color: #f9e2af; background-color: #3b321a; border: 1px solid #755b1f; padding: 4px 10px; border-radius: 4px;")
+            else:
+                self.btn_help_guide.setStyleSheet("font-weight: 700; color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 4px 10px; border-radius: 4px;")
 
     def _handle_dashboard_navigate(self, target: int):
-        mapping = {1: 12, 2: 11, 3: 6, 4: 10, 5: 13, 6: 14, 15: 15}
-        dest = mapping.get(target, 15 if target == 15 else 0)
-        self.navigation.setCurrentRow(dest)
+        if 0 <= target < self.pages.count():
+            self.navigation.setCurrentRow(target)
 
-    def _open_ai_key_dialog(self):
-        from .ai_config_dialog import AIKeySetupDialog
-        dlg = AIKeySetupDialog(self.service.root, self)
-        dlg.exec()
 
-    def _create_header_design(self):
-        active_ws_id = self.workspace_selector.currentData() if self.workspace_selector.count() > 0 else "default"
-        dlg = NewEngineeringDesignDialog(self.service, current_workspace_id=active_ws_id, parent=self)
-        dlg.design_created.connect(self._on_design_created_from_dialog)
-        dlg.exec()
 
-    def _on_design_created_from_dialog(self, design_id: str):
-        self.refresh()  # Refresh product catalog if product was registered
-        self.refresh_workspace_selector()
-        self.enterprise_dashboard.refresh_metrics()
-        self.navigation.setCurrentRow(15)  # Switch to Design Studio
-        self.design_studio.refresh_designs()
-        if self.design_studio.combo_designs.findData(design_id) != -1:
-            idx = self.design_studio.combo_designs.findData(design_id)
-            self.design_studio.combo_designs.setCurrentIndex(idx)
+
 
     def _handle_overview_navigate(self, target_name: str):
         mapping = {
-            "Simulations": 6,
-            "Transformer": 2,
-            "DC-DC": 3,
-            "Validation": 7,
-            "Reports": 8,
-            "Tools": 9,
-            "Workflows": 14,
+            "Simulations": 2,  # Simulation Center
+            "Transformer": 3,  # Component Library (Magnetics)
+            "Component Library": 3,
+            "SwitchLossDB": 3, # Component Library (SwitchLossDB tab)
+            "DC-DC": 1,        # Engineering Workspaces
+            "Validation": 5,   # Reports & Evidence
+            "Reports": 5,      # Reports & Evidence
+            "Tools": 4,        # Engineering Tools
+            "Workflows": 1,    # Engineering Workspaces
+            "Settings": 6,     # Settings
         }
         dest = mapping.get(target_name, 0)
         self.navigation.setCurrentRow(dest)
+        if target_name == "SwitchLossDB" and hasattr(self, "component_library"):
+            self.component_library.select_switchloss_tab()
 
     def _on_workspace_selected_header(self, index: int):
         pass
 
-    def _create_header_workspace(self):
+    def _create_workspace(self):
         name, accepted = QInputDialog.getText(self, "New Engineering Workspace", "Workspace Name:")
         if accepted and name.strip():
-            ws = self.service.integrations.create_workspace(name=name.strip(), description="General engineering study")
+            from mendex_core.controller import MendexEngineeringController
+            ws = MendexEngineeringController(self.service.root).create_workspace(
+                name=name.strip(), description="General engineering study"
+            )
             self.refresh_workspace_selector()
             self.enterprise_dashboard.refresh_metrics()
+            self.simulation_center._refresh_workspaces()
             self.statusBar().showMessage(f"Created workspace: {ws['name']}")
 
     def refresh_workspace_selector(self):
         self.workspace_selector.blockSignals(True)
         self.workspace_selector.clear()
+        projects = self.service.list_products()
         workspaces = self.service.integrations.list_workspaces()
+        for p in projects:
+            self.workspace_selector.addItem(f"📁 {p.code} — {p.name}", str(p.product_id))
         for ws in workspaces:
-            self.workspace_selector.addItem(f"📁 {ws.get('name', 'Workspace')}", ws.get("workspace_id"))
-        if not workspaces:
-            self.workspace_selector.addItem("No workspaces yet", None)
+            if not any(str(p.product_id) == ws.get("workspace_id") or str(p.product_id) == ws.get("product_id") for p in projects):
+                self.workspace_selector.addItem(f"📁 {ws.get('name', 'Workspace')}", ws.get("workspace_id"))
+        if self.workspace_selector.count() == 0:
+            self.workspace_selector.addItem("No engineering projects yet", None)
         self.workspace_selector.blockSignals(False)
 
     def guarded(self, callback):
@@ -625,7 +586,7 @@ class StudioWindow(QMainWindow):
             event.ignore()
             return
         self._save_preferences()
-        self.jobs_panel.timer.stop()
+        if hasattr(self, 'jobs_panel') and hasattr(self.jobs_panel, 'timer'): self.jobs_panel.timer.stop()
         self.service.integrations.shutdown()
         super().closeEvent(event)
 
@@ -642,14 +603,14 @@ class StudioWindow(QMainWindow):
                 self.lbl_empty_catalog.setVisible(False)
             self.products.setVisible(True)
             if hasattr(self, "lbl_product_count"):
-                self.lbl_product_count.setText(f"{len(self.items)} Product{'s' if len(self.items) > 1 else ''}")
+                self.lbl_product_count.setText(f"{len(self.items)} Project{'s' if len(self.items) > 1 else ''}")
             self.products.setCurrentRow(index)
         else:
             self.products.setVisible(False)
             if hasattr(self, "lbl_empty_catalog"):
                 self.lbl_empty_catalog.setVisible(True)
             if hasattr(self, "lbl_product_count"):
-                self.lbl_product_count.setText("0 Products")
+                self.lbl_product_count.setText("0 Projects")
             self.select_product(-1)
         self.refresh_workspace_selector()
         if hasattr(self, "enterprise_dashboard"):
@@ -700,7 +661,6 @@ class StudioWindow(QMainWindow):
             self.validation_panel.set_revision(self.revision)
             self.reports_panel.set_revision(self.revision)
             self.simulation_panel.set_revision(self.revision)
-            self.knowledge_panel.set_revision(self.revision)
             if hasattr(self, "product_lifecycle") and self.product:
                 self.product_lifecycle.set_product(self.product.product_id, self.revision.revision_id)
             if hasattr(self, "transformer_ws"):
@@ -722,6 +682,26 @@ class StudioWindow(QMainWindow):
             def action():
                 self.product = self.service.create_product(dialog.code.text(), dialog.name.text(), dialog.category.currentText(), dialog.owner.text())
                 self.refresh()
+            self.guarded(action)
+
+    def delete_current_product(self):
+        if not self.product:
+            QMessageBox.information(self, "No Product Selected", "Please select a product from the list to delete.")
+            return
+        reply = QMessageBox.question(
+            self,
+            "Confirm Deletion",
+            f"Are you sure you want to delete product '{self.product.code} - {self.product.name}'?\n\nThis will remove the product, all its revisions, and workspace files.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
+            def action():
+                self.service.delete_product(self.product.product_id)
+                self.product = None
+                self.revision = None
+                self.refresh()
+                self.statusBar().showMessage("Product successfully deleted.")
             self.guarded(action)
 
     def save(self):

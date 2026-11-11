@@ -25,7 +25,6 @@ from mendex_core.design.generators import (
     FEMMMagneticGenerator,
 )
 from mendex_core.design.sync import CrossToolSyncService, SyncStatus
-from mendex_core.ai.models import AIActionKind, ActionApprovalStatus
 from mendex_core.workflows.contracts import (
     WorkflowDefinition,
     NodeDefinition,
@@ -47,6 +46,7 @@ def test_scenario_a_create_and_reopen_generic_design(tmp_path):
         Requirement(parameter="vin_nom", target_value=24.0, unit="V"),
         Requirement(parameter="vout", target_value=5.0, unit="V"),
         Requirement(parameter="iout", target_value=2.0, unit="A"),
+        Requirement(parameter="fsw", target_value=100000.0, unit="Hz"),
     ]
     design = service.design.create_design_from_requirements(
         workspace_id=ws_id,
@@ -63,7 +63,7 @@ def test_scenario_a_create_and_reopen_generic_design(tmp_path):
     assert reopened is not None
     assert reopened.title == "Generic Step-Down 5V"
     assert reopened.workspace_id == ws_id
-    assert len(reopened.requirements) == 3
+    assert len(reopened.requirements) == 4
 
 
 def test_scenario_b_candidate_synthesis_multi_topology(tmp_path):
@@ -121,6 +121,8 @@ def test_scenario_d_parameter_edit_and_revision_comparison(tmp_path):
     reqs = [
         Requirement(parameter="vin_nom", target_value=24.0, unit="V"),
         Requirement(parameter="vout", target_value=5.0, unit="V"),
+        Requirement(parameter="iout", target_value=2.0, unit="A"),
+        Requirement(parameter="fsw", target_value=100000.0, unit="Hz"),
     ]
     design = service.design.create_design_from_requirements(
         workspace_id=ws["workspace_id"],
@@ -214,32 +216,6 @@ def test_scenario_h_workflow_five_parameter_sweep(tmp_path):
     assert results[0] < results[1] < results[2] < results[3] < results[4]
 
 
-def test_scenario_i_ai_copilot_permissions_and_traceability(tmp_path):
-    """Scenario I: AI assistant extracts requirements, proposes actions, requests approval, never bypasses physics."""
-    service = StudioService(tmp_path)
-    reqs = [
-        Requirement(parameter="vin_nom", target_value=24.0, unit="V"),
-        Requirement(parameter="vout", target_value=12.0, unit="V"),
-        Requirement(parameter="iout", target_value=2.0, unit="A"),
-    ]
-    resp = service.ai_copilot.analyze_and_plan("Synthesize converter", reqs)
-    assert resp.plan is not None
-    assert len(resp.plan.actions) >= 1
-
-    action = resp.plan.actions[0]
-    assert action.requires_user_approval is True
-    assert action.approval_status == ActionApprovalStatus.PENDING_APPROVAL
-
-    # Refuse unapproved
-    rejected = service.ai_copilot.execute_action(action, reqs)
-    assert rejected.approval_status == ActionApprovalStatus.REJECTED
-
-    # Approve and execute
-    action.approval_status = ActionApprovalStatus.APPROVED
-    executed = service.ai_copilot.execute_action(action, reqs)
-    assert executed.approval_status == ActionApprovalStatus.EXECUTED
-
-
 def test_scenario_j_external_edit_and_stale_invalidation(tmp_path):
     """Scenario J: Detect external edit, preserve original, reconcile revisions and invalidate downstream."""
     service = StudioService(tmp_path)
@@ -251,7 +227,7 @@ def test_scenario_j_external_edit_and_stale_invalidation(tmp_path):
         workspace_id=ws["workspace_id"],
         title="Ext Edit Design",
         category="dc_dc_converter",
-        requirements=[Requirement(parameter="vin_nom", target_value=12.0, unit="V")],
+        requirements=[Requirement(parameter="vin_nom", target_value=12.0, unit="V"), Requirement(parameter="vout", target_value=5.0, unit="V"), Requirement(parameter="iout", target_value=1.0, unit="A"), Requirement(parameter="fsw", target_value=100000.0, unit="Hz")],
     )
     arts = service.design.generate_native_artifacts(design.id, ws_dir)
     net_file = service.root / arts[0].path
@@ -281,14 +257,13 @@ def test_scenario_l_failure_recovery_and_cloud_opt_out(tmp_path):
     """Scenario L: Handle missing tool, bad input, timeout, missing API key and cloud opt-out safely."""
     service = StudioService(tmp_path)
     # Unavailable tools report honestly
-    tool = service.integrations.verify("plecs")
-    assert str(tool.state) in ("UNAVAILABLE", "LICENSE_REQUIRED", "NOT_CONFIGURED", "NOT_INSTALLED", "UNSUPPORTED")
+    import pytest
+    from mendex_core.service import StudioError
+    with pytest.raises(StudioError, match="not registered"):
+        service.integrations.verify("plecs")
 
-    # Offline AI Copilot works without cloud transmission
-    offline_copilot = service.ai_copilot
-    resp = offline_copilot.analyze_and_plan("Local design task", [])
-    assert resp.plan.provider_used == "offline"
-    assert resp.plan.cloud_opt_in_confirmed is False
+    # No built-in AI provider exists, so nothing can be transmitted to a cloud service
+    assert not hasattr(service, "ai_copilot")
 
 
 def test_scenario_m_clean_windows_installer_and_wizard():
@@ -333,7 +308,7 @@ def test_scenario_o_optional_product_association(tmp_path):
         workspace_id=ws["workspace_id"],
         title="Standalone Design",
         category="dc_dc_converter",
-        requirements=[Requirement(parameter="vin_nom", target_value=24.0, unit="V")],
+        requirements=[Requirement(parameter="vin_nom", target_value=24.0, unit="V"), Requirement(parameter="vout", target_value=12.0, unit="V"), Requirement(parameter="iout", target_value=1.0, unit="A"), Requirement(parameter="fsw", target_value=100000.0, unit="Hz")],
         product_id=None,  # Explicitly NO product
     )
     assert design.product_id is None
@@ -345,7 +320,7 @@ def test_scenario_o_optional_product_association(tmp_path):
         workspace_id=ws["workspace_id"],
         title="Product Tied Design",
         category="dc_dc_converter",
-        requirements=[Requirement(parameter="vin_nom", target_value=24.0, unit="V")],
+        requirements=[Requirement(parameter="vin_nom", target_value=24.0, unit="V"), Requirement(parameter="vout", target_value=12.0, unit="V"), Requirement(parameter="iout", target_value=1.0, unit="A"), Requirement(parameter="fsw", target_value=100000.0, unit="Hz")],
         product_id=prod.product_id,  # Tied to product
     )
     assert design_tied.product_id == str(prod.product_id)

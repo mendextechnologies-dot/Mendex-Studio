@@ -28,7 +28,6 @@ from mendex_core.design.generators import (
     FEMMMagneticGenerator,
 )
 from mendex_core.design.sync import CrossToolSyncService, SyncStatus
-from mendex_core.ai.models import AIActionKind, ActionApprovalStatus, AIEngineeringAction
 
 
 def test_candidate_synthesis_non_isolated_buck():
@@ -60,6 +59,7 @@ def test_candidate_synthesis_isolated_flyback():
         Requirement(parameter="vout", target_value=12.0, unit="V"),
         Requirement(parameter="pout", target_value=36.0, unit="W"),
         Requirement(parameter="isolation", target_value=1500.0, unit="V"),
+        Requirement(parameter="fsw", target_value=100000.0, unit="Hz"),
     ]
     candidates = CandidateSynthesisEngine.synthesize_candidates(reqs)
     assert len(candidates) >= 1
@@ -105,6 +105,7 @@ def test_native_artifact_generation(tmp_path):
         Requirement(parameter="vin_nom", target_value=24.0, unit="V"),
         Requirement(parameter="vout", target_value=12.0, unit="V"),
         Requirement(parameter="iout", target_value=2.0, unit="A"),
+        Requirement(parameter="fsw", target_value=100000.0, unit="Hz"),
     ]
     candidates = CandidateSynthesisEngine.synthesize_candidates(reqs)
     ir = candidates[0].ir_snapshot
@@ -144,6 +145,8 @@ def test_cross_tool_sync_and_external_edits(tmp_path):
     reqs = [
         Requirement(parameter="vin_nom", target_value=24.0, unit="V"),
         Requirement(parameter="vout", target_value=12.0, unit="V"),
+        Requirement(parameter="iout", target_value=2.0, unit="A"),
+        Requirement(parameter="fsw", target_value=100000.0, unit="Hz"),
     ]
     design = service.design.create_design_from_requirements(
         workspace_id=ws["workspace_id"],
@@ -194,36 +197,6 @@ def test_component_library_queries(tmp_path):
     mat = service.components.get_material("N87")
     assert mat is not None
     assert mat.saturation_flux_t == 0.49
-
-
-def test_ai_copilot_gateway_gating(tmp_path):
-    """Verify AI Copilot analyzes requirements and enforces strict action approval gating."""
-    service = StudioService(tmp_path)
-    reqs = [
-        Requirement(parameter="vin_nom", target_value=48.0, unit="V"),
-        # Note: missing vout and iout
-    ]
-    resp = service.ai_copilot.analyze_and_plan(
-        prompt="Synthesize 48V telecom step-down converter",
-        requirements=reqs,
-    )
-    assert len(resp.missing_requirements) >= 1
-    assert "vout" in resp.missing_requirements[0]
-    assert resp.plan is not None
-    assert len(resp.plan.actions) >= 1
-
-    action = resp.plan.actions[0]
-    assert action.approval_status == ActionApprovalStatus.PENDING_APPROVAL
-
-    # Executing without approval must be rejected
-    res_unapproved = service.ai_copilot.execute_action(action, reqs)
-    assert res_unapproved.approval_status == ActionApprovalStatus.REJECTED
-
-    # Approving action permits execution
-    action.approval_status = ActionApprovalStatus.APPROVED
-    res_approved = service.ai_copilot.execute_action(action, reqs)
-    assert res_approved.approval_status == ActionApprovalStatus.EXECUTED
-    assert "candidates_generated" in res_approved.execution_result
 
 
 def test_design_synthesis_with_invalid_characters_and_newlines(tmp_path: Path):

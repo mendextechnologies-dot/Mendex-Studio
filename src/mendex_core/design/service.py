@@ -105,9 +105,21 @@ class EngineeringDesignService:
         return design
 
     def get_design(self, design_id: str) -> Optional[EngineeringDesign]:
-        return self._designs_cache.get(design_id)
+        if design_id in self._designs_cache:
+            return self._designs_cache[design_id]
+        f = self._get_design_file(design_id)
+        if f.exists():
+            try:
+                data = json.loads(f.read_text(encoding="utf-8"))
+                d = EngineeringDesign.model_validate(data)
+                self._designs_cache[d.id] = d
+                return d
+            except Exception:
+                pass
+        return None
 
     def list_designs(self, workspace_id: Optional[str] = None) -> List[EngineeringDesign]:
+        self._load_all()
         if workspace_id:
             return [d for d in self._designs_cache.values() if d.workspace_id == workspace_id]
         return list(self._designs_cache.values())

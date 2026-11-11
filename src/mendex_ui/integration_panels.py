@@ -12,7 +12,7 @@ class ToolCenter(QWidget):
         super().__init__()
         self.engine, self.guarded = service.integrations, guarded
         layout = QVBoxLayout(self)
-        layout.addWidget(QLabel("Tools & Integrations · 18 approved inventory entries · installed ≠ verified"))
+        layout.addWidget(QLabel("Tools & Integrations - supported tools - installed does not mean verified"))
         split = QSplitter()
         self.list = QListWidget()
         self.list.setWordWrap(True)

@@ -1,0 +1,319 @@
+{
+  "platform": "windows",
+  "root": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\ui-data",
+  "errors": [],
+  "visible": true,
+  "native_window_id": 11668978,
+  "navigation": [
+    "Dashboard",
+    "Engineering Workspaces",
+    "Simulation Center",
+    "Component Library",
+    "Engineering Tools",
+    "Reports & Evidence",
+    "Settings"
+  ],
+  "pages": [
+    {
+      "row": 0,
+      "current_page": 0,
+      "visible_labels": [
+        "",
+        "Engineering Operations Dashboard",
+        "Engineering Tools & Resource Health",
+        "ACTIVE WORKSPACES",
+        "1",
+        "General-purpose workspaces",
+        "VERIFIED OPERATIONAL",
+        "13 / 14",
+        "Automated validation passing",
+        "INSTALLED ON HOST",
+        "10 / 14",
+        "Native executables discovered",
+        "ECOSYSTEM INVENTORY",
+        "14 Resources",
+        "Current integration inventory",
+        "Recent Engineering Simulations & Activities",
+        "Engineering Integrations & Ecosystem Overview",
+        "14 Resources"
+      ],
+      "visible_buttons": [
+        "Refresh Status",
+        "All Resources (14)",
+        "Simulation Solvers & CAD (7)",
+        "Frameworks & Dev (3)",
+        "Research Datasets & Benchmarks (4)"
+      ]
+    },
+    {
+      "row": 1,
+      "current_page": 1,
+      "visible_labels": [
+        "Engineering Workspaces",
+        "AUDIT-UI \u2014 Generic desktop reference",
+        "PROTOTYPE BLOCKED",
+        "IN PROGRESS",
+        "Product Code: AUDIT-UI | Category: dc_dc_converter | Owner: Independent audit",
+        "Active Revision:",
+        "DIRECT RESULT ACCESS:",
+        "CRITICAL BLOCKERS (10):\n\u2022 [Requirements & Specifications] Requirements specification document missing from requirements/ directory\n\u2022 [Electrical Architecture & Sizing] No analytical sizing calculations stored in workspace\n\u2022 [Circuit Design & Netlists] No circuit design netlist or Modelica model found in circuit/ directory",
+        "ENGINEERING LIFECYCLE STAGES (12) \u2014 Click any card to inspect its results:",
+        "#1",
+        "IN PROGRESS",
+        "Requirements & Specifications",
+        "\u25cf 0 evidence records",
+        "\u26a0 Requirements specification document missing from requirements/ directory",
+        "#2",
+        "NOT STARTED",
+        "Electrical Architecture & Sizing",
+        "\u25cf 0 evidence records",
+        "\u26a0 No analytical sizing calculations stored in workspace",
+        "#3",
+        "NOT STARTED",
+        "Circuit Design & Netlists",
+        "\u25cf 0 evidence records",
+        "\u26a0 No circuit design netlist or Modelica model found in circuit/ directory",
+        "#4",
+        "NOT STARTED",
+        "Electrical Simulation & Waveforms",
+        "\u25cf 0 evidence records",
+        "\u26a0 No electrical simulation has been executed in Studio",
+        "#5",
+        "NOT STARTED",
+        "Magnetic Analysis & FEA",
+        "\u25cf 0 evidence records",
+        "\u26a0 No magnetic FEA model or FEMM script found in magnetics/ directory",
+        "#6",
+        "NOT STARTED",
+        "Schematic Capture & ERC",
+        "\u25cf 0 evidence records",
+        "\u26a0 No KiCad schematic (.kicad_sch) file found in workspace",
+        "#7",
+        "NOT STARTED",
+        "PCB Layout & Stackup",
+        "\u25cf 0 evidence records",
+        "\u26a0 No KiCad PCB layout (.kicad_pcb) file found in workspace",
+        "#8",
+        "NOT STARTED",
+        "PCB Design-Rule Check (DRC)",
+        "\u25cf 0 evidence records",
+        "\u26a0 No PCB design rule check (DRC) report available",
+        "#9",
+        "NOT STARTED",
+        "Thermal & Mechanical Evaluation",
+        "\u25cf 0 evidence records",
+        "\u26a0 No mechanical CAD script or 3D STEP model found in mechanical/ directory",
+        "#10",
+        "NOT STARTED",
+        "BOM & Component Review",
+        "\u25cf 0 evidence records",
+        "\u26a0 No structured Bill of Materials (.csv/.json) file found in workspace",
+        "#11",
+        "NOT STARTED",
+        "Engineering Validation & Verification",
+        "\u25cf 0 evidence records",
+        "\u26a0 Zero validation records logged in Studio for this revision",
+        "#12",
+        "BLOCKED",
+        "Prototype Readiness Review",
+        "\u25cf 0 evidence records",
+        "\u26a0 Prototype blocked: 10 mandatory engineering stages remain unpassed",
+        "<b>PCB Outline Dimensions:</b> NOT_EVALUATED (No board layout)",
+        "<b>Layer Stackup:</b> NOT_EVALUATED",
+        "<b>HV Creepage Clearance:</b> NOT_EVALUATED",
+        "<b>Safety Compliance:</b> NOT_EVALUATED",
+        "KiCad ERC: NOT_EVALUATED",
+        "KiCad DRC: NOT_EVALUATED",
+        "KiCad Workspace: 0 Schematics | 0 PCB Layouts | 0 ERC Reports | 0 DRC Reports",
+        "KiCad 10 Verification Report Details:",
+        "CAD & Manufacturing Artifacts:",
+        "\ud83d\udce6 Product Catalog",
+        "1 Product"
+      ],
+      "visible_buttons": [
+        "+ New Workspace",
+        "Re-Assess Lifecycle",
+        "\ud83d\udcdd Edit Specifications",
+        "\ud83d\udcc4 Export Engineering Dossier",
+        "\ud83d\udcc2 Open Workspace Folder",
+        "\ud83d\udcdd Spec",
+        "\ud83d\udcd0 KiCad PCB",
+        "\u26a1 Simulations",
+        "\ud83d\udccb BOM",
+        "\ud83d\udd2c Sizing",
+        "\ud83e\uddca 3D Bobbin",
+        "\ud83d\udcca Benchmarks",
+        "\ud83d\udee1\ufe0f Gates",
+        "\ud83d\udcc1 Evidence",
+        "\u25b2 Collapse Cards",
+        "\ud83d\ude80 Open Schematic in KiCad",
+        "\ud83d\ude80 Open PCB in KiCad",
+        "\ud83d\udcc2 Open CAD Directory",
+        "\u26a1 Run KiCad ERC",
+        "\ud83d\udee1\ufe0f Run KiCad DRC",
+        "\ud83d\udce6 Export Manufacturing Gerbers",
+        "\u2795 New Product",
+        "\ud83d\udd04"
+      ]
+    },
+    {
+      "row": 2,
+      "current_page": 2,
+      "visible_labels": [
+        "Workspace:",
+        "Solver:",
+        "Duration (ms):",
+        "Waveform Canvas:"
+      ],
+      "visible_buttons": [
+        "\u26a1 Execute Simulation",
+        "\ud83d\udcc2 Open .RAW File",
+        "Reset Zoom",
+        "Toggle Grid",
+        "Export PNG"
+      ]
+    },
+    {
+      "row": 3,
+      "current_page": 3,
+      "visible_labels": [],
+      "visible_buttons": []
+    },
+    {
+      "row": 4,
+      "current_page": 4,
+      "visible_labels": [
+        "Tools & Integrations - supported tools - installed does not mean verified",
+        "SwitchLossDB \u00b7 dataset\nLicense: REVIEW_REQUIRED \u00b7 Canonical upstream identity, distribution and dataset terms remain unresolved; metadata registration only.\nSource: https://github.com/IEEE-PELS/awesome-PELS-open-source-editors-pick\nInventory reference, not a verified dataset download. Agent 2 must resolve source/license before interpreting data.",
+        "Executable path",
+        "Resource path",
+        "License review"
+      ],
+      "visible_buttons": [
+        "Browse executable",
+        "Browse resource",
+        "Save settings",
+        "Detect",
+        "Verify operation"
+      ]
+    },
+    {
+      "row": 5,
+      "current_page": 5,
+      "visible_labels": [
+        "Draft dossiers \u00b7 R001 \u00b7 b0c4abda-c6c6-40d1-9f30-adef3ce5b038",
+        "Draft only. Word/PDF export and approval workflows are not implemented."
+      ],
+      "visible_buttons": [
+        "Generate draft dossier",
+        "Open selected report"
+      ]
+    },
+    {
+      "row": 6,
+      "current_page": 6,
+      "visible_labels": [
+        "\u2699 System Settings & Connections",
+        "Mendex Engineering Studio v2.1 operates as a lightweight management and visualization center.\nAI agents (OpenAI Codex, Anthropic Claude Code) connect via the standardized Model Context Protocol (MCP) and CLI.",
+        "\u25cf Model Context Protocol (MCP) Server: ACTIVE & READY",
+        "Protocol Version: 2024-11-05 (Standard JSON-RPC 2.0 stdio)\nAvailable MCP Tools: 20 deterministic engineering tools registered\nSupported Environments: VS Code (OpenAI Codex), Anthropic Claude Code CLI, Claude Desktop, Cursor",
+        "Connect from VS Code:\n  \"command\": \"${workspaceFolder}/.venv/Scripts/python.exe\",\n  \"args\": [\"-m\", \"mendex_core.mcp\", \"--root\", \"${workspaceFolder}\"]\n\nConnect from Claude Code CLI:\n  claude mcp add mendex-engineering -- python -m mendex_core.mcp",
+        "LTspice Simulator:",
+        "READY",
+        "KiCad CLI (ERC/DRC):",
+        "READY",
+        "FEMM 4.2 Magnetics:",
+        "NOT FOUND",
+        "FreeCAD 3D Engine:",
+        "READY",
+        "Data Root:",
+        "SQLite Metadata:",
+        "Theme Mode: Enterprise Dark (Catppuccin Mocha)"
+      ],
+      "visible_buttons": [
+        "\ud83c\udf13 Toggle Dark / Light Theme"
+      ]
+    }
+  ],
+  "tabs": [
+    [
+      "\ud83d\udcca 12-Stage Lifecycle Overview",
+      "\ud83d\udcdd Specification && Revisions Editor"
+    ],
+    [
+      "\ud83d\udcd0 KiCad PCB",
+      "\u26a1 Simulations",
+      "\ud83d\udccb BOM",
+      "\ud83d\udd2c Calculations",
+      "\ud83e\uddca 3D Mechanical",
+      "\ud83d\udcca Benchmarks",
+      "\ud83d\udee1\ufe0f Readiness Gates",
+      "\ud83d\udcc1 Evidence Register",
+      "\ud83d\udcdd Approvals"
+    ],
+    [
+      "\ud83d\udccb Solver Logs & Output",
+      "\ud83d\udcca Steady-State Metrics"
+    ],
+    [
+      "\u26a1 Power Semiconductors",
+      "\ud83e\uddf2 Magnetic Cores & Materials",
+      "\ud83d\udcda Datasets & Research Provenance"
+    ],
+    [
+      "\ud83d\udcc4 Verification Dossiers & Reports",
+      "\ud83d\udee1\ufe0f Verification Records & Audit Trail"
+    ]
+  ],
+  "obsolete_instantiated": {
+    "workflow_studio": false,
+    "design_studio": false,
+    "knowledge_panel": false
+  },
+  "search_navigation": [
+    {
+      "term": "LTspice",
+      "selected_row": 4,
+      "page": 4
+    },
+    {
+      "term": "jobs",
+      "selected_row": 2,
+      "page": 2
+    },
+    {
+      "term": "workflow",
+      "selected_row": 0,
+      "page": 0
+    },
+    {
+      "term": "design",
+      "selected_row": 1,
+      "page": 1
+    }
+  ],
+  "external_workspace_sync": {
+    "before": 2,
+    "after_no_refresh": 2,
+    "created": {
+      "status": "CREATED",
+      "workspace_id": "2cfb9cd7-b8a6-427b-b35f-43f2f18b317f",
+      "name": "External workspace after UI startup",
+      "description": "",
+      "path": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\ui-data\\workspaces\\2cfb9cd7-b8a6-427b-b35f-43f2f18b317f"
+    },
+    "database_count": 2
+  },
+  "dashboard_workspace_metric": [
+    "1"
+  ],
+  "dashboard_workspace_metric_after_refresh": [
+    "2"
+  ],
+  "restart": {
+    "product_count": 1,
+    "workspace_count": 2,
+    "specification": "{\n  \"schema_version\": \"1.0\",\n  \"vin_min_v\": null,\n  \"vin_nom_v\": 24.0,\n  \"vin_max_v\": null,\n  \"vout_v\": 5.0,\n  \"iout_a\": 4.0,\n  \"switching_frequency_hz\": null,\n  \"ambient_temperature_k\": null,\n  \"topology\": \"\",\n  \"isolation_requirement\": \"\",\n  \"standards_profile\": \"UNASSIGNED\",\n  \"source\": \"Independent generic audit reference\",\n  \"assumptions\": []\n}",
+    "simulation_workspace_count": 3
+  }
+}

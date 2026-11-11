@@ -1,0 +1,395 @@
+{
+  "real_kicad_erc": {
+    "returned": {
+      "job_id": "1000ba3a-4e18-47dc-a9ac-ebacc6f8599a",
+      "tool_id": "kicad",
+      "status": "SUCCEEDED",
+      "start_time": "2026-11-11T15:46:27.837841+00:00",
+      "end_time": "2026-11-11T15:46:32.854872+00:00",
+      "exit_code": 0,
+      "stdout": "Found 6 violations\r\nSaved ERC Report to C:/Mendex studio/docs/v2.1-validation/evidence/native-kicad-erc/erc_report.json\r\n",
+      "stderr": "",
+      "log_path": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\native-kicad-erc\\kicad_erc.log",
+      "artifacts": [
+        {
+          "relative_path": "erc_report.json",
+          "file_type": "json",
+          "sha256": "055b4bd48e5a0b650117063f008269dc9f3c9752e8b988e327293b5a55b25730",
+          "size_bytes": 4915,
+          "source_job": "1000ba3a-4e18-47dc-a9ac-ebacc6f8599a",
+          "created_at": "2026-11-11T15:46:32.869692+00:00"
+        }
+      ],
+      "metrics": {
+        "violation_count": 6.0,
+        "unconnected_count": 0.0,
+        "parity_count": 0.0,
+        "total_issues": 6.0
+      },
+      "diagnostics": [],
+      "error_message": null
+    },
+    "duration_s": 5.043886200059205
+  },
+  "real_kicad_drc": {
+    "returned": {
+      "job_id": "be7b64db-df60-4c94-b229-cb00add55650",
+      "tool_id": "kicad",
+      "status": "SUCCEEDED",
+      "start_time": "2026-11-11T15:46:33.020086+00:00",
+      "end_time": "2026-11-11T15:47:13.992753+00:00",
+      "exit_code": 0,
+      "stdout": "Found 10 violations\r\nFound 8 unconnected items\r\nSaved DRC Report to C:/Mendex studio/docs/v2.1-validation/evidence/native-kicad-drc/drc_report.json\r\n",
+      "stderr": "",
+      "log_path": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\native-kicad-drc\\kicad_drc.log",
+      "artifacts": [
+        {
+          "relative_path": "drc_report.json",
+          "file_type": "json",
+          "sha256": "da337cee836cfeb0ba6d6c4cb0ae9acc33ec5ca35ea2eca01654f0d6c53ba59e",
+          "size_bytes": 14062,
+          "source_job": "be7b64db-df60-4c94-b229-cb00add55650",
+          "created_at": "2026-11-11T15:47:13.995413+00:00"
+        }
+      ],
+      "metrics": {
+        "violation_count": 10.0,
+        "unconnected_count": 8.0,
+        "parity_count": 0.0,
+        "total_issues": 18.0
+      },
+      "diagnostics": [],
+      "error_message": null
+    },
+    "duration_s": 41.11535019997973
+  },
+  "real_femm_adapter": {
+    "returned": {
+      "job_id": "1ab51197-345f-4fca-a49e-9dbe8a1dbc8d",
+      "tool_id": "femm",
+      "status": "SUCCEEDED",
+      "start_time": "2026-11-11T15:47:14.025538+00:00",
+      "end_time": "2026-11-11T15:47:14.502265+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "log_path": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\native-femm\\femm_runner.log",
+      "artifacts": [
+        {
+          "relative_path": "femm_model.lua",
+          "file_type": "lua",
+          "sha256": "fbf7f5918e3fbe49eeedbe30d08c39436b5bbae11e1017319bb33547362c9d42",
+          "size_bytes": 2159,
+          "source_job": "1ab51197-345f-4fca-a49e-9dbe8a1dbc8d",
+          "created_at": "2026-11-11T15:47:14.504280+00:00"
+        },
+        {
+          "relative_path": "results.txt",
+          "file_type": "txt",
+          "sha256": "82b8cee51871330b5f4e97e1aa47cbda4ec3af75e89cafef7e2f431f4c7c6cbc",
+          "size_bytes": 107,
+          "source_job": "1ab51197-345f-4fca-a49e-9dbe8a1dbc8d",
+          "created_at": "2026-11-11T15:47:14.504534+00:00"
+        },
+        {
+          "relative_path": "temp_transformer.ans",
+          "file_type": "ans",
+          "sha256": "d6986bcaca3689c2c1594047aacef28ff8b7b7a07822d3bd8c536550f50c0315",
+          "size_bytes": 564888,
+          "source_job": "1ab51197-345f-4fca-a49e-9dbe8a1dbc8d",
+          "created_at": "2026-11-11T15:47:14.505137+00:00"
+        },
+        {
+          "relative_path": "temp_transformer.fem",
+          "file_type": "fem",
+          "sha256": "00ea181435ef0359f9c2f950e5d30b60635f2e76a59215af54dbbd7019c565b5",
+          "size_bytes": 2146,
+          "source_job": "1ab51197-345f-4fca-a49e-9dbe8a1dbc8d",
+          "created_at": "2026-11-11T15:47:14.505356+00:00"
+        }
+      ],
+      "metrics": {
+        "primary_current": 1.0,
+        "primary_flux_linkage": 0.0001274437087629309,
+        "primary_inductance_h": 0.0001274437087629309
+      },
+      "diagnostics": [],
+      "error_message": null
+    },
+    "duration_s": 0.5093638000544161
+  },
+  "femm_public_dispatch": {
+    "returned": {
+      "status": "FAILED",
+      "job_id": "e7db9ad8-66d8-47d4-b796-f27be5855383",
+      "tool": "femm",
+      "script": "audit_contract.lua",
+      "b_max_tesla": 0.0,
+      "core_saturated": false,
+      "execution_time_s": 0.0,
+      "error": "Command '['C:\\\\femm42\\\\bin\\\\femm.exe', '-lua-script=C:\\\\Mendex studio\\\\docs\\\\v2.1-validation\\\\evidence\\\\audit-data\\\\workspaces\\\\482548d2-2435-42d6-9ad7-49b6393f27d6\\\\audit_contract.lua']' timed out after 60 seconds"
+    },
+    "duration_s": 60.04242830001749
+  },
+  "outside_root_generate": {
+    "exception": "ValueError",
+    "message": "Access denied: Traversal or path separators not allowed in workspace ID 'C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\outside-write-canary'.",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\extended_probe.py\", line 11, in probe\n    try: out[name]={'returned':fn()}\n                               ~~^^\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\extended_probe.py\", line 29, in <lambda>\n    probe('outside_root_generate',lambda:c.generate_design(str(outside),'Harmless outside root write proof',generate_artifacts=True))\n                                         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Mendex studio\\src\\mendex_core\\controller.py\", line 261, in generate_design\n    ws_path = self._resolve_workspace_dir(workspace_id)\n  File \"C:\\Mendex studio\\src\\mendex_core\\controller.py\", line 52, in _resolve_workspace_dir\n    raise ValueError(f\"Access denied: Traversal or path separators not allowed in workspace ID '{workspace_id}'.\")\nValueError: Access denied: Traversal or path separators not allowed in workspace ID 'C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\outside-write-canary'.\n",
+    "duration_s": 0.004213299951516092
+  },
+  "shell_file_rejection": {
+    "exception": "ValueError",
+    "message": "Unsupported or unrecognized engineering file type '.cmd' for file 'harmless.cmd'. Native tool routing only dispatches recognized CAD, EDA, SPICE, FEA, and system simulation artifacts.",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\extended_probe.py\", line 11, in probe\n    try: out[name]={'returned':fn()}\n                               ~~^^\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\extended_probe.py\", line 31, in <lambda>\n    probe('shell_file_rejection',lambda:c.open_artifact(ws,'harmless.cmd'))\n                                        ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Mendex studio\\src\\mendex_core\\controller.py\", line 662, in open_artifact\n    pid = open_native(target)\n  File \"C:\\Mendex studio\\src\\mendex_core\\launch.py\", line 170, in open_native\n    raise ValueError(\n    ...<2 lines>...\n    )\nValueError: Unsupported or unrecognized engineering file type '.cmd' for file 'harmless.cmd'. Native tool routing only dispatches recognized CAD, EDA, SPICE, FEA, and system simulation artifacts.\n",
+    "duration_s": 0.0026724999770522118
+  },
+  "invalid_config_path": {
+    "exception": "StudioError",
+    "message": "Select an existing absolute executable path",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\extended_probe.py\", line 11, in probe\n    try: out[name]={'returned':fn()}\n                               ~~^^\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\extended_probe.py\", line 32, in <lambda>\n    probe('invalid_config_path',lambda:c.service.configure_tool('ltspice',str(E/'missing-executable.exe')))\n                                       ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Mendex studio\\src\\mendex_core\\service.py\", line 294, in configure_tool\n    raise StudioError(\"INVALID_INPUT\", \"Select an existing absolute executable path\")\nmendex_core.service.StudioError: Select an existing absolute executable path\n",
+    "duration_s": 0.0012380999978631735
+  },
+  "missing_solver": {
+    "returned": true,
+    "duration_s": 0.00015209999401122332
+  },
+  "missing_netlist": {
+    "exception": "FileNotFoundError",
+    "message": "Netlist file not found: C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\nonexistent-input.net",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\extended_probe.py\", line 11, in probe\n    try: out[name]={'returned':fn()}\n                               ~~^^\n  File \"C:\\Mendex studio\\docs\\v2.1-validation\\extended_probe.py\", line 36, in <lambda>\n    probe('missing_netlist',lambda:LTspiceRunner().run_simulation(missing).model_dump(mode='json'))\n                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"C:\\Mendex studio\\src\\mendex_core\\design\\ltspice_runner.py\", line 128, in run_simulation\n    raise FileNotFoundError(f\"Netlist file not found: {net_file}\")\nFileNotFoundError: Netlist file not found: C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\nonexistent-input.net\n",
+    "duration_s": 0.0015203000511974096
+  },
+  "real_solver_timeout": {
+    "returned": {
+      "success": false,
+      "exit_code": -1,
+      "raw_file_path": null,
+      "log_file_path": null,
+      "elapsed_time_s": 0.0,
+      "time_trace": [],
+      "vout_trace": [],
+      "iin_trace": [],
+      "vout_mean_v": 0.0,
+      "vout_ripple_pk_pk_v": 0.0,
+      "vout_min_v": 0.0,
+      "vout_max_v": 0.0,
+      "i_peak_a": 0.0,
+      "convergence_status": "TIMED_OUT",
+      "requirements_evaluated": {},
+      "summary_verdict": "FAILED",
+      "error_message": "Simulation timed out after 0.0001 seconds."
+    },
+    "duration_s": 0.014111800002865493
+  },
+  "jobs_after_timeout": {
+    "returned": [],
+    "duration_s": 0.0012525999918580055
+  },
+  "external_hash_before": {
+    "returned": "UP_TO_DATE",
+    "duration_s": 0.010745499981567264
+  },
+  "external_hash_after": {
+    "returned": "MODIFIED_EXTERNALLY",
+    "duration_s": 0.014091199962422252
+  },
+  "external_hash_missing": {
+    "returned": "MISSING",
+    "duration_s": 0.00017309992108494043
+  },
+  "socket_denied_calculation": {
+    "returned": {
+      "calculation": "semiconductor_losses",
+      "part_number": "GENERIC_MOSFET_650V",
+      "p_conduction_w": 0.18,
+      "p_switching_w": 2.5,
+      "p_total_w": 2.68,
+      "duty_cycle": 0.45,
+      "frequency_hz": 100000.0,
+      "unit": "Watts (W)"
+    },
+    "duration_s": 0.02906750002875924
+  },
+  "socket_denied_workspaces": {
+    "returned": [
+      {
+        "workspace_id": "482548d2-2435-42d6-9ad7-49b6393f27d6",
+        "name": "Independent CLI reference",
+        "description": "",
+        "created_at": "2026-11-11T15:45:27.154366+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "2b88058f-4698-4805-8561-b64dc68367fc",
+        "name": "Independent MCP reference",
+        "description": "",
+        "created_at": "2026-11-11T15:45:27.220451+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "b2757bd6-645e-4516-95db-569b0ec41ca4",
+        "name": "MCP transport reference",
+        "description": "",
+        "created_at": "2026-11-11T15:45:55.750014+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "25852810-49a4-4d78-8e30-a40321f48a92",
+        "name": "Unknown argument reference",
+        "description": "",
+        "created_at": "2026-11-11T15:45:55.780124+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "e9771540-39a9-4f06-99f9-dc64820571d3",
+        "name": "Concurrent reference 0",
+        "description": "",
+        "created_at": "2026-11-11T15:46:01.267966+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "265170c2-57b4-44d0-9e43-878f61a58061",
+        "name": "Concurrent reference 1",
+        "description": "",
+        "created_at": "2026-11-11T15:46:01.270195+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "b7e04d60-74db-4eda-ac9e-30251152cf8c",
+        "name": "Concurrent reference 2",
+        "description": "",
+        "created_at": "2026-11-11T15:46:01.274515+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "097b98d0-b715-4a7b-bb8f-5b4d139e05c8",
+        "name": "Concurrent reference 3",
+        "description": "",
+        "created_at": "2026-11-11T15:46:01.273726+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "f2d4e25c-29ee-4280-b0a8-aba0be2a6eba",
+        "name": "Concurrent reference 6",
+        "description": "",
+        "created_at": "2026-11-11T15:46:01.336015+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "fb5b0316-f7a3-4fe4-ade8-225965a21df4",
+        "name": "Concurrent reference 4",
+        "description": "",
+        "created_at": "2026-11-11T15:46:01.390268+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "eb51f8f6-0674-4395-ab35-78fffeddbffe",
+        "name": "Concurrent reference 7",
+        "description": "",
+        "created_at": "2026-11-11T15:46:01.401533+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "e630e63d-fc17-4e10-9182-5bf00b48533f",
+        "name": "Concurrent reference 5",
+        "description": "",
+        "created_at": "2026-11-11T15:46:01.396058+00:00",
+        "product_id": null,
+        "kind": "integration_workspace"
+      },
+      {
+        "workspace_id": "b9e19eff-bc6e-437b-a94a-035ad09811fe",
+        "name": "AUDIT-REF \u2014 Generic independent reference",
+        "description": "",
+        "created_at": "2026-11-11T15:45:27.232947+00:00",
+        "product_id": "b9e19eff-bc6e-437b-a94a-035ad09811fe",
+        "kind": "product_workspace"
+      }
+    ],
+    "duration_s": 0.011589500005356967
+  },
+  "socket_denied_report": {
+    "returned": {
+      "status": "GENERATED",
+      "report_id": "6c63a876-78c3-440c-be3a-299c7057bacd",
+      "report_path": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\audit-data\\products\\b9e19eff-bc6e-437b-a94a-035ad09811fe\\revisions\\2cf1e5cb-eef4-43fa-8d69-fb2d31a2dd7c\\reports\\6c63a876-78c3-440c-be3a-299c7057bacd\\report.html",
+      "input_hash": "6df01caae3cb77e05d3b43f56f535a49121c0a71e00e6104de6eb184400f28c6",
+      "hash": "6c9201cf6bf749f44f2a61a873a70cad34c1644b2e16340c574595987bf26794",
+      "created_at": "2026-11-11T15:48:14.677768+00:00"
+    },
+    "duration_s": 0.08894149994011968
+  },
+  "native_open_ltspice": {
+    "returned": {
+      "status": "LAUNCHED",
+      "tool_id": "ltspice",
+      "file": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\audit-data\\workspaces\\482548d2-2435-42d6-9ad7-49b6393f27d6\\generated_artifacts\\rev_1\\buck_schematic.asc",
+      "process_id": {
+        "tool": "ltspice",
+        "executable": "C:\\Program Files\\ADI\\LTspice\\LTspice.exe",
+        "target_file": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\audit-data\\workspaces\\482548d2-2435-42d6-9ad7-49b6393f27d6\\generated_artifacts\\rev_1\\buck_schematic.asc",
+        "pid": 4268,
+        "status": "launched"
+      }
+    },
+    "duration_s": 0.005014599999412894
+  },
+  "native_open_kicad_sch": {
+    "returned": {
+      "status": "LAUNCHED",
+      "tool_id": "kicad_sch",
+      "file": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\audit-data\\workspaces\\482548d2-2435-42d6-9ad7-49b6393f27d6\\generated_artifacts\\rev_1\\kicad\\independent_buck_reference.kicad_sch",
+      "process_id": {
+        "tool": "kicad_sch",
+        "executable": "C:\\Program Files\\KiCad\\10.0\\bin\\eeschema.exe",
+        "target_file": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\audit-data\\workspaces\\482548d2-2435-42d6-9ad7-49b6393f27d6\\generated_artifacts\\rev_1\\kicad\\independent_buck_reference.kicad_sch",
+        "pid": 5916,
+        "status": "launched"
+      }
+    },
+    "duration_s": 0.012314300052821636
+  },
+  "native_open_kicad_pcb": {
+    "returned": {
+      "status": "LAUNCHED",
+      "tool_id": "kicad_pcb",
+      "file": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\audit-data\\workspaces\\482548d2-2435-42d6-9ad7-49b6393f27d6\\generated_artifacts\\rev_1\\kicad\\independent_buck_reference.kicad_pcb",
+      "process_id": {
+        "tool": "kicad_pcb",
+        "executable": "C:\\Program Files\\KiCad\\10.0\\bin\\pcbnew.exe",
+        "target_file": "C:\\Mendex studio\\docs\\v2.1-validation\\evidence\\audit-data\\workspaces\\482548d2-2435-42d6-9ad7-49b6393f27d6\\generated_artifacts\\rev_1\\kicad\\independent_buck_reference.kicad_pcb",
+        "pid": 39252,
+        "status": "launched"
+      }
+    },
+    "duration_s": 0.19206749997101724
+  },
+  "vscode_open": {
+    "returned": 0,
+    "duration_s": 5.154052100027911
+  },
+  "native_visible_windows": {
+    "returned": [
+      {
+        "hwnd": 14812738,
+        "title": "independent_buck_reference \u2014 Schematic Editor"
+      },
+      {
+        "hwnd": 6164574,
+        "title": "LTspice - [buck_schematic]"
+      }
+    ],
+    "duration_s": 0.032059499993920326
+  }
+}

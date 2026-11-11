@@ -29,16 +29,39 @@ class CandidateSynthesisEngine:
     @staticmethod
     def synthesize_candidates(requirements: List[Requirement]) -> List[DesignCandidate]:
         """Synthesizes and ranks candidate topologies based on requirements."""
-        # Extract key electrical inputs with defaults
-        req_map: Dict[str, float] = {r.parameter.lower(): r.target_value for r in requirements}
-        
-        vin_nom = req_map.get("vin_nom", req_map.get("vin", 24.0))
-        vin_min = req_map.get("vin_min", vin_nom * 0.8)
-        vin_max = req_map.get("vin_max", vin_nom * 1.2)
-        vout = req_map.get("vout", 12.0)
-        iout = req_map.get("iout", req_map.get("pout", 24.0) / max(vout, 0.1))
+        # Extract key electrical inputs. Critical requirements are never invented.
+        by_name = {r.parameter.lower(): r for r in requirements}
+        req_map: Dict[str, float] = {name: r.target_value for name, r in by_name.items()}
+
+        def _required(*names: str) -> float:
+            for name in names:
+                if name in req_map and req_map[name] is not None:
+                    return float(req_map[name])
+            raise ValueError(f"Missing required design requirement: {names[0]}")
+
+        vin_nom = _required("vin_nom", "vin")
+        vout = _required("vout")
+        if req_map.get("iout") is None and req_map.get("pout") is not None:
+            iout = float(req_map["pout"]) / vout  # derived from explicit output power requirement
+        else:
+            iout = _required("iout")
+        fsw = _required("fsw", "frequency_hz")
+        vin_req = by_name.get("vin_nom") or by_name.get("vin")
+        vin_min = req_map.get("vin_min", vin_req.min_value if vin_req and vin_req.min_value is not None else vin_nom)
+        vin_max = req_map.get("vin_max", vin_req.max_value if vin_req and vin_req.max_value is not None else vin_nom)
+        ripple_req = by_name.get("ripple")
+        ripple_v = None
+        if ripple_req is not None:
+            ripple_v = ripple_req.max_value if ripple_req.max_value is not None else ripple_req.target_value
+
+        for label, value in (("vin_nom", vin_nom), ("vin_min", vin_min), ("vin_max", vin_max), ("vout", vout), ("iout", iout), ("fsw", fsw)):
+            if not math.isfinite(value) or value <= 0:
+                raise ValueError(f"Design requirement '{label}' must be a finite positive value (got {value}).")
+        if not (vin_min <= vin_nom <= vin_max):
+            raise ValueError(f"Input range invalid: require vin_min <= vin_nom <= vin_max (got {vin_min}, {vin_nom}, {vin_max}).")
+        if ripple_v is not None and (not math.isfinite(ripple_v) or ripple_v <= 0):
+            raise ValueError(f"Ripple requirement must be a finite positive value (got {ripple_v}).")
         pout = vout * iout
-        fsw = req_map.get("frequency_hz", req_map.get("fsw", 100000.0))
         isolated = bool(
             req_map.get("isolation", 0.0) > 0
             or req_map.get("isolated", 0.0) > 0
@@ -53,7 +76,8 @@ class CandidateSynthesisEngine:
             d_nom = vout / vin_nom
             delta_il = 0.3 * iout
             l_val = (vin_nom - vout) * d_nom / (fsw * max(delta_il, 0.01))
-            c_val = delta_il / (8.0 * fsw * (0.01 * vout))  # 1% ripple
+            ripple_target = ripple_v if ripple_v is not None else 0.01 * vout  # 1% of Vout only when no requirement given
+            c_val = delta_il / (8.0 * fsw * ripple_target)
             v_stress = vin_max * 1.25
 
             ir_buck = CandidateSynthesisEngine._build_buck_ir(
@@ -263,6 +287,13 @@ class CandidateSynthesisEngine:
                 "Fsw": IRParameter(name="Fsw", value=fsw, unit="Hz"),
                 "Lm": IRParameter(name="Lm", value=lm_val, unit="H"),
                 "N_ratio": IRParameter(name="N_ratio", value=n_ratio, unit="ratio"),
+                # Open-loop CCM duty at nominal input: D = Vor / (Vin + Vor), Vor = Np/Ns * (Vout + Vf)
+                "d_nom": IRParameter(
+                    name="d_nom",
+                    value=(n_ratio * (vout + 0.7)) / (vin_nom + n_ratio * (vout + 0.7)),
+                    unit="ratio",
+                    description="Open-loop CCM duty cycle at nominal input (diode Vf = 0.7 V assumed)",
+                ),
             },
             magnetic_geometry=IRMagneticGeometry(
                 core_type="ETD34",
@@ -337,6 +368,9 @@ class CandidateSynthesisEngine:
 
         ir.add_net_connection("PRI_GND", v_in.id, "n")
         ir.add_net_connection("PRI_GND", q1.id, "s")
+
+        # Gate net driven by the open-loop PWM source emitted by the netlist generator
+        ir.add_net_connection("GATE", q1.id, "g")
 
         # Secondary Loop Nets
         ir.add_net_connection("SEC_ANODE", t1.id, "sec_undot")
