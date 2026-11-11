@@ -102,7 +102,7 @@ class KiCadLifecycleService:
             "passed": res.returncode == 0 and parsed.get("total_issues", 1) == 0,
         }
 
-    def run_drc(self, pcb_path: Path, output_json: Optional[Path] = None) -> Dict[str, Any]:
+    def run_drc(self, pcb_path: Path, output_json: Optional[Path] = None, timeout: int = 300) -> Dict[str, Any]:
         """Runs KiCad PCB DRC in JSON format and returns clearance/track violation metrics."""
         if not self.is_available():
             raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
@@ -123,7 +123,7 @@ class KiCadLifecycleService:
             "json",
             str(board),
         ]
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=60, shell=False)
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, shell=False)
 
         parsed = {}
         diagnostic = ""

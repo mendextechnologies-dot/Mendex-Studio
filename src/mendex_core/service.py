@@ -91,6 +91,12 @@ class StudioService:
         self.measurements = MeasurementService(self)
         from .pcb import PCBWorkspaceService
         self.pcb = PCBWorkspaceService(self)
+        from .design import EngineeringDesignService
+        self.design = EngineeringDesignService(self.root)
+        from .components import ComponentLibraryService
+        self.components = ComponentLibraryService()
+        from .ai import AICopilotGateway
+        self.ai_copilot = AICopilotGateway()
 
     @contextmanager
     def connection(self):
