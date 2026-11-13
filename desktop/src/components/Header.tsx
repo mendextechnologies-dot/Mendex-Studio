@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
       }}
     >
       <div>
-        <h1 style={{ fontSize: '15px', fontWeight: 700, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <h1 style={{ fontSize: '15px', fontWeight: 700, color: '#172033', display: 'flex', alignItems: 'center', gap: '8px' }}>
           {title}
         </h1>
         {subtitle && (
@@ -49,9 +49,9 @@ export const Header: React.FC<HeaderProps> = ({
             gap: '6px',
             padding: '4px 10px',
             borderRadius: '4px',
-            backgroundColor: '#132e27',
-            border: '1px solid #1f5143',
-            color: '#34d399',
+            backgroundColor: '#ecfdf5',
+            border: '1px solid #a7f3d0',
+            color: '#047857',
             fontSize: '11px',
             fontWeight: 600,
           }}
@@ -68,9 +68,9 @@ export const Header: React.FC<HeaderProps> = ({
             gap: '6px',
             padding: '4px 10px',
             borderRadius: '4px',
-            backgroundColor: '#172554',
-            border: '1px solid #1e40af',
-            color: '#93c5fd',
+            backgroundColor: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            color: '#1d4ed8',
             fontSize: '11px',
             fontWeight: 600,
           }}

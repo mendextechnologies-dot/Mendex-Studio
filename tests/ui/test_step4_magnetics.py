@@ -99,13 +99,13 @@ def test_magnetic_comparator_dialog_ui(qapp):
     # Verify candidate 1 readouts
     c1 = dlg.cards[0]
     assert "Ae:" in c1.lbl_ae.text()
-    assert "Total Core Loss:" in c1.lbl_pcore.text()
-    assert "PASS" in c1.badge_status.text() or "MARGINAL" in c1.badge_status.text()
+    assert "NOT_EVALUATED" in c1.lbl_pcore.text()
+    assert c1.badge_status.text() == "NOT_EVALUATED"
 
     # Modify global operating frequency
     dlg.spin_fsw.setValue(150.0)
     dlg.recalculate()
-    assert "W" in c1.lbl_pcore.text()
+    assert "NOT_EVALUATED" in c1.lbl_pcore.text()
 
 
 def test_component_library_panel_magnetics_tab(qapp, tmp_path):
@@ -122,5 +122,6 @@ def test_component_library_panel_magnetics_tab(qapp, tmp_path):
     # Quick Estimator test
     panel.in_est_fsw.setText("120.0")
     panel._recalculate_mag_loss()
-    assert "Volumetric Loss:" in panel.txt_est_mag_output.toPlainText()
-    assert "MagNet" in panel.txt_est_mag_output.toPlainText()
+    assert "NOT_EVALUATED" in panel.txt_est_mag_output.toPlainText()
+    assert "characterized loss fit" in panel.txt_est_mag_output.toPlainText()
+    assert panel.cores_table.item(0, 2).text() == "Unknown"

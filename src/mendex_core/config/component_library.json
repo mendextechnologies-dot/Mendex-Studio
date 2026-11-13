@@ -1,0 +1,426 @@
+{
+  "schema_version": 1,
+  "categories": [
+    {
+      "id": "mosfet",
+      "label": "Silicon / SiC MOSFETs"
+    },
+    {
+      "id": "igbt",
+      "label": "IGBTs"
+    },
+    {
+      "id": "gan",
+      "label": "GaN power stages"
+    },
+    {
+      "id": "diode",
+      "label": "Diodes & rectifiers"
+    },
+    {
+      "id": "thyristor",
+      "label": "Thyristors & TRIACs"
+    },
+    {
+      "id": "gate_driver",
+      "label": "Gate drivers"
+    },
+    {
+      "id": "pwm_controller",
+      "label": "PWM & resonant controllers"
+    },
+    {
+      "id": "voltage_reference",
+      "label": "Voltage references"
+    },
+    {
+      "id": "current_sensor",
+      "label": "Current sensors & amplifiers"
+    },
+    {
+      "id": "voltage_sensor",
+      "label": "Voltage sensors"
+    },
+    {
+      "id": "digital_isolator",
+      "label": "Digital isolators"
+    },
+    {
+      "id": "optocoupler",
+      "label": "Optocouplers"
+    },
+    {
+      "id": "film_capacitor",
+      "label": "Film & DC-link capacitors"
+    },
+    {
+      "id": "electrolytic_capacitor",
+      "label": "Electrolytic capacitors"
+    },
+    {
+      "id": "ceramic_capacitor",
+      "label": "Ceramic capacitors"
+    },
+    {
+      "id": "resistor",
+      "label": "Power resistors"
+    },
+    {
+      "id": "shunt_resistor",
+      "label": "Current shunts"
+    },
+    {
+      "id": "inductor",
+      "label": "Power inductors"
+    },
+    {
+      "id": "transformer",
+      "label": "Transformers"
+    },
+    {
+      "id": "winding_wire",
+      "label": "Winding wire"
+    },
+    {
+      "id": "fuse",
+      "label": "Fuses"
+    },
+    {
+      "id": "tvs",
+      "label": "TVS protection"
+    },
+    {
+      "id": "mov",
+      "label": "Varistors"
+    },
+    {
+      "id": "thermistor",
+      "label": "NTC / PTC thermistors"
+    },
+    {
+      "id": "emi_filter",
+      "label": "EMI filters & chokes"
+    },
+    {
+      "id": "heatsink",
+      "label": "Heatsinks"
+    },
+    {
+      "id": "thermal_interface",
+      "label": "Thermal interfaces"
+    },
+    {
+      "id": "fan",
+      "label": "Cooling fans"
+    },
+    {
+      "id": "connector",
+      "label": "Connectors"
+    },
+    {
+      "id": "busbar",
+      "label": "Busbars"
+    }
+  ],
+  "components": [
+    {
+      "mpn": "BSC026N08NS5",
+      "manufacturer": "Infineon",
+      "category": "mosfet",
+      "datasheet_url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsc026n08ns5-datasheet-en.pdf",
+      "description": "OptiMOS 5 silicon N-channel MOSFET",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "package": "PG-TDSON-8",
+      "voltage_rating_v": 80,
+      "rds_on_ohm": 0.0026,
+      "conditions": "RDS(on) maximum; review gate voltage, junction temperature and SOA in datasheet. Current rating not transcribed pending thermal-condition review."
+    },
+    {
+      "mpn": "C3M0065090D",
+      "manufacturer": "Wolfspeed",
+      "category": "mosfet",
+      "datasheet_url": "https://www.wolfspeed.com/products/power/sic-mosfets/900v-silicon-carbide-mosfets/c3m0065090d/",
+      "description": "Silicon carbide MOSFET; not recommended for new designs",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "package": "TO-247-3",
+      "voltage_rating_v": 900,
+      "rds_on_ohm": 0.065,
+      "lifecycle_status": "NRND",
+      "conditions": "Manufacturer lists 65 milliohms at 25 degrees C. Current requires case-temperature and gate-drive review."
+    },
+    {
+      "mpn": "MBR20100CT",
+      "manufacturer": "onsemi",
+      "category": "diode",
+      "datasheet_url": "https://www.onsemi.com/pdf/datasheet/mbr20100ct-d.pdf",
+      "description": "Dual Schottky rectifier; source ordering table lists MBR20100CTG",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "package": "TO-220",
+      "voltage_rating_v": 100,
+      "current_rating_a": 10,
+      "conditions": "Average forward current PER LEG at case temperature 133 degrees C; 20 A total device, not 20 A per leg. Confirm exact ordering suffix."
+    },
+    {
+      "mpn": "IKW40N65H5",
+      "manufacturer": "Infineon",
+      "category": "igbt",
+      "datasheet_url": "https://www.infineon.com/part/IKW40N65H5",
+      "description": "IGBT with anti-parallel diode",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "package": "TO-247-3",
+      "voltage_rating_v": 650,
+      "conditions": "Current and loss ratings depend on temperature and switching conditions; exact order code requires selection."
+    },
+    {
+      "mpn": "LMG3410R070",
+      "manufacturer": "Texas Instruments",
+      "category": "gan",
+      "datasheet_url": "https://www.ti.com/product/LMG3410R070",
+      "description": "GaN power stage with integrated gate driver and protection",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "package": "VQFN-32",
+      "voltage_rating_v": 600,
+      "conditions": "Datasheet family contains multiple devices; review thermal pad, gate supply and layout requirements."
+    },
+    {
+      "mpn": "UCC21520",
+      "manufacturer": "Texas Instruments",
+      "category": "gate_driver",
+      "datasheet_url": "https://www.ti.com/product/UCC21520",
+      "description": "Dual-channel isolated gate driver",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+    },
+    {
+      "mpn": "UCC28C43",
+      "manufacturer": "Texas Instruments",
+      "category": "pwm_controller",
+      "datasheet_url": "https://www.ti.com/product/UCC28C43",
+      "description": "Current-mode PWM controller",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+    },
+    {
+      "mpn": "TL431",
+      "manufacturer": "Texas Instruments",
+      "category": "voltage_reference",
+      "datasheet_url": "https://www.ti.com/product/TL431",
+      "description": "Adjustable shunt reference",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+    },
+    {
+      "mpn": "INA240",
+      "manufacturer": "Texas Instruments",
+      "category": "current_sensor",
+      "datasheet_url": "https://www.ti.com/product/INA240",
+      "description": "Current-sense amplifier with PWM rejection",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+    },
+    {
+      "mpn": "ISO7721",
+      "manufacturer": "Texas Instruments",
+      "category": "digital_isolator",
+      "datasheet_url": "https://www.ti.com/product/ISO7721",
+      "description": "Two-channel digital isolator",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+    },
+    {
+      "mpn": "VO617A",
+      "manufacturer": "Vishay",
+      "category": "optocoupler",
+      "datasheet_url": "https://www.vishay.com/en/product/83430/",
+      "description": "Phototransistor-output optocoupler",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Choose CTR bin, isolation option and exact order code."
+    },
+    {
+      "mpn": "B32774X0205K000",
+      "manufacturer": "TDK",
+      "category": "film_capacitor",
+      "datasheet_url": "https://product.tdk.com/en/search/capacitor/film/dc-link/info?part_no=B32774X0205K000",
+      "description": "DC-link film capacitor",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Capacitance, voltage, ripple and derating not transcribed; consult exact-part manufacturer record."
+    },
+    {
+      "mpn": "WSLS2512",
+      "manufacturer": "Vishay",
+      "category": "shunt_resistor",
+      "datasheet_url": "https://www.vishay.com/docs/30123/wsls2512.pdf",
+      "description": "Metal-strip current-sense resistor series",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Resistance, tolerance, temperature coefficient and power depend on order code and mounting."
+    },
+    {
+      "mpn": "XAL7030",
+      "manufacturer": "Coilcraft",
+      "category": "inductor",
+      "datasheet_url": "https://www.coilcraft.com/en-us/products/power/shielded-inductors/molded-inductor/xal/xal7030/?skuId=3012",
+      "description": "Shielded power inductor series",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select inductance suffix; saturation and RMS current have different test criteria."
+    },
+    {
+      "mpn": "218",
+      "manufacturer": "Littelfuse",
+      "category": "fuse",
+      "datasheet_url": "https://www.littelfuse.com/assetdocs/littelfuse_fuse_218_datasheet.pdf?assetguid=a96d72b7-5296-4815-88b4-98b2f6738874",
+      "description": "Time-lag glass cartridge fuse series",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select current and breaking capacity; AC rating must not be treated as a DC rating."
+    },
+    {
+      "mpn": "SMBJ",
+      "manufacturer": "Littelfuse",
+      "category": "tvs",
+      "datasheet_url": "https://www.littelfuse.com/assetdocs/tvs-diodes-smbj-series-datasheet?assetguid=ba555e99-a12d-4f72-a0b6-86b06c67171e",
+      "description": "Transient-voltage suppressor series",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select standoff voltage and polarity; pulse-power rating is waveform-dependent, not continuous power."
+    },
+    {
+      "mpn": "S14 compact AdvanceD-MP",
+      "manufacturer": "TDK",
+      "category": "mov",
+      "datasheet_url": "https://www.tdk-electronics.tdk.com/inf/70/db/var/SIOV_Leaded_AdvanceD_MP_S14_compact_series.pdf?ref_disty=digikey",
+      "description": "Leaded metal-oxide varistor series",
+      "record_kind": "FAMILY",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Select voltage and surge-energy variant before use."
+    },
+    {
+      "mpn": "FN2090-20-06",
+      "manufacturer": "Schaffner",
+      "category": "emi_filter",
+      "datasheet_url": "https://www.schaffner.com/fileadmin/user_upload/pim/articles/FN2090_20_06.pdf",
+      "description": "Single-phase mains EMI filter",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Review rated voltage, leakage current, ambient derating and earthing requirements."
+    },
+    {
+      "mpn": "657-15ABEP",
+      "manufacturer": "Wakefield Thermal",
+      "category": "heatsink",
+      "datasheet_url": "https://wakefieldthermal.com/wakefield-thermal-heatsink-to-220-w-pins-blk-1-5-657-15abep/",
+      "description": "Pin-mounted heatsink",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Thermal resistance depends on airflow, orientation and interface; no fixed value assumed."
+    },
+    {
+      "mpn": "1935161",
+      "manufacturer": "Phoenix Contact",
+      "category": "connector",
+      "datasheet_url": "https://www.phoenixcontact.com/en-us/products/printed-circuit-board-terminal-pt-15-2-50-h-1935161",
+      "description": "PT 1,5/2-5,0-H PCB terminal block",
+      "record_kind": "PART",
+      "source_checked_on": "2026-11-13",
+      "voltage_rating_v": 400,
+      "current_rating_a": 17.5,
+      "conditions": "400 V at overvoltage category III / pollution degree 2. Current subject to conductor size and temperature derating; not a 1 kV connector qualification."
+    }
+  ],
+  "materials": [
+    {
+      "name": "N87",
+      "manufacturer": "TDK",
+      "material_type": "MnZn ferrite",
+      "initial_permeability_ui": 2200,
+      "saturation_flux_t": 0.49,
+      "curie_temp_c": 210,
+      "curie_temp_qualifier": ">",
+      "freq_min_hz": 25000,
+      "freq_max_hz": 500000,
+      "datasheet_url": "https://www.tdk-electronics.tdk.com/download/528882/990c299b916e9f3eb7e44ad563b7f0b9/pdf-n87.pdf",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Initial permeability at 25 degrees C, tolerance +/-25%; flux density at 25 degrees C, H=1200 A/m, f=10 kHz. Curie temperature is a lower bound. No qualified Steinmetz fit supplied."
+    },
+    {
+      "name": "N97",
+      "manufacturer": "TDK",
+      "material_type": "MnZn ferrite",
+      "initial_permeability_ui": 2300,
+      "saturation_flux_t": 0.51,
+      "curie_temp_c": 230,
+      "curie_temp_qualifier": ">",
+      "freq_min_hz": 25000,
+      "freq_max_hz": 500000,
+      "datasheet_url": "https://www.tdk-electronics.tdk.com/download/187242/81166f0de556e5b6a94db7793daed936/pdf-n97.pdf",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Initial permeability at 25 degrees C, tolerance +/-25%; flux density at 25 degrees C, H=1200 A/m, f=10 kHz. Curie temperature is a lower bound. No qualified Steinmetz fit supplied."
+    },
+    {
+      "name": "3F36",
+      "manufacturer": "Ferroxcube",
+      "material_type": "MnZn ferrite",
+      "saturation_flux_t": 0.42,
+      "freq_min_hz": 300000,
+      "freq_max_hz": 1000000,
+      "datasheet_url": "https://www.ferroxcube.com/en-global/download/download/99",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Flux density at 100 degrees C, H=1200 A/m. Other numeric properties and loss fit not transcribed."
+    },
+    {
+      "name": "3C90",
+      "manufacturer": "Ferroxcube",
+      "material_type": "MnZn ferrite",
+      "datasheet_url": "https://www.ferroxcube.com/en-global/products_ferroxcube/detail/shape_cores_accessories/rm_cores",
+      "conditions": "Legacy seed quarantined: numeric values removed pending material-specific datasheet review. Link is a manufacturer core catalog, not a characterized material specification."
+    },
+    {
+      "name": "KoolMu",
+      "manufacturer": "Magnetics",
+      "material_type": "Fe-Si-Al powder",
+      "datasheet_url": "https://www.mag-inc.com/products/powder-cores/kool-mu-cores",
+      "source_checked_on": "2026-11-13",
+      "conditions": "Product family includes multiple permeability grades. No single permeability, Curie temperature or loss fit assumed."
+    }
+  ],
+  "cores": [
+    {
+      "name": "Planar E22/6/16",
+      "geometry_type": "Planar E",
+      "conditions": "Legacy geometry-only reference. Exact manufacturer, order code, mating core set, gap and material required; unsupported dimensions withdrawn."
+    },
+    {
+      "name": "PQ26/20",
+      "geometry_type": "PQ",
+      "conditions": "Legacy geometry-only reference. Exact manufacturer, order code, mating core set, gap and material required; unsupported dimensions withdrawn."
+    },
+    {
+      "name": "RM8",
+      "geometry_type": "RM",
+      "conditions": "Legacy geometry-only reference. Exact manufacturer, order code, mating core set, gap and material required; unsupported dimensions withdrawn."
+    },
+    {
+      "name": "EFD20",
+      "geometry_type": "EFD",
+      "conditions": "Legacy geometry-only reference. Exact manufacturer, order code, mating core set, gap and material required; unsupported dimensions withdrawn."
+    },
+    {
+      "name": "ETD29",
+      "geometry_type": "ETD",
+      "conditions": "Legacy geometry-only reference. Exact manufacturer, order code, mating core set, gap and material required; unsupported dimensions withdrawn."
+    }
+  ]
+}

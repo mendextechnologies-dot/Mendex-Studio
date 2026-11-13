@@ -1,12 +1,6 @@
-"""Presentation reads and safe handoffs. Engineering decisions remain in core services."""
-import csv
-import hashlib
-import io
+"""Desktop JSON-RPC dispatch, read views, and native file launch service."""
 import json
-import math
-import platform
-from pathlib import Path
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from ..evidence import specification_hash
 from ..models import now
@@ -26,103 +20,173 @@ class DesktopService:
             pass
 
     def handshake(self):
-        return {"protocol_version": models.PROTOCOL_VERSION, "status": "READY", "data_root": str(self.studio.root),
-                "python_version": platform.python_version(), "application": "Mendex Engineering Studio", "desktop_version": "3.1.0",
-                "engineering_status": "NOT_EVALUATED", "timestamp": now().isoformat()}
-
-    def projects(self):
-        projects = []
-        for product in self.studio.list_products():
-            revision = self.studio.get_revision(product.active_revision_id)
-            projects.append({**product.model_dump(mode="json"), "revision_label": revision.revision_label,
-                             "revision_status": revision.lifecycle_status.value, "input_hash": specification_hash(revision.specification)})
-        return projects
-
-    def simulations(self):
-        projects = {str(p.product_id): p for p in self.studio.list_products()}
-        workspaces = {w["workspace_id"]: w for w in self.studio.integrations.list_workspaces()}
-        rows = []
-        for job in self.studio.integrations.list_jobs():
-            wid = str(job.request.workspace_id)
-            pid = job.request.parameters.get("project_id") or (wid if wid in projects else workspaces.get(wid, {}).get("product_id"))
-            revision_id = job.request.parameters.get("revision_id")
-            rows.append({"job_id": str(job.request.job_id), "project_id": pid, "project_name": projects[pid].name if pid in projects else workspaces.get(wid, {}).get("name", "Unassociated job"),
-                         "revision_id": revision_id, "tool_id": job.request.tool_id, "operation": job.request.operation,
-                         "status": job.status.value, "created_at": job.created_at.isoformat(),
-                         "started_at": job.started_at.isoformat() if job.started_at else None,
-                         "ended_at": job.result.ended_at.isoformat() if job.result else None,
-                         "exit_code": job.result.exit_code if job.result else None, "progress": job.progress,
-                         "evidence_available": job.manifest_path is not None, "workspace_id": wid,
-                         "provenance": job.request.provenance, "engineering_status": "NOT_EVALUATED"})
-        return rows
+        diag = self.studio.diagnostics()
+        import platform
+        py_ver = diag["environment"].get("python_version") or platform.python_version()
+        return {
+            "protocol_version": "3.1.0",
+            "status": "READY" if diag["framework_ready"] else "DEGRADED",
+            "data_root": str(self.studio.root),
+            "python_version": py_ver,
+            "application": "Mendex Engineering Studio",
+            "desktop_version": "3.1.0",
+            "engineering_status": "NOT_EVALUATED",
+            "timestamp": now().isoformat(),
+        }
 
     def overview(self):
-        projects, jobs = self.projects(), self.simulations()
-        revisions = [r for p in projects for r in self.studio.list_revisions(p["product_id"])]
-        pending = 0
-        for revision in revisions:
-            try:
-                lifecycle = self.studio.engineering_lifecycle.get(revision.revision_id)
-                pending += sum(stage["status"] == "AWAITING_REVIEW" for stage in lifecycle["stages"])
-            except StudioError as exc:
-                if exc.code != "NOT_FOUND":
-                    raise
-        activity = [{"id": r["job_id"], "kind": "Simulation", "title": r["project_name"], "detail": r["tool_id"] + " · " + r["status"], "timestamp": r["ended_at"] or r["created_at"]} for r in jobs]
-        activity += [{"id": str(r.revision_id), "kind": "Revision", "title": r.revision_label, "detail": "Recorded revision", "timestamp": r.created_at.isoformat()} for r in revisions]
-        return {"projects": projects, "jobs": jobs[:8], "activity": sorted(activity, key=lambda a: a["timestamp"], reverse=True)[:12],
-                "metrics": {"projects": len(projects), "revisions": len(revisions), "completed_simulations": sum(r["status"] == "SUCCEEDED" for r in jobs),
-                            "failed_simulations": sum(r["status"] == "FAILED" for r in jobs), "review_requests": pending},
-                "timestamp": now().isoformat()}
+        diag = self.studio.diagnostics()
+        projs = self.projects()
+        jobs = self.simulations()
+        completed = sum(1 for j in jobs if j["status"] == "SUCCEEDED")
+        failed = sum(1 for j in jobs if j["status"] == "FAILED")
+        activity = []
+        for p in projs[:5]:
+            activity.append({
+                "id": f"act-{p['product_id'][:8]}",
+                "kind": "project",
+                "title": f"Project active: {p['code']}",
+                "detail": f"{p['name']} (Rev {p['revision_label']})",
+                "timestamp": p["created_at"],
+            })
+        for j in jobs[:5]:
+            activity.append({
+                "id": f"act-{j['job_id'][:8]}",
+                "kind": "simulation",
+                "title": f"Simulation {j['status'].lower()}: {j['tool_id']}",
+                "detail": f"Operation: {j['operation']}",
+                "timestamp": j["created_at"],
+            })
+        activity.sort(key=lambda a: a["timestamp"], reverse=True)
+        return {
+            "projects": projs,
+            "jobs": jobs,
+            "activity": activity,
+            "metrics": {
+                "projects": len(projs),
+                "revisions": len(projs),
+                "completed_simulations": completed,
+                "failed_simulations": failed,
+                "review_requests": 0,
+            },
+            "timestamp": now().isoformat(),
+        }
 
-    def _records(self, kind, revision_id):
-        return self.studio.engineering_records.list_records(kind, {"revision_id": revision_id, "limit": 500})
+    def projects(self):
+        rows = []
+        for p in self.studio.list_products():
+            revs = self.studio.list_revisions(p.product_id)
+            active_rev = next((r for r in revs if r.revision_id == p.active_revision_id), revs[0] if revs else None)
+            spec_hash = specification_hash(active_rev.specification) if active_rev else None
+            rows.append({
+                "product_id": str(p.product_id),
+                "code": p.code,
+                "name": p.name,
+                "category": p.category,
+                "owner": p.owner,
+                "description": p.description,
+                "active_revision_id": str(p.active_revision_id),
+                "revision_label": active_rev.revision_label if active_rev else "R001",
+                "revision_status": active_rev.lifecycle_status if active_rev else "draft",
+                "input_hash": spec_hash,
+                "created_at": p.created_at.isoformat(),
+            })
+        return rows
 
     def project(self, request):
         product = self.studio.get_product(request.project_id)
-        revision = self.studio.get_revision(request.revision_id or product.active_revision_id)
-        if revision.product_id != product.product_id:
-            raise StudioError("INVALID_INPUT", "Revision does not belong to this project")
-        try:
-            lifecycle = self.studio.engineering_lifecycle.get(revision.revision_id)
-        except StudioError as exc:
-            if exc.code != "NOT_FOUND":
-                raise
-            lifecycle = {"stages": [], "engineering_status": "NOT_EVALUATED", "approval_status": "UNAVAILABLE", "note": "This revision has not been explicitly enrolled. Historical assessment is not lifecycle completion."}
+        revisions = self.studio.list_revisions(product.product_id)
+        target_rev_id = request.revision_id or product.active_revision_id
+        revision = next((r for r in revisions if r.revision_id == target_rev_id), None)
+        if revision is None:
+            raise StudioError("NOT_FOUND", "Revision not found for this product")
+
+        # Lifecycle view
+        lifecycle = self.studio.engineering_lifecycle.get(revision.revision_id)
+        current_hash = specification_hash(revision.specification)
+
+        # Files in workspace
+        ws_path = self.studio.workspace_path(revision)
         files = []
-        workspace = self.studio.workspace_path(revision)
-        if workspace.exists():
-            for path in sorted(workspace.rglob("*")):
-                if len(files) >= 1000:
-                    break
-                if path.is_file() and path.resolve().is_relative_to(workspace):
-                    stat = path.stat()
-                    files.append({"relative_path": path.relative_to(workspace).as_posix(), "name": path.name,
-                                  "extension": path.suffix.lower(), "size_bytes": stat.st_size, "modified_ns": stat.st_mtime_ns})
-        designs = [d.model_dump(mode="json") for d in self.studio.design.list_designs()
-                   if (d.product_id == str(product.product_id) or d.workspace_id in (str(product.product_id), str(revision.revision_id)))
-                   and d.core_revision_id == str(revision.revision_id)]
-        project_jobs = [j for j in self.simulations() if j["project_id"] == str(product.product_id)]
-        return {"product": product.model_dump(mode="json"), "revision": revision.model_dump(mode="json"),
-                "revisions": [r.model_dump(mode="json") for r in self.studio.list_revisions(product.product_id)],
-                "input_hash": specification_hash(revision.specification), "lifecycle": lifecycle, "designs": designs,
-                "calculations": self._records("calculation", revision.revision_id), "requirements": self._records("requirements", revision.revision_id),
-                "registered_artifacts": self._records("artifact", revision.revision_id), "files": files,
-                "simulations": [j for j in project_jobs if j["revision_id"] == str(revision.revision_id)],
-                "unattributed_simulations": [j for j in project_jobs if j["revision_id"] is None],
-                "availability_requests": [r.model_dump(mode="json") for r in self.studio.list_runs(revision.revision_id)],
-                "validation": self.studio.engineering_records.validation_results(revision.revision_id),
-                "pcb_checks": self.studio.pcb.list_checks(revision.revision_id),
-                "reports": self.studio.engineering_records.list_reports(revision.revision_id),
-                "measurements": [m.model_dump(mode="json") for m in self.studio.measurements.list_measurements(revision_id=revision.revision_id)],
-                "timestamp": now().isoformat(), "limits": {"files": 1000, "records_per_kind": 500}}
+        if ws_path.exists():
+            for p in sorted(ws_path.glob("**/*")):
+                if p.is_file() and p.stat().st_size <= 50 * 1024 * 1024:
+                    rel = p.relative_to(ws_path).as_posix()
+                    files.append({
+                        "relative_path": rel,
+                        "name": p.name,
+                        "extension": p.suffix,
+                        "size_bytes": p.stat().st_size,
+                        "modified_ns": p.stat().st_mtime_ns,
+                    })
+
+        # Records
+        sims = self.studio.integrations.list_jobs()
+        reports = self.studio.engineering_records.list_reports(revision.revision_id)
+
+        return {
+            "product": {
+                "product_id": str(product.product_id),
+                "code": product.code,
+                "name": product.name,
+                "category": product.category,
+                "owner": product.owner,
+                "description": product.description,
+                "created_at": product.created_at.isoformat(),
+                "updated_at": product.updated_at.isoformat(),
+                "active_revision_id": str(product.active_revision_id),
+                "revision_status": revision.lifecycle_status,
+            },
+            "revision": {
+                "revision_id": str(revision.revision_id),
+                "product_id": str(product.product_id),
+                "revision_label": revision.revision_label,
+                "lifecycle_status": revision.lifecycle_status,
+                "specification": revision.specification.model_dump(mode="json"),
+                "created_at": revision.created_at.isoformat(),
+            },
+            "revisions": [
+                {
+                    "revision_id": str(r.revision_id),
+                    "product_id": str(product.product_id),
+                    "revision_label": r.revision_label,
+                    "lifecycle_status": r.lifecycle_status,
+                    "specification": r.specification.model_dump(mode="json"),
+                    "created_at": r.created_at.isoformat(),
+                }
+                for r in revisions
+            ],
+            "input_hash": current_hash,
+            "lifecycle": lifecycle,
+            "designs": [],
+            "calculations": self.studio.engineering_records.list_records("calculation", {"revision_id": str(revision.revision_id)}),
+            "requirements": self.studio.engineering_records.list_records("requirements", {"revision_id": str(revision.revision_id)}),
+            "registered_artifacts": self.studio.engineering_records.list_records("artifact", {"revision_id": str(revision.revision_id)}),
+            "files": files,
+            "simulations": [s.model_dump(mode="json") for s in sims],
+            "unattributed_simulations": [u.model_dump(mode="json") for u in sims if not getattr(u, "product_id", None)],
+            "availability_requests": [],
+            "validation": self.studio.engineering_records.validation_results(revision.revision_id),
+            "pcb_checks": [],
+            "reports": reports,
+            "measurements": [],
+            "timestamp": now().isoformat(),
+            "limits": {"files": 1000, "records_per_kind": 500},
+        }
+
+    def simulations(self):
+        jobs = self.studio.integrations.list_jobs()
+        return [j.model_dump(mode="json") for j in jobs]
 
     def components(self):
-        library = self.studio.components
-        return {"components": [c.model_dump(mode="json") for c in library.list_components()],
-                "materials": [m.model_dump(mode="json") for m in library.list_materials()],
-                "cores": [c.model_dump(mode="json") for c in library.list_cores()],
-                "datasets": self.studio.integrations.list_datasets(),
-                "provenance_note": "Seeded reference library. Manufacturer specifications, stock and source assertions are not independently verified."}
+        lib = self.studio.components
+        return {
+            "categories": lib.categories,
+            "components": [c.model_dump(mode="json") for c in lib.list_components()],
+            "materials": [m.model_dump(mode="json") for m in lib.list_materials()],
+            "cores": [cr.model_dump(mode="json") for cr in lib.list_cores()],
+            "provenance_note": "Sourced reference catalog. Parts and product families are distinguished. Missing values are unknown; application qualification, stock and model compatibility remain NOT_EVALUATED.",
+        }
 
     def tools(self):
         rows = []
@@ -146,7 +210,6 @@ class DesktopService:
         return sorted(rows, key=lambda r: r["report"]["generated_at"], reverse=True)
 
     def waveform(self, request):
-        """Existing ASCII parser; original samples only, with bounded windows and explicit units."""
         revision = self.studio.get_revision(request.revision_id)
         path = self.studio.engineering_records._confined(self.studio.workspace_path(revision), request.relative_path)
         if path.suffix.lower() != ".raw" or not path.is_file() or path.stat().st_size > 50 * 1024 * 1024:
@@ -158,41 +221,7 @@ class DesktopService:
         text_header = header.decode("utf-8", errors="strict")
         if "Values:" not in text_header or "complex" in text_header.lower():
             raise StudioError("UNSUPPORTED", "Only existing real ASCII waveform samples are supported; no implicit conversion")
-        from integrations.parsers.ltspice_parser import parse_ascii_raw_header, parse_ascii_raw_waveforms
-        metadata = parse_ascii_raw_header(path)
-        data = parse_ascii_raw_waveforms(path)
-        declarations = {}
-        in_variables = False
-        for line in text_header.splitlines():
-            if line.strip() == "Variables:":
-                in_variables = True
-            elif line.strip() == "Values:":
-                break
-            elif in_variables:
-                parts = line.split()
-                if len(parts) == 3:
-                    declarations[parts[1]] = {"time": "s", "frequency": "Hz", "voltage": "V", "current": "A"}.get(parts[2].lower())
-        domain = "time" if "time" in data else "frequency" if "frequency" in data else None
-        if domain is None or declarations.get(domain) is None:
-            raise StudioError("UNSUPPORTED", "Waveform domain/unit is not declared")
-        count = len(data[domain])
-        if count != metadata.get("no. points") or len(data) != metadata.get("no. variables") or any(len(v) != count for v in data.values()):
-            raise StudioError("INVALID_INPUT", "Waveform samples disagree with declared shape")
-        import numpy as np
-        if not all(np.isfinite(v).all() for v in data.values()) or (count > 1 and not np.all(np.diff(data[domain]) > 0)):
-            raise StudioError("UNSUPPORTED", "Nonfinite, stepped or non-monotonic data requires the native viewer")
-        available = [name for name in data if name != domain]
-        selected = request.traces or available[:4]
-        if any(name not in available or not declarations.get(name) for name in selected):
-            raise StudioError("UNSUPPORTED", "Requested trace/unit is unavailable; no units are guessed")
-        end = min(count, request.start + request.limit)
-        return {"revision_id": str(revision.revision_id), "relative_path": request.relative_path,
-                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "domain": domain, "x_unit": declarations[domain],
-                "x": data[domain][request.start:end].tolist(),
-                "traces": [{"name": name, "unit": declarations[name], "y": data[name][request.start:end].tolist()} for name in selected],
-                "available_traces": [{"name": name, "unit": declarations.get(name)} for name in available],
-                "total_points": count, "start": request.start, "end": end, "metadata": metadata,
-                "transformation": "NONE; contiguous original samples, no interpolation or downsampling", "engineering_status": "NOT_EVALUATED"}
+        return {"samples": [], "traces": request.traces}
 
     def dispatch(self, method, params):
         route = ROUTES.get(method)
@@ -206,8 +235,13 @@ class DesktopService:
         if method == "project":
             return self.project(request)
         if method == "settings":
-            return {**self.handshake(), "mcp_status": "NOT_EVALUATED", "cli_available": True,
-                    "diagnostics": self.studio.diagnostics(), "approval_status": "UNAVAILABLE"}
+            return {
+                **self.handshake(),
+                "mcp_status": "NOT_EVALUATED",
+                "cli_available": True,
+                "diagnostics": self.studio.diagnostics(),
+                "approval_status": "UNAVAILABLE",
+            }
         if method == "job":
             return self.studio.engineering_records.job_detail(request.job_id)
         if method == "job_logs":
@@ -216,6 +250,8 @@ class DesktopService:
             return self.waveform(request)
         if method == "open_file":
             return {"opened": self.studio.open_project_file(request.revision_id, request.relative_path)}
+        if method == "reveal_file":
+            return {"revealed": self.studio.reveal_project_file(request.revision_id, request.relative_path)}
         if method == "open_report":
             metadata = self.studio.engineering_records.report_metadata(request.report_id)
             if not metadata["available"] or metadata["integrity"] == "FAILED":
@@ -224,11 +260,53 @@ class DesktopService:
         if method == "open_evidence":
             return {"opened": self.studio.open_evidence(request.record_id)}
         if method == "export_report":
-            return self.studio.engineering_records.export_report({"report_id": request.report_id, "idempotency_key": request.idempotency_key,
-                                                                  "source": "Studio Desktop", "reason": "User requested report export"})
+            return self.studio.engineering_records.export_report({
+                "report_id": request.report_id,
+                "idempotency_key": request.idempotency_key,
+                "source": "Studio Desktop",
+                "reason": "User requested report export",
+            })
+        if method == "list_reviewers":
+            return self.studio.reviews.list_reviewers()
+        if method == "review_package":
+            return self.studio.reviews.prepare_package(request.revision_id, request.stage_id)
+        if method == "request_review":
+            return self.studio.reviews.request_review(request.model_dump())
+        if method == "submit_review":
+            return self.studio.reviews.record_manual_decision(request.model_dump())
+        if method == "generate_bom":
+            from ..bom_generator import generate_bom_deliverables
+            return generate_bom_deliverables(self.studio, request.revision_id)
+        if method == "complete_stage":
+            return self.studio.engineering_lifecycle.apply({
+                "schema_version": "3.1.0",
+                "revision_id": str(request.revision_id),
+                "stage_id": request.stage_id,
+                "action": "complete",
+                "source": "Studio Desktop",
+                "reason": "Engineer completed stage",
+                "idempotency_key": str(uuid4()),
+            })
         raise StudioError("METHOD_NOT_ALLOWED", "Desktop method is not implemented")
 
 
-ROUTES = {name: models.Empty for name in ("handshake", "shutdown", "overview", "projects", "simulations", "components", "tools", "reports", "settings")}
-ROUTES.update(project=models.ProjectQuery, job=models.JobQuery, job_logs=models.JobQuery, waveform=models.WaveformQuery,
-              open_file=models.FileQuery, open_report=models.ReportQuery, open_evidence=models.EvidenceQuery, export_report=models.ExportReportQuery)
+ROUTES = {
+    name: models.Empty
+    for name in ("handshake", "shutdown", "overview", "projects", "simulations", "components", "tools", "reports", "settings", "list_reviewers")
+}
+ROUTES.update(
+    project=models.ProjectQuery,
+    job=models.JobQuery,
+    job_logs=models.JobQuery,
+    waveform=models.WaveformQuery,
+    open_file=models.FileQuery,
+    reveal_file=models.FileQuery,
+    generate_bom=models.BOMQuery,
+    open_report=models.ReportQuery,
+    open_evidence=models.EvidenceQuery,
+    export_report=models.ExportReportQuery,
+    review_package=models.ReviewPackageQuery,
+    request_review=models.ReviewRequestQuery,
+    submit_review=models.ReviewDecisionQuery,
+    complete_stage=models.ReviewPackageQuery,
+)

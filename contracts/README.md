@@ -1,5 +1,13 @@
 # Application service contract v0.1
 
+Desktop review update (13 November 2026): `submit_review` now takes reviewer_name,
+required comments and the displayed expected_document_hashes / expected_evidence_hashes,
+along with existing revision/stage/attempt/digest/decision fields. It calls the shared
+core's local manual-decision path. Result metadata explicitly states MANUALLY_DECLARED,
+identity_authenticated=false and CONTENT_DIGEST_NOT_IDENTITY_PROOF. Credential-based
+MCP/CLI review contracts are retained; manual payloads are rejected by their strict
+schema. Existing historical records are unchanged. See `docs/MANUAL_ENGINEERING_REVIEW.md`.
+
 Phase 2 engineering-record contracts are additive `contracts/v3.1/records.*.schema.json`.
 `StudioService.engineering_records` delegates to existing domain implementations;
 CLI/MCP share `engineering_records/api.py`. See `docs/v3.1/17_SHARED_AGENT_OPERATIONS.md`
@@ -37,3 +45,6 @@ Completion operations: save_product_revision(...) atomically saves metadata and 
 Errors: `StudioError.code` is INVALID_INPUT, NOT_FOUND, CONFLICT, IMMUTABLE, STORAGE_ERROR or LAUNCH_ERROR. Pydantic rejects unknown fields and non-finite quantities. Registry misuse raises ValueError and disabled adapter execution raises NotImplementedError. CLI emits JSON errors to stderr and returns a nonzero exit code.
 
 PCB workspace contract (11 November 2026): `StudioService.pcb.overview(revision_id)`, `import_file(revision_id, source)`, `open_file(revision_id, relative_path)`, `review_notes(revision_id)`, `save_review_notes(revision_id, notes)`, `run_check(revision_id, relative_path, operation)`, `list_checks(revision_id)`, `read_check(revision_id, run_id)` and `open_check_evidence(revision_id, run_id)` are shared by presentation clients. Import/open-for-editing/notes require draft revisions; imports never overwrite. Checks accept only erc/schematic or drc/board pairs inside that revision's pcb directory, execute against copies, and preserve unique hash-covered artifacts outside the revision. Native report status and effective status are separate: current status may be CLEAR/ISSUES_FOUND/ERROR/NOT_EVALUATED; stale or integrity-failed reads are effectively NOT_EVALUATED. Product evaluation is always NOT_EVALUATED by this module. Notes/checks do not write lifecycle approvals or numerical validation PASS records. See docs/PCB_WORKSPACE.md.
+
+
+Component reference contract update (13 November 2026): desktop `components` returns the shared core catalog with `categories`, `components`, `materials`, `cores` and `provenance_note`. Canonical Pydantic fields are used directly by the typed React client. Missing ratings, core dimensions, loss coefficients and model associations are nullable. Records carry source/conditions and qualification NOT_EVALUATED; FAMILY references require an exact variant. Source dates and lifecycle labels do not qualify a component. No project/schema migration. See docs/COMPONENT_LIBRARY.md.

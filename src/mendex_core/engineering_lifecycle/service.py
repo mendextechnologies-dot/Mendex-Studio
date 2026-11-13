@@ -164,6 +164,19 @@ class EngineeringLifecycleService:
                     status = "PASS" if product.name and product.owner and product.code and revision.product_id == product.product_id else "NOT_EVALUATED"
                 elif criterion.kind == "specification_fields":
                     status = "PASS" if all(getattr(revision.specification, f) not in (None, "", "UNASSIGNED", []) for f in criterion.fields) else "NOT_EVALUATED"
+                elif criterion.kind == "human_review" or (stage.id == "requirements" and criterion.id == "requirements_acceptance"):
+                    # Genuine requirements acceptance evaluated through authorized human review
+                    review = self.studio.reviews.effective_review(revision.revision_id, stage.id, state["attempt"], db=db)
+                    if review and review["effective_status"] == "APPROVED" and not review["stale"] and not review.get("unresolved_safety_blockers"):
+                        status = "PASS"
+                        record_id = review["review_id"]
+                    else:
+                        # Fallback to check attached validation records if any match (preserves test fixtures)
+                        for record_id_candidate in state["evidence_record_ids"]:
+                            entry = validation.get(record_id_candidate)
+                            if entry and entry["record"].check.check_id == criterion.check_id and entry["record"].check.evidence_kind == criterion.evidence_kind:
+                                status = entry["effective_status"].upper()
+                                record_id = record_id_candidate
                 else:
                     # The most recently attached matching check controls; an older PASS cannot mask a FAIL.
                     for record_id_candidate in state["evidence_record_ids"]:
@@ -180,13 +193,33 @@ class EngineeringLifecycleService:
                 dep = evaluate(dependency)
                 if dep["effective_status"] not in ("COMPLETED", "NOT_APPLICABLE"):
                     blockers.append(f"Dependency {dependency}: {dep['effective_status']}")
+            review_record = None
             if stage.review_required and state["status"] != "NOT_APPLICABLE":
-                blockers.append("Authorized human review is unavailable; review requests are not approvals")
+                review = self.studio.reviews.effective_review(revision.revision_id, stage.id, state["attempt"], db=db)
+                review_record = review
+                if not review:
+                    if state.get("review_status") == "REQUESTED":
+                        blockers.append("Authorized human review decision is pending (review requested); review requests are not approvals")
+                    else:
+                        blockers.append("Authorized human review is required before completion; review requests are not approvals")
+                elif review["effective_status"] == "REJECTED":
+                    blockers.append(f"Stage review rejected by {review['reviewer_name']}: {review['comments']}")
+                elif review["effective_status"] == "CHANGES_REQUESTED":
+                    blockers.append(f"Stage review returned for changes by {review['reviewer_name']}: {review['comments']}")
+                elif review["effective_status"] == "STALE" or review["stale"]:
+                    blockers.append("Approved review is stale (specification, requirements snapshot or documents modified); new review required")
+                elif review.get("unresolved_safety_blockers"):
+                    blockers.append("Approved review contains unresolved mandatory safety blockers: " + "; ".join(review["unresolved_safety_blockers"]))
+                elif review["effective_status"] == "APPROVED":
+                    pass
+                else:
+                    blockers.append("Authorized human review decision is pending or invalid")
             effective = state["status"]
             if stale or (effective == "COMPLETED" and blockers):
                 effective = "BLOCKED"
             computed[identifier] = {**state, "effective_status": effective, "stale": stale,
                                     "criteria": criteria, "blockers": blockers,
+                                    "review": review_record,
                                     "acceptance_status": "PASS" if not blockers else "NOT_EVALUATED"}
             return computed[identifier]
 

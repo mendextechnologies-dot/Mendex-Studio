@@ -147,6 +147,10 @@ class CoreCandidateCard(QFrame):
         mat = self.get_selected_material()
         if not core or not mat:
             return
+        if not core.geometry_ready or not mat.loss_model_ready:
+            self.lbl_pcore.setText('NOT_EVALUATED: exact core geometry and characterized loss fit required')
+            self.badge_status.setText('NOT_EVALUATED')
+            return
 
         # Update physical readouts
         ap = core.ae_mm2 * (core.aw_mm2 or 25.0)
@@ -235,6 +239,10 @@ class CoreCandidateCard(QFrame):
         core = self.get_selected_core()
         mat = self.get_selected_material()
         if not core or not mat:
+            return
+        if not core.geometry_ready or not mat.loss_model_ready:
+            self.lbl_pcore.setText('NOT_EVALUATED: exact core geometry and characterized loss fit required')
+            self.badge_status.setText('NOT_EVALUATED')
             return
 
         fsw_khz = self.dialog.spin_fsw.value()
@@ -455,7 +463,7 @@ class MagneticCoreLossComparatorDialog(QDialog):
         for card in self.cards:
             c = card.get_selected_core()
             m = card.get_selected_material()
-            if c and m:
+            if c and m and c.geometry_ready and m.loss_model_ready:
                 res = self.calc_service.calculate_magnetic_core_sizing_and_loss(
                     frequency_hz=fsw * 1000.0,
                     b_peak_t=bpk,

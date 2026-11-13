@@ -35,7 +35,8 @@ class MendexMCPServer:
     def _build_tools_schema(self) -> List[Dict[str, Any]]:
         from ..engineering_lifecycle.api import tool_schemas
         from ..engineering_records.api import tool_schemas as record_schemas
-        schemas = tool_schemas() + record_schemas() + [
+        from ..engineering_reviews.api import tool_schemas as review_schemas
+        schemas = tool_schemas() + record_schemas() + review_schemas() + [
             # 0. Engineering Projects (Primary v2.1 Concept)
             {
                 "name": "list_projects",
@@ -555,6 +556,10 @@ class MendexMCPServer:
         from ..engineering_records.api import OPERATIONS as RECORD_OPERATIONS, dispatch as record_dispatch
         if name in RECORD_OPERATIONS:
             return record_dispatch(ctrl.service, name, args)
+
+        from ..engineering_reviews.api import OPERATIONS as REVIEW_OPERATIONS, dispatch as review_dispatch
+        if name in REVIEW_OPERATIONS:
+            return review_dispatch(ctrl.service, name, args)
 
         if name == "list_workspaces":
             return ctrl.list_workspaces()

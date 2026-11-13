@@ -14,7 +14,7 @@ export const EngineeringTools: React.FC = () => {
     <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto' }}>
       {error && <p role="alert">{error}. Displayed records may be stale.</p>}
       <div>
-        <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#172033' }}>
           Engineering Solver Integrations
         </h2>
         <p style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
@@ -36,10 +36,10 @@ export const EngineeringTools: React.FC = () => {
             <div key={t.descriptor.tool_id} className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#f8fafc' }}>
+                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#172033' }}>
                     {t.descriptor.name}
                   </h3>
-                  <div style={{ fontSize: '11px', color: '#60a5fa', fontWeight: 600 }}>
+                  <div style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 600 }}>
                     {t.descriptor.category.toUpperCase()}
                   </div>
                 </div>
@@ -54,11 +54,11 @@ export const EngineeringTools: React.FC = () => {
 
               <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid var(--border)', fontSize: '11px' }}>
                 <div style={{ color: 'var(--text-dim)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={pathDisplay}>
-                  Path: <span style={{ fontFamily: 'monospace', color: '#cbd5e1' }}>{pathDisplay}</span>
+                  Path: <span style={{ fontFamily: 'monospace', color: '#334155' }}>{pathDisplay}</span>
                 </div>
                 {t.health.version && (
                   <div style={{ color: 'var(--text-dim)', marginTop: '2px' }}>
-                    Version: <b style={{ color: '#e2e8f0' }}>{t.health.version}</b>
+                    Version: <b style={{ color: '#334155' }}>{t.health.version}</b>
                   </div>
                 )}
               </div>

@@ -106,39 +106,4 @@ def initialize(studio):
         
         db.execute("CREATE TRIGGER engineering_reviewers_no_delete BEFORE DELETE ON engineering_reviewers BEGIN SELECT RAISE(ABORT, 'Reviewer registry is append-only'); END")
 
-        # 5. Pre-seed default qualified human reviewer profiles
-        now_iso = now().isoformat()
-        
-        # Reviewer 1: Lead Systems Engineer
-        h1, s1 = hash_secret("MendexReviewer2026!SecureKey")
-        db.execute(
-            "INSERT INTO engineering_reviewers VALUES(?,?,?,?,?,?,?,?)",
-            (
-                "reviewer_lead_human",
-                "Lead Power Systems Engineer (Human Reviewer)",
-                "lead.engineer@mendex.internal",
-                json.dumps(["requirements_reviewer", "high_voltage_lead", "lead_engineer"]),
-                h1,
-                s1,
-                "ACTIVE",
-                now_iso,
-            ),
-        )
-
-        # Reviewer 2: High Voltage Safety Architect
-        h2, s2 = hash_secret("HVSafetyApproval#2026!")
-        db.execute(
-            "INSERT INTO engineering_reviewers VALUES(?,?,?,?,?,?,?,?)",
-            (
-                "reviewer_safety_lead",
-                "High Voltage Safety Architect (Human Reviewer)",
-                "hv.safety@mendex.internal",
-                json.dumps(["requirements_reviewer", "safety_architect"]),
-                h2,
-                s2,
-                "ACTIVE",
-                now_iso,
-            ),
-        )
-
         db.execute("INSERT INTO engineering_reviews_schema VALUES(1,?)", (backup,))

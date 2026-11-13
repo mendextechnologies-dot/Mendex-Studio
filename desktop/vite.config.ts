@@ -31,6 +31,7 @@ function pythonDesktopBridgePlugin() {
       for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed) continue;
+        console.log('[Python Desktop stdout line]:', trimmed);
         try {
           const parsed = JSON.parse(trimmed);
           const reqId = parsed.id;
@@ -126,12 +127,13 @@ function pythonDesktopBridgePlugin() {
               if (pendingRequests.has(reqId)) {
                 pendingRequests.delete(reqId);
                 res.statusCode = 504;
-                res.end(JSON.stringify({ error: { code: 'TIMEOUT', message: 'Python RPC timeout after 15s' } }));
+                res.end(JSON.stringify({ error: { code: 'TIMEOUT', message: 'Python RPC timeout after 30s' } }));
               }
-            }, 15000);
+            }, 30000);
 
             pendingRequests.set(reqId, { res, timer });
-            proc.stdin.write(trimmed + '\n');
+            console.log('[RPC in]:', parsed.method, reqId);
+            proc.stdin.write(JSON.stringify(parsed) + '\n');
           } catch (err: any) {
             res.statusCode = 500;
             res.end(JSON.stringify({ error: { code: 'INTERNAL_ERROR', message: err.message } }));

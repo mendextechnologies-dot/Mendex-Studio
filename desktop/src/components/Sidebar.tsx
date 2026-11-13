@@ -63,8 +63,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentRoute, onNavigate, hand
             width: '32px',
             height: '32px',
             borderRadius: '6px',
-            backgroundColor: '#1e3a5f',
-            color: '#60a5fa',
+            backgroundColor: '#eff6ff',
+            color: '#1d4ed8',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -76,10 +76,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentRoute, onNavigate, hand
           M
         </div>
         <div>
-          <div style={{ fontWeight: 700, fontSize: '14px', letterSpacing: '-0.3px', color: '#f8fafc' }}>
+          <div style={{ fontWeight: 700, fontSize: '14px', letterSpacing: '-0.3px', color: '#172033' }}>
             MENDEX STUDIO
           </div>
-          <div style={{ fontSize: '10px', fontWeight: 600, color: '#38bdf8', letterSpacing: '0.5px' }}>
+          <div style={{ fontSize: '10px', fontWeight: 600, color: '#0369a1', letterSpacing: '0.5px' }}>
             v3.1 COMMAND CENTER
           </div>
         </div>
@@ -113,8 +113,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentRoute, onNavigate, hand
                 padding: '9px 12px',
                 borderRadius: '6px',
                 border: 'none',
-                background: active ? '#1e293b' : 'transparent',
-                color: active ? '#38bdf8' : '#94a3b8',
+                background: active ? '#eaf2ff' : 'transparent',
+                color: active ? '#0369a1' : '#52627a',
                 fontWeight: active ? 600 : 500,
                 fontSize: '12px',
                 cursor: 'pointer',
@@ -123,7 +123,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentRoute, onNavigate, hand
                 transition: 'all 0.15s ease',
               }}
             >
-              <Icon size={16} color={active ? '#38bdf8' : '#64748b'} />
+              <Icon size={16} color={active ? '#0369a1' : '#58677d'} />
               <span style={{ flex: 1 }}>{item.label}</span>
             </button>
           );
@@ -135,14 +135,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentRoute, onNavigate, hand
         style={{
           padding: '14px 16px',
           borderTop: '1px solid var(--border)',
-          backgroundColor: '#0c0e17',
+          backgroundColor: '#edf2f8',
           fontSize: '11px',
           display: 'flex',
           flexDirection: 'column',
           gap: '6px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34d399', fontWeight: 600 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#047857', fontWeight: 600 }}>
           <ShieldCheck size={14} />
           <span>Core Python 3.13 Ready</span>
         </div>

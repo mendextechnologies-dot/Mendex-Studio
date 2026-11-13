@@ -1,13 +1,14 @@
 :root {
-  --bg-app: #0f111a;
-  --bg-sidebar: #131622;
-  --bg-card: #181b29;
-  --bg-card-hover: #1e2235;
-  --border: #262b40;
+  color-scheme: light;
+  --bg-app: #f6f8fc;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5fb;
+  --border: #dce3ed;
   --border-focus: #3b82f6;
-  --text-main: #f1f5f9;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-main: #172033;
+  --text-muted: #52627a;
+  --text-dim: #58677d;
   --primary: #3b82f6;
   --primary-hover: #2563eb;
   --accent-cyan: #06b6d4;
@@ -46,11 +47,11 @@ code, pre, .font-mono {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2b3049;
+  background: #cbd5e1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3e4566;
+  background: #94a3b8;
 }
 
 /* Base Utility Classes */
@@ -64,7 +65,7 @@ code, pre, .font-mono {
 
 .card:hover {
   background-color: var(--bg-card-hover);
-  border-color: #353b58;
+  border-color: #bdcadd;
 }
 
 .badge {
@@ -81,31 +82,31 @@ code, pre, .font-mono {
 
 .badge-green {
   background-color: rgba(16, 185, 129, 0.15);
-  color: #34d399;
+  color: #047857;
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .badge-blue {
   background-color: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
+  color: #1d4ed8;
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .badge-yellow {
   background-color: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
+  color: #92400e;
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .badge-red {
   background-color: rgba(239, 68, 68, 0.15);
-  color: #f87171;
+  color: #b91c1c;
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .badge-muted {
   background-color: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
+  color: #52627a;
   border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
@@ -132,11 +133,35 @@ code, pre, .font-mono {
 }
 
 .btn-secondary {
-  background-color: #212638;
-  color: #cbd5e1;
-  border-color: #333a54;
+  background-color: #ffffff;
+  color: #334155;
+  border-color: #cbd5e1;
 }
 .btn-secondary:hover {
-  background-color: #2a3148;
-  color: white;
+  background-color: #eaf0f8;
+  color: var(--text-main);
+}
+
+input, select, textarea {
+  color-scheme: light;
+  color: var(--text-main);
+}
+
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #dbeafe;
+  color: #172033;
+}
+
+.library-input {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  font: inherit;
+  font-size: 12px;
 }

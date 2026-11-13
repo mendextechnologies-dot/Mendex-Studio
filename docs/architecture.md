@@ -1,5 +1,14 @@
 # Architecture v0.1
 
+Local manual review update (13 November 2026): at the user's direction, desktop
+engineering review uses a supplied reviewer name and required comments, without
+profiles or passphrases. `StudioService.reviews.record_manual_decision` applies the
+shared context/evidence/safety checks and records append-only MANUALLY_DECLARED
+decisions with identity_authenticated=false. This is local attribution, not proof
+of human identity or qualifications. Legacy credential APIs and history remain;
+manual decisions are not advertised as MCP/CLI approval tools. No schema or live
+review history was rewritten. See `docs/MANUAL_ENGINEERING_REVIEW.md`.
+
 v3.1 Phase 2 (12 November 2026): `StudioService.engineering_records` adds a shared
 agent registry for project metadata, requirement snapshots, existing-calculator run
 history, artifact snapshots, validation evidence, job inspection/owned cancellation

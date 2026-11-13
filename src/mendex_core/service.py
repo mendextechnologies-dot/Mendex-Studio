@@ -103,6 +103,8 @@ class StudioService:
         self.engineering_lifecycle = EngineeringLifecycleService(self)
         from .engineering_records.service import EngineeringRecordService
         self.engineering_records = EngineeringRecordService(self)
+        from .engineering_reviews import EngineeringReviewService
+        self.reviews = EngineeringReviewService(self)
 
     @contextmanager
     def connection(self):
@@ -205,6 +207,12 @@ class StudioService:
         folder = self.workspace_path(self.get_revision(revision_id))
         relative = Path(relative_path)
         path = (folder / relative).resolve()
+        if not path.exists():
+            for sub in ("reports", "pcb", "simulations", "mechanical", "circuit", "requirements", "bom"):
+                candidate = (folder / sub / relative).resolve()
+                if candidate.exists() and candidate.is_relative_to(folder):
+                    path = candidate
+                    break
         if relative.is_absolute() or not path.is_relative_to(folder) or not path.exists():
             raise StudioError("INVALID_INPUT", "Choose an existing file or folder inside this revision workspace")
         if path.is_file() and path.suffix.lower() not in NATIVE_EXTENSIONS:
@@ -213,6 +221,22 @@ class StudioService:
             open_native(path)
         except OSError as exc:
             raise StudioError("LAUNCH_ERROR", f"Could not open the file. Check the Windows file association: {exc}") from exc
+        return str(path)
+
+    def reveal_project_file(self, revision_id, relative_path="."):
+        from .launch import reveal_in_explorer
+        folder = self.workspace_path(self.get_revision(revision_id))
+        relative = Path(relative_path)
+        path = (folder / relative).resolve()
+        if not path.exists():
+            for sub in ("reports", "pcb", "simulations", "mechanical", "circuit", "requirements", "bom"):
+                candidate = (folder / sub / relative).resolve()
+                if candidate.exists() and candidate.is_relative_to(folder):
+                    path = candidate
+                    break
+        if relative.is_absolute() or not path.is_relative_to(folder) or not path.exists():
+            raise StudioError("INVALID_INPUT", "Choose an existing file or folder inside this revision workspace")
+        reveal_in_explorer(path)
         return str(path)
 
     def diagnostics(self):

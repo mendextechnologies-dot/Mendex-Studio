@@ -250,6 +250,11 @@ def main(argv=None):
     engineering.add_argument("operation", choices=sorted(RECORD_OPERATIONS))
     engineering.add_argument("request", nargs="?", type=Path, help="UTF-8 JSON request file; omit only for empty-input discovery")
 
+    from .engineering_reviews.api import OPERATIONS as REVIEW_OPERATIONS
+    review = commands.add_parser("review", help="Authorized human engineering review operations")
+    review.add_argument("operation", choices=sorted(REVIEW_OPERATIONS))
+    review.add_argument("request", nargs="?", type=Path, help="UTF-8 JSON request file; omit for discovery operations")
+
     args = parser.parse_args(argv)
     try:
         return execute(args)
@@ -268,6 +273,11 @@ def _parse_json_or_file(text: str) -> Dict[str, Any]:
 def execute(args):
     root = getattr(args, "doctor_root", None) or args.root or default_data_root()
     service = StudioService(root)
+    if args.command == "review":
+        from .engineering_reviews.api import dispatch
+        arguments = json.loads(args.request.read_text(encoding="utf-8-sig")) if args.request else {}
+        print(json.dumps(dispatch(service, args.operation, arguments), indent=2, allow_nan=False))
+        return 0
     if args.command == "engineering":
         from .engineering_records.api import dispatch
         arguments = json.loads(args.request.read_text(encoding="utf-8-sig")) if args.request else {}

@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-13T23:23:41",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.7",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/347babe6-ba36-4c63-8ad6-bbc5b9273490",
+            "violations": [
+                {
+                    "description": "Footprint 'Transformer_ETD34_Vertical' not found in library 'Transformer_THT'",
+                    "items": [
+                        {
+                            "description": "Symbol T1 [Transformer_1P_1S]",
+                            "pos": {
+                                "x": 85.8,
+                                "y": 50.8
+                            },
+                            "uuid": "67e07b51-acdb-408b-8818-42f6e11c695b"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                }
+            ]
+        }
+    ],
+    "source": "sv1000.kicad_sch"
+}

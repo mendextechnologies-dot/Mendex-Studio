@@ -21,7 +21,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, onSelectProject })
       {/* Top Action Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#172033' }}>
             Engineering Projects Catalog
           </h2>
           <p style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
@@ -43,12 +43,12 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, onSelectProject })
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
               width: '100%',
-              backgroundColor: '#121522',
+              backgroundColor: '#f3f6fb',
               border: '1px solid var(--border)',
               borderRadius: '6px',
               padding: '6px 12px 6px 32px',
               fontSize: '12px',
-              color: '#f8fafc',
+              color: '#172033',
               outline: 'none',
             }}
           />
@@ -72,14 +72,14 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, onSelectProject })
           >
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span style={{ fontSize: '12px', fontWeight: 800, color: '#60a5fa' }}>
+                <span style={{ fontSize: '12px', fontWeight: 800, color: '#1d4ed8' }}>
                   {proj.code}
                 </span>
                 <span className={`badge ${proj.revision_status === 'PASSED' ? 'badge-green' : 'badge-blue'}`}>
                   {proj.revision_status}
                 </span>
               </div>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#f8fafc', marginTop: '6px' }}>
+              <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#172033', marginTop: '6px' }}>
                 {proj.name}
               </h3>
               <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px', lineHeight: '1.4' }}>

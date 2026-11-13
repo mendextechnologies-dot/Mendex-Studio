@@ -4,7 +4,7 @@ from enum import StrEnum
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import Field, model_validator
+from pydantic import Field, model_validator, field_validator
 
 from ..engineering_lifecycle.models import Identifier, Text, VersionedRequest
 from ..engineering_records.models import SHA256
@@ -68,13 +68,11 @@ class ReviewRequestCommand(VersionedRequest):
     idempotency_key: str = Field(min_length=1, max_length=128)
 
 
-class ReviewDecisionCommand(VersionedRequest):
+class ReviewDecisionBase(VersionedRequest):
     revision_id: UUID
     stage_id: Identifier = "requirements"
     attempt: int = Field(ge=1)
     decision: ReviewDecision
-    reviewer_id: Identifier
-    reviewer_secret: str = Field(min_length=1, max_length=256)
     comments: Text
     conflicts: list[RequirementConflict] = Field(default_factory=list, max_length=100)
     deferrals: list[AuthorizedDeferral] = Field(default_factory=list, max_length=100)
@@ -88,6 +86,30 @@ class ReviewDecisionCommand(VersionedRequest):
         deferred_ids = [d.requirement_id for d in self.deferrals]
         if len(deferred_ids) != len(set(deferred_ids)):
             raise ValueError("Duplicate requirement ID in authorized deferrals")
+        return self
+
+
+class ReviewDecisionCommand(ReviewDecisionBase):
+    """Legacy credential-based API; retained for existing integrations."""
+    reviewer_id: Identifier
+    reviewer_secret: str = Field(min_length=1, max_length=256)
+
+
+class ManualReviewDecisionCommand(ReviewDecisionBase):
+    """Local operator attribution, explicitly not authenticated identity."""
+    reviewer_name: str = Field(min_length=1, max_length=200)
+    expected_document_hashes: dict[str, SHA256]
+    expected_evidence_hashes: dict[str, SHA256]
+
+    @field_validator("reviewer_name", mode="before")
+    @classmethod
+    def strip_name(cls, value):
+        return value.strip() if isinstance(value, str) else value
+
+    @model_validator(mode="after")
+    def nonblank(self):
+        if not self.reviewer_name or not self.comments.strip():
+            raise ValueError("Reviewer name and review comments are required")
         return self
 
 
@@ -116,3 +138,6 @@ class ReviewRecord(Model):
     stale: bool = False
     unresolved_safety_blockers: list[str] = Field(default_factory=list)
     effective_status: str = "RECORDED"
+    review_mode: str = "LEGACY_CREDENTIAL_REVIEW"
+    identity_authenticated: bool = False
+    signature_kind: str = "LEGACY"

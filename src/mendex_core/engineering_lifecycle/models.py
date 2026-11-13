@@ -25,7 +25,7 @@ class StageStatus(StrEnum):
 class Criterion(Model):
     id: Identifier
     description: Text
-    kind: Literal["project_context", "specification_fields", "validation_record"]
+    kind: Literal["project_context", "specification_fields", "validation_record", "human_review"]
     fields: list[str] = Field(default_factory=list, max_length=30)
     check_id: str | None = Field(default=None, min_length=1, max_length=100)
     evidence_kind: EvidenceKind | None = None
@@ -35,6 +35,9 @@ class Criterion(Model):
         if self.kind == "validation_record":
             if not self.check_id or not self.evidence_kind or self.fields:
                 raise ValueError("validation_record needs check_id and evidence_kind, without fields")
+        elif self.kind == "human_review":
+            if self.fields or self.evidence_kind is not None:
+                raise ValueError("human_review does not accept fields or evidence_kind")
         elif self.check_id is not None or self.evidence_kind is not None:
             raise ValueError("Only validation_record accepts check_id/evidence_kind")
         if self.kind == "specification_fields":

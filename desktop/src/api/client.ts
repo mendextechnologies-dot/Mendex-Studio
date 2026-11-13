@@ -5,6 +5,8 @@ import {
   ProjectDetailData,
   SimulationJob,
   ToolRecord,
+  LibraryCatalog,
+  BOMGenerationResult,
 } from './types';
 
 let requestId = 0;
@@ -27,15 +29,15 @@ export async function rpcCall<T = any>(method: string, params: Record<string, an
       throw new Error('Desktop bridge is unavailable');
     }
     const response = await fetch('/api/rpc', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`RPC transport error (${response.status}): ${errorText}`);
-  }
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`RPC transport error (${response.status}): ${errorText}`);
+    }
 
     data = await response.json();
   }
@@ -56,7 +58,7 @@ export const api = {
   project: (projectId: string, revisionId?: string) =>
     rpcCall<ProjectDetailData>('project', { project_id: projectId, revision_id: revisionId }),
   simulations: () => rpcCall<SimulationJob[]>('simulations'),
-  components: () => rpcCall<any>('components'),
+  components: () => rpcCall<LibraryCatalog>('components'),
   tools: () => rpcCall<ToolRecord[]>('tools'),
   reports: () => rpcCall<any[]>('reports'),
   settings: () => rpcCall<any>('settings'),
@@ -64,8 +66,40 @@ export const api = {
     rpcCall<any>('waveform', { revision_id: revisionId, relative_path: relativePath, traces }),
   openFile: (revisionId: string, relativePath: string) =>
     rpcCall<any>('open_file', { revision_id: revisionId, relative_path: relativePath }),
+  revealFile: (revisionId: string, relativePath: string) =>
+    rpcCall<any>('reveal_file', { revision_id: revisionId, relative_path: relativePath }),
+  generateBom: (revisionId: string) =>
+    rpcCall<BOMGenerationResult>('generate_bom', { revision_id: revisionId }),
   openReport: (reportId: string) => rpcCall<any>('open_report', { report_id: reportId }),
   exportReport: (reportId: string) => rpcCall<any>('export_report', {
     report_id: reportId, idempotency_key: crypto.randomUUID(),
   }),
+  listReviewers: () => rpcCall<any[]>('list_reviewers'),
+  reviewPackage: (revisionId: string, stageId: string = 'requirements') =>
+    rpcCall<any>('review_package', { revision_id: revisionId, stage_id: stageId }),
+  requestReview: (revisionId: string, submitter: string, reason: string, stageId: string = 'requirements') =>
+    rpcCall<any>('request_review', {
+      revision_id: revisionId,
+      stage_id: stageId,
+      submitter,
+      reason,
+      idempotency_key: crypto.randomUUID(),
+    }),
+  submitReview: (params: {
+    revision_id: string;
+    stage_id: string;
+    attempt: number;
+    decision: 'APPROVED' | 'REJECTED' | 'CHANGES_REQUESTED';
+    reviewer_name: string;
+    expected_document_hashes: Record<string, string>;
+    expected_evidence_hashes: Record<string, string>;
+    comments: string;
+    conflicts?: any[];
+    deferrals?: any[];
+    expected_requirements_digest: string;
+    expected_specification_hash: string;
+    idempotency_key: string;
+  }) => rpcCall<any>('submit_review', params),
+  completeStage: (revisionId: string, stageId: string) =>
+    rpcCall<any>('complete_stage', { revision_id: revisionId, stage_id: stageId }),
 };

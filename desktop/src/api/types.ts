@@ -91,6 +91,7 @@ export interface LifecycleStageView {
     satisfied: boolean;
   }>;
   blockers: string[];
+  review?: any;
 }
 
 export interface ProjectDetailData {
@@ -150,20 +151,72 @@ export interface ToolRecord {
   qualification: string;
 }
 
-export interface ComponentRecord {
+export interface LibraryReference {
   id: string;
-  part_number: string;
-  manufacturer: string;
-  category: string;
-  package_type: string;
-  parameters: Record<string, any>;
+  datasheet_url: string | null;
+  source_checked_on: string | null;
+  verification_status: string;
+  provenance: string;
+  conditions: string;
+  lifecycle_status: string;
 }
 
-export interface MaterialRecord {
-  id: string;
+export interface ComponentRecord extends LibraryReference {
+  mpn: string;
+  manufacturer: string;
+  category: string;
+  description: string;
+  package: string | null;
+  record_kind: 'PART' | 'FAMILY';
+  voltage_rating_v: number | null;
+  current_rating_a: number | null;
+  power_rating_w: number | null;
+  rds_on_ohm: number | null;
+  esr_ohm: number | null;
+  kicad_footprint: string | null;
+  kicad_symbol: string | null;
+  spice_model_name: string | null;
+}
+
+export interface MaterialRecord extends LibraryReference {
   name: string;
-  material_family: string;
-  initial_permeability?: number;
-  saturation_flux_density_t?: number;
-  curie_temperature_c?: number;
+  manufacturer: string;
+  material_type: string;
+  initial_permeability_ui: number | null;
+  saturation_flux_t: number | null;
+  curie_temp_c: number | null;
+  curie_temp_qualifier: string;
+  freq_min_hz: number | null;
+  freq_max_hz: number | null;
+}
+
+export interface MagneticCoreRecord extends LibraryReference {
+  name: string;
+  geometry_type: string;
+  manufacturer: string;
+  ae_mm2: number | null;
+  le_mm: number | null;
+  ve_mm3: number | null;
+}
+
+export interface LibraryCatalog {
+  categories: Array<{id: string; label: string}>;
+  components: ComponentRecord[];
+  materials: MaterialRecord[];
+  cores: MagneticCoreRecord[];
+  provenance_note: string;
+}
+
+
+export interface BOMGenerationResult {
+  success: boolean;
+  docx_path: string;
+  pdf_path: string;
+  csv_path: string;
+  json_path: string;
+  pdf_available: boolean;
+  items_count: number;
+  docx_size_bytes: number;
+  pdf_size_bytes: number;
+  message: string;
 }

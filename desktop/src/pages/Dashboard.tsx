@@ -26,12 +26,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600 }}>
             <span>AUTHORITATIVE PROJECTS</span>
-            <FolderGit2 size={16} color="#60a5fa" />
+            <FolderGit2 size={16} color="#1d4ed8" />
           </div>
-          <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px', color: '#f8fafc' }}>
+          <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px', color: '#172033' }}>
             {metrics.projects}
           </div>
-          <div style={{ fontSize: '11px', color: '#38bdf8', marginTop: '4px' }}>
+          <div style={{ fontSize: '11px', color: '#0369a1', marginTop: '4px' }}>
             {metrics.revisions} total recorded revisions
           </div>
         </div>
@@ -39,12 +39,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600 }}>
             <span>COMPLETED SIMULATIONS</span>
-            <Activity size={16} color="#34d399" />
+            <Activity size={16} color="#047857" />
           </div>
-          <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px', color: '#34d399' }}>
+          <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px', color: '#047857' }}>
             {metrics.completed_simulations}
           </div>
-          <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+          <div style={{ fontSize: '11px', color: '#52627a', marginTop: '4px' }}>
             LTspice & FEMM headless batch jobs
           </div>
         </div>
@@ -52,12 +52,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600 }}>
             <span>FAILED RUNS</span>
-            <Activity size={16} color="#f87171" />
+            <Activity size={16} color="#b91c1c" />
           </div>
-          <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px', color: metrics.failed_simulations > 0 ? '#f87171' : '#94a3b8' }}>
+          <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px', color: metrics.failed_simulations > 0 ? '#b91c1c' : '#52627a' }}>
             {metrics.failed_simulations}
           </div>
-          <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+          <div style={{ fontSize: '11px', color: '#52627a', marginTop: '4px' }}>
             Recorded failed execution statuses
           </div>
         </div>
@@ -65,12 +65,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600 }}>
             <span>PENDING REVIEWS</span>
-            <Clock size={16} color="#fbbf24" />
+            <Clock size={16} color="#92400e" />
           </div>
-          <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px', color: '#fbbf24' }}>
+          <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px', color: '#92400e' }}>
             {metrics.review_requests}
           </div>
-          <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+          <div style={{ fontSize: '11px', color: '#52627a', marginTop: '4px' }}>
             Human-in-the-loop gate decisions
           </div>
         </div>
@@ -81,7 +81,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {/* Left: Active Projects */}
         <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>
+            <h2 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>
               Authoritative Engineering Projects ({projects.length})
             </h2>
             <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
@@ -104,10 +104,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {projects.map((proj) => (
                   <tr
                     key={proj.product_id}
-                    style={{ borderBottom: '1px solid #1f2436', cursor: 'pointer' }}
+                    style={{ borderBottom: '1px solid #eaf0f8', cursor: 'pointer' }}
                     onClick={() => onSelectProject(proj.product_id)}
                   >
-                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#60a5fa' }}>
+                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#1d4ed8' }}>
                       {proj.code}
                     </td>
                     <td style={{ padding: '10px 12px', fontWeight: 600 }}>
@@ -137,12 +137,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {/* Right: Recent Simulation Jobs */}
         <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>
+            <h2 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>
               Recent Simulations
             </h2>
             <button
               onClick={onNavigateToSimulations}
-              style={{ background: 'none', border: 'none', color: '#60a5fa', fontSize: '11px', fontWeight: 600, cursor: 'pointer' }}
+              style={{ background: 'none', border: 'none', color: '#1d4ed8', fontSize: '11px', fontWeight: 600, cursor: 'pointer' }}
             >
               View All
             </button>
@@ -154,7 +154,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 key={job.job_id}
                 style={{
                   padding: '8px 12px',
-                  backgroundColor: '#121522',
+                  backgroundColor: '#f3f6fb',
                   border: '1px solid var(--border)',
                   borderRadius: '6px',
                   display: 'flex',
@@ -163,7 +163,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: '12px', color: '#e2e8f0' }}>
+                  <div style={{ fontWeight: 600, fontSize: '12px', color: '#334155' }}>
                     {job.tool_id.toUpperCase()} · {job.operation}
                   </div>
                   <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>

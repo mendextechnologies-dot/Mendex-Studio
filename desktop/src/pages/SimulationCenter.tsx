@@ -10,7 +10,7 @@ export const SimulationCenter: React.FC<SimulationCenterProps> = ({ jobs }) => {
   return (
     <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto' }}>
       <div>
-        <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#172033' }}>
           Simulation Center & Batch Solver Jobs
         </h2>
         <p style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
@@ -33,11 +33,11 @@ export const SimulationCenter: React.FC<SimulationCenterProps> = ({ jobs }) => {
           </thead>
           <tbody>
             {jobs.map((job) => (
-              <tr key={job.job_id} style={{ borderBottom: '1px solid #1a1e2f' }}>
-                <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: '#60a5fa' }}>
+              <tr key={job.job_id} style={{ borderBottom: '1px solid #f3f6fb' }}>
+                <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: '#1d4ed8' }}>
                   {job.job_id.substring(0, 8)}...
                 </td>
-                <td style={{ padding: '10px 12px', fontWeight: 700, color: '#f8fafc' }}>
+                <td style={{ padding: '10px 12px', fontWeight: 700, color: '#172033' }}>
                   {job.tool_id.toUpperCase()}
                 </td>
                 <td style={{ padding: '10px 12px', color: 'var(--text-muted)' }}>
@@ -54,7 +54,7 @@ export const SimulationCenter: React.FC<SimulationCenterProps> = ({ jobs }) => {
                 <td style={{ padding: '10px 12px', color: 'var(--text-dim)' }}>
                   {new Date(job.created_at).toLocaleString()}
                 </td>
-                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: job.exit_code === 0 ? '#34d399' : '#f87171' }}>
+                <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: job.exit_code === 0 ? '#047857' : '#b91c1c' }}>
                   {job.exit_code ?? 'Unavailable'}
                 </td>
               </tr>

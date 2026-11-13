@@ -51,6 +51,39 @@ class EvidenceQuery(Model):
     record_id: UUID
 
 
+class ReviewPackageQuery(Model):
+    revision_id: UUID
+    stage_id: str = "requirements"
+
+
+class BOMQuery(Model):
+    revision_id: UUID
+
+
+class ReviewRequestQuery(Model):
+    revision_id: UUID
+    stage_id: str = "requirements"
+    submitter: str
+    reason: str = "Requested formal human review"
+    idempotency_key: str = Field(min_length=1, max_length=128)
+
+
+class ReviewDecisionQuery(Model):
+    revision_id: UUID
+    stage_id: str = "requirements"
+    attempt: int = Field(ge=1)
+    decision: Literal["APPROVED", "REJECTED", "CHANGES_REQUESTED"]
+    reviewer_name: str = Field(min_length=1, max_length=200)
+    expected_document_hashes: dict[str, str]
+    expected_evidence_hashes: dict[str, str]
+    comments: str
+    conflicts: list[dict] = Field(default_factory=list)
+    deferrals: list[dict] = Field(default_factory=list)
+    expected_requirements_digest: str
+    expected_specification_hash: str
+    idempotency_key: str = Field(min_length=1, max_length=128)
+
+
 class BridgeRequest(Model):
     protocol_version: Literal["3.1.0"]
     id: str = Field(min_length=1, max_length=128)

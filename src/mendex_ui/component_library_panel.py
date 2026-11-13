@@ -32,7 +32,7 @@ class ComponentLibraryPanel(QWidget):
         super().__init__(parent)
         self.service = service
         self.guarded = guarded_callback or (lambda fn: fn())
-        self.comp_service = ComponentLibraryService()
+        self.comp_service = service.components
         self.init_ui()
 
     def init_ui(self):
@@ -387,17 +387,18 @@ class ComponentLibraryPanel(QWidget):
         )
 
     def _populate_semiconductors(self):
-        devices = self.comp_service.list_components()
+        devices = [d for d in self.comp_service.list_components()
+                   if d.category in ("mosfet", "igbt", "gan", "diode", "thyristor")]
         self.semi_table.setRowCount(len(devices))
         for row, d in enumerate(devices):
             self.semi_table.setItem(row, 0, QTableWidgetItem(getattr(d, "mpn", str(d))))
             self.semi_table.setItem(row, 1, QTableWidgetItem(getattr(d, "category", "mosfet").upper()))
-            self.semi_table.setItem(row, 2, QTableWidgetItem(str(getattr(d, "voltage_rating_v", "—"))))
-            self.semi_table.setItem(row, 3, QTableWidgetItem(str(getattr(d, "current_rating_a", "—"))))
+            self.semi_table.setItem(row, 2, QTableWidgetItem(str(d.voltage_rating_v) if d.voltage_rating_v is not None else "Unknown"))
+            self.semi_table.setItem(row, 3, QTableWidgetItem(str(d.current_rating_a) if d.current_rating_a is not None else "Unknown"))
             rds = getattr(d, "rds_on_ohm", None)
             rds_str = f"{rds * 1000:.2f}" if rds is not None else "—"
             self.semi_table.setItem(row, 4, QTableWidgetItem(rds_str))
-            self.semi_table.setItem(row, 5, QTableWidgetItem(getattr(d, "package", "TDSON-8")))
+            self.semi_table.setItem(row, 5, QTableWidgetItem(d.package or "Unknown"))
 
     def _init_magnetics_tab(self):
         self.mag_widget = QWidget()
@@ -486,14 +487,16 @@ class ComponentLibraryPanel(QWidget):
         input_row.addWidget(QLabel('Core:'))
         self.combo_est_core = QComboBox()
         for c in self.comp_service.list_cores():
-            self.combo_est_core.addItem(c.name, c)
+            if c.geometry_ready:
+                self.combo_est_core.addItem(c.name, c)
         self.combo_est_core.currentIndexChanged.connect(self._recalculate_mag_loss)
         input_row.addWidget(self.combo_est_core)
 
         input_row.addWidget(QLabel('Material:'))
         self.combo_est_mat = QComboBox()
         for m in self.comp_service.list_materials():
-            self.combo_est_mat.addItem(m.name, m)
+            if m.loss_model_ready:
+                self.combo_est_mat.addItem(m.name, m)
         self.combo_est_mat.currentIndexChanged.connect(self._recalculate_mag_loss)
         input_row.addWidget(self.combo_est_mat)
 
@@ -528,14 +531,14 @@ class ComponentLibraryPanel(QWidget):
         cores = self.comp_service.list_cores()
         self.cores_table.setRowCount(len(cores))
         for row, c in enumerate(cores):
-            ap = c.ae_mm2 * (c.aw_mm2 or 25.0)
+            ap = c.ae_mm2 * c.aw_mm2 if c.ae_mm2 is not None and c.aw_mm2 is not None else None
             self.cores_table.setItem(row, 0, QTableWidgetItem(c.name))
             self.cores_table.setItem(row, 1, QTableWidgetItem(c.geometry_type))
-            self.cores_table.setItem(row, 2, QTableWidgetItem(f'{c.ae_mm2:.1f}'))
-            self.cores_table.setItem(row, 3, QTableWidgetItem(f'{c.le_mm:.1f}'))
-            self.cores_table.setItem(row, 4, QTableWidgetItem(f'{c.ve_mm3:.0f}'))
-            self.cores_table.setItem(row, 5, QTableWidgetItem(f'{c.aw_mm2:.1f}'))
-            self.cores_table.setItem(row, 6, QTableWidgetItem(f'{ap:.1f}'))
+            self.cores_table.setItem(row, 2, QTableWidgetItem(('Unknown' if c.ae_mm2 is None else format(c.ae_mm2, '.1f'))))
+            self.cores_table.setItem(row, 3, QTableWidgetItem(('Unknown' if c.le_mm is None else format(c.le_mm, '.1f'))))
+            self.cores_table.setItem(row, 4, QTableWidgetItem(('Unknown' if c.ve_mm3 is None else format(c.ve_mm3, '.0f'))))
+            self.cores_table.setItem(row, 5, QTableWidgetItem(('Unknown' if c.aw_mm2 is None else format(c.aw_mm2, '.1f'))))
+            self.cores_table.setItem(row, 6, QTableWidgetItem(('Unknown' if ap is None else format(ap, '.1f'))))
             self.cores_table.setItem(row, 7, QTableWidgetItem(c.manufacturer))
 
     def _populate_materials_table(self):
@@ -544,11 +547,11 @@ class ComponentLibraryPanel(QWidget):
         for row, m in enumerate(materials):
             self.mag_table.setItem(row, 0, QTableWidgetItem(m.name))
             self.mag_table.setItem(row, 1, QTableWidgetItem(m.material_type))
-            self.mag_table.setItem(row, 2, QTableWidgetItem(str(m.initial_permeability_ui)))
-            self.mag_table.setItem(row, 3, QTableWidgetItem(f'{m.saturation_flux_t:.2f} T'))
-            self.mag_table.setItem(row, 4, QTableWidgetItem(f'Cm={m.steinmetz_cm}, α={m.steinmetz_alpha}, β={m.steinmetz_beta}'))
-            self.mag_table.setItem(row, 5, QTableWidgetItem(f'{m.curie_temp_c:.0f} °C'))
-            self.mag_table.setItem(row, 6, QTableWidgetItem(f'{m.freq_min_hz/1000:.0f} - {m.freq_max_hz/1000:.0f} kHz'))
+            self.mag_table.setItem(row, 2, QTableWidgetItem(str(m.initial_permeability_ui) if m.initial_permeability_ui is not None else 'Unknown'))
+            self.mag_table.setItem(row, 3, QTableWidgetItem(('Unknown' if m.saturation_flux_t is None else f'{m.saturation_flux_t:.2f} T')))
+            self.mag_table.setItem(row, 4, QTableWidgetItem('NOT_EVALUATED: no characterized loss fit' if not m.loss_model_ready else f'Cm={m.steinmetz_cm}'))
+            self.mag_table.setItem(row, 5, QTableWidgetItem('Unknown' if m.curie_temp_c is None else f'{m.curie_temp_qualifier}{m.curie_temp_c:.0f} C'))
+            self.mag_table.setItem(row, 6, QTableWidgetItem(('Unknown' if m.freq_min_hz is None or m.freq_max_hz is None else f'{m.freq_min_hz/1000:.0f} - {m.freq_max_hz/1000:.0f} kHz')))
 
     def _recalculate_mag_loss(self):
         if not hasattr(self, 'combo_est_core') or not hasattr(self, 'txt_est_mag_output'):
@@ -556,6 +559,8 @@ class ComponentLibraryPanel(QWidget):
         core = self.combo_est_core.currentData()
         mat = self.combo_est_mat.currentData()
         if not core or not mat:
+            if hasattr(self, 'txt_est_mag_output'):
+                self.txt_est_mag_output.setPlainText('NOT_EVALUATED: exact core geometry and a characterized loss fit are required.')
             return
         try:
             fsw = float(self.in_est_fsw.text() or 100.0)
@@ -588,6 +593,8 @@ class ComponentLibraryPanel(QWidget):
         core = self.combo_est_core.currentData()
         mat = self.combo_est_mat.currentData()
         if not core or not mat:
+            if hasattr(self, 'txt_est_mag_output'):
+                self.txt_est_mag_output.setPlainText('NOT_EVALUATED: exact core geometry and a characterized loss fit are required.')
             return
         fsw = float(self.in_est_fsw.text() or 100.0)
         bpk = float(self.in_est_bpeak.text() or 0.18)
