@@ -1,0 +1,52 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "material": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Material",
+      "type": "string"
+    },
+    "k": {
+      "exclusiveMinimum": 0,
+      "title": "K",
+      "type": "number"
+    },
+    "alpha": {
+      "exclusiveMinimum": 0,
+      "title": "Alpha",
+      "type": "number"
+    },
+    "beta": {
+      "exclusiveMinimum": 0,
+      "title": "Beta",
+      "type": "number"
+    },
+    "frequency_hz": {
+      "exclusiveMinimum": 0,
+      "title": "Frequency Hz",
+      "type": "number"
+    },
+    "b_peak_t": {
+      "exclusiveMinimum": 0,
+      "title": "B Peak T",
+      "type": "number"
+    },
+    "core_volume_m3": {
+      "exclusiveMinimum": 0,
+      "title": "Core Volume M3",
+      "type": "number"
+    }
+  },
+  "required": [
+    "material",
+    "k",
+    "alpha",
+    "beta",
+    "frequency_hz",
+    "b_peak_t",
+    "core_volume_m3"
+  ],
+  "title": "SteinmetzInputs",
+  "type": "object"
+}

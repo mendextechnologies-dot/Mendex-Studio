@@ -1,0 +1,1062 @@
+[
+  {
+    "path": "src\\main.py",
+    "sha256": "b948cab90027071a0e591062fb993d3215ca05f05ffaa748d94b49ae3f421ba2"
+  },
+  {
+    "path": "src\\integrations\\contracts.py",
+    "sha256": "f142d9a49d8ac9c2617d962bb09c513b50bf3e1bc7039ede5ac7961b61d66238"
+  },
+  {
+    "path": "src\\integrations\\v15_connector.py",
+    "sha256": "3862422f842c52d7944d28755a7a5af2a714a9ab1c537792fcd995589f394cc5"
+  },
+  {
+    "path": "src\\integrations\\__init__.py",
+    "sha256": "f403a9359b9c568012dd301765664560e48dda66c8e3b2e455e58829fc28e617"
+  },
+  {
+    "path": "src\\mendex_core\\catalog.py",
+    "sha256": "feea4fe7b0ba39738bbd6c79545c0629daf0e8a9e85024a6e18ba897ef8e4616"
+  },
+  {
+    "path": "src\\mendex_core\\cli.py",
+    "sha256": "14ef515caea837584a56116aafa536b7b0c3490ceb0d38995b84d63d568bb322"
+  },
+  {
+    "path": "src\\mendex_core\\controller.py",
+    "sha256": "9df1eea4d8e35e8e71211942b20dd7d10acc982e715a93238e20f151ce7454cd"
+  },
+  {
+    "path": "src\\mendex_core\\demo_adapter.py",
+    "sha256": "e94291fe9a7abf8b7be4deab1f7ea5c872078cc6244754fb3e8013b55e29b088"
+  },
+  {
+    "path": "src\\mendex_core\\diagnostics.py",
+    "sha256": "4ba237e5323ff92fc85a8c30b9e6da731ea749fcb7d8699a7680c96a52ff8f3d"
+  },
+  {
+    "path": "src\\mendex_core\\doctor.py",
+    "sha256": "8e190b5eb51a068b74c9f8508c27e9ea772acacd43d9f41bbc2fcb831ca0c49f"
+  },
+  {
+    "path": "src\\mendex_core\\evidence.py",
+    "sha256": "fdfee55df12f9c23f978c497489dcc39d2ed0249630ceea7be1f38a81cc3564b"
+  },
+  {
+    "path": "src\\mendex_core\\integration_cli.py",
+    "sha256": "9961ad6cf57ee75060fe0d466ae2839a1d403e6ce5260f74c0db358aff821f51"
+  },
+  {
+    "path": "src\\mendex_core\\integration_contracts.py",
+    "sha256": "a761c1981823668abd36303f6420b7fe013c014f7f7020c31931a1c635c39fb1"
+  },
+  {
+    "path": "src\\mendex_core\\integration_service.py",
+    "sha256": "bd6b0472abe04a273b1ffb923f9ae9e912ebc5ff343ea0c890802cd6eebd7190"
+  },
+  {
+    "path": "src\\mendex_core\\integration_store.py",
+    "sha256": "38d91d8c3d60567cbb64e02838c90834f7338689b8f5561f4d806323e95e80e7"
+  },
+  {
+    "path": "src\\mendex_core\\knowledge.py",
+    "sha256": "564bf05b4fe06ab0486480ed541c96bf7436a75ca3c6a3464a9f572ac1c6c10c"
+  },
+  {
+    "path": "src\\mendex_core\\launch.py",
+    "sha256": "b7334eb10171a275dd189fb4a3bf1e7afb62a346436cf6d8424796ca46ae3fe2"
+  },
+  {
+    "path": "src\\mendex_core\\models.py",
+    "sha256": "512a05b2a771c27d982dab53ba8744984e3b7dbe57db42aa57e71ba1afa54340"
+  },
+  {
+    "path": "src\\mendex_core\\paths.py",
+    "sha256": "dfe46919042a4c41e620479da9b7474642d57abb2cd8426ef9d1d095f3cc55d2"
+  },
+  {
+    "path": "src\\mendex_core\\pcb.py",
+    "sha256": "4339edd2909eb6d39853a7212a7da59908c24f323627e0291362bc520f056189"
+  },
+  {
+    "path": "src\\mendex_core\\plugins.py",
+    "sha256": "1e6b40acbeed6361c3f51de84907ee41aee5db1a7d9134f281954161ae9c339c"
+  },
+  {
+    "path": "src\\mendex_core\\rules.py",
+    "sha256": "9d0226d2961b006338105254ffab4d0399b22433650a87e40bf5c205df69ec68"
+  },
+  {
+    "path": "src\\mendex_core\\service.py",
+    "sha256": "0a4d18cf07383cc321ccb8d55e4501b2f78048f45b31051bd69ba1d6c7862fc8"
+  },
+  {
+    "path": "src\\mendex_core\\__init__.py",
+    "sha256": "5f48f5a6bcde6f9b6cde12c793b06bd3cf4c50576fff0af8dcd2f10ab1545593"
+  },
+  {
+    "path": "src\\mendex_ui\\command_palette.py",
+    "sha256": "be59a20b58144140386e13ecd37baef37b8fc7e48fe82286d8c001a224947ff1"
+  },
+  {
+    "path": "src\\mendex_ui\\component_library_panel.py",
+    "sha256": "7af31d01758b9c7719f4e86c42386c63f31ff708a880e623fe10377161977752"
+  },
+  {
+    "path": "src\\mendex_ui\\design_studio_panel.py",
+    "sha256": "f32e087510fc843b1588d92d6ac0417af8c74c649ed58090c34f02144a08cb25"
+  },
+  {
+    "path": "src\\mendex_ui\\dowell_visualizer_dialog.py",
+    "sha256": "e42c429b1da58c1ed0e8d90195854cef7d501d635e7e2b07fecd6fc102062866"
+  },
+  {
+    "path": "src\\mendex_ui\\engineering_guide_dialog.py",
+    "sha256": "f0402a7e29176e7552291c2b132a2766d7718d593d0f03b6a79c811cdfe54960"
+  },
+  {
+    "path": "src\\mendex_ui\\first_run_wizard.py",
+    "sha256": "b0d1fedf8da98e404ae0f1298200df62d4d9456076869d467055d35edfa0be92"
+  },
+  {
+    "path": "src\\mendex_ui\\integration_panels.py",
+    "sha256": "9d8e0a37bc61b9fdc39a381ac77a5bd81a35f047edc86d225b1d7e931afb0a6e"
+  },
+  {
+    "path": "src\\mendex_ui\\magnetic_comparator_dialog.py",
+    "sha256": "b3634b900fa51bdf6aa77e86454c589c149d29c71abd012c26fcf71371be6495"
+  },
+  {
+    "path": "src\\mendex_ui\\notification_center.py",
+    "sha256": "521fd186e1ab49e7a905159eaa4dc0ea63b2d45a3963fddc8afa29a51d9faf54"
+  },
+  {
+    "path": "src\\mendex_ui\\panels.py",
+    "sha256": "c1d3c37f0dcc7cca6c2377bfef339557172063ae8d08322d5e0db1d80d37f54c"
+  },
+  {
+    "path": "src\\mendex_ui\\pcb_panel.py",
+    "sha256": "fad872f9bff69b00772c5ef0fc8be1386cd9274246decc54fb760fc9a717abf9"
+  },
+  {
+    "path": "src\\mendex_ui\\product_lifecycle_panel.py",
+    "sha256": "aa0b358a553402889cdf91c4b1e26398bc963c3212a5247f87c9a284f66d70f7"
+  },
+  {
+    "path": "src\\mendex_ui\\product_wizard_dialog.py",
+    "sha256": "97259ac044bb38e726d5a6a4efc09b41a4c5e4ca25fe43876f32e1376a9897e5"
+  },
+  {
+    "path": "src\\mendex_ui\\reports_evidence_panel.py",
+    "sha256": "4b33f2781c06ef7f50841a45140b9b273bf918a323ce6dc4b2e565542762302f"
+  },
+  {
+    "path": "src\\mendex_ui\\revision_diff_dialog.py",
+    "sha256": "6621ca95fd3f67189a1d208567ceba798d52a188bdb77fcafe4a6183a00f1dfc"
+  },
+  {
+    "path": "src\\mendex_ui\\settings_panel.py",
+    "sha256": "39f4b9d5e5cd04de45cd747710d4080b8b87bda9978d441e3f12bac497b9d23a"
+  },
+  {
+    "path": "src\\mendex_ui\\simulation_center_panel.py",
+    "sha256": "770b3fd11180f3299d59ef6b90de7abd2be979ba0e875f666bd8e729480ce72b"
+  },
+  {
+    "path": "src\\mendex_ui\\theme.py",
+    "sha256": "6521d4b73a1df1ecc283b5f0307ed04569b1a8e9630d11007b9825f56e17fb4c"
+  },
+  {
+    "path": "src\\mendex_ui\\tradeoff_comparator_dialog.py",
+    "sha256": "3f1adf86edbf5853fd5d126de343c872fdede7cdc53c1e02fad7fb32564759bc"
+  },
+  {
+    "path": "src\\mendex_ui\\v17_panels.py",
+    "sha256": "75833464a98494a1ce1c3becffb9f0e78878c6f5a25b2a6bd21e3fac2fd2d8c3"
+  },
+  {
+    "path": "src\\mendex_ui\\waveform_viewer.py",
+    "sha256": "bc530f04edde9563f871f97a93eca3decfe2ff0ea2a0f942e7beae6647276c90"
+  },
+  {
+    "path": "src\\mendex_ui\\window.py",
+    "sha256": "04abe6e3cc060b2d002854f0ab7a028cdc7baff5007de4bff9b4c70b50be6781"
+  },
+  {
+    "path": "src\\mendex_ui\\workspace_panels.py",
+    "sha256": "cc3e66e84ccf759902b511f4eaad5853514970403e7459671f6820803702d8dc"
+  },
+  {
+    "path": "src\\mendex_ui\\__init__.py",
+    "sha256": "6ab62ca25fa7eb0e7cb72dd2de3317cf9b1428a0dd2de3d9ee1c4eca8859dce1"
+  },
+  {
+    "path": "src\\mendex_ui\\__main__.py",
+    "sha256": "03d6fd630f2fc97ab54469c9238d394549ebc7882f3b3d28b6030f443578fb2b"
+  },
+  {
+    "path": "src\\mendex_ui\\resources\\__init__.py",
+    "sha256": "ff70a2653fb797d53f20cfaa85fcf4f920fced629e2129d1621ddfcd8ea12df4"
+  },
+  {
+    "path": "src\\mendex_ui\\workflow_canvas\\graphics_items.py",
+    "sha256": "066b88f18ed3896c3663c13daddba5857cdd52f9f22b35c158d00c0f2936d71b"
+  },
+  {
+    "path": "src\\mendex_ui\\workflow_canvas\\graphics_scene.py",
+    "sha256": "c95b92970e9b8feae639b493ec5c40e9321f38d4189cf0599d0194ba603fb026"
+  },
+  {
+    "path": "src\\mendex_ui\\workflow_canvas\\graphics_view.py",
+    "sha256": "1bbc5a5c6e63c7afd728f00b54ef81348d99978769f5364ce54d419e9689a063"
+  },
+  {
+    "path": "src\\mendex_ui\\workflow_canvas\\properties_panel.py",
+    "sha256": "af349ffcbd1d4eebedaae88824844746d0653eb0a22578bb32e095c7f15c5967"
+  },
+  {
+    "path": "src\\mendex_ui\\workflow_canvas\\workflow_studio_panel.py",
+    "sha256": "89dc81d96781a82acc3d2d8c1d30d4952a11408c7cb66335dbaf70b0471d7c3f"
+  },
+  {
+    "path": "src\\mendex_ui\\workflow_canvas\\__init__.py",
+    "sha256": "724e968a5e6c3f103fcc957c6989aca3103b6fc426f49f1050feafe063405d3d"
+  },
+  {
+    "path": "src\\mendex_core\\adapters\\contracts.py",
+    "sha256": "02fa90ef1648a239d033b77c6ad477904acec2e0649b676d07c03c08cd25df7e"
+  },
+  {
+    "path": "src\\mendex_core\\adapters\\registry.py",
+    "sha256": "5ce1f07aec7d4ad85a91083bd05b3773c497281cdafe900e7f45d69d76879d6d"
+  },
+  {
+    "path": "src\\mendex_core\\adapters\\version.py",
+    "sha256": "c77fdbd6f36c2b5b364857700c22041538637b94cb5d01f6f06645905dc4c3c7"
+  },
+  {
+    "path": "src\\mendex_core\\adapters\\__init__.py",
+    "sha256": "b5bcedaff17b824497bd8a286871df797a9978169ac25b1d7a2a6633e95e7230"
+  },
+  {
+    "path": "src\\mendex_core\\components\\models.py",
+    "sha256": "7b7f073b6be24889c67e31040e6d343bee0dbdd330aba0b1cb96dafb1300e333"
+  },
+  {
+    "path": "src\\mendex_core\\components\\service.py",
+    "sha256": "d9777c52f9949d8ff0ac06b548e77e689a8167189793697e3b64caa2b696e1cc"
+  },
+  {
+    "path": "src\\mendex_core\\components\\__init__.py",
+    "sha256": "eb92e20c1b4abee4bffee1312b4b47bbf8a9e4b84c45e968842c4473e2cb9385"
+  },
+  {
+    "path": "src\\mendex_core\\config\\engineering-lifecycle.json",
+    "sha256": "2b4d08409547e00f4a0446a4bdabc96e4714bf107184d8f9b8f18e8accb6abd3"
+  },
+  {
+    "path": "src\\mendex_core\\config\\engineering-rules.json",
+    "sha256": "8fa83e25880a40e36e2e4ad773de27afc404365f9f2418688f388dca75bc596d"
+  },
+  {
+    "path": "src\\mendex_core\\config\\integration_catalog.json",
+    "sha256": "d403bafb4f31b66678def5fc886b2954186ff06869dde3842ce0242b64fb16ce"
+  },
+  {
+    "path": "src\\mendex_core\\config\\tools.json",
+    "sha256": "5df498cce5a75c27ad440785e0eea04b369334e107c5aacfa0bbb0a6140c1abf"
+  },
+  {
+    "path": "src\\mendex_core\\config\\__init__.py",
+    "sha256": "eac7dc8e020f45e50194d3536fb82d80220ae013243563931c8b1b987bda7e29"
+  },
+  {
+    "path": "src\\mendex_core\\design\\femm_runner.py",
+    "sha256": "73a3ee5710411bf6f856ebb7159c2997b9b12d16b5258833a0dc53831cabc95a"
+  },
+  {
+    "path": "src\\mendex_core\\design\\ir.py",
+    "sha256": "a76e7677802dd81b8a6b5faaad5ea150efd02929b42a0c714288523f6bb21683"
+  },
+  {
+    "path": "src\\mendex_core\\design\\iteration.py",
+    "sha256": "934cc7a0106f2d866aaa46b01b7b8893426f848f8bd5ace599ced2d3ca023a01"
+  },
+  {
+    "path": "src\\mendex_core\\design\\ltspice_runner.py",
+    "sha256": "fd7c23f78e63d118b1b5b5eacd1c160af9f44e17a3b23accbd0c3e3ebb95126b"
+  },
+  {
+    "path": "src\\mendex_core\\design\\models.py",
+    "sha256": "b049145b94de1f66c926677715be21568226bfb5734f35a474da439665bef72c"
+  },
+  {
+    "path": "src\\mendex_core\\design\\naming.py",
+    "sha256": "5cbe192b098bfdc0cac47ddf16dc0d670607cc8a292f6efadd6b33e318706f5b"
+  },
+  {
+    "path": "src\\mendex_core\\design\\parametric.py",
+    "sha256": "a54406c0e31563224b01f673ef8589efce73c9a35174b60086b72c82e3094359"
+  },
+  {
+    "path": "src\\mendex_core\\design\\service.py",
+    "sha256": "2119a46d21e0c4bfbc06c3c28c98911752ab13195c4d5998b89d14fd06a83b69"
+  },
+  {
+    "path": "src\\mendex_core\\design\\sync.py",
+    "sha256": "13623c52aeba01f546141c17b020ab81575d46290a70b62d45dd3e24ecef40de"
+  },
+  {
+    "path": "src\\mendex_core\\design\\synthesis.py",
+    "sha256": "6a9389c12a3c8905eabf2cd221dd617bba7d3013c37af6f067de16e029d74761"
+  },
+  {
+    "path": "src\\mendex_core\\design\\__init__.py",
+    "sha256": "63628b1b49911759f4eaaa3b043fd4067eb33011a6fe08df1168aacd80a65cbe"
+  },
+  {
+    "path": "src\\mendex_core\\desktop\\models.py",
+    "sha256": "ec5ed98c85fc78e1a971e2df62a2939360fc91a41f1cce06a016e934380aec1b"
+  },
+  {
+    "path": "src\\mendex_core\\desktop\\service.py",
+    "sha256": "222a71ada95bf4ba823068449fe4f8ed8f773d0befa4c761fd29bfb150698fb5"
+  },
+  {
+    "path": "src\\mendex_core\\desktop\\__init__.py",
+    "sha256": "8554ef6d0c88ec148cf4d8f50649787807fb6e1d8610ddd79bd2f0d8c35917c7"
+  },
+  {
+    "path": "src\\mendex_core\\desktop\\__main__.py",
+    "sha256": "cd4f723488b1b5541302cb082914884b616eab4d32d19985019353d9b2a6c9bf"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_lifecycle\\api.py",
+    "sha256": "dfe8dc5d949bbdc98ce8b5a437a9af0ec0ccef0c22648940d718a85057816308"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_lifecycle\\models.py",
+    "sha256": "31820a0ae502a938faac64c507dd4f06b2ff5c68c3f82060f1b3d6fc8bf31483"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_lifecycle\\service.py",
+    "sha256": "46486fb0f0c77c4a266f4eae7c72546b51fd066382994bc327aff6f2c747f7f4"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_lifecycle\\storage.py",
+    "sha256": "9cac5d8944eb25525db0e8c1beb9ef09f3275fea52102aa64ef025371da77a41"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_lifecycle\\__init__.py",
+    "sha256": "8b2248ebeb78d789e1b2da970df7771e2a44c1b08544d3d5083fd35dd39ad3f4"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_records\\api.py",
+    "sha256": "432f8c442df8160e91b324ae203525e3115087a2aae61e46f95a222a02cd886c"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_records\\calculations.py",
+    "sha256": "e73acaff03f2c0851f89e67163cb4d437a3d78b3e4123b863e691bf15704e318"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_records\\models.py",
+    "sha256": "c607c630db475aab03f23fc9e27c56194c4693adb1ff8b639499d191b89eede1"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_records\\service.py",
+    "sha256": "43530183fc76dc302366ed050feddf3f6b38f6ec4977528a1112505dc3f8f7f4"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_records\\storage.py",
+    "sha256": "1ce7c75db6c5c226f3f325297a40bf316568b48ccccc934eca19a7df2a3b73ac"
+  },
+  {
+    "path": "src\\mendex_core\\engineering_records\\__init__.py",
+    "sha256": "cba155b1ccd4f10feb2477873a99de3c6e70154e1cbe6fb34b73dbf8a6b1ae6f"
+  },
+  {
+    "path": "src\\mendex_core\\intelligence\\benchmarks.py",
+    "sha256": "2a34823b3b0315c00facd66599be666fed6c0ae37a9ec506a8621f6fba3ce8b7"
+  },
+  {
+    "path": "src\\mendex_core\\intelligence\\calculations.py",
+    "sha256": "274454c2dc756972ac8a1220c6b6a6f2bc9512847eccf66b54c04a2c34ca5690"
+  },
+  {
+    "path": "src\\mendex_core\\intelligence\\knowledge.py",
+    "sha256": "a007b515ee477770a73971105ed9650b86323ebbbac97aa6c3a4523fbc8fbdb8"
+  },
+  {
+    "path": "src\\mendex_core\\intelligence\\__init__.py",
+    "sha256": "40d4911c9e5d61811f3c74d4ad094133e50364651661d171f42332ff3c396cc4"
+  },
+  {
+    "path": "src\\mendex_core\\lifecycle\\ecr.py",
+    "sha256": "86bfc0ec52c24ce52ca951802b686aa220487aee41e8b7c26a8e216913cb57c9"
+  },
+  {
+    "path": "src\\mendex_core\\lifecycle\\engine.py",
+    "sha256": "3c1370670c367e9ae2e545ccc98e238aaea624d26ae0b0e363c7869dacb88a04"
+  },
+  {
+    "path": "src\\mendex_core\\lifecycle\\kicad_service.py",
+    "sha256": "f7b9a9803d43b00d0bd38071d806f118542ddb88a57a4479400d2e585964ea66"
+  },
+  {
+    "path": "src\\mendex_core\\lifecycle\\models.py",
+    "sha256": "4def8592de4657a3cc7ea9ac8855aa0ab413a015f4b29df28a915623b2f362ca"
+  },
+  {
+    "path": "src\\mendex_core\\lifecycle\\__init__.py",
+    "sha256": "02552fe3151e66d227a8a8107bba67e672ab82d7e04fe882ceaacfc8695fd195"
+  },
+  {
+    "path": "src\\mendex_core\\mcp\\server.py",
+    "sha256": "31a68218be098a6cdae6b8176441f78d3fad2bbdb4e5bb394f99703f30dd94c1"
+  },
+  {
+    "path": "src\\mendex_core\\mcp\\__init__.py",
+    "sha256": "99bdf4259028919ed72e1bb783e3584ee7e9b906220c680eedc742d1819fb27e"
+  },
+  {
+    "path": "src\\mendex_core\\mcp\\__main__.py",
+    "sha256": "4d10633eee46e3f07696fb48c695b38c20a773a8e89d4796b3ce0e62dc673e6f"
+  },
+  {
+    "path": "src\\mendex_core\\measurements\\models.py",
+    "sha256": "8aee3a5f8e2798caa7dbf4ffebe3f1d0bb8a22b339f2557ad49e6e8a8daea209"
+  },
+  {
+    "path": "src\\mendex_core\\measurements\\service.py",
+    "sha256": "75efcfe2e7cc0fe398ba99e90d4d2744169e59fc75701e8d3b91ba236f93091d"
+  },
+  {
+    "path": "src\\mendex_core\\measurements\\__init__.py",
+    "sha256": "df6f19bfbce90e4f05909fec6c156b4db080373282be7413d5ea6f8ac54a88ef"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\contracts.py",
+    "sha256": "1cebb057d305259edfce380f36d34b4cd3252fd7ff53302ae1f6da824503b2a6"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\engine.py",
+    "sha256": "7a1698a827eb93445676df87b77284608986b80388de4daed9fb90b157b1444f"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\registry.py",
+    "sha256": "14bdb50c85e7f21a0944aa6d4f7dd050a789935e86bd0db586dc4f1384b0cd44"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\storage.py",
+    "sha256": "939ea94a30b0d13c5c77958781c6d04a016d3e715ae90927fd29d4f778c2c5e7"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\types.py",
+    "sha256": "1f6f87d2badbb405fb1dc2d0d404ae550880adfd4297b907931033b90cc49a4c"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\validation.py",
+    "sha256": "df6723f49b2b6f3ecb89f7702274948d00a4d5dc676c5ffd09b87ab47721ae70"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\__init__.py",
+    "sha256": "6ce8ad8603278f4391942083c263e27db1bded9f7be0970df49e768b615e8aa1"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\nodes\\calculations.py",
+    "sha256": "92eec176bca4d720b3413b8f4399854a931309f1927948585be74c2d641524c5"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\nodes\\inputs.py",
+    "sha256": "20eac5db80b7b9dfb528ac0d138b7b4da652d2e34e18e29b9d5b6f25ef7a13a0"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\nodes\\intelligence.py",
+    "sha256": "5acbf243ba56ff30e70ed74e6630f1a7e22f3db3a887d856be437a22f445487a"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\nodes\\reporting.py",
+    "sha256": "7b36c88208a511fbb51a80be9d1c02cacf2b7577fb8b25ce8e769ea20591351a"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\nodes\\results.py",
+    "sha256": "88c63ba50dac5335e6f756c162791e125dbbd585144156f33d4de40d4a82c89b"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\nodes\\tools.py",
+    "sha256": "3cd773a582a0a3324b98d72c2cd9b0a6a3d49e540eac05a299239abcfdf9b0d1"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\nodes\\validation.py",
+    "sha256": "64317fbbc853dee21c4dc05eec294b4bf1191f58478b87eae7eff354f7ea9c62"
+  },
+  {
+    "path": "src\\mendex_core\\workflows\\nodes\\__init__.py",
+    "sha256": "0dbb37c295ea03ade3bec9c6364deffac50a3e29a9268fbe8ad8b3f65abd2bfd"
+  },
+  {
+    "path": "src\\mendex_core\\design\\generators\\femm_generator.py",
+    "sha256": "77db64b9d5038d5b38d643e0840f3bd9f472bfe26ee9971b134e79ddc50a5df5"
+  },
+  {
+    "path": "src\\mendex_core\\design\\generators\\kicad_generator.py",
+    "sha256": "cd31fb3e4f8a9feb4d862d9f970f05b8c30e18004d539290bff1976b1b5c5f16"
+  },
+  {
+    "path": "src\\mendex_core\\design\\generators\\kicad_pcb_generator.py",
+    "sha256": "4d53448d6601052d454907280f9134a446c4053f7ce8d89e6c16330e4bdf5dbd"
+  },
+  {
+    "path": "src\\mendex_core\\design\\generators\\ltspice_generator.py",
+    "sha256": "6ae0516dd1a3f3cbbfafc3c83b4badb28d54271a6bd3e9e63975ce33fd7dcbbe"
+  },
+  {
+    "path": "src\\mendex_core\\design\\generators\\__init__.py",
+    "sha256": "9a89fd786a68b16ffbcef181ba85a5f53b991ddc842efe0fdb88e92ac8f3925e"
+  },
+  {
+    "path": "src\\integrations\\adapters\\base.py",
+    "sha256": "916e088619fdef5d08a783273e7d3bc82cb0b5cdee635cfdc390dec88026bd37"
+  },
+  {
+    "path": "src\\integrations\\adapters\\femm.py",
+    "sha256": "d6d3d8b4cf5a07c1c98d8708edcb368995ce323d490677b4adac2e6cb6720ea4"
+  },
+  {
+    "path": "src\\integrations\\adapters\\freecad.py",
+    "sha256": "b69f8867d8a55268d845367d1deef79f1586ed7ae7ae69d3bb55c24f237a0e36"
+  },
+  {
+    "path": "src\\integrations\\adapters\\git_adapter.py",
+    "sha256": "cff2e5a3c88bcb9509f5bbd1f3299fb207bd1ecdec343cb9f4a68ee9f3708563"
+  },
+  {
+    "path": "src\\integrations\\adapters\\jupyter.py",
+    "sha256": "114d1a22cefe047cf74a8c93d94a05ef9feb5b9e9a98b75955040ffb8a82efb3"
+  },
+  {
+    "path": "src\\integrations\\adapters\\kicad.py",
+    "sha256": "1566b3f2504d1dc1032661ef28124e0ecb6ddcd062161929d4004a217ebfe71b"
+  },
+  {
+    "path": "src\\integrations\\adapters\\ltspice.py",
+    "sha256": "f0a31f5f9b926705b99f27a5191cfc3be27fcc4197065aa2d2aa7601aff837c6"
+  },
+  {
+    "path": "src\\integrations\\adapters\\ngspice.py",
+    "sha256": "2871497166e5ff1c86ae699dd0a49e9b0f55adcdf4601bfa24271724b091e30f"
+  },
+  {
+    "path": "src\\integrations\\adapters\\openmodelica.py",
+    "sha256": "bdf59f1c1805e0adbeb4068806996d4ad550d0d0505d69c49b54050429111692"
+  },
+  {
+    "path": "src\\integrations\\adapters\\python_runtime.py",
+    "sha256": "bd14c668616764d474af0351060bd87196300f13abbc83d79734b350a7f186d1"
+  },
+  {
+    "path": "src\\integrations\\adapters\\qucs_s.py",
+    "sha256": "bb8710c9c0d601cd020c68b2a49efcbddb6b9abb65e0c90f9a3867b72e31cec8"
+  },
+  {
+    "path": "src\\integrations\\adapters\\registry.py",
+    "sha256": "4c367f8d74ff565f089177c80c5c3cc4ed593e1f82d0aecdddda84efa19b46e0"
+  },
+  {
+    "path": "src\\integrations\\adapters\\research_adapters.py",
+    "sha256": "3e72aa1574bf1c116923ee80ca642ae6df72083f8ba5c616edbe3ecd11b60c5d"
+  },
+  {
+    "path": "src\\integrations\\adapters\\__init__.py",
+    "sha256": "83527c5bf88e540659b553d6328f4b8898f14053bad57b4b4c0055145bc4915e"
+  },
+  {
+    "path": "src\\integrations\\calculations\\power_losses.py",
+    "sha256": "425540ae889051ff8eac2ff8302330e8d60e438654a45ba9d8400d3d95c9dbe9"
+  },
+  {
+    "path": "src\\integrations\\calculations\\transformer_design.py",
+    "sha256": "cab520933177dac161e196f1832db1ce77ef3ff561a73e1cc02e42be1905d378"
+  },
+  {
+    "path": "src\\integrations\\calculations\\winding_losses.py",
+    "sha256": "eba4f393573a8ce14fb61145a66bec674e24ccb78bd29d97205e496f44131693"
+  },
+  {
+    "path": "src\\integrations\\calculations\\__init__.py",
+    "sha256": "bda645b09153cc4c9f820a6428f97c95217efc77e4ec361d75ab6635a74900dd"
+  },
+  {
+    "path": "src\\integrations\\datasets\\magnet_dataset.py",
+    "sha256": "c54e37fda636b9717fc7ee96fc91de5c3842e1aa63631585cd423810650e0aa7"
+  },
+  {
+    "path": "src\\integrations\\datasets\\provenance.py",
+    "sha256": "4fc6bb226d6223ea6cb2714bcbfd498e223658d3b2b6211ae1f5429350bf480c"
+  },
+  {
+    "path": "src\\integrations\\datasets\\switchloss_db.py",
+    "sha256": "5bc568c25ccdda8e0ebf2170ce89c83e03ddbbd8224dc7edc28099061917ee1d"
+  },
+  {
+    "path": "src\\integrations\\datasets\\__init__.py",
+    "sha256": "7d0c3357f91b7d0358b5f2148908ddaa8ed0e648cfa2e0af32161ee3f8f4a81b"
+  },
+  {
+    "path": "src\\integrations\\generators\\femm_generator.py",
+    "sha256": "f6af386388d8434e1d86c78b8269afff26c282b73414f975b0a7252b63dd959b"
+  },
+  {
+    "path": "src\\integrations\\generators\\freecad_generator.py",
+    "sha256": "3a4951606db5a374e0af4757f9f915c4ae3f734462315b9b6dda02876a14015b"
+  },
+  {
+    "path": "src\\integrations\\generators\\modelica_generator.py",
+    "sha256": "167102be93117008222e842b8223f15c00c86c98fdd03d084bb309df5bb79d89"
+  },
+  {
+    "path": "src\\integrations\\generators\\__init__.py",
+    "sha256": "d95014742866bd44ba1b12dbf054f2130bf8edf9455b685e61455ef0fd3be7b6"
+  },
+  {
+    "path": "src\\integrations\\parsers\\femm_parser.py",
+    "sha256": "62db22404e2fb38846b790b3071af9a08d3f9aa570a4ed678f66eb70441179a5"
+  },
+  {
+    "path": "src\\integrations\\parsers\\kicad_parser.py",
+    "sha256": "c08e7375b368bff2903258dcac68fec3ede0125fbe97380f67cc975c87295b53"
+  },
+  {
+    "path": "src\\integrations\\parsers\\ltspice_parser.py",
+    "sha256": "40d47f0091859838d842ee93694c12bcd74d8c34ffe4fd4c138ac91603f53186"
+  },
+  {
+    "path": "src\\integrations\\parsers\\__init__.py",
+    "sha256": "94ff448ea22a4ef3df209d301084a690cb84e9c3dc779e7dddfe2a54fe1afb5f"
+  },
+  {
+    "path": "src\\integrations\\runners\\safe_runner.py",
+    "sha256": "dbee86dca18af0ad740e353e531775560e3a4bf3bd0df153efd4d22482eb4d7c"
+  },
+  {
+    "path": "src\\integrations\\runners\\__init__.py",
+    "sha256": "4c584b86029d821e657e852e0c06d7c3df4bbda388e6aee0c85e2f3d72d00174"
+  },
+  {
+    "path": "src\\integrations\\datasets\\fixtures\\magnet_sample.json",
+    "sha256": "b01663d71dd6a064b20cde73f542bb694df6484fa09722871eea47b6fdf8019a"
+  },
+  {
+    "path": "desktop\\src\\App.tsx",
+    "sha256": "70011bd4a62b8a46903d49397d08291efc7d8ea07c4e1172425f468bb948945e"
+  },
+  {
+    "path": "desktop\\src\\index.css",
+    "sha256": "db7f1ef9f417d476ca830af6c77c77a0dbe8aacd8593f85730d3ca5d878ffc24"
+  },
+  {
+    "path": "desktop\\src\\main.tsx",
+    "sha256": "79faf095f462c11b5dc445dac9043c06809247d25c47f6693fccd656d1a1d35a"
+  },
+  {
+    "path": "desktop\\src\\api\\client.ts",
+    "sha256": "9233fd4eed34f8d195b1af353541df8d2fbebcce24f40336ec165eb29cbab29a"
+  },
+  {
+    "path": "desktop\\src\\api\\types.ts",
+    "sha256": "a84a48fdeeaf48096fa422001794f2ab1a666610f6d3e4fe50681dfaae2b617f"
+  },
+  {
+    "path": "desktop\\src\\components\\Header.tsx",
+    "sha256": "99a9c5347b8614a0d4efc967828b47e02c598bcb145f2655564627f94da45fd2"
+  },
+  {
+    "path": "desktop\\src\\components\\Sidebar.tsx",
+    "sha256": "2f1d91fc772230e722e942f67617acc7cb97241e7a689c8fd454bb9e9a3d2367"
+  },
+  {
+    "path": "desktop\\src\\pages\\ComponentLibrary.tsx",
+    "sha256": "d05832739ac6d4fc9e8870a8c8c264ab491a7d983445d3bf4b39ab9091954b74"
+  },
+  {
+    "path": "desktop\\src\\pages\\Dashboard.tsx",
+    "sha256": "11cff8c3e9854211425235d5bd41d90d61b079603dbf6677a57084abd4d63f79"
+  },
+  {
+    "path": "desktop\\src\\pages\\EngineeringTools.tsx",
+    "sha256": "98f691317559d72885b91ade4250b39a7a31dfacfbe49b737b5942b8a3a1bccc"
+  },
+  {
+    "path": "desktop\\src\\pages\\ProjectDetail.tsx",
+    "sha256": "5ec07dd147128e9219550fc5a0b5bb9b2db68efec76b0137cd290ab5203dbdf6"
+  },
+  {
+    "path": "desktop\\src\\pages\\Projects.tsx",
+    "sha256": "fb97c92b3a03cd43cc65d712cbabc4be363387ad6c23a2be32d6938bd9809036"
+  },
+  {
+    "path": "desktop\\src\\pages\\Reports.tsx",
+    "sha256": "2eb7623d76b77e8ee4f3c299946e37a8a89dd4fd47283334af3406cda99c2619"
+  },
+  {
+    "path": "desktop\\src\\pages\\Settings.tsx",
+    "sha256": "40dd88d56c696ae77306951531f87a865e9a73c8d794011c72c32f982d3f60fb"
+  },
+  {
+    "path": "desktop\\src\\pages\\SimulationCenter.tsx",
+    "sha256": "66a19ad013e4fb224345fb880baa5efb6d57247ff16eac0ecf2926fd63cb7982"
+  },
+  {
+    "path": "desktop\\src-tauri\\Cargo.toml",
+    "sha256": "5fbf37ec3263c0ccaae099e7af71551b0762a965116e0f3dc8c527ed929b7b56"
+  },
+  {
+    "path": "desktop\\src-tauri\\tauri.conf.json",
+    "sha256": "5d652399ae237d90d4c986f4cc5289b75daaafd95737d3bacef039d1bbe9516c"
+  },
+  {
+    "path": "desktop\\src-tauri\\src\\main.rs",
+    "sha256": "e68ce2c999083b4d8ca6e31d06cbd74d53512478dded3bcd8a2df015561d1324"
+  },
+  {
+    "path": "engineering-workflows\\MASTER_ENGINEERING_INSTRUCTIONS.md",
+    "sha256": "4d1bad6a28cf72a065b2d99385ee8af6b44a233c717ca183b8d863878c488a8c"
+  },
+  {
+    "path": "engineering-workflows\\stages\\01_project_initialization.md",
+    "sha256": "44910cce2911480515d278b7b39bd50129e7a7605cb67ca0ba7bcd5072715d5c"
+  },
+  {
+    "path": "engineering-workflows\\stages\\02_requirements.md",
+    "sha256": "252e8342150ad83813b30e6ac1a1538268f95ad57b21be25f9bc84b5e1057bdd"
+  },
+  {
+    "path": "engineering-workflows\\stages\\03_feasibility.md",
+    "sha256": "6f5394c084baa872870dc12716c5876eb847aff4c9548fb27fd3e3d3682a21f0"
+  },
+  {
+    "path": "engineering-workflows\\stages\\04_calculations.md",
+    "sha256": "c331b4aee6392d1704d436354c28d5e4380ecbb742205e5a44282bd15b5d8cc7"
+  },
+  {
+    "path": "engineering-workflows\\stages\\05_design_development.md",
+    "sha256": "0d635badfee54c4a896b9e800cc28df0e18bf4ad8aaf16bc8cb4b128c3d5a8a9"
+  },
+  {
+    "path": "engineering-workflows\\stages\\06_simulation.md",
+    "sha256": "ea8da464d33bccb909c3b48ac012e879ff4ad372350cb57306884594879f675a"
+  },
+  {
+    "path": "engineering-workflows\\stages\\07_verification.md",
+    "sha256": "660a55c4be3ca47b9fb9edeac4d00c5a2cf7c10c610e662f90b8af507e23a05d"
+  },
+  {
+    "path": "engineering-workflows\\stages\\08_prototype_testing.md",
+    "sha256": "e2c6a1c047239a5f9111f1813b3029d2852f980ffd50b743e543395296de0b7b"
+  },
+  {
+    "path": "engineering-workflows\\stages\\09_documentation.md",
+    "sha256": "bff959857d0d87f1a414522cf3230c324b791a665860efe9e59e5c77ae8f5612"
+  },
+  {
+    "path": "engineering-workflows\\templates\\calculation_report.md",
+    "sha256": "a90bd076e9bb47218137b8e1241919772383abfb7d35737861d63fa86f98f662"
+  },
+  {
+    "path": "engineering-workflows\\templates\\engineering_review.md",
+    "sha256": "dffe3e578e6a51e2ab3b41ea067e55a24ca7390b55aeefb754b822ab3e878243"
+  },
+  {
+    "path": "engineering-workflows\\templates\\feasibility_report.md",
+    "sha256": "9ba2826609014808d32afd6570d6ddf3667fbd83e209172f1b6e757891dcf0c9"
+  },
+  {
+    "path": "engineering-workflows\\templates\\project_specification.md",
+    "sha256": "ef419361c316c16c8e1fb72f78ce6cd2e175fb8d97c699e5e659c9d4cf865f8f"
+  },
+  {
+    "path": "engineering-workflows\\templates\\simulation_report.md",
+    "sha256": "ccf5cd65f4199dd681224e32f031a91966ea70c820d28ab534736ea28fe8dcc8"
+  },
+  {
+    "path": "engineering-workflows\\templates\\verification_report.md",
+    "sha256": "e0368f3d9f504faf58e85a37f03ed1cd153354baf6e5b94888a2cb64c8d9f18a"
+  },
+  {
+    "path": "engineering-workflows\\validation\\engineering_rules.md",
+    "sha256": "cf567ae44cbdf78d96489e9e1a2b438998ad3f5abc100b4be7412f6f6529a751"
+  },
+  {
+    "path": "engineering-workflows\\validation\\evidence_requirements.md",
+    "sha256": "cefa3de48fd5b856e833468df4b4a67bf7342a94d0b2051af54f5ad205f6b033"
+  },
+  {
+    "path": "engineering-workflows\\validation\\stage_completion_rules.md",
+    "sha256": "fd5a6fef77419923929377cc600ad933ad349bf5a1ca1a5b50630544596423be"
+  },
+  {
+    "path": "tests\\conftest.py",
+    "sha256": "396f871d858a13922b666f185426bf21bff7ac0a13404e2a45c8d20f7f92e47a"
+  },
+  {
+    "path": "tests\\adapters\\test_calculations.py",
+    "sha256": "e57ae3d744427f611d1410c65fcc2510d8d6f9be4f4f1c3a95eebf6da93c70ec"
+  },
+  {
+    "path": "tests\\adapters\\test_datasets.py",
+    "sha256": "2b41c8d3992d5dfa6ccc5516e04658fa5088a884655e8d1f7f2a2366d5a3382a"
+  },
+  {
+    "path": "tests\\adapters\\test_femm_adapter.py",
+    "sha256": "13cc4661bfe30bf6f1256d9b1ca63b05ea427ed2234cd189a93abf0ded245562"
+  },
+  {
+    "path": "tests\\adapters\\test_generators.py",
+    "sha256": "e299572524e1b464f520c85262fbee518107bd1ab88ba27eabfb87547f7dd736"
+  },
+  {
+    "path": "tests\\adapters\\test_kicad_adapter.py",
+    "sha256": "ad7156ee54e1aae7d9b01f415d4d246dad186a40cd3b2540ff022906258080da"
+  },
+  {
+    "path": "tests\\adapters\\test_ltspice_adapter.py",
+    "sha256": "16a62683c7e9f49929951b60535923f573595e9af7ac3d85a756929fb7e737eb"
+  },
+  {
+    "path": "tests\\adapters\\test_magnetics.py",
+    "sha256": "dd0d9b7e49c2d414ffda04c3cac3e8550162a5dbbfa76cd054074a55b99761e7"
+  },
+  {
+    "path": "tests\\adapters\\test_ngspice_adapter.py",
+    "sha256": "d8c705eafe5df2d5746b6ffcd23d7a6d4ca0a3b634cf0fa58ee706510f3a63c4"
+  },
+  {
+    "path": "tests\\adapters\\test_openmodelica_adapter.py",
+    "sha256": "52338b3aa829bb35ad4b02cba7c1671d4aec2495240ea2e419d8b908bccb291f"
+  },
+  {
+    "path": "tests\\adapters\\test_safe_runner.py",
+    "sha256": "027243e0d426546c5562cb214dcfef4d99a75a8f603108f4b5e2b5c68fd9ec52"
+  },
+  {
+    "path": "tests\\adapters\\test_security_and_limits.py",
+    "sha256": "1b403463785a6b1f739aec8ac4dd963b4fffd8dbbbb78c5a93339d86170cb640"
+  },
+  {
+    "path": "tests\\adapters\\test_tool_detection.py",
+    "sha256": "a5d7895228bbb10cf5d129884b923bf4681f39c76e7579949557ff55805ca70e"
+  },
+  {
+    "path": "tests\\adapters\\test_v15_connector.py",
+    "sha256": "4f02ee3aebb28d475f13d28276e65c30fb2fe67cc17ca54ca657697726ae6659"
+  },
+  {
+    "path": "tests\\adapters\\__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "tests\\contracts\\test_v15_contracts.py",
+    "sha256": "88bdcddc6554eeefc1c162e86e79e12e415c9e281008746a7f65346714e1160f"
+  },
+  {
+    "path": "tests\\core\\test_archive_reset.py",
+    "sha256": "b86beeabd62095ae610e45e1c5bece073e7a0c05e631d2196ae32eba04c745b0"
+  },
+  {
+    "path": "tests\\core\\test_completion.py",
+    "sha256": "d6cd891924b6dadd419e74928d0377c1fce35ee61cf575e68df2a012c292d157"
+  },
+  {
+    "path": "tests\\core\\test_day2.py",
+    "sha256": "702a6cc73651bdebac320a18709e6c1daa2e9f90d37626ef8afdb6833efee2e0"
+  },
+  {
+    "path": "tests\\core\\test_engineering_integrity_guards.py",
+    "sha256": "5856951675563f2c7a00beb1b48c1cf780392b8d5b124031dd64a85356b40df2"
+  },
+  {
+    "path": "tests\\core\\test_engineering_lifecycle.py",
+    "sha256": "977bef4ed5532fbe3f6b7aa2bc24a2dd640182a6571a7eb1239ab89b1d6e4e77"
+  },
+  {
+    "path": "tests\\core\\test_engineering_prompt_library.py",
+    "sha256": "fce05f8fe2712bebdf4152a5004feae54500ba97eceb91d9a509ce26d759f5b3"
+  },
+  {
+    "path": "tests\\core\\test_engineering_records.py",
+    "sha256": "e0c84080ec40f8a41b620a5ef368af7a931ac151740d9d5c50bf9c58b644de38"
+  },
+  {
+    "path": "tests\\core\\test_intelligence.py",
+    "sha256": "31403682f92b7d8055f72958c1e70d9a41f3e4369c47c9b5c76f3940152160a1"
+  },
+  {
+    "path": "tests\\core\\test_pcb_workspace.py",
+    "sha256": "c06bbb9ed98779eac51572d95ae49d6c7ab7e4d794d998682c30a9503ad5af7a"
+  },
+  {
+    "path": "tests\\core\\test_product_lifecycle.py",
+    "sha256": "8c9d62bb14f9755fcb66a97aa1a5b741fef8fb09bd5f033d1184e1aae2df9bb6"
+  },
+  {
+    "path": "tests\\core\\test_retired_integrations.py",
+    "sha256": "47fe8443c120c3fb8d0e3f3c354ea8dbffa5964e3755c59bf17b64ec5d39298f"
+  },
+  {
+    "path": "tests\\core\\test_service.py",
+    "sha256": "4a9431672c24ab0c62f23374dc3d5717815164e74b5313dabf32713b6c10bebd"
+  },
+  {
+    "path": "tests\\core\\test_v19_design_synthesis.py",
+    "sha256": "007832c90bc90d85342fc7273f7f8d8520cea206ade8acb89891a27198dcfeb5"
+  },
+  {
+    "path": "tests\\core\\test_v20_lifecycle.py",
+    "sha256": "36b340779de41e1612a375be3b889afd10227b07e45d8eb25bc96b0c63ff1206"
+  },
+  {
+    "path": "tests\\core\\test_v21_cli.py",
+    "sha256": "300dfdd0a8ed66eb6e8df374d64360f063820a3ab45b390e01c1cdb0f1da832e"
+  },
+  {
+    "path": "tests\\core\\test_v21_controller.py",
+    "sha256": "7f6943615e301569c5642686e44f9add5e6016d3a5255dde3507516a40247d4e"
+  },
+  {
+    "path": "tests\\core\\test_v21_engineering_projects.py",
+    "sha256": "122f70558d7f7926471bc1a96088fabc6b798da9843e05c9285d61f8f11893f2"
+  },
+  {
+    "path": "tests\\core\\test_v21_mcp.py",
+    "sha256": "8dd741e65d3758ad70fdac57c401582a5823ada4e4b73e88e7a9f1a03c6694dd"
+  },
+  {
+    "path": "tests\\core\\test_workflow_contracts.py",
+    "sha256": "6b221da940fae88365d1ac547a39c07583555753efaddb90a77889b8ee04eae3"
+  },
+  {
+    "path": "tests\\core\\test_workflow_engine.py",
+    "sha256": "23c4cc1309907ea8925f56391c3f21471efc547d6a075f1b6e5939846d78505f"
+  },
+  {
+    "path": "tests\\integration\\test_day3.py",
+    "sha256": "00ebc1fa288bab4b4777006dd4c8cc002dc42d2cb6126a69935621c56ab0526b"
+  },
+  {
+    "path": "tests\\integration\\test_engineering_lifecycle_interfaces.py",
+    "sha256": "b1e9a17e3734442c5cec49876f29f142d7a2d9a355e434e01ec9f02dd9c685da"
+  },
+  {
+    "path": "tests\\integration\\test_engineering_record_interfaces.py",
+    "sha256": "07b54301c000332e8d0939e94af15a19fdd742dce9cd4745f457b40cd78e8a43"
+  },
+  {
+    "path": "tests\\integration\\test_restore.py",
+    "sha256": "06bdc568fde09789dc882a9917c34142119c5918b844f20a1a76d5ab25026ffb"
+  },
+  {
+    "path": "tests\\integration\\test_v15_integration_hook.py",
+    "sha256": "23698930f7afb07b28911f9347c8fd8d389a80cae30abe981eff4a1b032f86fc"
+  },
+  {
+    "path": "tests\\integration\\test_v15_jobs.py",
+    "sha256": "6e56e1ee2ec745815031d1e8ac80bdc1331d16564a3478d5878ff00c917f3946"
+  },
+  {
+    "path": "tests\\integration\\test_v16_resilience.py",
+    "sha256": "973adacf2759df7ec0b115e956fdd68f8df30e64129888ee4f054157691b82ec"
+  },
+  {
+    "path": "tests\\integration\\test_v16_workflow.py",
+    "sha256": "db6d5784c2c762e03992814bebf225cd67e8cd4ea0487255e5d052faffa5b7fb"
+  },
+  {
+    "path": "tests\\integration\\test_v17_product_independent.py",
+    "sha256": "da4c3aac0857a62c7433e6eff1a888195c613677ebff7c9f2e092a97f28fe72f"
+  },
+  {
+    "path": "tests\\integration\\test_v19_e2e_scenarios.py",
+    "sha256": "984a20c9572e6ab6129b4254f92f753925d18a06a34e3f50324bcd38c095b0a8"
+  },
+  {
+    "path": "tests\\integration\\test_v19_revised_acceptance.py",
+    "sha256": "4d928d845d466d4e4c21c77bc6ce365ccff24c3b0557de5864a764c98ac6a114"
+  },
+  {
+    "path": "tests\\integration\\test_v20_acceptance.py",
+    "sha256": "4bc303582266281dcf6a7177e22824f63d2ea4575db32d581f4e6ee7c0f97cdf"
+  },
+  {
+    "path": "tests\\integration\\test_v20_qualification.py",
+    "sha256": "d568c848cd1800c431c0d220152f62b805cb140c6c70120b04119a3e3a0e27b4"
+  },
+  {
+    "path": "tests\\integration\\test_v21_e2e.py",
+    "sha256": "0f6ee3aaf3823b5d97d42ff20c689afaceb4d694b001cae79b3611f2fd57ef84"
+  },
+  {
+    "path": "tests\\ui\\test_command_center_cleanup.py",
+    "sha256": "75464ce97dd6aa731ea7f20056755966cfec9bf92981d004cc02267fcfb530de"
+  },
+  {
+    "path": "tests\\ui\\test_dashboard_inventory.py",
+    "sha256": "c8061016afe7255a17c656eb4d0989cd64babbf5135c2eecf57cec3b7851411c"
+  },
+  {
+    "path": "tests\\ui\\test_design_studio_ui.py",
+    "sha256": "dac5b1dfcd103799b5f516ed95256ee517b5204bb4418014bd893f8abcc6601e"
+  },
+  {
+    "path": "tests\\ui\\test_engineering_guide_dialog.py",
+    "sha256": "77be72f40de773f1379aeb33b149cc416034a03ca6bc0ddc89bc2bde4dec6817"
+  },
+  {
+    "path": "tests\\ui\\test_pcb_workspace_ui.py",
+    "sha256": "9c02fdf2445ebf148cb10b467094c36dc1acde3a07b153cb0fd90f01a1540fe5"
+  },
+  {
+    "path": "tests\\ui\\test_product_lifecycle_ui.py",
+    "sha256": "0b9101159c0bb6cbb0c848a23b933265b83ebc10cdb59fd51c362a6d6dc47408"
+  },
+  {
+    "path": "tests\\ui\\test_safety_and_derating_ui.py",
+    "sha256": "8373424d59023222a5ad907c25fcf38020ae0d179207775a93c07ac60ef499e9"
+  },
+  {
+    "path": "tests\\ui\\test_step3_wizards.py",
+    "sha256": "cdcbfeadfa2e5e4c06bb2f89086abd1803cb0c28c599c093c66426dbce942835"
+  },
+  {
+    "path": "tests\\ui\\test_step4_magnetics.py",
+    "sha256": "acdf603d8a104d6349881b6abe0200a4623db20d93ffb948941d9bef1fb22f62"
+  },
+  {
+    "path": "tests\\ui\\test_step5_reporting.py",
+    "sha256": "ed0a1581c5de79f2ee17e3726d059e6fd336180fb465372d25a7050c9cd1447e"
+  },
+  {
+    "path": "tests\\ui\\test_switchloss_ui.py",
+    "sha256": "f1a6122defd9a64f499d7980d5d11acab205e8b2824e32c7e3febe2a89f9d6ef"
+  },
+  {
+    "path": "tests\\ui\\test_v15_panels.py",
+    "sha256": "f251476a6c0ba45ccc62c9649baed0583bf48db978a65277690c90b7d0f4de8b"
+  },
+  {
+    "path": "tests\\ui\\test_waveform_viewer.py",
+    "sha256": "1d9765e66b5c6fd994032e29611fb25663d63ec836dc44131329cd664338e11c"
+  },
+  {
+    "path": "tests\\ui\\test_window.py",
+    "sha256": "e5bb6e662d4e5440b1c26111d0621f2a69324066990bcdfce0cbc7f1ed19a6bd"
+  },
+  {
+    "path": "tests\\ui\\test_workflow_studio_ui.py",
+    "sha256": "ece4abfa95c604eaa1865f35d50c1aea969a7f41235945666ea3c79d7a8cae1d"
+  },
+  {
+    "path": "tests\\ui\\test_workspace_panels.py",
+    "sha256": "402a562b8bc618cb605a134bbd03f3c79362f2aaa0d4c88b035b698a6d6214cb"
+  }
+]

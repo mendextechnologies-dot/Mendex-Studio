@@ -1,0 +1,41 @@
+Traceback (most recent call last):
+  File "C:\Mendex studio\src\mendex_core\service.py", line 113, in connection
+    yield db
+  File "C:\Mendex studio\src\mendex_core\service.py", line 48, in __init__
+    db.executescript('''
+    ~~~~~~~~~~~~~~~~^^^^
+        CREATE TABLE products (id TEXT PRIMARY KEY, code TEXT UNIQUE COLLATE NOCASE, payload TEXT NOT NULL);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        CREATE TABLE revisions (id TEXT PRIMARY KEY, product_id TEXT NOT NULL REFERENCES products(id), label TEXT NOT NULL COLLATE NOCASE, payload TEXT NOT NULL, UNIQUE(product_id,label));
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        PRAGMA user_version=1;
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ''')
+    ^^^^
+sqlite3.OperationalError: table products already exists
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Mendex studio\src\mendex_core\mcp\__main__.py", line 27, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Mendex studio\src\mendex_core\mcp\__main__.py", line 18, in main
+    server = MendexMCPServer(data_root=args.root)
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 32, in __init__
+    self.controller = MendexEngineeringController(data_root)
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\controller.py", line 46, in __init__
+    self.service = service if service is not None else StudioService(self.root)
+                                                       ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\service.py", line 43, in __init__
+    with self.connection() as db:
+         ~~~~~~~~~~~~~~~^^
+  File "C:\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\service.py", line 117, in connection
+    raise StudioError("STORAGE_ERROR", str(exc)) from exc
+mendex_core.service.StudioError: table products already exists

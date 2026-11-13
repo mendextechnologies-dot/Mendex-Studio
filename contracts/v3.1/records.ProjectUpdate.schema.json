@@ -1,0 +1,68 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "3.1.0",
+      "default": "3.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "project_id": {
+      "format": "uuid",
+      "title": "Project Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "owner": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Owner",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 20000,
+      "title": "Description",
+      "type": "string"
+    },
+    "expected_updated_at": {
+      "format": "date-time",
+      "title": "Expected Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source",
+    "reason",
+    "idempotency_key",
+    "project_id",
+    "name",
+    "owner",
+    "description",
+    "expected_updated_at"
+  ],
+  "title": "ProjectUpdate",
+  "type": "object"
+}

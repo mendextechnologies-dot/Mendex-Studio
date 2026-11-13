@@ -3,7 +3,10 @@ import sqlite3
 import json
 import html
 import os
+import csv
+from datetime import datetime, timezone
 from contextlib import contextmanager
+from contextvars import ContextVar
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -11,6 +14,7 @@ from .models import Category, Lifecycle, Product, Revision, Specification, now
 from .adapters import AdapterRegistry
 from .evidence import ManualCheck, ValidationRecord, ValidationStatus, Report, SimulationRun, digest, specification_hash
 from .rules import RuleRegistry
+from .sqlite_schema import execute_schema
 
 
 class StudioError(Exception):
@@ -21,6 +25,7 @@ class StudioError(Exception):
 
 class StudioService:
     def __init__(self, root: Path, registry=None):
+        self._active_transaction = ContextVar("mendex_transaction", default=None)
         self.registry = registry or AdapterRegistry.defaults()
         self.root = Path(root).resolve()
         self.root.mkdir(parents=True, exist_ok=True)
@@ -37,17 +42,20 @@ class StudioService:
             except (ValueError, OSError) as exc:
                 self.plugin_status.append({"path": str(manifest), "status": "rejected", "diagnostic": str(exc)})
         with self.connection() as db:
+            # Hold the writer lock before inspecting the version. Another process
+            # may be starting against this same new data root.
+            db.execute("BEGIN IMMEDIATE")
             version = db.execute("PRAGMA user_version").fetchone()[0]
             if version > 4:
                 raise StudioError("STORAGE_ERROR", "Database is newer than this application")
             if version == 0:
-                db.executescript('''
+                execute_schema(db, '''
                     CREATE TABLE products (id TEXT PRIMARY KEY, code TEXT UNIQUE COLLATE NOCASE, payload TEXT NOT NULL);
                     CREATE TABLE revisions (id TEXT PRIMARY KEY, product_id TEXT NOT NULL REFERENCES products(id), label TEXT NOT NULL COLLATE NOCASE, payload TEXT NOT NULL, UNIQUE(product_id,label));
                     PRAGMA user_version=1;
                 ''')
             if version < 2:
-                db.executescript('''
+                execute_schema(db, '''
                     BEGIN IMMEDIATE;
                     CREATE TABLE IF NOT EXISTS tool_settings (tool_id TEXT PRIMARY KEY, path TEXT NOT NULL);
                     CREATE TABLE IF NOT EXISTS validations (id TEXT PRIMARY KEY, revision_id TEXT NOT NULL REFERENCES revisions(id), payload TEXT NOT NULL);
@@ -58,7 +66,7 @@ class StudioService:
                     COMMIT;
                 ''')
             if version < 3:
-                db.executescript('''
+                execute_schema(db, '''
                     BEGIN IMMEDIATE;
                     CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY, revision_id TEXT NOT NULL REFERENCES revisions(id), payload TEXT NOT NULL);
                     CREATE TRIGGER IF NOT EXISTS runs_no_update BEFORE UPDATE ON runs BEGIN SELECT RAISE(ABORT,'Run records are append-only'); END;
@@ -91,9 +99,17 @@ class StudioService:
         self.design = EngineeringDesignService(self.root)
         from .components import ComponentLibraryService
         self.components = ComponentLibraryService()
+        from .engineering_lifecycle import EngineeringLifecycleService
+        self.engineering_lifecycle = EngineeringLifecycleService(self)
+        from .engineering_records.service import EngineeringRecordService
+        self.engineering_records = EngineeringRecordService(self)
 
     @contextmanager
     def connection(self):
+        active = self._active_transaction.get()
+        if active is not None:
+            yield active
+            return
         db = sqlite3.connect(self.database, timeout=10)
         db.execute("PRAGMA foreign_keys=ON")
         try:
@@ -105,6 +121,19 @@ class StudioService:
             raise StudioError("STORAGE_ERROR", str(exc)) from exc
         finally:
             db.close()
+
+    @contextmanager
+    def atomic(self):
+        """Compose existing service operations in one task-local SQLite transaction."""
+        if self._active_transaction.get() is not None:
+            raise StudioError("CONFLICT", "An atomic operation is already active")
+        with self.connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            token = self._active_transaction.set(db)
+            try:
+                yield db
+            finally:
+                self._active_transaction.reset(token)
 
     def list_products(self):
         with self.connection() as db:
@@ -290,8 +319,24 @@ class StudioService:
                     db.execute("DELETE FROM engineering_change_requests WHERE revision_id=? OR product_id=?", (rid, pid_str))
                 except Exception:
                     pass
+                try:
+                    db.execute("DELETE FROM engineering_lifecycle_events WHERE revision_id=?", (rid,))
+                except Exception:
+                    pass
+                try:
+                    db.execute("DELETE FROM engineering_lifecycle_assignments WHERE revision_id=?", (rid,))
+                except Exception:
+                    pass
+                try:
+                    db.execute("DELETE FROM engineering_records_receipts WHERE revision_id=?", (rid,))
+                except Exception:
+                    pass
+                try:
+                    db.execute("DELETE FROM engineering_records_entries WHERE revision_id=?", (rid,))
+                except Exception:
+                    pass
             try:
-                db.execute("UPDATE integration_workspaces SET product_id=NULL WHERE product_id=?", (pid_str,))
+                db.execute("DELETE FROM integration_workspaces WHERE id=? OR product_id=?", (pid_str, pid_str))
             except Exception:
                 pass
             try:
@@ -437,7 +482,8 @@ class StudioService:
             raise StudioError("INVALID_INPUT", "Evidence directory escapes the data root")
         try:
             with self.connection() as db:
-                db.execute("BEGIN IMMEDIATE")
+                if not db.in_transaction:
+                    db.execute("BEGIN IMMEDIATE")
                 fresh = Revision.model_validate_json(db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision.revision_id),)).fetchone()[0])
                 if fresh != revision:
                     raise StudioError("CONFLICT", "Revision changed; refresh and retry")
@@ -518,7 +564,15 @@ class StudioService:
         summaries = self.validation_summary(revision_id)
         records = [entry["record"] for entry in summaries]
         current_hash = specification_hash(revision.specification)
-        warnings = ["DRAFT ONLY: no manufacturing approval or safety certification.", "Manual values and criteria are supplied by the reviewer; their engineering validity is not independently verified.", "No automated simulations or physical tests were executed by Mendex."]
+        jobs = [self.engineering_records.job_detail(j.request.job_id)
+                for j in self.integrations.list_jobs()
+                if j.request.parameters.get("revision_id") == str(revision.revision_id)]
+        warnings = ["DRAFT ONLY: no manufacturing approval or safety certification.",
+                    "Manual values and criteria are supplied by the reviewer; their engineering validity is not independently verified.",
+                    "Physical test origin and engineering review are not authenticated by Mendex.",
+                    f"{len(jobs)} native job records attributed to this revision; execution is not engineering validation."]
+        if any(not job["evidence_integrity"] for job in jobs):
+            warnings.append("NOT_EVALUATED: one or more attributed job evidence manifests are unavailable or changed.")
         if not records:
             warnings.append("NOT_EVALUATED: no validation records available.")
         rows = []
@@ -536,8 +590,92 @@ class StudioService:
             raise StudioError("INVALID_INPUT", "Report directory escapes the data root")
         report = Report(report_id=report_id, revision_id=revision.revision_id, input_hash=current_hash, report_path=str((folder / "report.html").relative_to(self.root)), included_check_ids=[r.check.check_id for r in records], warnings=warnings)
         snapshot = {"report": report.model_dump(mode="json"), "product": product.model_dump(mode="json"), "revision": revision.model_dump(mode="json"), "tools": [t.model_dump(mode="json") for t in self.list_tools()], "validation": rows, "simulation_requests": [run.model_dump(mode="json") for run in self.list_runs(revision_id)], "engineering_rules": [rule.model_dump(mode="json") for rule in self.list_rules(revision_id)], "plugins": self.list_plugins()}
+        snapshot["native_jobs"] = jobs
+        snapshot["calculation_runs"] = self.engineering_records.list_records("calculation", {"revision_id": revision_id})
+        snapshot["registered_artifacts"] = self.engineering_records.list_records("artifact", {"revision_id": revision_id})
         text = json.dumps(snapshot, indent=2)
-        body = f'<!doctype html><html><head><meta charset="utf-8"><title>Mendex draft dossier</title><style>body{{font:16px Segoe UI,sans-serif;max-width:1000px;margin:40px auto;padding:20px}}pre{{white-space:pre-wrap;overflow-wrap:anywhere}}li{{margin:8px}}</style></head><body><h1>Mendex engineering dossier · DRAFT</h1><p>{html.escape(product.code)} · {html.escape(revision.revision_label)}</p><ul>' + ''.join(f'<li>{html.escape(w)}</li>' for w in warnings) + '</ul><h2>Frozen input and evidence snapshot</h2><pre>' + html.escape(text) + '</pre></body></html>'
+        p_out_w = revision.specification.vout_v * revision.specification.iout_a if revision.specification.vout_v is not None and revision.specification.iout_a is not None else None
+        f_sw_khz = revision.specification.switching_frequency_hz / 1000 if revision.specification.switching_frequency_hz is not None else None
+
+        def display_quantity(value, unit, digits=1):
+            return f"{value:.{digits}f} {unit}" if value is not None else "NOT_EVALUATED"
+        body = f'''<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Mendex Engineering Dossier — {html.escape(product.code)} ({html.escape(revision.revision_label)})</title>
+<style>
+  body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 1040px; margin: 24px auto; padding: 24px; color: #1e1e2e; background-color: #f8fafc; line-height: 1.5; }}
+  .header-card {{ background: linear-gradient(135deg, #1e1e2e 0%, #2a2b3d 100%); color: #cdd6f4; border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }}
+  .print-btn {{ float: right; background: #0ea5e9; color: #ffffff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; text-decoration: none; }}
+  .print-btn:hover {{ background: #0284c7; }}
+  .card {{ background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }}
+  .kpi-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; }}
+  .kpi-item {{ background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; text-align: center; }}
+  .kpi-val {{ font-size: 20px; font-weight: 800; color: #0284c7; }}
+  .kpi-lbl {{ font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-top: 4px; }}
+  table {{ border-collapse: collapse; width: 100%; margin: 12px 0 20px 0; font-size: 14px; }}
+  th {{ background: #f1f5f9; color: #334155; font-weight: 700; text-align: left; padding: 10px 12px; border: 1px solid #cbd5e1; }}
+  td {{ padding: 8px 12px; border: 1px solid #e2e8f0; color: #1e293b; }}
+  tr:nth-child(even) {{ background: #f8fafc; }}
+  pre {{ background: #1e1e2e; color: #a6adc8; padding: 14px; border-radius: 6px; overflow-x: auto; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }}
+  .badge-pass {{ display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: #dcfce7; color: #15803d; border: 1px solid #86efac; font-size: 12px; }}
+  .badge-blocked {{ display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 12px; }}
+  .warning-box {{ background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; }}
+  .warning-box li {{ color: #92400e; margin: 4px 0; font-size: 13px; }}
+  @media print {{
+    .print-btn {{ display: none; }}
+    body {{ max-width: 100%; margin: 0; padding: 12px; background: #ffffff; color: #000; }}
+    .card, .header-card {{ box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }}
+  }}
+</style>
+</head>
+<body>
+<div class="header-card">
+  <button onclick="window.print()" class="print-btn">🖨️ Print / Save as PDF</button>
+  <h1 style="margin:0 0 6px 0; font-size:24px; color:#ffffff;">Mendex Engineering Dossier · {html.escape(product.code)}</h1>
+  <p style="margin:0; font-size:14px; color:#a6adc8;">Mendex engineering dossier | <b>Product Name:</b> {html.escape(product.name)} | <b>Revision:</b> {html.escape(revision.revision_label)} | <b>Generated:</b> {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</p>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">1. Executive Summary & Design Envelope</h2>
+  <table style="width:100%; border:none; margin:14px 0; border-collapse:separate; border-spacing:10px;">
+    <tr>
+      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
+        <div style="font-size:22px; font-weight:800; color:#0284c7;">{display_quantity(revision.specification.vin_nom_v, 'V')}</div>
+        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Input Voltage (Nom)</div>
+      </td>
+      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
+        <div style="font-size:22px; font-weight:800; color:#0284c7;">{display_quantity(revision.specification.vout_v, 'V')}</div>
+        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Output Voltage</div>
+      </td>
+      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
+        <div style="font-size:22px; font-weight:800; color:#0284c7;">{display_quantity(p_out_w, 'W')}</div>
+        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Nominal Output Power</div>
+      </td>
+    </tr>
+    <tr>
+      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
+        <div style="font-size:22px; font-weight:800; color:#0284c7;">{display_quantity(f_sw_khz, 'kHz')}</div>
+        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Switching Frequency</div>
+      </td>
+      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
+        <div style="font-size:16px; font-weight:800; color:#0284c7;">{html.escape(revision.specification.isolation_requirement or 'NOT_EVALUATED')}</div>
+        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Isolation Requirement</div>
+      </td>
+      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
+        <div style="font-size:16px; font-weight:800; color:#0284c7;">{html.escape(revision.specification.standards_profile if revision.specification.standards_profile != 'UNASSIGNED' else 'NOT_EVALUATED')}</div>
+        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Standards Profile</div>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="warning-box">
+  <b>Engineering Notices & Provenance Safeguards:</b>
+  <ul style="margin:6px 0 0 0; padding-left:20px;">
+    {''.join(f'<li>{html.escape(w)}</li>' for w in warnings)}
+  </ul>
+</div>
+<h2>Frozen input and evidence snapshot</h2><pre>{html.escape(text)}</pre></body></html>'''
         table = '<h2>Manual validation history</h2><table border="1" cellpadding="8" style="border-collapse:collapse"><tr><th>Requirement</th><th>Effective status</th><th>Origin</th><th>Value</th><th>Reviewer</th></tr>'
         for row in rows:
             check = row["record"]["check"]
@@ -552,7 +690,7 @@ class StudioService:
                 assessment = self.lifecycle.assess(product.product_id, revision.revision_id)
                 evidence = self.lifecycle.get_evidence_register(product.product_id, revision.revision_id)
                 status_color = "#1b4332" if assessment.prototype_ready else "#4a1525"
-                status_text = "PROTOTYPE READY (Authorized for Fabrication)" if assessment.prototype_ready else "PROTOTYPE BLOCKED"
+                status_text = "Legacy readiness assessment; no fabrication authorization" if assessment.prototype_ready else "PROTOTYPE BLOCKED"
                 lifecycle_html += f"<h2>Product Engineering Lifecycle Maturity & Prototype Readiness</h2>"
                 lifecycle_html += f"<p style='font-size:16px;font-weight:bold;color:{status_color};'>Overall Status: {html.escape(assessment.overall_status.value)} — {status_text}</p>"
                 lifecycle_html += "<table border='1' cellpadding='8' style='border-collapse:collapse;width:100%;margin-bottom:20px;'>"
@@ -572,7 +710,41 @@ class StudioService:
             except Exception:
                 pass
 
-        body = body.replace('<h2>Frozen input and evidence snapshot</h2>', table + lifecycle_html + '<h2>Frozen input and evidence snapshot</h2>')
+                # Enrich report with Sizing Analysis and BOM tables if available in workspace
+        sizing_html = ''
+        ws_p = self.workspace_path(revision)
+        sizing_files = list(ws_p.glob('**/*sizing*.json')) + list(ws_p.glob('**/*calc*.json'))
+        if sizing_files:
+            candidate = sizing_files[0].resolve()
+            if candidate.is_relative_to(ws_p.resolve()) and candidate.is_file() and candidate.stat().st_size <= 2 * 1024 * 1024:
+                try:
+                    s_data = json.loads(candidate.read_text(encoding="utf-8"))
+                    sizing_html = '<div class="card"><h2>2. Recorded Analytical Inputs and Outputs</h2>'
+                    sizing_html += '<p>Workspace-supplied content; source and applicability are not independently verified. Missing values remain unavailable.</p>'
+                    sizing_html += '<p>Source: ' + html.escape(candidate.relative_to(ws_p).as_posix()) + '</p>'
+                    sizing_html += '<pre>' + html.escape(json.dumps(s_data, indent=2, allow_nan=False)) + '</pre></div>'
+                except (OSError, ValueError):
+                    sizing_html = '<p>Analytical workspace data: NOT_EVALUATED (unreadable or malformed).</p>'
+
+        bom_html = ''
+        bom_files = list(ws_p.glob('**/*bom*.csv'))
+        if bom_files:
+            candidate = bom_files[0].resolve()
+            if candidate.is_relative_to(ws_p.resolve()) and candidate.is_file() and candidate.stat().st_size <= 2 * 1024 * 1024:
+                try:
+                    with candidate.open(encoding="utf-8", newline="") as handle:
+                        rows_b = list(csv.DictReader(handle))
+                    if rows_b:
+                        bom_html = '<div class="card"><h2>3. Recorded Bill of Materials</h2><p>Caller-supplied records; stock, ratings, prices and qualification are not independently verified.</p>'
+                        fields = ("item", "designator", "part_number", "manufacturer", "description", "qty", "extended_price_usd", "status")
+                        bom_html += '<table><tr>' + ''.join('<th>' + html.escape(field) + '</th>' for field in fields) + '</tr>'
+                        for row in rows_b:
+                            bom_html += '<tr>' + ''.join('<td>' + html.escape(str(row.get(field) or "NOT_EVALUATED")) + '</td>' for field in fields) + '</tr>'
+                        bom_html += '</table></div>'
+                except (OSError, ValueError, csv.Error):
+                    bom_html = '<p>BOM data: NOT_EVALUATED (unreadable or malformed).</p>'
+
+        body = body.replace('<h2>Frozen input and evidence snapshot</h2>', sizing_html + bom_html + '<div class="card">' + table + '</div>' + '<div class="card">' + lifecycle_html + '</div>' + '<h2>Frozen input and evidence snapshot</h2>')
         try:
             folder.mkdir(parents=True, exist_ok=False)
             (folder / "snapshot.json").write_text(text, encoding="utf-8")

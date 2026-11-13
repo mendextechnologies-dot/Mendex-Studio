@@ -1,0 +1,74 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "project_context",
+        "specification_fields",
+        "validation_record"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "fields": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 30,
+      "title": "Fields",
+      "type": "array"
+    },
+    "check_id": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Check Id"
+    },
+    "evidence_kind": {
+      "anyOf": [
+        {
+          "enum": [
+            "MANUAL",
+            "CALCULATED",
+            "SIMULATED",
+            "MEASURED"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Kind"
+    }
+  },
+  "required": [
+    "id",
+    "description",
+    "kind"
+  ],
+  "title": "Criterion",
+  "type": "object"
+}

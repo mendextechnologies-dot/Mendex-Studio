@@ -1,0 +1,181 @@
+{
+  "isolated_root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-gap-probes-73ahhif2",
+  "first_design_id": "25d4e167-0397-4627-90e9-aa2fd7a3989d",
+  "second_design_id": "fcab493d-1f3d-403c-a2f0-26b146575eff",
+  "overwritten_registered_artifacts": [
+    {
+      "path": "products\\f4066288-57f0-485a-8d5a-aafe7b9c901a\\revisions\\8cf57c7c-35d0-49c6-8b34-8d9bfb913511\\generated_artifacts\\rev_1\\buck_circuit.net",
+      "original_sha256": "c84049f8f6fd9119955dd0e757d1b572a6dd02d97870ae9188a1a89204c2faaa",
+      "current_sha256": "977d45f2b8f16dcc56313c7ec072e8c1085d117ea8f50daf969eef2d6831a4ff"
+    },
+    {
+      "path": "products\\f4066288-57f0-485a-8d5a-aafe7b9c901a\\revisions\\8cf57c7c-35d0-49c6-8b34-8d9bfb913511\\generated_artifacts\\rev_1\\buck_schematic.asc",
+      "original_sha256": "84a785f56f92d7fe0d244e55f661b9912b60ddd9c423edd49f1bcfd9a08d7f7e",
+      "current_sha256": "3fe9040d5354fa4c10acbd83b5a74f49e86b6ca1c7655b6351e08cafa050e211"
+    },
+    {
+      "path": "products\\f4066288-57f0-485a-8d5a-aafe7b9c901a\\revisions\\8cf57c7c-35d0-49c6-8b34-8d9bfb913511\\generated_artifacts\\rev_1\\kicad\\disposable_design.kicad_sch",
+      "original_sha256": "03e0071ed5ca62d021c27cb864cfb064d67d3043fc5fa1f693c24f9dca44ddb6",
+      "current_sha256": "427aa3116d12f81409faf1d32ce83d36e2c2b788f49a7af13a723415b4bc1335"
+    },
+    {
+      "path": "products\\f4066288-57f0-485a-8d5a-aafe7b9c901a\\revisions\\8cf57c7c-35d0-49c6-8b34-8d9bfb913511\\generated_artifacts\\rev_1\\kicad\\disposable_design.kicad_pcb",
+      "original_sha256": "8a5765dd990c032351513d9103e7fb5c249503a3d5902879ec4a687f23d5cfc7",
+      "current_sha256": "0e4d323311a29384bdb08931309f27821596f2c814cbf097f2ed8d07a1e2fa94"
+    }
+  ],
+  "missing_design_inputs_mcp": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"status\": \"SYNTHESIZED\",\n  \"assumptions\": [\n    \"Input voltage range not specified; design evaluated at nominal input only.\"\n  ],\n  \"design_id\": \"a87e24ac-9a8f-4eeb-9747-5244b6da3133\",\n  \"title\": \"Missing operating inputs\",\n  \"category\": \"dc_dc_converter\",\n  \"workspace_id\": \"f4066288-57f0-485a-8d5a-aafe7b9c901a\",\n  \"revision_id\": \"73b7be39-3de2-4e1b-a1fa-466587aa4631\",\n  \"active_revision\": \"Rev 1\",\n  \"topology\": \"Buck\",\n  \"candidate_count\": 2,\n  \"candidates\": [\n    {\n      \"id\": \"696cd5df-b919-45b2-b61f-7b0ff7c653de\",\n      \"name\": \"Non-Isolated Synchronous Buck\",\n      \"topology\": \"Synchronous Buck Converter\",\n      \"score\": 0.95\n    },\n    {\n      \"id\": \"6ded2513-0b47-42a3-a316-11e997d369c9\",\n      \"name\": \"Isolated Single-Switch Flyback\",\n      \"topology\": \"Discontinuous Flyback Converter\",\n      \"score\": 0.8\n    }\n  ],\n  \"generated_artifacts\": [],\n  \"electrical_summary\": {\n    \"vin_nom\": 24.0,\n    \"vout\": 5.0,\n    \"iout\": 4.0,\n    \"pout_w\": 20.0,\n    \"switching_frequency_hz\": 100000.0\n  }\n}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  "spec_after_generation": {
+    "project_id": "f4066288-57f0-485a-8d5a-aafe7b9c901a",
+    "code": "GAP-PROBE",
+    "active_revision_id": "8cf57c7c-35d0-49c6-8b34-8d9bfb913511",
+    "specification": {
+      "schema_version": "1.0",
+      "vin_min_v": null,
+      "vin_nom_v": null,
+      "vin_max_v": null,
+      "vout_v": null,
+      "iout_a": null,
+      "switching_frequency_hz": null,
+      "ambient_temperature_k": null,
+      "topology": "",
+      "isolation_requirement": "",
+      "standards_profile": "UNASSIGNED",
+      "source": "",
+      "assumptions": []
+    },
+    "input_hash": "b731250c1e22ead6dbe605667584249bbde288d99605868e770cc576bda7d074"
+  },
+  "insulation_pollution_degree_probes": {
+    "1": {
+      "calculation_id": "60aaf992-e3d1-44cc-8d53-e73bb2f9712a",
+      "formula_id": "EQ-IEC-CREEPAGE-01",
+      "name": "IEC 60664-1 & IEC 61010-1 High-Voltage Insulation Coordination",
+      "inputs": {
+        "working_voltage_rms": 1000.0,
+        "peak_voltage_v": 1000.0,
+        "pollution_degree": 1.0,
+        "slot_width_mm": 5.0
+      },
+      "input_units": {
+        "working_voltage_rms": "V RMS",
+        "peak_voltage_v": "V pk",
+        "pollution_degree": "dimensionless",
+        "slot_width_mm": "mm"
+      },
+      "outputs": {
+        "required_clearance_mm": 5.0,
+        "required_creepage_mm": 20.0,
+        "effective_slot_width_mm": 5.0,
+        "compliant": 1.0
+      },
+      "output_units": {
+        "required_clearance_mm": "mm",
+        "required_creepage_mm": "mm",
+        "effective_slot_width_mm": "mm",
+        "compliant": "boolean"
+      },
+      "origin": "calculated",
+      "verified": true,
+      "executed_at": "2026-11-13T07:43:23.128264+00:00",
+      "provenance": "src/mendex_core/intelligence/calculations.py::calculate_iec_creepage_clearance",
+      "reference_source": "IEC 60664-1:2020 & IEC 61010-1:2010 Section 6.7 Table 4 & Table F.4",
+      "notes": [
+        "Insulation: Reinforced, Pollution Degree: 1, Material Group: IIIa",
+        "Air clearance required: 5.00 mm; Surface creepage required: 20.00 mm",
+        "Milling slot: 5.00 mm -> Compliance: PASS"
+      ]
+    },
+    "2": {
+      "calculation_id": "06024400-ddee-464b-ba36-1c8787c8591b",
+      "formula_id": "EQ-IEC-CREEPAGE-01",
+      "name": "IEC 60664-1 & IEC 61010-1 High-Voltage Insulation Coordination",
+      "inputs": {
+        "working_voltage_rms": 1000.0,
+        "peak_voltage_v": 1000.0,
+        "pollution_degree": 2.0,
+        "slot_width_mm": 5.0
+      },
+      "input_units": {
+        "working_voltage_rms": "V RMS",
+        "peak_voltage_v": "V pk",
+        "pollution_degree": "dimensionless",
+        "slot_width_mm": "mm"
+      },
+      "outputs": {
+        "required_clearance_mm": 5.0,
+        "required_creepage_mm": 20.0,
+        "effective_slot_width_mm": 5.0,
+        "compliant": 1.0
+      },
+      "output_units": {
+        "required_clearance_mm": "mm",
+        "required_creepage_mm": "mm",
+        "effective_slot_width_mm": "mm",
+        "compliant": "boolean"
+      },
+      "origin": "calculated",
+      "verified": true,
+      "executed_at": "2026-11-13T07:43:23.128358+00:00",
+      "provenance": "src/mendex_core/intelligence/calculations.py::calculate_iec_creepage_clearance",
+      "reference_source": "IEC 60664-1:2020 & IEC 61010-1:2010 Section 6.7 Table 4 & Table F.4",
+      "notes": [
+        "Insulation: Reinforced, Pollution Degree: 2, Material Group: IIIa",
+        "Air clearance required: 5.00 mm; Surface creepage required: 20.00 mm",
+        "Milling slot: 5.00 mm -> Compliance: PASS"
+      ]
+    },
+    "3": {
+      "calculation_id": "38384315-5930-4a41-9e9e-f3dff1c192e4",
+      "formula_id": "EQ-IEC-CREEPAGE-01",
+      "name": "IEC 60664-1 & IEC 61010-1 High-Voltage Insulation Coordination",
+      "inputs": {
+        "working_voltage_rms": 1000.0,
+        "peak_voltage_v": 1000.0,
+        "pollution_degree": 3.0,
+        "slot_width_mm": 5.0
+      },
+      "input_units": {
+        "working_voltage_rms": "V RMS",
+        "peak_voltage_v": "V pk",
+        "pollution_degree": "dimensionless",
+        "slot_width_mm": "mm"
+      },
+      "outputs": {
+        "required_clearance_mm": 5.0,
+        "required_creepage_mm": 20.0,
+        "effective_slot_width_mm": 5.0,
+        "compliant": 1.0
+      },
+      "output_units": {
+        "required_clearance_mm": "mm",
+        "required_creepage_mm": "mm",
+        "effective_slot_width_mm": "mm",
+        "compliant": "boolean"
+      },
+      "origin": "calculated",
+      "verified": true,
+      "executed_at": "2026-11-13T07:43:23.128408+00:00",
+      "provenance": "src/mendex_core/intelligence/calculations.py::calculate_iec_creepage_clearance",
+      "reference_source": "IEC 60664-1:2020 & IEC 61010-1:2010 Section 6.7 Table 4 & Table F.4",
+      "notes": [
+        "Insulation: Reinforced, Pollution Degree: 3, Material Group: IIIa",
+        "Air clearance required: 5.00 mm; Surface creepage required: 20.00 mm",
+        "Milling slot: 5.00 mm -> Compliance: PASS"
+      ]
+    }
+  },
+  "ltspice_executable": "C:\\Program Files\\ADI\\LTspice\\LTspice.exe"
+}

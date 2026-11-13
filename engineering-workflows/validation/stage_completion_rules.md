@@ -1,0 +1,4 @@
+# Stage completion rules
+
+Use the definition assigned to the revision. Enrollment and file discovery do not complete stages. Start/reopen creates an attempt; record source/reason/hash and retain previous attempts. Inspect current evidence, explicit acceptance criteria, effective dependencies and review blockers before complete. A stage with required authorized review cannot be completed by an agent or an unauthenticated name. NOT_APPLICABLE requires an optional stage and recorded justification, and still respects review gates. Default prototype-testing exemption is review-gated. AWAITING_REVIEW/BLOCKED is an honest outcome. New specification or damaged evidence can invalidate effective completion and dependents; keep the historical completion event intact. Never force all stages completed for a demo.
+

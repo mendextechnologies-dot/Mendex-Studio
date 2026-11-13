@@ -40,3 +40,18 @@ class MaterialRecord(BaseModel):
     freq_min_hz: float = 25000.0
     freq_max_hz: float = 500000.0
     provenance: str = "Manufacturer Material Datasheet"
+
+
+class MagneticCoreRecord(BaseModel):
+    """Verified magnetic core geometry with effective area, path length, and volume."""
+    id: str = Field(default_factory=lambda: str(uuid4()))
+    name: str  # e.g. Planar E22/6/16, PQ26/20, RM8, EFD20, ETD29
+    geometry_type: str = "Planar E"
+    ae_mm2: float
+    le_mm: float
+    ve_mm3: float
+    amin_mm2: float = 0.0
+    aw_mm2: float = 0.0
+    manufacturer: str = "Ferroxcube / TDK"
+    provenance: str = "Verified Magnetic Core Datasheet"
+

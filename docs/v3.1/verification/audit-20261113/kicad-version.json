@@ -1,0 +1,9 @@
+{
+  "command": [
+    "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+    "--version"
+  ],
+  "exit_code": 0,
+  "stdout": "10.0.7\n",
+  "stderr": ""
+}

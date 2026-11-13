@@ -33,7 +33,9 @@ class MendexMCPServer:
         self.tools_schema = self._build_tools_schema()
 
     def _build_tools_schema(self) -> List[Dict[str, Any]]:
-        return [
+        from ..engineering_lifecycle.api import tool_schemas
+        from ..engineering_records.api import tool_schemas as record_schemas
+        schemas = tool_schemas() + record_schemas() + [
             # 0. Engineering Projects (Primary v2.1 Concept)
             {
                 "name": "list_projects",
@@ -410,6 +412,12 @@ class MendexMCPServer:
             },
         ]
 
+        from ..design.requests import DesignGenerationRequest
+        for tool in schemas:
+            if tool["name"] == "generate_design":
+                tool["inputSchema"] = DesignGenerationRequest.model_json_schema()
+        return schemas
+
     def handle_request(self, message: Any) -> Optional[Dict[str, Any]]:
         """Processes a single JSON-RPC 2.0 message and returns response dict (or None for notifications)."""
         if not isinstance(message, dict):
@@ -508,6 +516,11 @@ class MendexMCPServer:
                 }
             except Exception as exc:
                 logger.exception("Error executing MCP tool '%s'", tool_name)
+                from ..engineering_lifecycle.api import OPERATIONS
+                from ..engineering_records.api import OPERATIONS as RECORD_OPERATIONS
+                error_text = f"Error executing tool '{tool_name}': {str(exc)}"
+                if tool_name in OPERATIONS or tool_name in RECORD_OPERATIONS:
+                    error_text = json.dumps({"schema_version": "3.1.0", "error": getattr(exc, "code", "INVALID_INPUT"), "message": str(exc)})
                 return {
                     "jsonrpc": "2.0",
                     "id": msg_id,
@@ -515,7 +528,7 @@ class MendexMCPServer:
                         "content": [
                             {
                                 "type": "text",
-                                "text": f"Error executing tool '{tool_name}': {str(exc)}",
+                                "text": error_text,
                             }
                         ],
                         "isError": True,
@@ -534,6 +547,14 @@ class MendexMCPServer:
 
     def _dispatch_tool(self, name: str, args: Dict[str, Any]) -> Any:
         ctrl = self.controller
+
+        from ..engineering_lifecycle.api import OPERATIONS, dispatch
+        if name in OPERATIONS:
+            return dispatch(ctrl.service, name, args)
+
+        from ..engineering_records.api import OPERATIONS as RECORD_OPERATIONS, dispatch as record_dispatch
+        if name in RECORD_OPERATIONS:
+            return record_dispatch(ctrl.service, name, args)
 
         if name == "list_workspaces":
             return ctrl.list_workspaces()
@@ -581,21 +602,8 @@ class MendexMCPServer:
         elif name == "save_specification":
             return ctrl.save_specification(args["revision_id"], args["spec_data"])
         elif name == "generate_design":
-            return ctrl.generate_design(
-                workspace_id=args.get("project_id") or args.get("workspace_id"),
-                title=args["title"],
-                category=args.get("category", "dc_dc_converter"),
-                vin_nom=float(args.get("vin_nom", 24.0)),
-                vin_min=float(args["vin_min"]) if "vin_min" in args and args["vin_min"] is not None else None,
-                vin_max=float(args["vin_max"]) if "vin_max" in args and args["vin_max"] is not None else None,
-                vout=float(args.get("vout", 5.0)),
-                iout=float(args.get("iout", 4.0)),
-                fsw_hz=float(args.get("fsw_hz", 100000.0)),
-                ripple_v=float(args.get("ripple_v", 0.05)),
-                isolation_v=float(args["isolation_v"]) if "isolation_v" in args and args["isolation_v"] is not None else None,
-                generate_artifacts=bool(args.get("generate_artifacts", True)),
-                product_id=args.get("product_id"),
-            )
+            from ..design.requests import DesignGenerationRequest
+            return ctrl.generate_design(**DesignGenerationRequest.model_validate(args).model_dump())
         elif name == "get_design":
             return ctrl.get_design(args["design_id"])
         elif name == "list_design_candidates":

@@ -49,13 +49,15 @@ class EngineeringDesignService:
         return self.designs_dir / f"{design_id}.json"
 
     def _load_all(self) -> None:
+        fresh = {}
         for f in self.designs_dir.glob("*.json"):
             try:
                 data = json.loads(f.read_text(encoding="utf-8"))
                 d = EngineeringDesign.model_validate(data)
-                self._designs_cache[d.id] = d
+                fresh[d.id] = d
             except Exception:
                 pass
+        self._designs_cache = fresh
 
     def _persist(self, design: EngineeringDesign) -> None:
         self._designs_cache[design.id] = design
@@ -105,18 +107,31 @@ class EngineeringDesignService:
         return design
 
     def get_design(self, design_id: str) -> Optional[EngineeringDesign]:
-        if design_id in self._designs_cache:
-            return self._designs_cache[design_id]
         f = self._get_design_file(design_id)
-        if f.exists():
+        if not f.exists():
+            self._designs_cache.pop(design_id, None)
+            return None
+        if design_id in self._designs_cache:
             try:
                 data = json.loads(f.read_text(encoding="utf-8"))
-                d = EngineeringDesign.model_validate(data)
-                self._designs_cache[d.id] = d
-                return d
+                fresh = EngineeringDesign.model_validate(data)
+                cached = self._designs_cache[design_id]
+                cached.revisions = fresh.revisions
+                cached.status = fresh.status
+                cached.title = fresh.title
+                cached.category = fresh.category
+                cached.description = fresh.description
+                cached.active_revision_index = fresh.active_revision_index
+                return cached
             except Exception:
-                pass
-        return None
+                return self._designs_cache[design_id]
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+            d = EngineeringDesign.model_validate(data)
+            self._designs_cache[d.id] = d
+            return d
+        except Exception:
+            return None
 
     def list_designs(self, workspace_id: Optional[str] = None) -> List[EngineeringDesign]:
         self._load_all()
@@ -135,8 +150,10 @@ class EngineeringDesignService:
             raise ValueError("No active design revision available to generate artifacts.")
 
         ir = active_rev.ir
-        artifacts_dir = workspace_dir / "generated_artifacts" / f"rev_{active_rev.revision_index}"
-        artifacts_dir.mkdir(parents=True, exist_ok=True)
+        # Every generation is a new snapshot, including regeneration of the same
+        # design revision. Previously registered native bytes must never be replaced.
+        artifacts_dir = self.data_root / ".mendex" / "ga" / uuid4().hex
+        artifacts_dir.mkdir(parents=True, exist_ok=False)
 
         new_artifacts: List[DesignArtifact] = []
 
@@ -263,7 +280,7 @@ class EngineeringDesignService:
                 )
                 new_artifacts.append(art_step)
 
-        active_rev.artifacts = new_artifacts
+        active_rev.artifacts.extend(new_artifacts)
         self._persist(design)
         return new_artifacts
 
@@ -274,14 +291,19 @@ class EngineeringDesignService:
             raise KeyError(f"Design '{design_id}' or active revision not found.")
 
         active_rev = design.get_active_revision()
-        artifacts_dir = workspace_dir / "generated_artifacts" / f"rev_{active_rev.revision_index}"
-        net_path = artifacts_dir / f"{active_rev.ir.topology.lower()}_circuit.net"
-
-        # Ensure artifacts generated if not already on disk
-        if not net_path.exists():
+        netlists = [a for a in active_rev.artifacts if Path(a.path).suffix.lower() == ".net"]
+        if not netlists:
             self.generate_native_artifacts(design_id, workspace_dir)
-
-        return self.ltspice_runner.run_simulation(net_path, requirements=design.requirements)
+            netlists = [a for a in design.get_active_revision().artifacts if Path(a.path).suffix.lower() == ".net"]
+        artifact = netlists[-1]
+        original = (self.data_root / artifact.path).resolve()
+        if not original.is_relative_to(self.data_root.resolve()) or CrossToolSyncService.compute_sha256(original) != artifact.sha256:
+            raise ValueError("Registered netlist is outside the data root or has changed")
+        run = self.data_root / ".mendex" / "dr" / uuid4().hex
+        run.mkdir(parents=True, exist_ok=False)
+        net_path = run / "input.net"
+        net_path.write_bytes(original.read_bytes())
+        return self.ltspice_runner.run_simulation(net_path, requirements=design.requirements, working_dir=run)
 
     def run_femm_simulation(self, design_id: str, workspace_dir: Path) -> FEMMSimulationResult:
         """Executes real FEMM 4.2 magnetic FEA and verifies flux density."""
@@ -293,7 +315,7 @@ class EngineeringDesignService:
         if not active_rev.ir.magnetic_geometry:
             raise ValueError("Design does not have magnetic geometry defined.")
 
-        artifacts_dir = workspace_dir / "generated_artifacts" / f"rev_{active_rev.revision_index}"
+        artifacts_dir = self.data_root / ".mendex" / "dr" / uuid4().hex
         return self.femm_runner.run_magnetic_analysis(active_rev.ir.magnetic_geometry, artifacts_dir)
 
     def propose_iteration(self, design_id: str, sim_result: LTspiceSimulationResult) -> Optional[DesignIterationProposal]:

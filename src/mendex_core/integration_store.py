@@ -1,7 +1,8 @@
 """Additive schema v4 and v5. Uses the same database and short-lived connections."""
+from .sqlite_schema import execute_schema
 
 def migrate(db):
-    db.executescript('''
+    execute_schema(db, '''
         BEGIN IMMEDIATE;
         CREATE TABLE IF NOT EXISTS integration_settings (tool_id TEXT PRIMARY KEY, payload TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS integration_health (tool_id TEXT PRIMARY KEY, payload TEXT NOT NULL);

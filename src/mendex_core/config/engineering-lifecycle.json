@@ -1,0 +1,230 @@
+{
+  "schema_version": "3.1.0",
+  "id": "engineering",
+  "version": "3.1.0",
+  "name": "Generic Engineering Lifecycle",
+  "stages": [
+    {
+      "id": "project_initialization",
+      "name": "Project Initialization",
+      "purpose": "Establish the existing project and revision context.",
+      "dependencies": [],
+      "optional": false,
+      "review_required": false,
+      "required_inputs": [
+        "Existing project and draft revision"
+      ],
+      "expected_outputs": [
+        "Lifecycle enrollment and initialization history"
+      ],
+      "criteria": [
+        {
+          "id": "project_identity",
+          "description": "Existing project metadata and revision identity are recorded.",
+          "kind": "project_context"
+        }
+      ]
+    },
+    {
+      "id": "requirements",
+      "name": "Requirements and Specifications",
+      "purpose": "Record sourced requirements and explicit acceptance criteria.",
+      "dependencies": [
+        "project_initialization"
+      ],
+      "optional": false,
+      "review_required": true,
+      "required_inputs": [
+        "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+      ],
+      "expected_outputs": [
+        "Traceable stage outputs and acceptance/review findings"
+      ],
+      "criteria": [
+        {
+          "id": "requirements_acceptance",
+          "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+          "kind": "validation_record",
+          "check_id": "requirements_acceptance",
+          "evidence_kind": "MANUAL"
+        }
+      ]
+    },
+    {
+      "id": "feasibility",
+      "name": "Feasibility and Architecture",
+      "purpose": "Record alternatives, assumptions, risks and architecture decisions.",
+      "dependencies": [
+        "requirements"
+      ],
+      "optional": false,
+      "review_required": true,
+      "required_inputs": [
+        "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+      ],
+      "expected_outputs": [
+        "Traceable stage outputs and acceptance/review findings"
+      ],
+      "criteria": [
+        {
+          "id": "feasibility_acceptance",
+          "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+          "kind": "validation_record",
+          "check_id": "feasibility_acceptance",
+          "evidence_kind": "MANUAL"
+        }
+      ]
+    },
+    {
+      "id": "calculations",
+      "name": "Engineering Calculations",
+      "purpose": "Retain traceable supported calculations and evaluate stated criteria.",
+      "dependencies": [
+        "requirements"
+      ],
+      "optional": false,
+      "review_required": true,
+      "required_inputs": [
+        "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+      ],
+      "expected_outputs": [
+        "Traceable stage outputs and acceptance/review findings"
+      ],
+      "criteria": [
+        {
+          "id": "calculations_acceptance",
+          "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+          "kind": "validation_record",
+          "check_id": "calculations_acceptance",
+          "evidence_kind": "CALCULATED"
+        }
+      ]
+    },
+    {
+      "id": "design_development",
+      "name": "Engineering Design Development",
+      "purpose": "Register native artifacts with their revision and validation evidence.",
+      "dependencies": [
+        "requirements"
+      ],
+      "optional": false,
+      "review_required": true,
+      "required_inputs": [
+        "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+      ],
+      "expected_outputs": [
+        "Traceable stage outputs and acceptance/review findings"
+      ],
+      "criteria": [
+        {
+          "id": "design_development_acceptance",
+          "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+          "kind": "validation_record",
+          "check_id": "design_development_acceptance",
+          "evidence_kind": "CALCULATED"
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "name": "Simulation and Analysis",
+      "purpose": "Inspect real solver evidence and applicable acceptance checks.",
+      "dependencies": [
+        "design_development"
+      ],
+      "optional": false,
+      "review_required": true,
+      "required_inputs": [
+        "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+      ],
+      "expected_outputs": [
+        "Traceable stage outputs and acceptance/review findings"
+      ],
+      "criteria": [
+        {
+          "id": "simulation_acceptance",
+          "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+          "kind": "validation_record",
+          "check_id": "simulation_acceptance",
+          "evidence_kind": "SIMULATED"
+        }
+      ]
+    },
+    {
+      "id": "verification",
+      "name": "Engineering Verification",
+      "purpose": "Evaluate requirement coverage and record unresolved findings.",
+      "dependencies": [
+        "calculations",
+        "simulation"
+      ],
+      "optional": false,
+      "review_required": true,
+      "required_inputs": [
+        "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+      ],
+      "expected_outputs": [
+        "Traceable stage outputs and acceptance/review findings"
+      ],
+      "criteria": [
+        {
+          "id": "verification_acceptance",
+          "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+          "kind": "validation_record",
+          "check_id": "verification_acceptance",
+          "evidence_kind": "MANUAL"
+        }
+      ]
+    },
+    {
+      "id": "prototype_testing",
+      "name": "Prototype and Physical Testing",
+      "purpose": "Record actual prototype test plans and measured laboratory evidence.",
+      "dependencies": [
+        "verification"
+      ],
+      "optional": true,
+      "review_required": true,
+      "required_inputs": [
+        "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+      ],
+      "expected_outputs": [
+        "Traceable stage outputs and acceptance/review findings"
+      ],
+      "criteria": [
+        {
+          "id": "prototype_testing_acceptance",
+          "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+          "kind": "validation_record",
+          "check_id": "prototype_testing_acceptance",
+          "evidence_kind": "MEASURED"
+        }
+      ]
+    },
+    {
+      "id": "documentation",
+      "name": "Final Engineering Documentation",
+      "purpose": "Compile traceable reports, revision history and review status.",
+      "dependencies": [
+        "verification"
+      ],
+      "optional": false,
+      "review_required": true,
+      "required_inputs": [
+        "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+      ],
+      "expected_outputs": [
+        "Traceable stage outputs and acceptance/review findings"
+      ],
+      "criteria": [
+        {
+          "id": "documentation_acceptance",
+          "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+          "kind": "validation_record",
+          "check_id": "documentation_acceptance",
+          "evidence_kind": "MANUAL"
+        }
+      ]
+    }
+  ]
+}

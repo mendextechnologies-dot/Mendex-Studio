@@ -1,0 +1,91 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "3.1.0",
+      "default": "3.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "revision_id": {
+      "format": "uuid",
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "stage_id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Stage Id",
+      "type": "string"
+    },
+    "action": {
+      "enum": [
+        "start",
+        "block",
+        "fail",
+        "request_review",
+        "complete",
+        "not_applicable",
+        "reopen",
+        "attach_evidence"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "expected_sequence": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Sequence"
+    },
+    "evidence_record_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Record Id"
+    }
+  },
+  "required": [
+    "revision_id",
+    "stage_id",
+    "action",
+    "source",
+    "reason",
+    "idempotency_key"
+  ],
+  "title": "StageCommand",
+  "type": "object"
+}

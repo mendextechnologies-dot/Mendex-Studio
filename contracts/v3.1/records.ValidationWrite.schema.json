@@ -1,0 +1,184 @@
+{
+  "$defs": {
+    "ManualCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Check Id",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ValidationStatus",
+          "default": "not_evaluated"
+        },
+        "rule_version": {
+          "default": "manual-1.0",
+          "minLength": 1,
+          "title": "Rule Version",
+          "type": "string"
+        },
+        "reviewer": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Reviewer",
+          "type": "string"
+        },
+        "notes": {
+          "minLength": 1,
+          "title": "Notes",
+          "type": "string"
+        },
+        "evidence_kind": {
+          "default": "MANUAL",
+          "pattern": "^(MANUAL|CALCULATED|SIMULATED|MEASURED)$",
+          "title": "Evidence Kind",
+          "type": "string"
+        },
+        "measured_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Measured Value"
+        },
+        "unit": {
+          "default": "",
+          "title": "Unit",
+          "type": "string"
+        },
+        "minimum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum"
+        },
+        "maximum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum"
+        }
+      },
+      "required": [
+        "check_id",
+        "reviewer",
+        "notes"
+      ],
+      "title": "ManualCheck",
+      "type": "object"
+    },
+    "ValidationStatus": {
+      "enum": [
+        "pass",
+        "fail",
+        "not_evaluated",
+        "physical_verification_required"
+      ],
+      "title": "ValidationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "3.1.0",
+      "default": "3.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "revision_id": {
+      "format": "uuid",
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "stage_id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Stage Id",
+      "type": "string"
+    },
+    "expected_input_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Expected Input Hash",
+      "type": "string"
+    },
+    "check": {
+      "$ref": "#/$defs/ManualCheck"
+    },
+    "evidence_path": {
+      "anyOf": [
+        {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Path"
+    },
+    "expected_evidence_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Evidence Sha256"
+    }
+  },
+  "required": [
+    "source",
+    "reason",
+    "idempotency_key",
+    "revision_id",
+    "stage_id",
+    "expected_input_hash",
+    "check"
+  ],
+  "title": "ValidationWrite",
+  "type": "object"
+}

@@ -1,0 +1,34 @@
+Error executing MCP tool 'apply_lifecycle_stage'
+Traceback (most recent call last):
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 497, in handle_request
+    res_data = self._dispatch_tool(tool_name, tool_args)
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 547, in _dispatch_tool
+    return dispatch(ctrl.service, name, args)
+  File "C:\Mendex studio\src\mendex_core\engineering_lifecycle\api.py", line 37, in dispatch
+    return lifecycle.apply(request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\engineering_lifecycle\service.py", line 254, in apply
+    raise StudioError("CONFLICT", "Start/reopen the stage before this operation")
+mendex_core.service.StudioError: Start/reopen the stage before this operation
+Error executing MCP tool 'apply_lifecycle_stage'
+Traceback (most recent call last):
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 497, in handle_request
+    res_data = self._dispatch_tool(tool_name, tool_args)
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 547, in _dispatch_tool
+    return dispatch(ctrl.service, name, args)
+  File "C:\Mendex studio\src\mendex_core\engineering_lifecycle\api.py", line 23, in dispatch
+    request = model.model_validate(arguments)
+  File "C:\Mendex studio\.venv\Lib\site-packages\pydantic\main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for StageCommand
+action
+  Input should be 'start', 'block', 'fail', 'request_review', 'complete', 'not_applicable', 'reopen' or 'attach_evidence' [type=literal_error, input_value='approve', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.14/v/literal_error

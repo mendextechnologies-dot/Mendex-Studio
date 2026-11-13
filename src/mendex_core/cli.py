@@ -147,8 +147,8 @@ def main(argv=None):
     d_gen.add_argument("--vin-max", type=float, default=None, help="Maximum input voltage (V)")
     d_gen.add_argument("--vout", type=float, default=5.0, help="Regulated output voltage (V)")
     d_gen.add_argument("--iout", type=float, default=4.0, help="Rated output current (A)")
-    d_gen.add_argument("--fsw", type=float, default=100000.0, help="Switching frequency (Hz)")
-    d_gen.add_argument("--ripple", type=float, default=0.05, help="Output voltage ripple (V)")
+    d_gen.add_argument("--fsw", type=float, required=True, help="Switching frequency (Hz)")
+    d_gen.add_argument("--ripple", type=float, required=True, help="Output voltage ripple (V)")
     d_gen.add_argument("--isolation", type=float, default=None, help="Isolation test voltage (V)")
     d_gen.add_argument("--product-id", default=None, help="Optional linked product ID")
 
@@ -228,6 +228,28 @@ def main(argv=None):
     t_open.add_argument("tool_id", help="Tool identifier")
     t_open.add_argument("file_path", help="Target design file path")
 
+    lifecycle = commands.add_parser("lifecycle", help="Agent-independent lifecycle records and guarded stage transitions")
+    lifecycle_sub = lifecycle.add_subparsers(dest="subaction", required=True)
+    lifecycle_sub.add_parser("definitions")
+    definition = lifecycle_sub.add_parser("definition")
+    definition.add_argument("--id", default="engineering", dest="definition_id")
+    definition.add_argument("--version", default="3.1.0")
+    for operation in ("register", "enroll", "apply"):
+        command = lifecycle_sub.add_parser(operation)
+        command.add_argument("request", type=Path, help="UTF-8 JSON request file matching the versioned contract")
+    show = lifecycle_sub.add_parser("show")
+    show.add_argument("revision_id")
+    history = lifecycle_sub.add_parser("history")
+    history.add_argument("revision_id")
+    history.add_argument("--stage", dest="stage_id")
+    history.add_argument("--after", type=int, default=0, dest="after_sequence")
+    history.add_argument("--limit", type=int, default=100)
+
+    from .engineering_records.api import OPERATIONS as RECORD_OPERATIONS
+    engineering = commands.add_parser("engineering", help="Shared typed engineering record operations")
+    engineering.add_argument("operation", choices=sorted(RECORD_OPERATIONS))
+    engineering.add_argument("request", nargs="?", type=Path, help="UTF-8 JSON request file; omit only for empty-input discovery")
+
     args = parser.parse_args(argv)
     try:
         return execute(args)
@@ -246,7 +268,29 @@ def _parse_json_or_file(text: str) -> Dict[str, Any]:
 def execute(args):
     root = getattr(args, "doctor_root", None) or args.root or default_data_root()
     service = StudioService(root)
-    controller = MendexEngineeringController(root)
+    if args.command == "engineering":
+        from .engineering_records.api import dispatch
+        arguments = json.loads(args.request.read_text(encoding="utf-8-sig")) if args.request else {}
+        print(json.dumps(dispatch(service, args.operation, arguments), indent=2, allow_nan=False))
+        return 0
+    if args.command == "lifecycle":
+        from .engineering_lifecycle.api import dispatch
+        names = {"definitions": "list_lifecycle_definitions", "definition": "get_lifecycle_definition",
+                 "register": "register_lifecycle_definition", "enroll": "enroll_lifecycle",
+                 "show": "get_project_lifecycle", "history": "get_lifecycle_history", "apply": "apply_lifecycle_stage"}
+        if args.subaction in ("register", "enroll", "apply"):
+            arguments = json.loads(args.request.read_text(encoding="utf-8-sig"))
+        elif args.subaction == "definition":
+            arguments = {"definition_id": args.definition_id, "version": args.version}
+        elif args.subaction == "show":
+            arguments = {"revision_id": args.revision_id}
+        elif args.subaction == "history":
+            arguments = {key: getattr(args, key) for key in ("revision_id", "stage_id", "after_sequence", "limit")}
+        else:
+            arguments = {}
+        print(json.dumps(dispatch(service, names[args.subaction], arguments), indent=2, allow_nan=False))
+        return 0
+    controller = MendexEngineeringController(service=service)
 
     # -------------------------------------------------------------------------
     # V2.1 STRUCTURED COMMANDS EXECUTION

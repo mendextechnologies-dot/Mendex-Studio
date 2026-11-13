@@ -131,6 +131,7 @@ class EngineeringDesign(BaseModel):
     status: DesignStatus = DesignStatus.DRAFT
     active_revision_id: Optional[str] = None
     product_id: Optional[str] = None  # Optional product association
+    core_revision_id: Optional[str] = None
     requirements: List[Requirement] = Field(default_factory=list)
     candidates: List[DesignCandidate] = Field(default_factory=list)
     revisions: List[DesignRevision] = Field(default_factory=list)

@@ -343,6 +343,8 @@ class IntegrationService:
         if self._closed:
             raise StudioError("CONFLICT", "This job session is closed; reopen Studio before submitting")
         request = JobRequest.model_validate(request)
+        request = request.model_copy(deep=True)
+        request.parameters["worker_pid"] = os.getpid()
         if len(request.model_dump_json()) > 128 * 1024:
             raise StudioError("INVALID_INPUT", "Job request exceeds 128 KiB")
         adapter = self.adapters.get(request.tool_id)
@@ -478,6 +480,20 @@ class IntegrationService:
                 result = self._failure(record, JobStatus.CANCELLED, ErrorCode.CANCELLED, "Queued job cancelled before adapter execution")
                 self._finalize(record, result, self.job_path(job_id), self._staged_hashes[str(record.request.job_id)])
         return self.job(job_id)
+
+    def cancellation_supported(self, job_id):
+        """Only this session's live cooperative cancellation can be promised."""
+        record = self.job(job_id)
+        with self._lock:
+            return record.status not in TERMINAL and str(record.request.job_id) in self._events
+
+    def cancel_owned(self, job_id):
+        record = self.job(job_id)
+        if record.status in TERMINAL:
+            return record
+        if not self.cancellation_supported(job_id):
+            raise StudioError("UNSUPPORTED", "This session does not own a cancellable job; no solver termination was requested")
+        return self.cancel(job_id)
 
     def retry(self, job_id):
         record = self.job(job_id)

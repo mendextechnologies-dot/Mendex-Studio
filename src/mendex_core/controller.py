@@ -30,6 +30,7 @@ from .design.ltspice_runner import LTspiceRunner
 from .design.femm_runner import FEMMRunner
 from .launch import open_native, launch_tool
 from .paths import default_data_root
+from .adapters.version import windows_file_version
 
 
 def _sha256(path: Path) -> str:
@@ -39,10 +40,12 @@ def _sha256(path: Path) -> str:
 class MendexEngineeringController:
     """Central unified controller providing deterministic engineering operations."""
 
-    def __init__(self, data_root: Optional[Union[str, Path]] = None):
-        self.root = Path(data_root or default_data_root()).resolve()
-        self.service = StudioService(self.root)
-        self.design_service = EngineeringDesignService(self.root)
+    def __init__(self, data_root: Optional[Union[str, Path]] = None, *, service=None):
+        self.root = service.root if service is not None else Path(data_root or default_data_root()).resolve()
+        if service is not None and data_root is not None and Path(data_root).resolve() != service.root:
+            raise ValueError("Controller and service data roots must match")
+        self.service = service if service is not None else StudioService(self.root)
+        self.design_service = self.service.design
     # -------------------------------------------------------------------------
     # PATH CONFINEMENT & WORKSPACE RESOLUTION (F01)
     # -------------------------------------------------------------------------
@@ -106,6 +109,8 @@ class MendexEngineeringController:
         """Validates that an artifact relative path is strictly confined within ws_dir."""
         if not relative_path or not isinstance(relative_path, str):
             raise ValueError("Artifact relative path must be a non-empty string.")
+        if Path(relative_path).is_absolute() or Path(relative_path).drive:
+            raise ValueError("Artifact path must be relative")
         clean_rel = relative_path.strip().lstrip("/\\")
         parts = Path(clean_rel).parts
         if ".." in parts:
@@ -117,6 +122,61 @@ class MendexEngineeringController:
         except ValueError:
             raise ValueError(f"Access denied: Artifact path '{relative_path}' escapes workspace directory '{ws_dir}'.")
         return target
+
+    def _workspace_revision(self, workspace_id):
+        if workspace_id == "default":
+            return None
+        for lookup in (self.service.get_product, self.service.get_revision):
+            try:
+                value = lookup(UUID(str(workspace_id)))
+            except StudioError as exc:
+                if exc.code != "NOT_FOUND":
+                    raise
+                continue
+            if isinstance(value, Product):
+                return self.service.get_revision(value.active_revision_id)
+            return value
+        return None
+
+    def _stage_simulation_input(self, workspace_id, name, suffixes, job_id):
+        workspace = self._resolve_workspace_dir(workspace_id, must_exist=True)
+        revision = self._workspace_revision(workspace_id)
+        if revision and revision.lifecycle_status != "draft":
+            raise StudioError("IMMUTABLE", "Run simulations on a draft revision; historical inputs remain frozen")
+        candidates = [a for a in self.list_design_artifacts(workspace_id) if a["extension"] in suffixes]
+        if name:
+            if Path(name).is_absolute() or Path(name).drive or ".." in Path(name).parts:
+                raise StudioError("INVALID_INPUT", "Simulation input must be a confined relative path")
+            candidates = [a for a in candidates if a["relative_path"] == name or a["name"] == name]
+        if not candidates:
+            raise FileNotFoundError("No matching native simulation input")
+        if len(candidates) != 1:
+            raise StudioError("CONFLICT", "Multiple native inputs; specify the registered relative path")
+        selected = candidates[0]
+        if selected["integrity"] is False:
+            raise StudioError("CONFLICT", "Registered simulation input has changed")
+        source = Path(selected["absolute_path"])
+        if source.stat().st_size > 10 * 1024 * 1024:
+            raise StudioError("INVALID_INPUT", "Native input exceeds 10 MiB")
+        data = source.read_bytes()
+        if source.suffix.lower() in (".net", ".cir"):
+            import re
+            if re.search(r"(?im)^\s*\.(?:include|inc|lib)\s", data.decode("utf-8", errors="replace")):
+                raise StudioError("UNSUPPORTED", "External SPICE model bundles require explicit confined staging")
+        directory = self.service.integrations.job_path(job_id)
+        directory.mkdir(parents=True, exist_ok=False)
+        staged = directory / ("input" + source.suffix.lower())
+        staged.write_bytes(data)
+        context = {"source_path": str(source.relative_to(self.root)), "source_sha256": _sha256(staged)}
+        if revision:
+            context.update(project_id=str(revision.product_id), revision_id=str(revision.revision_id),
+                           input_hash=specification_hash(revision.specification))
+        return staged, directory, context
+
+    def _finalize_native_job(self, record, directory):
+        (directory / "request.json").write_text(record.request.model_dump_json(indent=2), encoding="utf-8")
+        self.service.integrations._finalize(record, record.result, directory,
+            {p: _sha256(directory / p) for p in record.request.input_paths})
 
 
     # -------------------------------------------------------------------------
@@ -184,6 +244,9 @@ class MendexEngineeringController:
             "waveforms": len(list(ws_dir.glob("**/*.raw"))) if ws_dir.exists() else 0,
             "cad_solids": len(list(ws_dir.glob("**/*.step"))) if ws_dir.exists() else 0,
         }
+        registered = self.list_design_artifacts(workspace_id)
+        file_counts.update(schematics=sum(a["extension"] == ".kicad_sch" for a in registered),
+                           pcb_layouts=sum(a["extension"] == ".kicad_pcb" for a in registered))
 
         return {
             "workspace_id": workspace_id,
@@ -234,6 +297,7 @@ class MendexEngineeringController:
         category: str = "dc_dc_converter",
         owner: str = "Engineer",
         description: str = "",
+        auto_enroll: bool = False,
     ) -> Dict[str, Any]:
         """Creates a new authoritative engineering project with baseline specifications and storage."""
         if not name or not name.strip():
@@ -259,6 +323,12 @@ class MendexEngineeringController:
         except Exception:
             pass
 
+        if auto_enroll:
+            try:
+                self.enroll_project(pid)
+            except Exception:
+                pass
+
         return {
             "status": "CREATED",
             "project_id": pid,
@@ -268,6 +338,32 @@ class MendexEngineeringController:
             "category": created["category"],
             "revision_id": created["revision_id"],
             "revision_label": created["revision_label"],
+        }
+
+    def enroll_project(
+        self,
+        project_id: str,
+        definition_id: str = "engineering",
+        version: str = "3.1.0",
+    ) -> Dict[str, Any]:
+        """Enrolls a project's active revision into the specified engineering lifecycle."""
+        proj = self.get_project(project_id)
+        from mendex_core.engineering_lifecycle.models import Enrollment
+        self.service.engineering_lifecycle.enroll(
+            Enrollment(
+                revision_id=UUID(proj["active_revision_id"]),
+                definition_id=definition_id,
+                version=version,
+                source=f"controller:{proj.get('owner', 'Engineer')}",
+                reason=f"Enrollment of {proj['code']} into {definition_id} lifecycle",
+                idempotency_key=f"enroll-{proj['active_revision_id']}",
+            )
+        )
+        return {
+            "status": "ENROLLED",
+            "project_id": proj["project_id"],
+            "revision_id": proj["active_revision_id"],
+            "definition_id": definition_id,
         }
 
     def get_project(self, project_id: str) -> Dict[str, Any]:
@@ -400,11 +496,11 @@ class MendexEngineeringController:
         workspace_id: str,
         title: str,
         category: str = "dc_dc_converter",
-        vin_nom: float = 24.0,
-        vout: float = 5.0,
-        iout: float = 4.0,
-        fsw_hz: float = 100000.0,
-        ripple_v: float = 0.05,
+        vin_nom: float | None = None,
+        vout: float | None = None,
+        iout: float | None = None,
+        fsw_hz: float | None = None,
+        ripple_v: float | None = None,
         vin_min: Optional[float] = None,
         vin_max: Optional[float] = None,
         isolation_v: Optional[float] = None,
@@ -412,6 +508,21 @@ class MendexEngineeringController:
         product_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Synthesizes candidate topologies and generates native engineering artifacts."""
+        from .design.requests import DesignGenerationRequest
+        DesignGenerationRequest.model_validate(dict(
+            workspace_id=workspace_id, title=title, category=category, vin_nom=vin_nom,
+            vout=vout, iout=iout, fsw_hz=fsw_hz, ripple_v=ripple_v, vin_min=vin_min,
+            vin_max=vin_max, isolation_v=isolation_v, generate_artifacts=generate_artifacts,
+            product_id=product_id))
+        workspace_revision = self._workspace_revision(workspace_id)
+        if workspace_revision and workspace_revision.lifecycle_status != "draft":
+            raise StudioError("IMMUTABLE", "Design generation requires a draft revision")
+        if workspace_revision:
+            product_id = product_id or str(workspace_revision.product_id)
+            if vin_min is None:
+                vin_min = workspace_revision.specification.vin_min_v
+            if vin_max is None:
+                vin_max = workspace_revision.specification.vin_max_v
         safe_title = clean_title(title, fallback="Power Converter Design")
         # No invented input range: without explicit limits the design covers nominal input only.
         v_min = vin_min if vin_min is not None else vin_nom
@@ -422,13 +533,33 @@ class MendexEngineeringController:
 
         reqs = [
             Requirement(parameter="vin_nom", target_value=vin_nom, unit="V", min_value=v_min, max_value=v_max),
-            Requirement(parameter="vout", target_value=vout, unit="V", tolerance_pct=5.0),
+            Requirement(parameter="vout", target_value=vout, unit="V"),
             Requirement(parameter="iout", target_value=iout, unit="A"),
             Requirement(parameter="fsw", target_value=fsw_hz, unit="Hz"),
             Requirement(parameter="ripple", target_value=ripple_v, max_value=ripple_v, unit="V"),
         ]
         if isolation_v and isolation_v > 0:
             reqs.append(Requirement(parameter="isolation_v", target_value=isolation_v, unit="V"))
+
+        # Resolve linked project context before creating files or design records.
+        # Design generation never rewrites a supplied specification implicitly.
+        authoritative_rev_id = None
+        if product_id:
+            product = self.service.get_product(UUID(product_id))
+            revision = self.service.get_revision(product.active_revision_id)
+            if str(workspace_id) not in (str(product.product_id), str(revision.revision_id)):
+                raise StudioError("INVALID_INPUT", "Design workspace and product must identify the same draft")
+            if revision.lifecycle_status != "draft":
+                raise StudioError("IMMUTABLE", "Design generation requires a draft revision")
+            updates = dict(vin_min_v=v_min, vin_nom_v=vin_nom, vin_max_v=v_max,
+                           vout_v=vout, iout_a=iout, switching_frequency_hz=fsw_hz)
+            for field, value in updates.items():
+                existing = getattr(revision.specification, field)
+                if existing is not None and existing != value:
+                    raise StudioError("CONFLICT", f"Design {field} differs from the saved specification; revise specifications explicitly")
+            spec_obj = Specification.model_validate({**revision.specification.model_dump(), **updates})
+            self.service.update_specification(revision.revision_id, spec_obj)
+            authoritative_rev_id = str(revision.revision_id)
 
         design = self.design_service.create_design_from_requirements(
             workspace_id=workspace_id,
@@ -437,6 +568,8 @@ class MendexEngineeringController:
             requirements=reqs,
             product_id=product_id,
         )
+        design.core_revision_id = authoritative_rev_id
+        self.design_service._persist(design)
 
         artifacts_meta: List[Dict[str, Any]] = []
         if generate_artifacts:
@@ -446,27 +579,6 @@ class MendexEngineeringController:
             artifacts_meta = [a.model_dump(mode="json") for a in artifacts]
 
         active_rev = design.get_active_revision()
-
-        # Synchronize with SQLite product revision if product_id is associated
-        authoritative_rev_id = None
-        if product_id:
-            try:
-                prod_uuid = UUID(str(product_id))
-                prod_revs = self.service.list_revisions(prod_uuid)
-                if prod_revs:
-                    authoritative_rev_id = str(prod_revs[0].revision_id)
-                    spec_obj = Specification(
-                        vin_min_v=v_min,
-                        vin_nom_v=vin_nom,
-                        vin_max_v=v_max,
-                        vout_v=vout,
-                        iout_a=iout,
-                        switching_frequency_hz=fsw_hz,
-                        ripple_voltage_v=ripple_v,
-                    )
-                    self.service.update_specification(prod_revs[0].revision_id, spec_obj)
-            except Exception:
-                pass
 
         return {
             "status": "SYNTHESIZED",
@@ -607,7 +719,8 @@ class MendexEngineeringController:
             name = "steinmetz_core_loss"
         else:
             from integrations.calculations.transformer_design import calculate_flyback_transformer_parameters
-            res = calculate_flyback_transformer_parameters(**values)
+            explicit = {"v_diode_drop_v": float(params["v_diode_drop_v"])} if "v_diode_drop_v" in params else {}
+            res = calculate_flyback_transformer_parameters(**values, **explicit)
             name = "flyback_transformer_design"
 
         return {
@@ -637,22 +750,8 @@ class MendexEngineeringController:
             ws_uuid = uuid4()
 
         if tool_lower == "ltspice":
-            netlist_path = None
-            if netlist_name:
-                cand = ws_dir / netlist_name
-                if cand.exists():
-                    netlist_path = cand
-                cand2 = ws_dir / "generated_artifacts" / "rev_1" / netlist_name
-                if cand2.exists():
-                    netlist_path = cand2
-            if netlist_name and not netlist_path:
-                raise FileNotFoundError(f"Netlist '{netlist_name}' not found in workspace '{workspace_id}'.")
-            if not netlist_path:
-                netlist_path = self._single_input(ws_dir, ("*.net", "*.cir"), "SPICE netlist", workspace_id)
-
-            if not netlist_path or not netlist_path.exists():
-                raise FileNotFoundError(f"No SPICE netlist (.net / .cir) found in workspace '{workspace_id}'.")
-
+            netlist_path, ws_dir, context = self._stage_simulation_input(workspace_id, netlist_name, (".net", ".cir"), job_id)
+            start_t = datetime.now(timezone.utc)
             result = self.design_service.ltspice_runner.run_simulation(
                 netlist_path=netlist_path,
                 stop_time_s=duration_s,
@@ -674,7 +773,6 @@ class MendexEngineeringController:
                 except ValueError:
                     pass
 
-            start_t = datetime.now(timezone.utc)
             req = JobRequest(
                 job_id=job_id,
                 workspace_id=ws_uuid,
@@ -682,6 +780,7 @@ class MendexEngineeringController:
                 operation="transient",
                 input_paths=[str(netlist_path.relative_to(ws_dir)).replace("\\", "/")],
                 parameters={
+                    **context,
                     "requested_duration_s": duration_s,
                     "duration_applied": False,  # the netlist's own .tran directive governs the run
                     "netlist_sha256": _sha256(netlist_path),
@@ -702,6 +801,7 @@ class MendexEngineeringController:
                 result=JobResult(
                     job_id=job_id,
                     tool_id="ltspice",
+                    tool_version=windows_file_version(self.design_service.ltspice_runner.exe_path) if self.design_service.ltspice_runner.exe_path else None,
                     status=JobStatus.SUCCEEDED if result.success else JobStatus.FAILED,
                     started_at=start_t,
                     ended_at=datetime.now(timezone.utc),
@@ -716,6 +816,11 @@ class MendexEngineeringController:
             except Exception:
                 pass
             self.service.integrations._store_job(rec)
+            (ws_dir / "metrics.json").write_text(json.dumps(result.steady_state_metrics), encoding="utf-8")
+            rec.result.outputs.append("metrics.json")
+            if lf and lf.is_file():
+                self.service.integrations._log(ws_dir, lf.read_text(encoding="utf-8", errors="replace")[:4000])
+            self._finalize_native_job(rec, ws_dir)
 
             return {
                 "status": "COMPLETED" if result.success else "FAILED",
@@ -738,18 +843,19 @@ class MendexEngineeringController:
             }
 
         elif tool_lower == "femm":
-            lua_files = [self._single_input(ws_dir, ("*.lua",), "FEMM Lua script", workspace_id)]
+            lua, ws_dir, context = self._stage_simulation_input(workspace_id, netlist_name, (".lua",), job_id)
+            lua_files = [lua]
+            femm_start_t = datetime.now(timezone.utc)
             femm_res = FEMMRunner.run_script(lua_files[0], working_dir=ws_dir)
 
             # Persist authoritative job record (F04)
-            femm_start_t = datetime.now(timezone.utc)
             req = JobRequest(
                 job_id=job_id,
                 workspace_id=ws_uuid,
                 tool_id="femm",
                 operation="script",
                 input_paths=[str(lua_files[0].relative_to(ws_dir)).replace("\\", "/")],
-                parameters={"worker_pid": os.getpid()},
+                parameters={**context, "worker_pid": os.getpid()},
                 provenance="Mendex Core v2.1 FEMM 4.2 Script Simulation",
             )
             rec = JobRecord(
@@ -774,6 +880,8 @@ class MendexEngineeringController:
             except Exception:
                 pass
             self.service.integrations._store_job(rec)
+            rec.result.evidence_paths = [p.name for p in ws_dir.iterdir() if p.is_file()]
+            self._finalize_native_job(rec, ws_dir)
 
             return {
                 "status": "COMPLETED" if femm_res.success else "FAILED",
@@ -824,7 +932,17 @@ class MendexEngineeringController:
             return []
 
         results = []
-        for p in ws_dir.rglob("*"):
+        registered = {}
+        for design in self.design_service.list_designs():
+            if design.workspace_id != workspace_id and design.product_id != workspace_id:
+                continue
+            for revision in design.revisions:
+                for artifact in revision.artifacts:
+                    candidate = (self.root / artifact.path).resolve()
+                    if candidate.is_relative_to(self.root):
+                        registered[candidate] = artifact
+        candidates = set(ws_dir.rglob("*")) | set(registered)
+        for p in sorted(candidates):
             if p.is_file():
                 ext = p.suffix.lower()
                 category = "other"
@@ -845,19 +963,28 @@ class MendexEngineeringController:
                 sha256 = hashlib.sha256(p.read_bytes()).hexdigest()
                 results.append({
                     "name": p.name,
-                    "relative_path": str(p.relative_to(ws_dir)),
+                    "relative_path": str(p.relative_to(ws_dir)) if p.is_relative_to(ws_dir) else str(p.relative_to(self.root)),
                     "absolute_path": str(p),
                     "size_bytes": p.stat().st_size,
                     "category": category,
                     "extension": ext,
                     "sha256": sha256,
+                    "registered_sha256": registered[p].sha256 if p in registered else None,
+                    "integrity": sha256 == registered[p].sha256 if p in registered else None,
                 })
         return results
 
     def open_artifact(self, workspace_id: str, relative_path: str) -> Dict[str, Any]:
         """Launches external CAD/viewer for an artifact in the workspace."""
         ws_dir = self._resolve_workspace_dir(workspace_id, must_exist=True)
-        target = self._resolve_artifact_path(ws_dir, relative_path)
+        registered = next((a for a in self.list_design_artifacts(workspace_id)
+                           if a["relative_path"] == relative_path and a["registered_sha256"]), None)
+        if registered:
+            if not registered["integrity"]:
+                raise StudioError("CONFLICT", "Registered artifact has changed")
+            target = Path(registered["absolute_path"])
+        else:
+            target = self._resolve_artifact_path(ws_dir, relative_path)
         if not target.exists():
             raise FileNotFoundError(f"Artifact '{relative_path}' not found in workspace '{workspace_id}'.")
         pid = open_native(target)

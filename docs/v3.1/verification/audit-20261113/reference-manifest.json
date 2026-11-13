@@ -1,0 +1,102 @@
+[
+  {
+    "path": ".mendex\\studio.sqlite3",
+    "bytes": 294912,
+    "sha256": "b236d9b534fbf0bd22c90b794d9619438758eb2252e0456122c7c94ea5e1dadd"
+  },
+  {
+    "path": "engineering_designs\\b27879fd-d36d-489a-929d-dd6d5e15f39a.json",
+    "bytes": 41241,
+    "sha256": "38aadc16e4a73e10a3854c9ee08354e3ae98165dbcb0476ab3e05e7f0bb06fca"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\0c5c26e6-218b-47c6-a1fe-89b01802df01\\rc_reference.log",
+    "bytes": 644,
+    "sha256": "2b8722781525e604401b06a08804138d40c6beb5c5bcaca4bb92f65d118b6afe"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\0c5c26e6-218b-47c6-a1fe-89b01802df01\\rc_reference.net",
+    "bytes": 124,
+    "sha256": "ba58af6b33a01e394ecea65b4c74989e7741f0e4af167d2667a8e76e28ea8cf2"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\0c5c26e6-218b-47c6-a1fe-89b01802df01\\rc_reference.op.raw",
+    "bytes": 632,
+    "sha256": "c973af2cf86b668e487797ff6b2c1b04d3215eb3647b007f70b732e2287974e3"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\0c5c26e6-218b-47c6-a1fe-89b01802df01\\rc_reference.raw",
+    "bytes": 78798,
+    "sha256": "4986347e87d9828c8ac18167589877547d11a86ca0e83c8b23857c2efb749123"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\0c5c26e6-218b-47c6-a1fe-89b01802df01\\revision.json",
+    "bytes": 617,
+    "sha256": "dad0f2ba40a327d906506aca835ba4e72c3688f303bd12d8f4b933c55a3f8a6b"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\f55a695d-c11f-426d-9759-424e9f864d1c\\revision.json",
+    "bytes": 609,
+    "sha256": "5323a0f0047a7f48d8d65c2eb3eaae478823e897515725b5f639fbdefbed6112"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\f55a695d-c11f-426d-9759-424e9f864d1c\\generated_artifacts\\rev_1\\buck_circuit.net",
+    "bytes": 768,
+    "sha256": "334c106d8f7254b3e2d947bc2f6f1624f6a5794f001c46825ea7c03dae7093c9"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\f55a695d-c11f-426d-9759-424e9f864d1c\\generated_artifacts\\rev_1\\buck_schematic.asc",
+    "bytes": 748,
+    "sha256": "84a785f56f92d7fe0d244e55f661b9912b60ddd9c423edd49f1bcfd9a08d7f7e"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\f55a695d-c11f-426d-9759-424e9f864d1c\\generated_artifacts\\rev_1\\kicad\\generic_reference_buck.kicad_pcb",
+    "bytes": 5008,
+    "sha256": "e0dc199dbc329b65648f4b919b1f57a06cca2ed6ac84adce0685e660c5fa35ef"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\f55a695d-c11f-426d-9759-424e9f864d1c\\generated_artifacts\\rev_1\\kicad\\generic_reference_buck.kicad_pro",
+    "bytes": 402,
+    "sha256": "4c4dad0b93a8976e8436ad23f7a2e30463681881e6d8d9fc206920036807c570"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\f55a695d-c11f-426d-9759-424e9f864d1c\\generated_artifacts\\rev_1\\kicad\\generic_reference_buck.kicad_sch",
+    "bytes": 2697,
+    "sha256": "e5357b21ee75f4f70c13365cd3a8135f3850dde7af8afaa5c4a3c66cbd04b9de"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\0c5c26e6-218b-47c6-a1fe-89b01802df01\\reports\\82ace838-975b-4615-a692-b31ab8343f10\\report.html",
+    "bytes": 17031,
+    "sha256": "b0add27bea7c019026dbc75a8a86b58f1621f66a564a382bac4678c4852c0ef8"
+  },
+  {
+    "path": "products\\d599b3b8-cc3c-4010-a3ff-f2fb7a5ff722\\revisions\\0c5c26e6-218b-47c6-a1fe-89b01802df01\\reports\\82ace838-975b-4615-a692-b31ab8343f10\\snapshot.json",
+    "bytes": 5331,
+    "sha256": "b6224c5ff3c8dee804293daf4d9d0a28b96680a902645f9c0932a1934f26f620"
+  },
+  {
+    "path": ".mendex\\engineering-records\\artifacts\\1937d0ee-95a1-4ff5-a6df-cf03e64691a1\\artifact.net",
+    "bytes": 124,
+    "sha256": "ba58af6b33a01e394ecea65b4c74989e7741f0e4af167d2667a8e76e28ea8cf2"
+  },
+  {
+    "path": ".mendex\\backups\\lifecycle-03263053-1368-425d-b1d2-8efd706c6b99\\manifest.json",
+    "bytes": 449,
+    "sha256": "6041743318c581a807bd9e37c6ce7c182801217ea6c24fc5de2738c261278da7"
+  },
+  {
+    "path": ".mendex\\backups\\lifecycle-03263053-1368-425d-b1d2-8efd706c6b99\\studio.sqlite3",
+    "bytes": 196608,
+    "sha256": "a10ccb2b6cf2cde30b42f941aee317287c034ef5018ddfc41da3cf8f1033c3f9"
+  },
+  {
+    "path": ".mendex\\backups\\lifecycle-f6be8ddc-523b-4aef-98b8-bef5e839c045\\manifest.json",
+    "bytes": 449,
+    "sha256": "e6eac923c209ee48a7504a95a83b0af5a0c82a69411fc64d011d635e8f795ec0"
+  },
+  {
+    "path": ".mendex\\backups\\lifecycle-f6be8ddc-523b-4aef-98b8-bef5e839c045\\studio.sqlite3",
+    "bytes": 249856,
+    "sha256": "c2629de6ce5d1e3071939b70275de40490dc4bd59b49d378411b464cfd586c14"
+  }
+]

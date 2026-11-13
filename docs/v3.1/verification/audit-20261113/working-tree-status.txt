@@ -1,0 +1,72 @@
+ M .gitignore
+ M contracts/README.md
+ M docs/architecture.md
+ M docs/implementation-checklist.md
+ D engineering_designs/39f88be3-e164-4471-aeef-314c5f4e5b53.json
+ D engineering_designs/aa7816c1-9b09-45d0-adb6-fc27cf9f6d48.json
+ D engineering_designs/e0902416-fff1-4294-8c48-e708a5f764d3.json
+ M scripts/remove_existing_products.py
+ M src/mendex_core/cli.py
+ M src/mendex_core/components/models.py
+ M src/mendex_core/components/service.py
+ M src/mendex_core/controller.py
+ M src/mendex_core/design/service.py
+ M src/mendex_core/integration_service.py
+ M src/mendex_core/intelligence/calculations.py
+ M src/mendex_core/mcp/server.py
+ M src/mendex_core/service.py
+ M src/mendex_ui/component_library_panel.py
+ M src/mendex_ui/engineering_guide_dialog.py
+ M src/mendex_ui/product_lifecycle_panel.py
+ M src/mendex_ui/window.py
+ D temp_femm_test/etd34_core.ans
+ D temp_femm_test/etd34_core.fem
+ M tests/core/test_v21_controller.py
+ M tests/ui/test_engineering_guide_dialog.py
+ D workspaces/4f7a9de8-de2a-44fd-8036-04e33e4b969c/generated_artifacts/rev_1/buck_circuit.log
+ D workspaces/4f7a9de8-de2a-44fd-8036-04e33e4b969c/generated_artifacts/rev_1/buck_circuit.net
+ D workspaces/4f7a9de8-de2a-44fd-8036-04e33e4b969c/generated_artifacts/rev_1/buck_circuit.op.raw
+ D workspaces/4f7a9de8-de2a-44fd-8036-04e33e4b969c/generated_artifacts/rev_1/buck_circuit.raw
+ D workspaces/4f7a9de8-de2a-44fd-8036-04e33e4b969c/generated_artifacts/rev_1/buck_schematic.asc
+ D workspaces/4f7a9de8-de2a-44fd-8036-04e33e4b969c/generated_artifacts/rev_1/kicad/hvlc_buck_converter.kicad_pcb
+ D workspaces/4f7a9de8-de2a-44fd-8036-04e33e4b969c/generated_artifacts/rev_1/kicad/hvlc_buck_converter.kicad_pro
+ D workspaces/4f7a9de8-de2a-44fd-8036-04e33e4b969c/generated_artifacts/rev_1/kicad/hvlc_buck_converter.kicad_sch
+ D workspaces/default/generated_artifacts/rev_1/buck_circuit.net
+ D workspaces/default/generated_artifacts/rev_1/buck_schematic.asc
+?? command_center_full_verified.png
+?? contracts/v3.1/
+?? desktop/
+?? docs/KC100_Product_Engineering_Handbook.docx
+?? docs/KC100_Product_Engineering_Handbook.md
+?? docs/KC100_Product_Engineering_Handbook.pdf
+?? docs/Mendex_Studio_Team_Engineering_Playbook.docx
+?? docs/Mendex_Studio_Team_Engineering_Playbook.pdf
+?? docs/team-engineering-playbook.md
+?? docs/v3.1/
+?? docs/v3/
+?? dump.html
+?? engineering-workflows/
+?? engineering_tools_verified.png
+?? rendered_command_center.png
+?? scripts/export_engineering_record_contracts.py
+?? scripts/export_lifecycle_contracts.py
+?? src/mendex_core/config/engineering-lifecycle.json
+?? src/mendex_core/desktop/
+?? src/mendex_core/engineering_lifecycle/
+?? src/mendex_core/engineering_records/
+?? src/mendex_ui/dowell_visualizer_dialog.py
+?? src/mendex_ui/magnetic_comparator_dialog.py
+?? src/mendex_ui/product_wizard_dialog.py
+?? src/mendex_ui/revision_diff_dialog.py
+?? src/mendex_ui/tradeoff_comparator_dialog.py
+?? start_desktop.bat
+?? tests/core/test_archive_reset.py
+?? tests/core/test_engineering_lifecycle.py
+?? tests/core/test_engineering_prompt_library.py
+?? tests/core/test_engineering_records.py
+?? tests/integration/test_engineering_lifecycle_interfaces.py
+?? tests/integration/test_engineering_record_interfaces.py
+?? tests/ui/test_safety_and_derating_ui.py
+?? tests/ui/test_step3_wizards.py
+?? tests/ui/test_step4_magnetics.py
+?? tests/ui/test_step5_reporting.py

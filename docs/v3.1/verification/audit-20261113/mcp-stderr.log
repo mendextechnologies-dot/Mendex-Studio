@@ -1,0 +1,25 @@
+Error executing MCP tool 'save_project_specification'
+Traceback (most recent call last):
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 497, in handle_request
+    res_data = self._dispatch_tool(tool_name, tool_args)
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 577, in _dispatch_tool
+    return ctrl.save_project_specification(args["project_id"], args["spec_data"])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\controller.py", line 363, in save_project_specification
+    res = self.save_specification(rev_id, spec_data)
+  File "C:\Mendex studio\src\mendex_core\controller.py", line 421, in save_specification
+    spec = Specification.model_validate(spec_data)
+  File "C:\Mendex studio\.venv\Lib\site-packages\pydantic\main.py", line 792, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Specification
+ripple_voltage_v
+  Extra inputs are not permitted [type=extra_forbidden, input_value=0.1, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.14/v/extra_forbidden

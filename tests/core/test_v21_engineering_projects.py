@@ -71,6 +71,7 @@ def test_project_lifecycle_and_single_record(proj_controller, tmp_path):
         vout=1000.0,
         iout=0.1,
         fsw_hz=120000.0,
+        ripple_v=0.05,
     )
     assert design["status"] == "SYNTHESIZED"
     artifacts = proj_controller.list_design_artifacts(pid)

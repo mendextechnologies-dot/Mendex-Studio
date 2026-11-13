@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "part_number": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Part Number",
+      "type": "string"
+    },
+    "r_ds_on_ohm": {
+      "minimum": 0,
+      "title": "R Ds On Ohm",
+      "type": "number"
+    },
+    "i_rms_a": {
+      "minimum": 0,
+      "title": "I Rms A",
+      "type": "number"
+    },
+    "duty_cycle": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Duty Cycle",
+      "type": "number"
+    },
+    "e_on_j": {
+      "minimum": 0,
+      "title": "E On J",
+      "type": "number"
+    },
+    "e_off_j": {
+      "minimum": 0,
+      "title": "E Off J",
+      "type": "number"
+    },
+    "frequency_hz": {
+      "exclusiveMinimum": 0,
+      "title": "Frequency Hz",
+      "type": "number"
+    }
+  },
+  "required": [
+    "part_number",
+    "r_ds_on_ohm",
+    "i_rms_a",
+    "duty_cycle",
+    "e_on_j",
+    "e_off_j",
+    "frequency_hz"
+  ],
+  "title": "LossInputs",
+  "type": "object"
+}

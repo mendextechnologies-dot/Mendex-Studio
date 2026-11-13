@@ -1,0 +1,48 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "frequency_hz": {
+      "exclusiveMinimum": 0,
+      "title": "Frequency Hz",
+      "type": "number"
+    },
+    "layers": {
+      "maximum": 1000,
+      "minimum": 1,
+      "title": "Layers",
+      "type": "integer"
+    },
+    "conductor_diameter_mm": {
+      "exclusiveMinimum": 0,
+      "title": "Conductor Diameter Mm",
+      "type": "number"
+    },
+    "layer_porosity_factor": {
+      "maximum": 1,
+      "minimum": 0.1,
+      "title": "Layer Porosity Factor",
+      "type": "number"
+    },
+    "r_dc_ohm": {
+      "minimum": 0,
+      "title": "R Dc Ohm",
+      "type": "number"
+    },
+    "temperature_c": {
+      "maximum": 250,
+      "minimum": -40,
+      "title": "Temperature C",
+      "type": "number"
+    }
+  },
+  "required": [
+    "frequency_hz",
+    "layers",
+    "conductor_diameter_mm",
+    "layer_porosity_factor",
+    "r_dc_ohm",
+    "temperature_c"
+  ],
+  "title": "DowellInputs",
+  "type": "object"
+}

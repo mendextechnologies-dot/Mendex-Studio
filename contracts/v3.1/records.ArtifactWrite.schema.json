@@ -1,0 +1,112 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "3.1.0",
+      "default": "3.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "revision_id": {
+      "format": "uuid",
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "stage_id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Stage Id",
+      "type": "string"
+    },
+    "expected_input_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Expected Input Hash",
+      "type": "string"
+    },
+    "relative_path": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Relative Path",
+      "type": "string"
+    },
+    "expected_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Expected Sha256",
+      "type": "string"
+    },
+    "classification": {
+      "enum": [
+        "circuit",
+        "netlist",
+        "waveform",
+        "magnetic_model",
+        "schematic",
+        "pcb",
+        "calculation",
+        "documentation",
+        "report",
+        "other"
+      ],
+      "title": "Classification",
+      "type": "string"
+    },
+    "design_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Design Id"
+    },
+    "design_revision_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Design Revision Id"
+    }
+  },
+  "required": [
+    "source",
+    "reason",
+    "idempotency_key",
+    "revision_id",
+    "stage_id",
+    "expected_input_hash",
+    "relative_path",
+    "expected_sha256",
+    "classification"
+  ],
+  "title": "ArtifactWrite",
+  "type": "object"
+}

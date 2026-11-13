@@ -1,0 +1,95 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "discipline": {
+      "enum": [
+        "electrical",
+        "mechanical",
+        "environmental",
+        "safety",
+        "performance",
+        "standards"
+      ],
+      "title": "Discipline",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "acceptance_criterion": {
+      "default": "",
+      "maxLength": 4000,
+      "title": "Acceptance Criterion",
+      "type": "string"
+    },
+    "mandatory": {
+      "default": true,
+      "title": "Mandatory",
+      "type": "boolean"
+    },
+    "specification_field": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Specification Field"
+    },
+    "target_value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target Value"
+    },
+    "unit": {
+      "default": "",
+      "maxLength": 100,
+      "title": "Unit",
+      "type": "string"
+    },
+    "assumptions": {
+      "items": {
+        "maxLength": 4000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Assumptions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "discipline",
+    "description",
+    "source"
+  ],
+  "title": "Requirement",
+  "type": "object"
+}

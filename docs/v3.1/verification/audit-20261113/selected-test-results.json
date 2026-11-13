@@ -1,0 +1,674 @@
+[
+  {
+    "classname": "tests.adapters.test_femm_adapter",
+    "name": "test_femm_adapter_descriptor_and_capabilities",
+    "time": "0.008",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_femm_adapter",
+    "name": "test_femm_adapter_execution_lifecycle",
+    "time": "0.685",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_generators",
+    "name": "test_femm_generator_output",
+    "time": "0.001",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_kicad_adapter",
+    "name": "test_kicad_adapter_descriptor",
+    "time": "0.011",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_kicad_adapter",
+    "name": "test_kicad_adapter_version_execution",
+    "time": "3.125",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_kicad_adapter",
+    "name": "test_kicad_drc_json_parser",
+    "time": "0.042",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_ltspice_adapter",
+    "name": "test_ltspice_smoke_run",
+    "time": "0.855",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_ltspice_adapter",
+    "name": "test_ltspice_missing_input_error",
+    "time": "0.059",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_ltspice_adapter",
+    "name": "test_ltspice_parser_with_sample_log",
+    "time": "0.039",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_ltspice_adapter",
+    "name": "test_ltspice_numpy_waveforms_parser",
+    "time": "0.014",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.adapters.test_v15_connector",
+    "name": "test_v15_ltspice_connector_lifecycle",
+    "time": "0.851",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_archive_reset",
+    "name": "test_switch_failure_restores_originals",
+    "time": "0.963",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_integrity_guards",
+    "name": "test_ltspice_log_parser_flags_floating_nodes_as_errors",
+    "time": "0.026",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_integrity_guards",
+    "name": "test_femm_result_defaults_are_not_evaluated",
+    "time": "0.001",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_default_configuration_and_no_startup_migration",
+    "time": "0.206",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_enrollment_backup_restore_and_identity",
+    "time": "1.297",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_completion_idempotency_and_new_attempt",
+    "time": "0.284",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_completion_needs_intact_current_evidence_and_invalidates_dependents",
+    "time": "0.376",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_wrong_kind_failed_and_stale_validation_cannot_clear_stage",
+    "time": "0.437",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_review_request_never_grants_approval",
+    "time": "0.328",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_optional_exemption_and_mandatory_rejection",
+    "time": "0.260",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_mandatory_and_review_required_exemptions_rejected",
+    "time": "0.247",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_missing_evidence_and_old_specification_rejected_on_attachment",
+    "time": "0.327",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_block_fail_restart_and_specification_fields",
+    "time": "0.341",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_backup_failure_does_not_change_schema_or_evidence",
+    "time": "0.219",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_revision_isolation_and_frozen_history",
+    "time": "0.354",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_optimistic_conflict_and_history_pagination",
+    "time": "0.267",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_parallel_retries_commit_one_event",
+    "time": "0.267",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_append_only_definition_versions_and_future_schema",
+    "time": "0.296",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_migration_failure_rolls_back_and_old_data_survives",
+    "time": "0.240",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_configuration_rejects_code_and_invalid_graphs[<lambda>0]",
+    "time": "0.002",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_configuration_rejects_code_and_invalid_graphs[<lambda>1]",
+    "time": "0.002",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_configuration_rejects_code_and_invalid_graphs[<lambda>2]",
+    "time": "0.001",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_configuration_rejects_code_and_invalid_graphs[<lambda>3]",
+    "time": "0.001",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_configuration_rejects_code_and_invalid_graphs[<lambda>4]",
+    "time": "0.001",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_lifecycle",
+    "name": "test_configuration_rejects_code_and_invalid_graphs[<lambda>5]",
+    "time": "0.001",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_prompt_library",
+    "name": "test_generic_stage_prompts_match_real_lifecycle_and_tool_contracts",
+    "time": "0.198",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_discovery_does_not_install_records_schema",
+    "time": "0.627",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_metadata_concurrency_and_idempotency",
+    "time": "0.302",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_structured_requirements_history_and_coverage",
+    "time": "0.323",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_calculation_matches_existing_core_and_preserves_provenance[dowell]",
+    "time": "0.301",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_calculation_matches_existing_core_and_preserves_provenance[losses]",
+    "time": "0.285",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_calculation_matches_existing_core_and_preserves_provenance[steinmetz]",
+    "time": "0.301",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_calculation_matches_existing_core_and_preserves_provenance[flyback]",
+    "time": "0.286",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_no_silent_coercion_clamping_or_nonfinite_inputs[change0]",
+    "time": "0.252",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_no_silent_coercion_clamping_or_nonfinite_inputs[change1]",
+    "time": "0.268",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_no_silent_coercion_clamping_or_nonfinite_inputs[change2]",
+    "time": "0.264",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_no_silent_coercion_clamping_or_nonfinite_inputs[change3]",
+    "time": "0.250",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_no_silent_coercion_clamping_or_nonfinite_inputs[change4]",
+    "time": "0.279",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_numerical_execution_failure_is_recorded_as_failed",
+    "time": "0.317",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_artifact_snapshot_integrity_and_paths",
+    "time": "0.380",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_stage_and_specification_guards",
+    "time": "0.307",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_validation_uses_existing_core_integrity",
+    "time": "0.564",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_receipt_failure_rolls_back_core_write_and_cleans_only_new_evidence",
+    "time": "0.436",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_report_generation_export_tamper_and_no_missing_input_fabrication",
+    "time": "0.690",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_live_job_not_recovered_by_observer_and_foreign_cancellation_rejected",
+    "time": "0.515",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_record_migration_rollback_preserves_lifecycle_and_backup",
+    "time": "0.342",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_immutable_record_tables_and_future_component_rejection",
+    "time": "0.410",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_legacy_report_export_is_explicitly_unverified",
+    "time": "0.702",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_engineering_records",
+    "name": "test_record_context_rejects_archived_revision",
+    "time": "0.427",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_empty_design_and_library_symbols_cannot_clear",
+    "time": "0.410",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_snapshot_persistence_and_context_changes",
+    "time": "0.472",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_tamper_detection",
+    "time": "0.325",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_missing_tool_and_timeout_are_not_clean",
+    "time": "0.468",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_issues_and_cli_use_same_service",
+    "time": "1.242",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_import_preserves_files_and_archives",
+    "time": "0.295",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_paths_and_check_types_are_validated",
+    "time": "0.218",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_notes_and_spec_changes_invalidate_existing_result",
+    "time": "0.439",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_malformed_reports_never_clean[not json]",
+    "time": "0.021",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_malformed_reports_never_clean[{}]",
+    "time": "0.005",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_malformed_reports_never_clean[{\"violations\":null}]",
+    "time": "0.026",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_malformed_reports_never_clean[{\"sheets\":[4]}]",
+    "time": "0.028",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_real_report_arrays_all_counted",
+    "time": "0.030",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_pcb_workspace",
+    "name": "test_low_level_preserves_reports_and_rejects_malformed",
+    "time": "0.257",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.core.test_product_lifecycle",
+    "name": "test_kicad_service_discovery_and_erc_parser",
+    "time": "0.319",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_engineering_lifecycle_interfaces",
+    "name": "test_cli_mcp_share_records_without_duplicate_projects",
+    "time": "1.391",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_engineering_lifecycle_interfaces",
+    "name": "test_strict_errors_and_no_agent_approval",
+    "time": "0.851",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_engineering_lifecycle_interfaces",
+    "name": "test_definition_discovery_and_registration_through_both_clients",
+    "time": "1.013",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_engineering_record_interfaces",
+    "name": "test_metadata_requirements_calculations_and_artifacts_share_records",
+    "time": "2.209",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_engineering_record_interfaces",
+    "name": "test_validation_reports_and_export_share_core",
+    "time": "1.413",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_engineering_record_interfaces",
+    "name": "test_schema_discovery_strict_errors_and_legacy_compatibility",
+    "time": "0.614",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_restore",
+    "name": "test_closed_database_and_evidence_backup_restore",
+    "time": "0.645",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v15_integration_hook",
+    "name": "test_real_ltspice_connector_through_codex_orchestrator",
+    "time": "1.347",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v16_workflow",
+    "name": "test_v16_generic_end_to_end_ltspice_workflow",
+    "time": "1.917",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v19_revised_acceptance",
+    "name": "test_scenario_e_kicad_erc_valid_and_invalid",
+    "time": "19.200",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v19_revised_acceptance",
+    "name": "test_scenario_f_kicad_pcb_drc",
+    "time": "194.042",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v19_revised_acceptance",
+    "name": "test_scenario_g_femm_magnetic_model_generation",
+    "time": "0.013",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v20_acceptance",
+    "name": "test_scenario_b_ltspice_analytical_reference",
+    "time": "0.801",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v20_acceptance",
+    "name": "test_scenario_c_femm_magnetic_simulation",
+    "time": "0.023",
+    "status": "SKIPPED",
+    "skip_reason": "NOT_EVALUATED: no excited FEMM reference model (winding current + boundary conditions) exists yet. The un-excited core model is covered by test_v20_qualification::test_real_femm_magnetic_simulation."
+  },
+  {
+    "classname": "tests.integration.test_v20_acceptance",
+    "name": "test_scenario_d_kicad_erc_valid_and_invalid",
+    "time": "8.141",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v20_acceptance",
+    "name": "test_scenario_e_kicad_pcb_drc",
+    "time": "10.786",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v20_qualification",
+    "name": "test_real_ltspice_buck_simulation",
+    "time": "3.216",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v20_qualification",
+    "name": "test_ltspice_asc_graphical_schematic_generation",
+    "time": "0.005",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v20_qualification",
+    "name": "test_kicad_populated_pcb_generation",
+    "time": "0.049",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.integration.test_v20_qualification",
+    "name": "test_real_femm_magnetic_simulation",
+    "time": "1.315",
+    "status": "PASSED",
+    "skip_reason": null
+  },
+  {
+    "classname": "tests.ui.test_pcb_workspace_ui",
+    "name": "test_empty_check_in_background_and_revision_switch",
+    "time": "1.817",
+    "status": "PASSED",
+    "skip_reason": null
+  }
+]

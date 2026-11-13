@@ -1,5 +1,16 @@
 # Application service contract v0.1
 
+Phase 2 engineering-record contracts are additive `contracts/v3.1/records.*.schema.json`.
+`StudioService.engineering_records` delegates to existing domain implementations;
+CLI/MCP share `engineering_records/api.py`. See `docs/v3.1/17_SHARED_AGENT_OPERATIONS.md`
+for strict request/retry/context rules and truthful cancellation/report-integrity limits.
+
+Additive v3.1 lifecycle contracts are in `contracts/v3.1/`. The shared domain object is
+`StudioService.engineering_lifecycle`; CLI and MCP use one strict operation registry.
+Enrollment/definition registration explicitly installs the backed-up component schema;
+ordinary startup does not enroll revisions. Review requests are not approvals.
+See `docs/v3.1/09_MCP_CLI_CONTRACTS.md` for the implemented lifecycle subset.
+
 Integration scope update (11 November 2026): PLECS, MATLAB/Simulink, Ansys Maxwell,
 Ansys Icepak and SolidWorks are no longer registered. Shared catalog/discovery APIs
 exclude these five tools; configuring/verifying a retired ID returns NOT_FOUND.

@@ -217,3 +217,39 @@ def test_report_generation(test_controller):
     assert report_res["status"] == "GENERATED"
     assert Path(report_res["report_path"]).exists()
     assert len(report_res["hash"]) == 64
+
+
+def test_create_project_auto_enrolls_generic_lifecycle(test_controller):
+    """Verify that creating a project automatically enrolls it in the 9-stage engineering lifecycle."""
+    from uuid import UUID
+    proj = test_controller.create_project(
+        name="Auto Lifecycle Project",
+        code="ALP-100",
+        category="dc_dc_converter",
+        owner="Systems Engineer",
+        description="Testing automatic enrollment in v3.1 9-stage lifecycle",
+        auto_enroll=True,
+    )
+    assert proj["status"] == "CREATED"
+    assert proj["project_id"] is not None
+    assert proj["revision_id"] is not None
+
+    rev_id = UUID(proj["revision_id"])
+    lifecycle_view = test_controller.service.engineering_lifecycle.get(rev_id)
+    assert lifecycle_view is not None
+    stages = lifecycle_view["stages"]
+    assert len(stages) == 9
+    expected_stage_ids = [
+        "project_initialization",
+        "requirements",
+        "feasibility",
+        "calculations",
+        "design_development",
+        "simulation",
+        "verification",
+        "prototype_testing",
+        "documentation",
+    ]
+    actual_ids = [st["definition"]["id"] for st in stages]
+    assert actual_ids == expected_stage_ids
+    assert stages[0]["status"] in ("in_progress", "not_started", "NOT_STARTED", "IN_PROGRESS")

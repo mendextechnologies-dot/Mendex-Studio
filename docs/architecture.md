@@ -1,5 +1,24 @@
 # Architecture v0.1
 
+v3.1 Phase 2 (12 November 2026): `StudioService.engineering_records` adds a shared
+agent registry for project metadata, requirement snapshots, existing-calculator run
+history, artifact snapshots, validation evidence, job inspection/owned cancellation
+and report metadata/export. New record/receipt tables are opt-in, backed up and
+append-only in the existing database. `StudioService.atomic()` provides task-local
+transaction composition so existing core writes and retry receipts commit together.
+Missing report data is displayed as unavailable, not substituted with examples.
+See `docs/v3.1/17_SHARED_AGENT_OPERATIONS.md` for actual coverage and capability limits.
+
+v3.1 incremental implementation (12 November 2026): the optional
+`StudioService.engineering_lifecycle` service adds validated configurable definitions,
+explicit draft-revision enrollment, append-only stage attempts/evidence links and
+integrity-aware effective views. CLI and MCP share its operation registry. New tables
+are installed only on explicit registration/enrollment after an online SQLite backup;
+global user_version remains 4 for existing compatibility, with component schema 1.
+Legacy lifecycle assessments, Qt UI and evidence remain unchanged. Authorized review,
+automatic desktop synchronization and Tauri/React are not implemented at this milestone.
+See `docs/v3.1/06_ENGINEERING_LIFECYCLE.md` and `10_ENGINEERING_DATA_MODEL.md`.
+
 Current integration scope (11 November 2026): commercial license-gated PLECS,
 MATLAB/Simulink, Ansys Maxwell, Ansys Icepak and SolidWorks integrations are retired.
 Their adapters, registry entries and desktop inventory/filter controls are removed.

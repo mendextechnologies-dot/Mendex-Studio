@@ -1,0 +1,2465 @@
+[
+  {
+    "transport": "mcp",
+    "request": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "Codex audit harness",
+          "version": "1"
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "result": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "mendex-engineering-mcp",
+          "version": "2.1.0"
+        }
+      }
+    },
+    "elapsed_ms": 890.935
+  },
+  {
+    "transport": "mcp",
+    "request": {
+      "jsonrpc": "2.0",
+      "id": "2",
+      "method": "tools/list",
+      "params": {}
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "2",
+      "result": {
+        "tools": [
+          {
+            "name": "list_lifecycle_definitions",
+            "description": "List packaged and registered lifecycle definitions.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "title": "Model",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_lifecycle_definition",
+            "description": "Retrieve one versioned data-only lifecycle definition.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "definition_id": {
+                  "default": "engineering",
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Definition Id",
+                  "type": "string"
+                },
+                "version": {
+                  "default": "3.1.0",
+                  "maxLength": 40,
+                  "minLength": 1,
+                  "title": "Version",
+                  "type": "string"
+                }
+              },
+              "title": "DefinitionQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "register_lifecycle_definition",
+            "description": "Register an immutable validated definition; no executable configuration.",
+            "inputSchema": {
+              "$defs": {
+                "Criterion": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "title": "Id",
+                      "type": "string"
+                    },
+                    "description": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Description",
+                      "type": "string"
+                    },
+                    "kind": {
+                      "enum": [
+                        "project_context",
+                        "specification_fields",
+                        "validation_record"
+                      ],
+                      "title": "Kind",
+                      "type": "string"
+                    },
+                    "fields": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "maxItems": 30,
+                      "title": "Fields",
+                      "type": "array"
+                    },
+                    "check_id": {
+                      "anyOf": [
+                        {
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Check Id"
+                    },
+                    "evidence_kind": {
+                      "anyOf": [
+                        {
+                          "enum": [
+                            "MANUAL",
+                            "CALCULATED",
+                            "SIMULATED",
+                            "MEASURED"
+                          ],
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Evidence Kind"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "description",
+                    "kind"
+                  ],
+                  "title": "Criterion",
+                  "type": "object"
+                },
+                "LifecycleDefinition": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "schema_version": {
+                      "const": "3.1.0",
+                      "default": "3.1.0",
+                      "title": "Schema Version",
+                      "type": "string"
+                    },
+                    "id": {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "title": "Id",
+                      "type": "string"
+                    },
+                    "version": {
+                      "maxLength": 40,
+                      "minLength": 1,
+                      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+                      "title": "Version",
+                      "type": "string"
+                    },
+                    "name": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Name",
+                      "type": "string"
+                    },
+                    "stages": {
+                      "items": {
+                        "$ref": "#/$defs/StageDefinition"
+                      },
+                      "maxItems": 100,
+                      "minItems": 1,
+                      "title": "Stages",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "version",
+                    "name",
+                    "stages"
+                  ],
+                  "title": "LifecycleDefinition",
+                  "type": "object"
+                },
+                "StageDefinition": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "title": "Id",
+                      "type": "string"
+                    },
+                    "name": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Name",
+                      "type": "string"
+                    },
+                    "purpose": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Purpose",
+                      "type": "string"
+                    },
+                    "required_inputs": {
+                      "items": {
+                        "maxLength": 4000,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "maxItems": 50,
+                      "title": "Required Inputs",
+                      "type": "array"
+                    },
+                    "expected_outputs": {
+                      "items": {
+                        "maxLength": 4000,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "maxItems": 50,
+                      "title": "Expected Outputs",
+                      "type": "array"
+                    },
+                    "dependencies": {
+                      "items": {
+                        "maxLength": 80,
+                        "minLength": 1,
+                        "pattern": "^[a-z][a-z0-9_]*$",
+                        "type": "string"
+                      },
+                      "maxItems": 100,
+                      "title": "Dependencies",
+                      "type": "array"
+                    },
+                    "optional": {
+                      "default": false,
+                      "title": "Optional",
+                      "type": "boolean"
+                    },
+                    "review_required": {
+                      "default": true,
+                      "title": "Review Required",
+                      "type": "boolean"
+                    },
+                    "criteria": {
+                      "items": {
+                        "$ref": "#/$defs/Criterion"
+                      },
+                      "maxItems": 100,
+                      "minItems": 1,
+                      "title": "Criteria",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "purpose",
+                    "criteria"
+                  ],
+                  "title": "StageDefinition",
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "definition": {
+                  "$ref": "#/$defs/LifecycleDefinition"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "definition",
+                "source"
+              ],
+              "title": "RegisterDefinition",
+              "type": "object"
+            }
+          },
+          {
+            "name": "enroll_lifecycle",
+            "description": "Explicitly enroll a draft revision; no historical PASS states are inherited.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "definition_id": {
+                  "default": "engineering",
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Definition Id",
+                  "type": "string"
+                },
+                "version": {
+                  "default": "3.1.0",
+                  "maxLength": 40,
+                  "minLength": 1,
+                  "title": "Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id",
+                "source",
+                "reason",
+                "idempotency_key"
+              ],
+              "title": "Enrollment",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_project_lifecycle",
+            "description": "Read lifecycle stages and effective evidence/dependency/review blockers.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "LifecycleQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_lifecycle_history",
+            "description": "Read append-only lifecycle history with sequence pagination.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stage Id"
+                },
+                "after_sequence": {
+                  "default": 0,
+                  "minimum": 0,
+                  "title": "After Sequence",
+                  "type": "integer"
+                },
+                "limit": {
+                  "default": 100,
+                  "maximum": 500,
+                  "minimum": 1,
+                  "title": "Limit",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "HistoryQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "apply_lifecycle_stage",
+            "description": "Start/reopen/block/fail/request review/attach validation evidence/complete a stage. Completion is guarded; no approval operation.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "action": {
+                  "enum": [
+                    "start",
+                    "block",
+                    "fail",
+                    "request_review",
+                    "complete",
+                    "not_applicable",
+                    "reopen",
+                    "attach_evidence"
+                  ],
+                  "title": "Action",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "expected_sequence": {
+                  "anyOf": [
+                    {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Expected Sequence"
+                },
+                "evidence_record_id": {
+                  "anyOf": [
+                    {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Evidence Record Id"
+                }
+              },
+              "required": [
+                "revision_id",
+                "stage_id",
+                "action",
+                "source",
+                "reason",
+                "idempotency_key"
+              ],
+              "title": "StageCommand",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_project_metadata",
+            "description": "Read project metadata including the optimistic-concurrency updated_at token.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "project_id": {
+                  "format": "uuid",
+                  "title": "Project Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id"
+              ],
+              "title": "ProjectQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "update_project_metadata",
+            "description": "Update project metadata using the existing service with idempotency and concurrency guards.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "project_id": {
+                  "format": "uuid",
+                  "title": "Project Id",
+                  "type": "string"
+                },
+                "name": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "title": "Name",
+                  "type": "string"
+                },
+                "owner": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "title": "Owner",
+                  "type": "string"
+                },
+                "description": {
+                  "maxLength": 20000,
+                  "title": "Description",
+                  "type": "string"
+                },
+                "expected_updated_at": {
+                  "format": "date-time",
+                  "title": "Expected Updated At",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "project_id",
+                "name",
+                "owner",
+                "description",
+                "expected_updated_at"
+              ],
+              "title": "ProjectUpdate",
+              "type": "object"
+            }
+          },
+          {
+            "name": "record_requirements",
+            "description": "Append structured sourced requirements for an active lifecycle attempt; does not approve requirements.",
+            "inputSchema": {
+              "$defs": {
+                "Requirement": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "title": "Id",
+                      "type": "string"
+                    },
+                    "discipline": {
+                      "enum": [
+                        "electrical",
+                        "mechanical",
+                        "environmental",
+                        "safety",
+                        "performance",
+                        "standards"
+                      ],
+                      "title": "Discipline",
+                      "type": "string"
+                    },
+                    "description": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Description",
+                      "type": "string"
+                    },
+                    "source": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Source",
+                      "type": "string"
+                    },
+                    "acceptance_criterion": {
+                      "default": "",
+                      "maxLength": 4000,
+                      "title": "Acceptance Criterion",
+                      "type": "string"
+                    },
+                    "mandatory": {
+                      "default": true,
+                      "title": "Mandatory",
+                      "type": "boolean"
+                    },
+                    "specification_field": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Specification Field"
+                    },
+                    "target_value": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Target Value"
+                    },
+                    "unit": {
+                      "default": "",
+                      "maxLength": 100,
+                      "title": "Unit",
+                      "type": "string"
+                    },
+                    "assumptions": {
+                      "items": {
+                        "maxLength": 4000,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "maxItems": 100,
+                      "title": "Assumptions",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "discipline",
+                    "description",
+                    "source"
+                  ],
+                  "title": "Requirement",
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                },
+                "requirements": {
+                  "items": {
+                    "$ref": "#/$defs/Requirement"
+                  },
+                  "maxItems": 200,
+                  "minItems": 1,
+                  "title": "Requirements",
+                  "type": "array"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash",
+                "requirements"
+              ],
+              "title": "RequirementsWrite",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_requirements",
+            "description": "Read revision-associated requirements history.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stage Id"
+                },
+                "after_sequence": {
+                  "default": 0,
+                  "minimum": 0,
+                  "title": "After Sequence",
+                  "type": "integer"
+                },
+                "limit": {
+                  "default": 100,
+                  "maximum": 500,
+                  "minimum": 1,
+                  "title": "Limit",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RecordList",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_requirement_coverage",
+            "description": "Find missing declared inputs/criteria; no standards or engineering approval inferred.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RevisionQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_supported_calculations",
+            "description": "Discover existing deterministic calculators, required inputs/units and implementation caveats.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                }
+              },
+              "title": "VersionedRequest",
+              "type": "object"
+            }
+          },
+          {
+            "name": "record_calculation_run",
+            "description": "Run an existing calculator and persist exact inputs/results/assumptions/source digest without duplicating formulas.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                },
+                "calculation": {
+                  "enum": [
+                    "dowell",
+                    "losses",
+                    "steinmetz",
+                    "flyback"
+                  ],
+                  "title": "Calculation",
+                  "type": "string"
+                },
+                "parameters": {
+                  "additionalProperties": true,
+                  "title": "Parameters",
+                  "type": "object"
+                },
+                "assumptions": {
+                  "items": {
+                    "maxLength": 4000,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "maxItems": 100,
+                  "minItems": 1,
+                  "title": "Assumptions",
+                  "type": "array"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash",
+                "calculation",
+                "parameters",
+                "assumptions"
+              ],
+              "title": "CalculationWrite",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_calculation_runs",
+            "description": "Read persisted calculation history, including warnings and specification staleness.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stage Id"
+                },
+                "after_sequence": {
+                  "default": 0,
+                  "minimum": 0,
+                  "title": "After Sequence",
+                  "type": "integer"
+                },
+                "limit": {
+                  "default": 100,
+                  "maximum": 500,
+                  "minimum": 1,
+                  "title": "Limit",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RecordList",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_engineering_record",
+            "description": "Read a hash-checked engineering record and current effective integrity/staleness.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "record_id": {
+                  "format": "uuid",
+                  "title": "Record Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "record_id"
+              ],
+              "title": "RecordQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "register_engineering_artifact",
+            "description": "Register a confined revision file, preserving a unique immutable copy and original hash.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                },
+                "relative_path": {
+                  "maxLength": 1000,
+                  "minLength": 1,
+                  "title": "Relative Path",
+                  "type": "string"
+                },
+                "expected_sha256": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Sha256",
+                  "type": "string"
+                },
+                "classification": {
+                  "enum": [
+                    "circuit",
+                    "netlist",
+                    "waveform",
+                    "magnetic_model",
+                    "schematic",
+                    "pcb",
+                    "calculation",
+                    "documentation",
+                    "report",
+                    "other"
+                  ],
+                  "title": "Classification",
+                  "type": "string"
+                },
+                "design_id": {
+                  "anyOf": [
+                    {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Design Id"
+                },
+                "design_revision_id": {
+                  "anyOf": [
+                    {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Design Revision Id"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash",
+                "relative_path",
+                "expected_sha256",
+                "classification"
+              ],
+              "title": "ArtifactWrite",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_registered_artifacts",
+            "description": "Read registered artifacts with missing/changed original and snapshot checks.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stage Id"
+                },
+                "after_sequence": {
+                  "default": 0,
+                  "minimum": 0,
+                  "title": "After Sequence",
+                  "type": "integer"
+                },
+                "limit": {
+                  "default": 100,
+                  "maximum": 500,
+                  "minimum": 1,
+                  "title": "Limit",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RecordList",
+              "type": "object"
+            }
+          },
+          {
+            "name": "record_validation_evidence",
+            "description": "Delegate explicit numerical evidence recording to the existing validation service. Reviewer identity remains unverified.",
+            "inputSchema": {
+              "$defs": {
+                "ManualCheck": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "check_id": {
+                      "maxLength": 100,
+                      "minLength": 1,
+                      "title": "Check Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "$ref": "#/$defs/ValidationStatus",
+                      "default": "not_evaluated"
+                    },
+                    "rule_version": {
+                      "default": "manual-1.0",
+                      "minLength": 1,
+                      "title": "Rule Version",
+                      "type": "string"
+                    },
+                    "reviewer": {
+                      "maxLength": 200,
+                      "minLength": 1,
+                      "title": "Reviewer",
+                      "type": "string"
+                    },
+                    "notes": {
+                      "minLength": 1,
+                      "title": "Notes",
+                      "type": "string"
+                    },
+                    "evidence_kind": {
+                      "default": "MANUAL",
+                      "pattern": "^(MANUAL|CALCULATED|SIMULATED|MEASURED)$",
+                      "title": "Evidence Kind",
+                      "type": "string"
+                    },
+                    "measured_value": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Measured Value"
+                    },
+                    "unit": {
+                      "default": "",
+                      "title": "Unit",
+                      "type": "string"
+                    },
+                    "minimum": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Minimum"
+                    },
+                    "maximum": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Maximum"
+                    }
+                  },
+                  "required": [
+                    "check_id",
+                    "reviewer",
+                    "notes"
+                  ],
+                  "title": "ManualCheck",
+                  "type": "object"
+                },
+                "ValidationStatus": {
+                  "enum": [
+                    "pass",
+                    "fail",
+                    "not_evaluated",
+                    "physical_verification_required"
+                  ],
+                  "title": "ValidationStatus",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                },
+                "check": {
+                  "$ref": "#/$defs/ManualCheck"
+                },
+                "evidence_path": {
+                  "anyOf": [
+                    {
+                      "maxLength": 2000,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Evidence Path"
+                },
+                "expected_evidence_sha256": {
+                  "anyOf": [
+                    {
+                      "pattern": "^[a-f0-9]{64}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Expected Evidence Sha256"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash",
+                "check"
+              ],
+              "title": "ValidationWrite",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_validation_results",
+            "description": "Read effective validation status from shared core integrity checks.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RevisionQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_simulation_status",
+            "description": "Read persisted execution state and this session's actual cancellation capability.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "job_id"
+              ],
+              "title": "JobQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_simulation_logs",
+            "description": "Read available bounded persisted job logs; absence is not success.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "job_id"
+              ],
+              "title": "JobQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_simulation_results",
+            "description": "Read persisted job results and evidence integrity, separately from engineering validation.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "job_id"
+              ],
+              "title": "JobQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_simulation_artifact",
+            "description": "Preview manifest-checked available text output; no hidden waveform transformation.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                },
+                "relative_path": {
+                  "maxLength": 1000,
+                  "minLength": 1,
+                  "title": "Relative Path",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "job_id",
+                "relative_path"
+              ],
+              "title": "JobArtifact",
+              "type": "object"
+            }
+          },
+          {
+            "name": "cancel_simulation_job",
+            "description": "Request cooperative cancellation only for jobs owned by this session; foreign jobs are not relabelled cancelled.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "job_id"
+              ],
+              "title": "JobCancel",
+              "type": "object"
+            }
+          },
+          {
+            "name": "generate_revision_report",
+            "description": "Use the existing report generator with stage attribution, file hashes and idempotency.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash"
+              ],
+              "title": "ReportGenerate",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_report_metadata",
+            "description": "Read report availability/staleness and known integrity; legacy authenticity may be unverified.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "report_id": {
+                  "format": "uuid",
+                  "title": "Report Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "report_id"
+              ],
+              "title": "ReportQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_revision_reports",
+            "description": "List existing report metadata for a revision.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RevisionQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "export_report_package",
+            "description": "Export a unique local ZIP of the existing report and frozen snapshot, retaining integrity/provenance caveats.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "report_id": {
+                  "format": "uuid",
+                  "title": "Report Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "report_id"
+              ],
+              "title": "ReportExport",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_projects",
+            "description": "Lists all authoritative engineering projects and active baseline revisions.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "create_project",
+            "description": "Creates a new authoritative engineering project with baseline specifications and storage.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Project full title"
+                },
+                "code": {
+                  "type": "string",
+                  "description": "Project code (e.g. PRJ-001)"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Project category ('dc_dc_converter', 'magnetics', 'semiconductor', 'pcb')"
+                },
+                "owner": {
+                  "type": "string",
+                  "description": "Lead engineer or team name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "High-level project description"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "get_project",
+            "description": "Retrieves comprehensive engineering project status, specifications, revisions, and evidence.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "description": "Project UUID or code"
+                }
+              },
+              "required": [
+                "project_id"
+              ]
+            }
+          },
+          {
+            "name": "get_project_specifications",
+            "description": "Retrieves electrical specifications and physical hash for an engineering project.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "description": "Project UUID or code"
+                }
+              },
+              "required": [
+                "project_id"
+              ]
+            }
+          },
+          {
+            "name": "save_project_specification",
+            "description": "Persists validated operating specifications to an engineering project.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "description": "Project UUID or code"
+                },
+                "spec_data": {
+                  "type": "object",
+                  "description": "Electrical specification object containing vin_nom_v, vout_v, etc."
+                }
+              },
+              "required": [
+                "project_id",
+                "spec_data"
+              ]
+            }
+          },
+          {
+            "name": "delete_project",
+            "description": "Deletes an engineering project, its revisions, jobs, and workspace files.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "description": "Project UUID or code to delete"
+                }
+              },
+              "required": [
+                "project_id"
+              ]
+            }
+          },
+          {
+            "name": "list_workspaces",
+            "description": "Lists all active engineering workspaces and product workspaces.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "create_workspace",
+            "description": "Creates a new engineering workspace for design generation, simulation, and artifacts.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Workspace title"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Workspace description (optional)"
+                },
+                "product_id": {
+                  "type": "string",
+                  "description": "Associated product UUID (optional)"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "get_workspace_status",
+            "description": "Returns status, directories, design counts, and simulation history of a workspace.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Workspace UUID"
+                }
+              },
+              "required": [
+                "workspace_id"
+              ]
+            }
+          },
+          {
+            "name": "list_products",
+            "description": "Lists all authoritative engineering products stored in SQLite.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "create_product",
+            "description": "Creates a new authoritative engineering product and initial baseline revision.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Product code (e.g. SV-1000)"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Product full title"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Product category ('dc_dc_converter', 'magnetics', 'semiconductor', 'pcb')"
+                },
+                "owner": {
+                  "type": "string",
+                  "description": "Lead engineer or team name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "High-level product description"
+                }
+              },
+              "required": [
+                "code",
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "delete_product",
+            "description": "Deletes an engineering product, its revisions, and directory contents.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "string",
+                  "description": "Product UUID or product code to delete"
+                }
+              },
+              "required": [
+                "product_id"
+              ]
+            }
+          },
+          {
+            "name": "validate_specification",
+            "description": "Validates electrical operating parameters against SI schema and physical constraints.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "spec_data": {
+                  "type": "object",
+                  "description": "Electrical specification object containing vin_nom_v, vout_v, iout_a, etc."
+                }
+              },
+              "required": [
+                "spec_data"
+              ]
+            }
+          },
+          {
+            "name": "save_specification",
+            "description": "Persists an updated electrical specification to a product revision.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "revision_id": {
+                  "type": "string",
+                  "description": "Product revision UUID"
+                },
+                "spec_data": {
+                  "type": "object",
+                  "description": "Electrical specification object"
+                }
+              },
+              "required": [
+                "revision_id",
+                "spec_data"
+              ]
+            }
+          },
+          {
+            "name": "generate_design",
+            "description": "Synthesizes candidate converter topologies, sizes components, and generates native CAD artifacts (.kicad_sch, .kicad_pcb, .asc, .net, .step).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Target workspace UUID"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Design title"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Converter category (e.g. 'dc_dc_converter', 'isolated_dc_dc', 'inverter')",
+                  "default": "dc_dc_converter"
+                },
+                "vin_nom": {
+                  "type": "number",
+                  "description": "Nominal input voltage (V)"
+                },
+                "vin_min": {
+                  "type": "number",
+                  "description": "Minimum input voltage (V, optional)"
+                },
+                "vin_max": {
+                  "type": "number",
+                  "description": "Maximum input voltage (V, optional)"
+                },
+                "vout": {
+                  "type": "number",
+                  "description": "Regulated output voltage (V)"
+                },
+                "iout": {
+                  "type": "number",
+                  "description": "Rated load current (A)"
+                },
+                "fsw_hz": {
+                  "type": "number",
+                  "description": "Switching frequency (Hz, default 100000)"
+                },
+                "ripple_v": {
+                  "type": "number",
+                  "description": "Maximum output ripple (V, default 0.05)"
+                },
+                "isolation_v": {
+                  "type": "number",
+                  "description": "Galvanic isolation test voltage (V, optional)"
+                },
+                "generate_artifacts": {
+                  "type": "boolean",
+                  "description": "Generate native CAD files (default true)"
+                },
+                "product_id": {
+                  "type": "string",
+                  "description": "Optional associated product UUID"
+                }
+              },
+              "required": [
+                "workspace_id",
+                "title",
+                "vin_nom",
+                "vout",
+                "iout"
+              ]
+            }
+          },
+          {
+            "name": "get_design",
+            "description": "Retrieves synthesized engineering design details, component values, and topology.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "design_id": {
+                  "type": "string",
+                  "description": "Design UUID"
+                }
+              },
+              "required": [
+                "design_id"
+              ]
+            }
+          },
+          {
+            "name": "list_design_candidates",
+            "description": "Lists all candidate topologies synthesized for an engineering design with feasibility scores.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "design_id": {
+                  "type": "string",
+                  "description": "Design UUID"
+                }
+              },
+              "required": [
+                "design_id"
+              ]
+            }
+          },
+          {
+            "name": "run_engineering_calculations",
+            "description": "Executes first-principles deterministic engineering calculations: 'dowell' (winding losses), 'losses' (MOSFET switching/conduction), 'steinmetz' (core loss), or 'flyback' (transformer sizing).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "calc_type": {
+                  "type": "string",
+                  "enum": [
+                    "dowell",
+                    "losses",
+                    "steinmetz",
+                    "flyback"
+                  ],
+                  "description": "Type of calculation to execute"
+                },
+                "params": {
+                  "type": "object",
+                  "description": "Parameters for the calculation"
+                }
+              },
+              "required": [
+                "calc_type",
+                "params"
+              ]
+            }
+          },
+          {
+            "name": "run_simulation",
+            "description": "Executes headless industrial simulation (LTspice transient or FEMM magnetics) on generated netlists.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Workspace UUID"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "ltspice",
+                    "femm"
+                  ],
+                  "default": "ltspice",
+                  "description": "Simulation tool"
+                },
+                "netlist_name": {
+                  "type": "string",
+                  "description": "Optional specific netlist (.net / .cir) or script (.lua) filename"
+                },
+                "duration_s": {
+                  "type": "number",
+                  "default": 0.002,
+                  "description": "Simulation duration in seconds"
+                }
+              },
+              "required": [
+                "workspace_id"
+              ]
+            }
+          },
+          {
+            "name": "list_simulations",
+            "description": "Lists simulation jobs and execution status.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Optional filter by workspace UUID"
+                }
+              }
+            }
+          },
+          {
+            "name": "list_design_artifacts",
+            "description": "Lists all CAD schematics (.kicad_sch), PCB layouts (.kicad_pcb), SPICE netlists (.asc/.net), 3D STEP solids (.step), and simulation waveforms (.raw) in a workspace.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Workspace UUID"
+                }
+              },
+              "required": [
+                "workspace_id"
+              ]
+            }
+          },
+          {
+            "name": "open_artifact",
+            "description": "Opens a native design artifact in the host's specialized CAD application (KiCad, LTspice, or FreeCAD).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Workspace UUID"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "description": "Artifact relative path inside workspace"
+                }
+              },
+              "required": [
+                "workspace_id",
+                "relative_path"
+              ]
+            }
+          },
+          {
+            "name": "list_tools",
+            "description": "Lists external host engineering tools (LTspice, KiCad, FEMM, FreeCAD) and their operational status.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "check_tool",
+            "description": "Performs a live diagnostic health check on an engineering tool.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "tool_id": {
+                  "type": "string",
+                  "description": "Tool identifier (e.g. 'ltspice', 'kicad', 'femm')"
+                }
+              },
+              "required": [
+                "tool_id"
+              ]
+            }
+          },
+          {
+            "name": "open_tool_file",
+            "description": "Launches a native tool directly with a specified engineering file.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "tool_id": {
+                  "type": "string",
+                  "description": "Tool identifier"
+                },
+                "file_path": {
+                  "type": "string",
+                  "description": "Path to target file"
+                }
+              },
+              "required": [
+                "tool_id",
+                "file_path"
+              ]
+            }
+          },
+          {
+            "name": "list_revisions",
+            "description": "Lists all revision snapshots and specification hashes for a product.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "string",
+                  "description": "Product UUID"
+                }
+              },
+              "required": [
+                "product_id"
+              ]
+            }
+          },
+          {
+            "name": "create_revision",
+            "description": "Creates a new immutable revision baseline for a product.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "string",
+                  "description": "Product UUID"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Revision label (e.g. 'Rev B')"
+                }
+              },
+              "required": [
+                "product_id",
+                "label"
+              ]
+            }
+          },
+          {
+            "name": "get_validation_summary",
+            "description": "Returns formal engineering validation summary and gate status for a revision.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "revision_id": {
+                  "type": "string",
+                  "description": "Product revision UUID"
+                }
+              },
+              "required": [
+                "revision_id"
+              ]
+            }
+          },
+          {
+            "name": "generate_engineering_report",
+            "description": "Generates a formal, immutable engineering dossier report (HTML + JSON snapshot with SHA-256).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "revision_id": {
+                  "type": "string",
+                  "description": "Product revision UUID (optional; defaults to first active)"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "elapsed_ms": 0.949
+  },
+  {
+    "transport": "desktop",
+    "request": {
+      "protocol_version": "3.1.0",
+      "id": "3",
+      "method": "handshake",
+      "params": {}
+    },
+    "response": {
+      "protocol_version": "3.1.0",
+      "id": "3",
+      "result": {
+        "protocol_version": "3.1.0",
+        "status": "READY",
+        "data_root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-v31-audit-u69ip416",
+        "python_version": "3.13.7",
+        "application": "Mendex Engineering Studio",
+        "desktop_version": "3.1.0",
+        "engineering_status": "NOT_EVALUATED",
+        "timestamp": "2026-11-13T07:41:12.453371+00:00"
+      }
+    },
+    "elapsed_ms": 164.926
+  },
+  {
+    "transport": "desktop",
+    "request": {
+      "protocol_version": "3.1.0",
+      "id": "4",
+      "method": "projects",
+      "params": {}
+    },
+    "response": {
+      "protocol_version": "3.1.0",
+      "id": "4",
+      "result": []
+    },
+    "elapsed_ms": 1.113
+  },
+  {
+    "transport": "mcp",
+    "request": {
+      "jsonrpc": "2.0",
+      "id": "5",
+      "method": "tools/call",
+      "params": {
+        "name": "create_project",
+        "arguments": {
+          "name": "Disposable generic reference",
+          "code": "AUDIT-REF",
+          "owner": "Software audit fixture",
+          "description": "Synthetic software reference, no engineering approval",
+          "category": "dc_dc_converter"
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "5",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"status\": \"CREATED\",\n  \"project_id\": \"641a1fc4-d103-46db-bbf3-1b551f4d4590\",\n  \"workspace_id\": \"641a1fc4-d103-46db-bbf3-1b551f4d4590\",\n  \"code\": \"AUDIT-REF\",\n  \"name\": \"Disposable generic reference\",\n  \"category\": \"dc_dc_converter\",\n  \"revision_id\": \"130d77c6-3d09-4baf-a407-2add3a06de8b\",\n  \"revision_label\": \"R001\"\n}"
+          }
+        ],
+        "isError": false
+      }
+    },
+    "elapsed_ms": 20.809
+  },
+  {
+    "transport": "mcp",
+    "request": {
+      "jsonrpc": "2.0",
+      "id": "6",
+      "method": "tools/call",
+      "params": {
+        "name": "save_project_specification",
+        "arguments": {
+          "project_id": "641a1fc4-d103-46db-bbf3-1b551f4d4590",
+          "spec_data": {
+            "vin_min_v": 18,
+            "vin_nom_v": 24,
+            "vin_max_v": 30,
+            "vout_v": 5,
+            "iout_a": 2,
+            "switching_frequency_hz": 100000,
+            "ripple_voltage_v": 0.1
+          }
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "6",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error executing tool 'save_project_specification': 1 validation error for Specification\nripple_voltage_v\n  Extra inputs are not permitted [type=extra_forbidden, input_value=0.1, input_type=float]\n    For further information visit https://errors.pydantic.dev/2.14/v/extra_forbidden"
+          }
+        ],
+        "isError": true
+      }
+    },
+    "elapsed_ms": 22.027
+  }
+]

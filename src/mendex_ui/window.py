@@ -124,12 +124,6 @@ class StudioWindow(QMainWindow):
         self.btn_notices.clicked.connect(self.notification_center.exec)
         header_layout.addWidget(self.btn_notices)
 
-        self.btn_help_guide = QPushButton("❓ Help & AI Prompts")
-        self.btn_help_guide.setObjectName("btn_help_guide")
-        self.btn_help_guide.setStyleSheet("font-weight: 700; color: #f9e2af; background-color: #3b321a; border: 1px solid #755b1f; padding: 4px 10px; border-radius: 4px;")
-        self.btn_help_guide.setToolTip("Open Complete Product Design Guide & AI Engineering Prompts (Codex / Claude / Antigravity)")
-        self.btn_help_guide.clicked.connect(self._open_help_guide)
-        header_layout.addWidget(self.btn_help_guide)
 
         self._dark_theme = True
         self.btn_theme_toggle = QPushButton("☀️ Light")
@@ -408,6 +402,9 @@ class StudioWindow(QMainWindow):
         cp.register_command("Run KiCad PCB DRC", "pcb", "Ctrl+Shift+D", lambda: self.product_lifecycle._run_kicad_drc(), "🛡️")
         cp.register_command("Export Manufacturing Gerbers", "pcb", "", lambda: self.product_lifecycle._export_gerbers(), "📦")
         cp.register_command("Export Engineering Verification Dossier", "reports", "", lambda: self.product_lifecycle._generate_dossier(), "📄")
+        cp.register_command("Compare Product Revisions (Diff Viewer)", "diff", "Ctrl+D", self.open_revision_diff, "🔍")
+        cp.register_command("Open Dowell HF Winding Loss Visualizer", "magnetics", "", self.open_dowell_visualizer, "🧲")
+        cp.register_command("Open Magnetic Core Loss Comparator", "magnetics", "", self.open_magnetic_comparator, "⚖️")
         cp.register_command("Open FreeCAD 3D Bobbin Solid", "cad", "", lambda: self.product_lifecycle._open_step_model(), "📐")
         cp.register_command("Open Sizing & Calculations Inspector", "analysis", "", lambda: self.product_lifecycle.detail_tabs.setCurrentIndex(3), "🔬")
         cp.register_command("Open Bill of Materials (BOM)", "bom", "", lambda: self.product_lifecycle.detail_tabs.setCurrentIndex(2), "📋")
@@ -494,10 +491,6 @@ class StudioWindow(QMainWindow):
         except Exception:
             pass
 
-    def _open_help_guide(self):
-        from .engineering_guide_dialog import EngineeringGuideDialog
-        dlg = EngineeringGuideDialog(is_dark=self._dark_theme, parent=self)
-        dlg.exec()
 
     def toggle_theme(self):
         self._dark_theme = not self._dark_theme
@@ -513,11 +506,6 @@ class StudioWindow(QMainWindow):
             self.product_lifecycle.apply_theme(self._dark_theme)
         if hasattr(self, "settings_panel"):
             self.settings_panel.apply_theme(self._dark_theme)
-        if hasattr(self, "btn_help_guide") and self.btn_help_guide:
-            if self._dark_theme:
-                self.btn_help_guide.setStyleSheet("font-weight: 700; color: #f9e2af; background-color: #3b321a; border: 1px solid #755b1f; padding: 4px 10px; border-radius: 4px;")
-            else:
-                self.btn_help_guide.setStyleSheet("font-weight: 700; color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 4px 10px; border-radius: 4px;")
 
     def _handle_dashboard_navigate(self, target: int):
         if 0 <= target < self.pages.count():
@@ -544,6 +532,8 @@ class StudioWindow(QMainWindow):
         self.navigation.setCurrentRow(dest)
         if target_name == "SwitchLossDB" and hasattr(self, "component_library"):
             self.component_library.select_switchloss_tab()
+        if target_name in ("Transformer", "Magnetics") and hasattr(self, "component_library"):
+            self.component_library.select_magnetics_tab()
 
     def _on_workspace_selected_header(self, index: int):
         pass
@@ -676,12 +666,39 @@ class StudioWindow(QMainWindow):
                 label.setWordWrap(True)
                 label.setText(f"{folder.upper()} workspace · {self.product.code} · {self.revision.revision_label}\n\nPath: {path / folder}\n\nEngineering execution: NOT IMPLEMENTED\nProduct evaluation: NOT_EVALUATED\n\nRequired inputs: {requirement}\n\nUse native files and record available evidence in Validation. No solver or calculation is executed.")
 
+    def open_dowell_visualizer(self):
+        from .dowell_visualizer_dialog import DowellWindingLossDialog
+        dlg = DowellWindingLossDialog(parent=self, is_dark=self._dark_theme)
+        dlg.exec()
+
+    def open_magnetic_comparator(self):
+        from .magnetic_comparator_dialog import MagneticCoreLossComparatorDialog
+        dlg = MagneticCoreLossComparatorDialog(parent=self, is_dark=self._dark_theme)
+        dlg.exec()
+
+    def open_revision_diff(self):
+        if hasattr(self, "product_lifecycle") and self.product_lifecycle.current_product_id:
+            self.product_lifecycle._open_revision_diff()
+        else:
+            prods = self.service.list_products()
+            if prods:
+                from .revision_diff_dialog import RevisionDiffDialog
+                dlg = RevisionDiffDialog(self.service, prods[0].product_id, is_dark=self._dark_theme, parent=self)
+                dlg.exec()
+            else:
+                QMessageBox.information(self, "No Projects", "Please create a project first.")
+
     def create_product(self):
-        dialog = ProductDialog(self)
-        if dialog.exec() == QDialog.Accepted:
+        from .product_wizard_dialog import ProductDesignWizardDialog
+        dialog = ProductDesignWizardDialog(self.service, is_dark=self._dark_theme, parent=self)
+        if dialog.exec() == QDialog.Accepted and dialog.created_product:
             def action():
-                self.product = self.service.create_product(dialog.code.text(), dialog.name.text(), dialog.category.currentText(), dialog.owner.text())
+                self.product = dialog.created_product
+                self.revision = dialog.created_revision
                 self.refresh()
+                if hasattr(self, "product_lifecycle") and self.product:
+                    self.product_lifecycle.set_product(self.product.product_id, self.revision.revision_id if self.revision else None)
+                self.statusBar().showMessage(f"Project '{self.product.code} - {self.product.name}' successfully created & synthesized.")
             self.guarded(action)
 
     def delete_current_product(self):

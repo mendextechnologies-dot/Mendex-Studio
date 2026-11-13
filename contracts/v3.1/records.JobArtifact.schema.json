@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "3.1.0",
+      "default": "3.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "job_id": {
+      "format": "uuid",
+      "title": "Job Id",
+      "type": "string"
+    },
+    "relative_path": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Relative Path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "job_id",
+    "relative_path"
+  ],
+  "title": "JobArtifact",
+  "type": "object"
+}

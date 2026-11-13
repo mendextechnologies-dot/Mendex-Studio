@@ -1,0 +1,71 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "vin_min_v": {
+      "exclusiveMinimum": 0,
+      "title": "Vin Min V",
+      "type": "number"
+    },
+    "vin_nom_v": {
+      "exclusiveMinimum": 0,
+      "title": "Vin Nom V",
+      "type": "number"
+    },
+    "vout_v": {
+      "exclusiveMinimum": 0,
+      "title": "Vout V",
+      "type": "number"
+    },
+    "iout_a": {
+      "exclusiveMinimum": 0,
+      "title": "Iout A",
+      "type": "number"
+    },
+    "frequency_hz": {
+      "exclusiveMinimum": 0,
+      "title": "Frequency Hz",
+      "type": "number"
+    },
+    "d_max": {
+      "exclusiveMaximum": 0.8,
+      "exclusiveMinimum": 0,
+      "title": "D Max",
+      "type": "number"
+    },
+    "efficiency": {
+      "exclusiveMinimum": 0,
+      "maximum": 1,
+      "title": "Efficiency",
+      "type": "number"
+    },
+    "b_max_t": {
+      "exclusiveMinimum": 0,
+      "title": "B Max T",
+      "type": "number"
+    },
+    "core_ae_mm2": {
+      "exclusiveMinimum": 0,
+      "title": "Core Ae Mm2",
+      "type": "number"
+    },
+    "v_diode_drop_v": {
+      "minimum": 0,
+      "title": "V Diode Drop V",
+      "type": "number"
+    }
+  },
+  "required": [
+    "vin_min_v",
+    "vin_nom_v",
+    "vout_v",
+    "iout_a",
+    "frequency_hz",
+    "d_max",
+    "efficiency",
+    "b_max_t",
+    "core_ae_mm2",
+    "v_diode_drop_v"
+  ],
+  "title": "FlybackInputs",
+  "type": "object"
+}
