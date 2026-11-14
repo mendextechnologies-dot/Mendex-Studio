@@ -81,6 +81,12 @@ class GerberExportQuery(Model):
     check_drc: bool = True
 
 
+class SchematicApplyQuery(Model):
+    revision_id: UUID
+    ops: list[dict]
+    verify: bool = True
+
+
 class ReviewRequestQuery(Model):
     revision_id: UUID
     stage_id: str = "requirements"

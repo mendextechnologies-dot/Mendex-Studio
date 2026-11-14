@@ -218,6 +218,42 @@ class CopperKiCadAdapter:
         })
         return res.get("structuredContent") or {}
 
+    def apply_schematic(
+        self,
+        sch_path: Path,
+        ops: List[Dict[str, Any]],
+        verify: bool = True,
+        dry_run: bool = False,
+    ) -> Dict[str, Any]:
+        """Applies an atomic batch of operations to an existing KiCad schematic.
+
+        Supported operations: set_field, swap, place, connect, delete, no_connect.
+        Returns execution summary and ERC verification results.
+        """
+        sch_file = Path(sch_path).resolve()
+        if not sch_file.exists():
+            raise FileNotFoundError(f"Schematic not found: {sch_file}")
+
+        res = call_tool("sch_apply", {
+            "project": str(sch_file.parent),
+            "ops": ops,
+            "verify": verify,
+            "dry_run": dry_run,
+        })
+        if res.get("isError"):
+            err_msg = _extract_text(res)
+            return {"success": False, "error": err_msg, "ops": len(ops)}
+
+        structured = res.get("structuredContent") or {}
+        return {
+            "success": True,
+            "ops_applied": len(ops),
+            "changed": structured.get("changed", []),
+            "checkpoint": structured.get("checkpoint"),
+            "erc": (structured.get("verify") or {}).get("erc") or structured.get("erc", {}),
+            "findings": structured.get("findings", []),
+        }
+
 
 def _extract_text(mcp_res: dict) -> str:
     if not isinstance(mcp_res, dict):

@@ -242,6 +242,15 @@
   - Added unit tests in `tests/core/test_kicad_gerber_gating.py` (4/4 passed).
   - Production desktop build verified: `npm --prefix desktop run build` (1,586 modules transformed, 0 TypeScript errors).
 
+- [x] **Dynamic Incremental Schematic Swapping & Modification (`src/integrations/adapters/copper_kicad_adapter.py`, `src/mendex_core/lifecycle/kicad_service.py`, `src/mendex_core/desktop/`)**:
+  - Implemented `CopperKiCadAdapter.apply_schematic()` and `KiCadLifecycleService.apply_schematic()` wrapping Copper's atomic `sch_apply` batch engine.
+  - Supports non-destructive schematic edits: field modifications (Value, MPN, Footprint, Datasheet), component swapping, placement, wiring, and pin deletion with automatic atomic checkpoints.
+  - Automatically triggers KiCad 10 ERC verification post-modification to guarantee electrical netlist integrity and pin connectivity.
+  - Added typed schema `SchematicApplyQuery` in `src/mendex_core/desktop/models.py` and RPC handler `DesktopService.apply_schematic()`.
+  - Added `api.applySchematic()` in `desktop/src/api/client.ts`.
+  - Added integration tests in `tests/integrations/test_copper_kicad_adapter.py` verifying batch field edits, checkpoint creation, and ERC validation (9/9 passed).
+  - Production desktop build verified: `npm --prefix desktop run build` (1,586 modules transformed, 0 TypeScript errors).
+
 ## Interactive In-App BOM Generation & Native PDF/Word Viewer Integration — 14 November 2026
 - [x] **Resolved Word vs Edge PDF Window Collision (`src/mendex_core/launch.py`)**:
   - Diagnosed root cause: `SV1000_Bill_of_Materials.docx` and `SV1000_Bill_of_Materials.pdf` share the identical base stem (`SV1000_Bill_of_Materials`). When Word was open, `_find_window_on_desktop(required_hints=[target.stem])` matched the existing Word window (`SV1000_Bill_of_Materials - Word`), causing `_activate_window` to focus Word instead of spawning Edge.

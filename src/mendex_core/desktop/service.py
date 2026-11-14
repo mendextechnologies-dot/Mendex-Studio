@@ -814,6 +814,36 @@ class DesktopService:
                 "error": str(e),
             }
 
+    def apply_schematic(self, request):
+        """Applies batch schematic updates (symbol swaps, field edits) using internal Copper engine."""
+        revision = self.studio.get_revision(request.revision_id)
+        ws_dir = self.studio.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+        sch_files = list(pcb_dir.glob("*.kicad_sch")) if pcb_dir.exists() else []
+        if not sch_files:
+            sch_files = list(ws_dir.glob("*.kicad_sch"))
+        if not sch_files:
+            return {"success": False, "error": "No .kicad_sch file found in this revision"}
+
+        sch_path = sch_files[0]
+        from ..lifecycle.kicad_service import KiCadLifecycleService
+        kicad_service = getattr(getattr(self.studio, "engineering_lifecycle", None), "kicad", None) or KiCadLifecycleService()
+        result = kicad_service.apply_schematic(
+            sch_path,
+            ops=request.ops,
+            verify=getattr(request, "verify", True),
+        )
+        return {
+            "success": result.get("success", False),
+            "filename": sch_path.name,
+            "ops_applied": result.get("ops_applied", 0),
+            "changed": result.get("changed", []),
+            "checkpoint": result.get("checkpoint"),
+            "erc": result.get("erc", {}),
+            "findings": result.get("findings", []),
+            "error": result.get("error"),
+        }
+
     def dispatch(self, method, params):
         route = ROUTES.get(method)
         if route is None:
@@ -871,6 +901,8 @@ class DesktopService:
             return self.auto_route_pcb(request)
         if method == "export_gerbers":
             return self.export_gerbers(request)
+        if method == "apply_schematic":
+            return self.apply_schematic(request)
         if method == "generate_bom":
             from ..bom_generator import generate_bom_deliverables
             return generate_bom_deliverables(self.studio, request.revision_id)
@@ -910,6 +942,7 @@ ROUTES.update(
     cad_preview=models.CADPreviewQuery,
     auto_route_pcb=models.AutoRouteQuery,
     export_gerbers=models.GerberExportQuery,
+    apply_schematic=models.SchematicApplyQuery,
     open_report=models.ReportQuery,
     open_evidence=models.EvidenceQuery,
     export_report=models.ExportReportQuery,

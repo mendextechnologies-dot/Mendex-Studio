@@ -90,6 +90,8 @@ export const api = {
     }),
   exportGerbers: (revisionId: string, autoRoute: boolean = true) =>
     rpcCall<any>('export_gerbers', { revision_id: revisionId, auto_route: autoRoute }),
+  applySchematic: (revisionId: string, ops: any[], verify: boolean = true) =>
+    rpcCall<any>('apply_schematic', { revision_id: revisionId, ops, verify }),
   openEvidence: (recordId: string) => rpcCall<any>('open_evidence', { record_id: recordId }),
   openReport: (reportId: string) => rpcCall<any>('open_report', { report_id: reportId }),
   exportReport: (reportId: string) => rpcCall<any>('export_report', {

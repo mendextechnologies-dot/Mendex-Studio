@@ -355,3 +355,16 @@ class KiCadLifecycleService:
             power_track=power_track,
             power_patterns=power_patterns,
         )
+
+    def apply_schematic(
+        self,
+        sch_path: Path,
+        ops: List[Dict[str, Any]],
+        verify: bool = True,
+        dry_run: bool = False,
+    ) -> Dict[str, Any]:
+        """Applies batch schematic updates (symbol swaps, field edits) using internal Copper engine."""
+        from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+
+        adapter = CopperKiCadAdapter(kicad_cli_path=str(self.kicad_cli) if self.kicad_cli else None)
+        return adapter.apply_schematic(sch_path, ops, verify=verify, dry_run=dry_run)

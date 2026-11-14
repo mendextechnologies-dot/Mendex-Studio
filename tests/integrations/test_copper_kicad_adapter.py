@@ -137,3 +137,49 @@ def test_desktop_service_auto_route_rpc(tmp_path):
     )
     assert query.default_track == 0.4
     assert query.power_track == 1.2
+
+
+def test_adapter_apply_schematic(adapter, tmp_path):
+    """Verifies that apply_schematic modifies fields and passes KiCad ERC."""
+    poc_dir = Path(r"C:\Users\Sagar\.gemini\antigravity\brain\6d7675c6-a711-4df0-a104-3720700b777f\scratch\poc_resistor_divider\divider_poc")
+    if not (poc_dir / "divider_poc.kicad_sch").exists():
+        pytest.skip("POC schematic not present on disk")
+
+    for f in poc_dir.glob("divider_poc.*"):
+        shutil.copy2(f, tmp_path / f.name)
+
+    target_sch = tmp_path / "divider_poc.kicad_sch"
+    res = adapter.apply_schematic(
+        sch_path=target_sch,
+        ops=[
+            {"op": "set_field", "ref": "R1", "field": "Value", "value": "12k 1% Precision"},
+            {"op": "set_field", "ref": "R1", "field": "MPN", "value": "ERA-6AEB123V"},
+        ],
+        verify=True,
+    )
+
+    assert res["success"] is True
+    assert res["ops_applied"] == 2
+    assert any("R1.Value" in c for c in res["changed"])
+    assert res["erc"].get("errors", 0) == 0
+
+
+def test_desktop_service_apply_schematic_rpc():
+    """Verifies DesktopService apply_schematic route registration and schema validation."""
+    from mendex_core.desktop.service import DesktopService, ROUTES
+    from mendex_core.desktop.models import SchematicApplyQuery
+    from mendex_core.paths import default_data_root
+    from mendex_core.service import StudioService
+
+    root = default_data_root()
+    studio = StudioService(root)
+    desktop = DesktopService(studio)
+
+    assert "apply_schematic" in ROUTES
+    query = SchematicApplyQuery(
+        revision_id="9b7c1396-64da-41f8-8649-77dc0f24e103",
+        ops=[{"op": "set_field", "ref": "R1", "field": "Value", "value": "15k"}],
+        verify=True,
+    )
+    assert len(query.ops) == 1
+    assert query.verify is True
