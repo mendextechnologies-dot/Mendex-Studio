@@ -1,0 +1,24 @@
+{
+  "archived_revision_status": "archived",
+  "archived_route_adapter_called": true,
+  "routing_response_with_seven_unrouted_and_three_drc_errors": {
+    "success": true,
+    "filename": "fixture.kicad_pcb",
+    "tracks": 1,
+    "vias": 0,
+    "unrouted_after": 7,
+    "pour_completed": false,
+    "drc_errors": 3,
+    "drc_warnings": 0,
+    "messages": [],
+    "netclasses": {}
+  },
+  "fixture_board_bytes_unchanged_by_spy": true,
+  "duplicate_creepage_material_probes": {
+    "I": 5.0,
+    "II": 5.0,
+    "IIIa": 5.0,
+    "IIIb": 5.0
+  },
+  "duplicate_creepage_accepts_negative_voltage": 5.0
+}

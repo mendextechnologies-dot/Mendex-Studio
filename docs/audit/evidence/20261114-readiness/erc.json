@@ -1,0 +1,623 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-14T20:39:33",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.7",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/74a18ff2-f09d-4836-95bc-00dedb556cc0",
+            "violations": [
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'VIN_PORT'",
+                            "pos": {
+                                "x": 25.0,
+                                "y": 40.0
+                            },
+                            "uuid": "dbf4d584-7ad2-45ef-89bd-7d4638069c00"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label 'VIN_PORT' in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'VIN_PORT'",
+                            "pos": {
+                                "x": 25.0,
+                                "y": 40.0
+                            },
+                            "uuid": "dbf4d584-7ad2-45ef-89bd-7d4638069c00"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'VOUT_PORT'",
+                            "pos": {
+                                "x": 25.0,
+                                "y": 55.0
+                            },
+                            "uuid": "1d50387c-a449-4294-956d-e714fbdfc187"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label 'VOUT_PORT' in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'VOUT_PORT'",
+                            "pos": {
+                                "x": 25.0,
+                                "y": 55.0
+                            },
+                            "uuid": "1d50387c-a449-4294-956d-e714fbdfc187"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'GND_PORT'",
+                            "pos": {
+                                "x": 25.0,
+                                "y": 70.0
+                            },
+                            "uuid": "8389fd5b-6f93-4c41-aba8-38ad4a109fe2"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Hierarchical label 'GND_PORT' in root sheet cannot be connected to non-existent parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'GND_PORT'",
+                            "pos": {
+                                "x": 25.0,
+                                "y": 70.0
+                            },
+                            "uuid": "8389fd5b-6f93-4c41-aba8-38ad4a109fe2"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'VOUT'",
+                            "pos": {
+                                "x": 48.26,
+                                "y": 95.8
+                            },
+                            "uuid": "855f65e6-2d2a-4cc8-974d-5d422fc2dcee"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'GND'",
+                            "pos": {
+                                "x": 50.8,
+                                "y": 48.26
+                            },
+                            "uuid": "4f838b6b-2b62-4b6d-b704-d781081d5a21"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'VIN'",
+                            "pos": {
+                                "x": 50.8,
+                                "y": 48.26
+                            },
+                            "uuid": "c243aab4-7cd1-4bfb-afa8-4f070da18b64"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'GND'",
+                            "pos": {
+                                "x": 53.34,
+                                "y": 95.8
+                            },
+                            "uuid": "12a9d498-bf77-4e0d-81b5-490895b0664d"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'VOUT'",
+                            "pos": {
+                                "x": 93.26,
+                                "y": 95.8
+                            },
+                            "uuid": "44d9c994-73b6-4172-888e-bf3ec81a0447"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'GATE_HI'",
+                            "pos": {
+                                "x": 95.8,
+                                "y": 48.26
+                            },
+                            "uuid": "10760bfb-19ab-4728-948f-1998ea07ba2b"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'VIN'",
+                            "pos": {
+                                "x": 95.8,
+                                "y": 48.26
+                            },
+                            "uuid": "686a16b5-ab4f-4b7f-a5de-efdf4591e992"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'SW'",
+                            "pos": {
+                                "x": 95.8,
+                                "y": 48.26
+                            },
+                            "uuid": "fc9a7f53-98b6-4fb7-8935-72b77b0def63"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'GND'",
+                            "pos": {
+                                "x": 98.34,
+                                "y": 95.8
+                            },
+                            "uuid": "2656232d-4995-4a56-95c0-ee3baa22eccb"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'GND'",
+                            "pos": {
+                                "x": 140.8,
+                                "y": 48.26
+                            },
+                            "uuid": "37821063-ae9f-4b3c-ae13-14cc5c0b6bf1"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'SW'",
+                            "pos": {
+                                "x": 140.8,
+                                "y": 48.26
+                            },
+                            "uuid": "3be35197-ce32-4b8a-8ae9-ba54ecdab37b"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'GATE_LO'",
+                            "pos": {
+                                "x": 140.8,
+                                "y": 48.26
+                            },
+                            "uuid": "a485afb9-60d6-4bac-b894-e3a6fff6f3f9"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'SW'",
+                            "pos": {
+                                "x": 183.26,
+                                "y": 50.8
+                            },
+                            "uuid": "52d7b779-e516-4efa-aea8-0bd5d37f822f"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Label not connected",
+                    "items": [
+                        {
+                            "description": "Label 'VOUT'",
+                            "pos": {
+                                "x": 188.34,
+                                "y": 50.8
+                            },
+                            "uuid": "4cc70e0c-1ec4-4a7a-8a27-a06356a9d2a3"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "label_dangling"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Horizontal Wire, length 45.00 mm",
+                            "pos": {
+                                "x": 48.26,
+                                "y": 95.8
+                            },
+                            "uuid": "031f0d38-f7b8-4110-86c4-ba00355849b9"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Vertical Wire, length 45.00 mm",
+                            "pos": {
+                                "x": 48.26,
+                                "y": 50.8
+                            },
+                            "uuid": "7a06175f-02dd-4089-8cbe-881c904e8568"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Both GATE_HI and VIN are attached to the same items; GATE_HI will be used in the netlist",
+                    "items": [
+                        {
+                            "description": "Label 'GATE_HI'",
+                            "pos": {
+                                "x": 95.8,
+                                "y": 48.26
+                            },
+                            "uuid": "10760bfb-19ab-4728-948f-1998ea07ba2b"
+                        },
+                        {
+                            "description": "Label 'VIN'",
+                            "pos": {
+                                "x": 50.8,
+                                "y": 48.26
+                            },
+                            "uuid": "c243aab4-7cd1-4bfb-afa8-4f070da18b64"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "multiple_net_names"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Vertical Wire, length 47.54 mm",
+                            "pos": {
+                                "x": 53.34,
+                                "y": 48.26
+                            },
+                            "uuid": "5d6fc583-918c-4bfc-8591-4d018b64fea7"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Horizontal Wire, length 45.00 mm",
+                            "pos": {
+                                "x": 53.34,
+                                "y": 95.8
+                            },
+                            "uuid": "6ca6b08c-4e35-49e3-b94f-fd92cfbbd13d"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Vertical Wire, length 0.00 mm",
+                            "pos": {
+                                "x": 93.26,
+                                "y": 95.8
+                            },
+                            "uuid": "648b0f40-7d1d-485b-a381-3556a66b0ab4"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Vertical Wire, length 0.00 mm",
+                            "pos": {
+                                "x": 95.8,
+                                "y": 48.26
+                            },
+                            "uuid": "41d8099c-dccc-4363-8e23-ce7ff356626f"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Horizontal Wire, length 45.00 mm",
+                            "pos": {
+                                "x": 50.8,
+                                "y": 48.26
+                            },
+                            "uuid": "4275b15d-d32e-43f1-b1c6-3d915f8fd697"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Horizontal Wire, length 45.00 mm",
+                            "pos": {
+                                "x": 95.8,
+                                "y": 48.26
+                            },
+                            "uuid": "c8efac2d-17d1-46c3-90e1-3d1dea9d9952"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Label connects more than one wire at 958000, 482600",
+                    "items": [
+                        {
+                            "description": "Label 'SW'",
+                            "pos": {
+                                "x": 95.8,
+                                "y": 48.26
+                            },
+                            "uuid": "fc9a7f53-98b6-4fb7-8935-72b77b0def63"
+                        },
+                        {
+                            "description": "Horizontal Wire, length 90.00 mm",
+                            "pos": {
+                                "x": 50.8,
+                                "y": 48.26
+                            },
+                            "uuid": "6c03ee16-76c5-4809-8bf8-5b56ea561642"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "label_multiple_wires"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Vertical Wire, length 0.00 mm",
+                            "pos": {
+                                "x": 98.34,
+                                "y": 95.8
+                            },
+                            "uuid": "725ba27b-509c-4739-bfa1-8f8882d4016d"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Horizontal Wire, length 42.46 mm",
+                            "pos": {
+                                "x": 140.8,
+                                "y": 48.26
+                            },
+                            "uuid": "01bf9d8a-2f27-4091-81a2-1f33617e1158"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Horizontal Wire, length 90.00 mm",
+                            "pos": {
+                                "x": 50.8,
+                                "y": 48.26
+                            },
+                            "uuid": "6c03ee16-76c5-4809-8bf8-5b56ea561642"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Horizontal Wire, length 87.46 mm",
+                            "pos": {
+                                "x": 140.8,
+                                "y": 48.26
+                            },
+                            "uuid": "6eb26719-23ea-4379-91ec-0bd896dc9c33"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Vertical Wire, length 0.00 mm",
+                            "pos": {
+                                "x": 140.8,
+                                "y": 48.26
+                            },
+                            "uuid": "bfcd852c-c993-4f29-9bf1-e1ff07ee0bd8"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Vertical Wire, length 0.00 mm",
+                            "pos": {
+                                "x": 140.8,
+                                "y": 48.26
+                            },
+                            "uuid": "c2ce4e45-e787-4734-8c97-315b69c7d4c0"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Vertical Wire, length 2.54 mm",
+                            "pos": {
+                                "x": 183.26,
+                                "y": 48.26
+                            },
+                            "uuid": "9d0ed918-72a0-422d-8213-4221e5297f94"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                },
+                {
+                    "description": "Symbol pin or wire end off connection grid",
+                    "items": [
+                        {
+                            "description": "Horizontal Wire, length 140.08 mm",
+                            "pos": {
+                                "x": 188.34,
+                                "y": 50.8
+                            },
+                            "uuid": "7ee63451-b78a-4621-952a-385f7c2d70f3"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "endpoint_off_grid"
+                }
+            ]
+        }
+    ],
+    "source": "audit_ideal_buck.kicad_sch"
+}

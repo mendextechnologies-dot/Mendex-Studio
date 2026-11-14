@@ -52,6 +52,30 @@ def test_candidate_synthesis_non_isolated_buck():
     assert top.ir_snapshot.get_component("L1") is not None
 
 
+def test_candidate_synthesis_non_isolated_boost():
+    """Verify synthesis engine selects Boost converter for non-isolated step-up."""
+    reqs = [
+        Requirement(parameter="vin_nom", target_value=12.0, unit="V"),
+        Requirement(parameter="vin_min", target_value=10.0, unit="V"),
+        Requirement(parameter="vin_max", target_value=14.0, unit="V"),
+        Requirement(parameter="vout", target_value=24.0, unit="V"),
+        Requirement(parameter="iout", target_value=1.5, unit="A"),
+        Requirement(parameter="frequency_hz", target_value=150000.0, unit="Hz"),
+        Requirement(parameter="isolation", target_value=0.0, unit="V"),
+    ]
+    candidates = CandidateSynthesisEngine.synthesize_candidates(reqs)
+    assert len(candidates) >= 1
+    top = candidates[0]
+    assert "Boost" in top.topology
+    assert top.constraints_satisfied is True
+    assert top.status == CandidateApprovalStatus.SELECTED
+    assert top.ir_snapshot is not None
+    assert top.ir_snapshot.get_component("Q1") is not None
+    assert top.ir_snapshot.get_component("L1") is not None
+    assert top.ir_snapshot.get_component("D1") is not None
+    assert top.ir_snapshot.get_component("C1") is not None
+
+
 def test_candidate_synthesis_isolated_flyback():
     """Verify synthesis engine selects Flyback for isolated converter."""
     reqs = [
@@ -69,6 +93,13 @@ def test_candidate_synthesis_isolated_flyback():
     assert flyback.ir_snapshot is not None
     assert flyback.ir_snapshot.magnetic_geometry is not None
     assert flyback.ir_snapshot.get_component("T1") is not None
+
+    assert any("Push-Pull" in c.topology for c in candidates)
+    pp = [c for c in candidates if "Push-Pull" in c.topology][0]
+    assert pp.ir_snapshot is not None
+    assert pp.ir_snapshot.get_component("T1") is not None
+    assert pp.ir_snapshot.get_component("D2") is not None
+    assert pp.ir_snapshot.get_component("L1") is not None
 
 
 def test_parametric_design_engine_propagation():

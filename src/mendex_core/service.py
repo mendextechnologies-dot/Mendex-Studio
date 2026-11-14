@@ -278,16 +278,22 @@ class StudioService:
                 source.backup(target)
         return dest_path
 
-    def open_report(self, report_id):
+    def open_report(self, report_id, format: str = "html"):
         from .launch import open_native
         report = self._get("reports", report_id, Report)
         path = (self.root / report.report_path).resolve()
-        if not path.is_relative_to(self.root) or not path.is_file() or path.suffix.lower() != ".html":
+        if format.lower() == "pdf":
+            pdf_path = path.parent / "report.pdf"
+            if pdf_path.is_file():
+                path = pdf_path
+            elif not path.is_file():
+                raise StudioError("INVALID_INPUT", "Report PDF and HTML are missing")
+        elif not path.is_relative_to(self.root) or not path.is_file() or path.suffix.lower() != ".html":
             raise StudioError("INVALID_INPUT", "Report is missing or outside the data root")
         try:
             open_native(path)
         except OSError as exc:
-            raise StudioError("LAUNCH_ERROR", f"Could not open report. Check the default HTML application: {exc}") from exc
+            raise StudioError("LAUNCH_ERROR", f"Could not open report: {exc}") from exc
         return str(path)
 
     def create_product(self, code, name, category: Category, owner, description=""):
@@ -606,6 +612,49 @@ class StudioService:
             raise StudioError("LAUNCH_ERROR", str(exc)) from exc
         return str(path)
 
+    def get_evidence_content(self, record_id):
+        record = self._get("validations", record_id, ValidationRecord)
+        if not record.evidence_uri:
+            raise StudioError("INVALID_INPUT", "Evidence URI is missing from record")
+        path = (self.root / record.evidence_uri).resolve()
+        if not path.exists():
+            raise StudioError("NOT_FOUND", f"Evidence file not found: {record.evidence_uri}")
+
+        size_bytes = path.stat().st_size
+        ext = path.suffix.lower()
+        content = ""
+        json_data = None
+
+        if size_bytes <= 5 * 1024 * 1024:
+            try:
+                content = path.read_text(encoding="utf-8", errors="replace")
+                if ext == ".json":
+                    import json
+                    try:
+                        json_data = json.loads(content)
+                    except Exception:
+                        pass
+            except Exception as e:
+                content = f"Error reading file content: {e}"
+        else:
+            content = f"File size ({size_bytes} bytes) exceeds in-browser preview limit."
+
+        return {
+            "record_id": str(record.record_id),
+            "check_id": record.check.check_id if record.check else "",
+            "rule_version": record.check.rule_version if record.check else "",
+            "reviewer": record.check.reviewer if record.check else "",
+            "notes": record.check.notes if record.check else "",
+            "status": record.check.status.value if record.check else "NOT_EVALUATED",
+            "evidence_filename": path.name,
+            "relative_path": record.evidence_uri,
+            "sha256": record.evidence_sha256,
+            "size_bytes": size_bytes,
+            "extension": ext,
+            "content": content,
+            "json_data": json_data,
+        }
+
     def validation_summary(self, revision_id):
         revision = self.get_revision(revision_id)
         current_hash = specification_hash(revision.specification)
@@ -660,161 +709,53 @@ class StudioService:
         snapshot["calculation_runs"] = self.engineering_records.list_records("calculation", {"revision_id": revision_id})
         snapshot["registered_artifacts"] = self.engineering_records.list_records("artifact", {"revision_id": revision_id})
         text = json.dumps(snapshot, indent=2)
-        p_out_w = revision.specification.vout_v * revision.specification.iout_a if revision.specification.vout_v is not None and revision.specification.iout_a is not None else None
-        f_sw_khz = revision.specification.switching_frequency_hz / 1000 if revision.specification.switching_frequency_hz is not None else None
 
-        def display_quantity(value, unit, digits=1):
-            return f"{value:.{digits}f} {unit}" if value is not None else "NOT_EVALUATED"
-        body = f'''<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Mendex Engineering Dossier — {html.escape(product.code)} ({html.escape(revision.revision_label)})</title>
-<style>
-  body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 1040px; margin: 24px auto; padding: 24px; color: #1e1e2e; background-color: #f8fafc; line-height: 1.5; }}
-  .header-card {{ background: linear-gradient(135deg, #1e1e2e 0%, #2a2b3d 100%); color: #cdd6f4; border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }}
-  .print-btn {{ float: right; background: #0ea5e9; color: #ffffff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; text-decoration: none; }}
-  .print-btn:hover {{ background: #0284c7; }}
-  .card {{ background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }}
-  .kpi-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; }}
-  .kpi-item {{ background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; text-align: center; }}
-  .kpi-val {{ font-size: 20px; font-weight: 800; color: #0284c7; }}
-  .kpi-lbl {{ font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-top: 4px; }}
-  table {{ border-collapse: collapse; width: 100%; margin: 12px 0 20px 0; font-size: 14px; }}
-  th {{ background: #f1f5f9; color: #334155; font-weight: 700; text-align: left; padding: 10px 12px; border: 1px solid #cbd5e1; }}
-  td {{ padding: 8px 12px; border: 1px solid #e2e8f0; color: #1e293b; }}
-  tr:nth-child(even) {{ background: #f8fafc; }}
-  pre {{ background: #1e1e2e; color: #a6adc8; padding: 14px; border-radius: 6px; overflow-x: auto; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }}
-  .badge-pass {{ display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: #dcfce7; color: #15803d; border: 1px solid #86efac; font-size: 12px; }}
-  .badge-blocked {{ display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: 700; background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 12px; }}
-  .warning-box {{ background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; }}
-  .warning-box li {{ color: #92400e; margin: 4px 0; font-size: 13px; }}
-  @media print {{
-    .print-btn {{ display: none; }}
-    body {{ max-width: 100%; margin: 0; padding: 12px; background: #ffffff; color: #000; }}
-    .card, .header-card {{ box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }}
-  }}
-</style>
-</head>
-<body>
-<div class="header-card">
-  <button onclick="window.print()" class="print-btn">🖨️ Print / Save as PDF</button>
-  <h1 style="margin:0 0 6px 0; font-size:24px; color:#ffffff;">Mendex Engineering Dossier · {html.escape(product.code)}</h1>
-  <p style="margin:0; font-size:14px; color:#a6adc8;">Mendex engineering dossier | <b>Product Name:</b> {html.escape(product.name)} | <b>Revision:</b> {html.escape(revision.revision_label)} | <b>Generated:</b> {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</p>
-</div>
-<div class="card">
-  <h2 style="margin-top:0;">1. Executive Summary & Design Envelope</h2>
-  <table style="width:100%; border:none; margin:14px 0; border-collapse:separate; border-spacing:10px;">
-    <tr>
-      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
-        <div style="font-size:22px; font-weight:800; color:#0284c7;">{display_quantity(revision.specification.vin_nom_v, 'V')}</div>
-        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Input Voltage (Nom)</div>
-      </td>
-      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
-        <div style="font-size:22px; font-weight:800; color:#0284c7;">{display_quantity(revision.specification.vout_v, 'V')}</div>
-        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Output Voltage</div>
-      </td>
-      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
-        <div style="font-size:22px; font-weight:800; color:#0284c7;">{display_quantity(p_out_w, 'W')}</div>
-        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Nominal Output Power</div>
-      </td>
-    </tr>
-    <tr>
-      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
-        <div style="font-size:22px; font-weight:800; color:#0284c7;">{display_quantity(f_sw_khz, 'kHz')}</div>
-        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Switching Frequency</div>
-      </td>
-      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
-        <div style="font-size:16px; font-weight:800; color:#0284c7;">{html.escape(revision.specification.isolation_requirement or 'NOT_EVALUATED')}</div>
-        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Isolation Requirement</div>
-      </td>
-      <td style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:14px; text-align:center; width:33%;">
-        <div style="font-size:16px; font-weight:800; color:#0284c7;">{html.escape(revision.specification.standards_profile if revision.specification.standards_profile != 'UNASSIGNED' else 'NOT_EVALUATED')}</div>
-        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-top:4px;">Standards Profile</div>
-      </td>
-    </tr>
-  </table>
-</div>
-<div class="warning-box">
-  <b>Engineering Notices & Provenance Safeguards:</b>
-  <ul style="margin:6px 0 0 0; padding-left:20px;">
-    {''.join(f'<li>{html.escape(w)}</li>' for w in warnings)}
-  </ul>
-</div>
-<h2>Frozen input and evidence snapshot</h2><pre>{html.escape(text)}</pre></body></html>'''
-        table = '<h2>Manual validation history</h2><table border="1" cellpadding="8" style="border-collapse:collapse"><tr><th>Requirement</th><th>Effective status</th><th>Origin</th><th>Value</th><th>Reviewer</th></tr>'
-        for row in rows:
-            check = row["record"]["check"]
-            values = [row["check_id"], row["effective_status"], check["evidence_kind"], f'{check["measured_value"]} {check["unit"]}' if check["measured_value"] is not None else "Unavailable", check["reviewer"]]
-            table += '<tr>' + ''.join(f'<td>{html.escape(str(value))}</td>' for value in values) + '</tr>'
-        table += '</table><p>Entries are historical assessments, not a consolidated product approval.</p>'
-        
-        # If lifecycle engine is present and available, enrich report with complete lifecycle assessment & evidence register
-        lifecycle_html = ""
+        ws_p = self.workspace_path(revision)
+
+        # Gather lifecycle assessment and evidence if available
+        lifecycle_assessment = None
+        lifecycle_evidence = None
         if hasattr(self, "lifecycle"):
             try:
-                assessment = self.lifecycle.assess(product.product_id, revision.revision_id)
-                evidence = self.lifecycle.get_evidence_register(product.product_id, revision.revision_id)
-                status_color = "#1b4332" if assessment.prototype_ready else "#4a1525"
-                status_text = "Legacy readiness assessment; no fabrication authorization" if assessment.prototype_ready else "PROTOTYPE BLOCKED"
-                lifecycle_html += f"<h2>Product Engineering Lifecycle Maturity & Prototype Readiness</h2>"
-                lifecycle_html += f"<p style='font-size:16px;font-weight:bold;color:{status_color};'>Overall Status: {html.escape(assessment.overall_status.value)} — {status_text}</p>"
-                lifecycle_html += "<table border='1' cellpadding='8' style='border-collapse:collapse;width:100%;margin-bottom:20px;'>"
-                lifecycle_html += "<tr style='background:#f1f3f5;'><th>Stage #</th><th>Stage Name</th><th>Status</th><th>Evidence Records</th><th>Blockers</th></tr>"
-                for s_key, s_eval in assessment.stages.items():
-                    blk_str = "; ".join(s_eval.blockers) if s_eval.blockers else "None"
-                    lifecycle_html += f"<tr><td>#{s_eval.category_number}</td><td>{html.escape(s_eval.title)}</td><td><b>{html.escape(s_eval.status.value)}</b></td><td>{len(s_eval.evidence_records)}</td><td>{html.escape(blk_str)}</td></tr>"
-                lifecycle_html += "</table>"
-                if evidence:
-                    lifecycle_html += f"<h2>Unified Cryptographic Evidence Register ({len(evidence)} Artifacts)</h2>"
-                    lifecycle_html += "<table border='1' cellpadding='6' style='border-collapse:collapse;width:100%;font-size:13px;margin-bottom:20px;'>"
-                    lifecycle_html += "<tr style='background:#f1f3f5;'><th>Stage</th><th>Artifact Type</th><th>Source Tool</th><th>File Name</th><th>Size (B)</th><th>SHA-256 Digest</th><th>Validation</th></tr>"
-                    for rec in evidence:
-                        h_short = (rec.sha256[:16] + "...") if rec.sha256 else "N/A"
-                        lifecycle_html += f"<tr><td>{html.escape(rec.stage_id.value)}</td><td>{html.escape(rec.artifact_type.value)}</td><td>{html.escape(rec.source_tool)}</td><td>{html.escape(rec.source_file)}</td><td>{rec.file_size_bytes}</td><td><code>{html.escape(h_short)}</code></td><td>{html.escape(rec.validation_result)}</td></tr>"
-                    lifecycle_html += "</table>"
+                lifecycle_assessment = self.lifecycle.assess(product.product_id, revision.revision_id)
+                lifecycle_evidence = self.lifecycle.get_evidence_register(product.product_id, revision.revision_id)
             except Exception:
                 pass
 
-                # Enrich report with Sizing Analysis and BOM tables if available in workspace
-        sizing_html = ''
-        ws_p = self.workspace_path(revision)
-        sizing_files = list(ws_p.glob('**/*sizing*.json')) + list(ws_p.glob('**/*calc*.json'))
-        if sizing_files:
-            candidate = sizing_files[0].resolve()
-            if candidate.is_relative_to(ws_p.resolve()) and candidate.is_file() and candidate.stat().st_size <= 2 * 1024 * 1024:
-                try:
-                    s_data = json.loads(candidate.read_text(encoding="utf-8"))
-                    sizing_html = '<div class="card"><h2>2. Recorded Analytical Inputs and Outputs</h2>'
-                    sizing_html += '<p>Workspace-supplied content; source and applicability are not independently verified. Missing values remain unavailable.</p>'
-                    sizing_html += '<p>Source: ' + html.escape(candidate.relative_to(ws_p).as_posix()) + '</p>'
-                    sizing_html += '<pre>' + html.escape(json.dumps(s_data, indent=2, allow_nan=False)) + '</pre></div>'
-                except (OSError, ValueError):
-                    sizing_html = '<p>Analytical workspace data: NOT_EVALUATED (unreadable or malformed).</p>'
+        # Gather ECRs if available
+        ecrs = None
+        if hasattr(self, "ecr"):
+            try:
+                ecrs = self.ecr.list_ecrs(revision_id=str(revision_id))
+            except Exception:
+                pass
 
-        bom_html = ''
-        bom_files = list(ws_p.glob('**/*bom*.csv'))
-        if bom_files:
-            candidate = bom_files[0].resolve()
-            if candidate.is_relative_to(ws_p.resolve()) and candidate.is_file() and candidate.stat().st_size <= 2 * 1024 * 1024:
-                try:
-                    with candidate.open(encoding="utf-8", newline="") as handle:
-                        rows_b = list(csv.DictReader(handle))
-                    if rows_b:
-                        bom_html = '<div class="card"><h2>3. Recorded Bill of Materials</h2><p>Caller-supplied records; stock, ratings, prices and qualification are not independently verified.</p>'
-                        fields = ("item", "designator", "part_number", "manufacturer", "description", "qty", "extended_price_usd", "status")
-                        bom_html += '<table><tr>' + ''.join('<th>' + html.escape(field) + '</th>' for field in fields) + '</tr>'
-                        for row in rows_b:
-                            bom_html += '<tr>' + ''.join('<td>' + html.escape(str(row.get(field) or "NOT_EVALUATED")) + '</td>' for field in fields) + '</tr>'
-                        bom_html += '</table></div>'
-                except (OSError, ValueError, csv.Error):
-                    bom_html = '<p>BOM data: NOT_EVALUATED (unreadable or malformed).</p>'
+        from .dossier_generator import build_complete_dossier_html, compile_html_to_pdf
+        body = build_complete_dossier_html(
+            product=product,
+            revision=revision,
+            report=report,
+            summaries=summaries,
+            warnings=warnings,
+            snapshot=snapshot,
+            ws_dir=ws_p,
+            lifecycle_assessment=lifecycle_assessment,
+            lifecycle_evidence=lifecycle_evidence,
+            ecrs=ecrs,
+        )
 
-        body = body.replace('<h2>Frozen input and evidence snapshot</h2>', sizing_html + bom_html + '<div class="card">' + table + '</div>' + '<div class="card">' + lifecycle_html + '</div>' + '<h2>Frozen input and evidence snapshot</h2>')
         try:
             folder.mkdir(parents=True, exist_ok=False)
             (folder / "snapshot.json").write_text(text, encoding="utf-8")
             (folder / "report.html").write_text(body, encoding="utf-8")
+
+            # Automatically compile to vector-sharp PDF if headless Edge/Chrome is available
+            pdf_path = folder / "report.pdf"
+            try:
+                compile_html_to_pdf(folder / "report.html", pdf_path)
+            except Exception:
+                pass
+
             with self.connection() as db:
                 db.execute("INSERT INTO reports VALUES (?,?,?)", (str(report_id), str(revision_id), report.model_dump_json()))
         except Exception:
@@ -865,3 +806,20 @@ class StudioService:
 
     def delete_workflow(self, workflow_id):
         return self.workflows.delete_workflow(workflow_id)
+
+    def generate_laboratory_test_plan(self, revision_id):
+        from .design.test_plan_generator import generate_laboratory_test_plan
+        return generate_laboratory_test_plan(self, revision_id)
+
+    def get_laboratory_test_plan(self, revision_id):
+        from .design.test_plan_generator import get_laboratory_test_plan
+        return get_laboratory_test_plan(self, revision_id)
+
+    def generate_bom_pricing_schedule(self, revision_id, currency="USD"):
+        from .design.bom_pricing import generate_bom_pricing_schedule
+        return generate_bom_pricing_schedule(self, revision_id, currency=currency)
+
+    def get_bom_pricing_schedule(self, revision_id):
+        from .design.bom_pricing import get_bom_pricing_schedule
+        return get_bom_pricing_schedule(self, revision_id)
+

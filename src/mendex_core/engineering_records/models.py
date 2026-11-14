@@ -51,14 +51,20 @@ class ProjectUpdate(Attributed):
 
 class Requirement(Model):
     id: Identifier
-    discipline: Literal["electrical", "mechanical", "environmental", "safety", "performance", "standards"]
+    discipline: Literal["electrical", "mechanical", "environmental", "safety", "performance", "standards", "thermal", "reliability", "manufacturing"]
     description: Text
     source: Text
     acceptance_criterion: str = Field(default="", max_length=4000)
     mandatory: bool = True
     specification_field: str | None = None
     target_value: float | None = None
+    min_value: float | None = None
+    max_value: float | None = None
+    tolerance_pct: float | None = Field(default=None, ge=0)
     unit: str = Field(default="", max_length=100)
+    verification_method: Literal["simulation", "calculation", "test", "inspection", "analysis", "review"] = "simulation"
+    verification_status: Literal["UNTESTED", "NOT_EVALUATED", "PASSED", "FAILED"] = "NOT_EVALUATED"
+    verification_artifact: str | None = None
     assumptions: list[Text] = Field(default_factory=list, max_length=100)
 
     @model_validator(mode="after")
@@ -67,6 +73,8 @@ class Requirement(Model):
             raise ValueError("Unknown specification field")
         if self.target_value is not None and not self.unit:
             raise ValueError("Numerical requirements need an explicit unit")
+        if self.min_value is not None and self.max_value is not None and self.min_value > self.max_value:
+            raise ValueError("min_value cannot exceed max_value")
         return self
 
 
@@ -81,7 +89,7 @@ class RequirementsWrite(StageWrite):
 
 
 class CalculationWrite(StageWrite):
-    calculation: Literal["dowell", "losses", "steinmetz", "flyback"]
+    calculation: Literal["dowell", "losses", "steinmetz", "flyback", "semiconductor_thermal", "magnetic_thermal", "ipc2152_thermal"]
     parameters: dict
     assumptions: list[Text] = Field(min_length=1, max_length=100)
 
@@ -106,11 +114,16 @@ class ValidationWrite(StageWrite):
     check: ManualCheck
     evidence_path: str | None = Field(default=None, max_length=2000)
     expected_evidence_sha256: SHA256 | None = None
+    evidence_source: Literal["simulation", "calculation", "physical_test", "visual_inspection"] = "simulation"
 
     @model_validator(mode="after")
     def evidence(self):
         if (self.evidence_path is None) != (self.expected_evidence_sha256 is None):
             raise ValueError("Evidence path and expected digest must be supplied together")
+        if self.evidence_source == "physical_test" and self.check.evidence_kind != "MEASURED":
+            raise ValueError("Physical test evidence records must declare MEASURED evidence_kind")
+        if self.evidence_source == "physical_test" and self.evidence_path is None:
+            raise ValueError("Physical test records require an explicit measurement evidence file and digest")
         return self
 
 

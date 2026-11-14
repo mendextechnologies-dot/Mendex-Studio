@@ -1,0 +1,45 @@
+{
+  "empty_femm_json_generates_pass_99_3_margin": true,
+  "steinmetz_direct_hz_convention": {
+    "calculation_id": "369dc2bf-15c1-490e-a85b-2ba47f8da5d7",
+    "formula_id": "EQ-STEINMETZ-01",
+    "name": "Steinmetz Magnetic Core Loss",
+    "inputs": {
+      "frequency_hz": 1000.0,
+      "b_max_t": 0.1,
+      "core_volume_m3": 1e-06
+    },
+    "input_units": {
+      "frequency_hz": "Hz",
+      "b_max_t": "T",
+      "core_volume_m3": "m^3"
+    },
+    "outputs": {
+      "volumetric_loss_w_m3": 10000.000000000002,
+      "total_core_loss_w": 0.010000000000000002
+    },
+    "output_units": {
+      "volumetric_loss_w_m3": "W/m^3",
+      "total_core_loss_w": "W"
+    },
+    "origin": "calculated",
+    "verified": true,
+    "executed_at": "2026-11-14T15:17:56.424463+00:00",
+    "provenance": "src/mendex_core/intelligence/calculations.py::calculate_steinmetz_loss",
+    "reference_source": "Modified Steinmetz Equation, validated against Princeton MagNet dataset",
+    "notes": [
+      "Evaluated with parameters Cm=1, alpha=2, beta=2"
+    ]
+  },
+  "steinmetz_khz_convention": {
+    "material": "Fixture",
+    "volumetric_loss_w_m3": 10.0,
+    "total_core_loss_w": 0.0,
+    "frequency_hz": 1000.0,
+    "b_peak_t": 0.1,
+    "core_volume_m3": 1e-06,
+    "method": "Steinmetz Equation: Pv = k * f^alpha * B^beta",
+    "unit": "Watts (W)"
+  },
+  "note": "Identical raw coefficient numbers without dimensioned coefficient metadata are interpreted differently; this is not a physical material benchmark."
+}

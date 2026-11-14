@@ -3,6 +3,9 @@ import { api } from '../api/client';
 import { usePolling } from '../usePolling';
 import type { ProjectDetailData } from '../api/types';
 import { RevisionEngineeringPanel, effectiveStageStatus, validationStatus } from '../components/RevisionEngineeringPanel';
+import { LaboratoryTestPlanCard } from '../components/LaboratoryTestPlanCard';
+import { BOMPricingScheduleCard } from '../components/BOMPricingScheduleCard';
+import { RecordFormView } from '../components/RecordFormView';
 import {
   ArrowLeft,
   LayoutDashboard,
@@ -42,6 +45,7 @@ import {
   Filter,
   Eye,
   CheckCheck,
+  Copy,
   FileCheck,
 } from 'lucide-react';
 
@@ -96,6 +100,7 @@ export const ProjectDetailView = ({
   error = '',
   selectedRevisionId,
   onSelectRevision,
+  onReload,
 }: {
   projectId: string;
   onBack: () => void;
@@ -103,6 +108,7 @@ export const ProjectDetailView = ({
   error?: string;
   selectedRevisionId?: string | null;
   onSelectRevision?: (revId: string) => void;
+  onReload?: () => void;
 }) => {
   const [tab, setTab] = useState<TabId>(() => {
     const param = new URLSearchParams(location.search).get('tab') as TabId;
@@ -125,6 +131,78 @@ export const ProjectDetailView = ({
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [isGeneratingBom, setIsGeneratingBom] = useState(false);
 
+  // In-App Dossier Modal State
+  const [activeReportDossier, setActiveReportDossier] = useState<{
+    report_id: string;
+    revision_id: string;
+    generated_at: string | null;
+    html_content: string;
+    has_pdf: boolean;
+    pdf_size_bytes: number;
+  } | null>(null);
+  const [isLoadingDossier, setIsLoadingDossier] = useState(false);
+
+  const handlePreviewDossier = async (reportId: string) => {
+    setIsLoadingDossier(true);
+    setActionError('');
+    try {
+      const rep = await api.getReport(reportId);
+      setActiveReportDossier(rep);
+    } catch (e: any) {
+      setActionError(e.message || String(e));
+    } finally {
+      setIsLoadingDossier(false);
+    }
+  };
+
+  // In-Browser Evidence Modal State
+  const [activeEvidence, setActiveEvidence] = useState<any | null>(null);
+  const [isLoadingEvidence, setIsLoadingEvidence] = useState(false);
+  const [evidenceViewMode, setEvidenceViewMode] = useState<'form' | 'raw'>('form');
+  const [copiedEvidenceContent, setCopiedEvidenceContent] = useState(false);
+
+  const handleOpenEvidence = async (recordId: string) => {
+    setIsLoadingEvidence(true);
+    setActionError('');
+    try {
+      const data = await api.getEvidence(recordId);
+      setActiveEvidence(data);
+      setEvidenceViewMode('form');
+    } catch (e: any) {
+      try {
+        await api.openEvidence(recordId);
+      } catch (err: any) {
+        setActionError(e.message || String(e));
+      }
+    } finally {
+      setIsLoadingEvidence(false);
+    }
+  };
+
+  const handleOpenInNewTab = async (recordId: string) => {
+    try {
+      const data = await api.getEvidence(recordId);
+      const win = window.open('', '_blank');
+      if (!win) return;
+      const title = `${data.check_id || 'Evidence'} - ${data.evidence_filename}`;
+      const isJson = !!data.json_data;
+      const formatted = isJson ? JSON.stringify(data.json_data, null, 2) : data.content;
+      win.document.title = title;
+      win.document.body.style.margin = '0';
+      win.document.body.style.padding = '24px';
+      win.document.body.style.fontFamily = 'monospace';
+      win.document.body.style.backgroundColor = '#0f172a';
+      win.document.body.style.color = '#f8fafc';
+      win.document.body.style.fontSize = '12px';
+      win.document.body.style.lineHeight = '1.5';
+      win.document.body.style.whiteSpace = 'pre-wrap';
+      win.document.body.style.wordBreak = 'break-word';
+      win.document.body.innerText = formatted;
+    } catch (e: any) {
+      setActionError(e.message || String(e));
+    }
+  };
+
   const handleGenerateBom = async () => {
     if (!data?.revision?.revision_id) return;
     setIsGeneratingBom(true);
@@ -138,6 +216,24 @@ export const ProjectDetailView = ({
       setTimeout(() => setActionError(''), 6000);
     } finally {
       setIsGeneratingBom(false);
+    }
+  };
+
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+
+  const handleGenerateReport = async () => {
+    if (!data?.revision?.revision_id) return;
+    setIsGeneratingReport(true);
+    setActionError('');
+    try {
+      const res = await api.generateReport(data.revision.revision_id);
+      setMessage(res.pdf_available ? 'Complete Product Engineering Dossier (PDF & HTML) compiled successfully.' : 'Engineering dossier compiled.');
+      setTimeout(() => setMessage(''), 6000);
+    } catch (e: any) {
+      setActionError(String(e));
+      setTimeout(() => setActionError(''), 6000);
+    } finally {
+      setIsGeneratingReport(false);
     }
   };
 
@@ -971,7 +1067,8 @@ export const ProjectDetailView = ({
             {/* TAB 6: DESIGNS */}
             {tab === 'designs' && (
               <RevisionEngineeringPanel section="designs" data={data}
-                onOpenFile={(path) => action(() => api.openFile(data.revision.revision_id, path))} />
+                onOpenFile={(path) => action(() => api.openFile(data.revision.revision_id, path))}
+                onRefresh={onReload} />
             )}
 
             {/* TAB 7: FILES */}
@@ -1063,11 +1160,11 @@ export const ProjectDetailView = ({
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <FileCode size={16} color="#1d4ed8" />
                             <div>
-                              <div style={{ fontSize: '13px', fontWeight: 600, color: '#172033', fontFamily: 'monospace' }}>
-                                {f.relative_path}
+                              <div style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
+                                {f.relative_path.split(/[\\/]/).pop() || f.relative_path}
                               </div>
-                              <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>
-                                Size: {formatBytes(f.size_bytes)} ({f.size_bytes} bytes)
+                              <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px', fontFamily: 'monospace' }}>
+                                {f.relative_path} · {formatBytes(f.size_bytes)}
                               </div>
                             </div>
                           </div>
@@ -1098,6 +1195,12 @@ export const ProjectDetailView = ({
             {/* TAB 8: VALIDATION */}
             {tab === 'validation' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                {/* Authoritative Laboratory Bring-Up & Test Protocol (Option 2 / G16, G17, G23) */}
+                <LaboratoryTestPlanCard
+                  revisionId={data.revision.revision_id}
+                  projectCode={data.product.code}
+                  projectName={data.product.name}
+                />
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
@@ -1168,9 +1271,19 @@ export const ProjectDetailView = ({
                                 className="btn btn-secondary"
                                 style={{ fontSize: '11px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}
                                 disabled={!rec.record_id}
-                                onClick={() => action(() => api.openEvidence(rec.record_id))}
+                                onClick={() => handleOpenEvidence(rec.record_id)}
                               >
-                                <ExternalLink size={12} /> Open Evidence Dossier
+                                <Eye size={12} /> View Evidence in Browser
+                              </button>
+
+                              <button
+                                className="btn btn-secondary"
+                                style={{ fontSize: '11px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                                disabled={!rec.record_id}
+                                onClick={() => handleOpenInNewTab(rec.record_id)}
+                                title="Open evidence in a new browser tab"
+                              >
+                                <ExternalLink size={12} /> New Browser Tab
                               </button>
 
                             </div>
@@ -1266,14 +1379,39 @@ export const ProjectDetailView = ({
             {/* TAB 10: REPORTS */}
             {tab === 'reports' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <div>
-                  <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
-                    Engineering Dossiers & Reports
-                  </h3>
-                  <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
-                    Compilation of formal engineering reports, stage reviews, and export packages.
-                  </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
+                      Complete Product Engineering Dossiers & Reports
+                    </h3>
+                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
+                      Publication-grade vector PDF dossiers with embedded KiCad schematics, 2D PCB layout, 3D raytrace, SPICE waveforms, FEMM FEA, and production BOM.
+                    </p>
+                  </div>
+                  <button
+                    className="btn btn-primary"
+                    style={{ fontSize: '12px', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                    onClick={handleGenerateReport}
+                    disabled={isGeneratingReport}
+                  >
+                    <FileText size={14} className={isGeneratingReport ? 'spin' : ''} />
+                    {isGeneratingReport ? 'Compiling Dossier…' : 'Compile Complete Dossier (PDF)'}
+                  </button>
                 </div>
+
+                {/* Production BOM Cost Rollup & Purchasing Intelligence (Option 3 / G05) */}
+                <BOMPricingScheduleCard
+                  revisionId={data.revision.revision_id}
+                  projectCode={data.product.code}
+                  projectName={data.product.name}
+                />
+
+                {/* Authoritative Laboratory Test Plan Protocol (Option 2 / G16, G17, G23) */}
+                <LaboratoryTestPlanCard
+                  revisionId={data.revision.revision_id}
+                  projectCode={data.product.code}
+                  projectName={data.product.name}
+                />
 
                 {/* Production BOM Deliverables Header in Reports Tab */}
                 <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -1349,14 +1487,30 @@ export const ProjectDetailView = ({
                           </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
+                          <button
+                            className="btn btn-primary"
+                            disabled={!r.available || r.integrity === 'FAILED' || isLoadingDossier}
+                            onClick={() => handlePreviewDossier(r.report.report_id)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+                          >
+                            <Eye size={12} className={isLoadingDossier ? 'spin' : ''} /> Preview Dossier
+                          </button>
                           <button
                             className="btn btn-secondary"
                             disabled={!r.available || r.integrity === 'FAILED'}
-                            onClick={() => action(() => api.openReport(r.report.report_id))}
+                            onClick={() => action(() => api.openReport(r.report.report_id, 'pdf'))}
                             style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
                           >
-                            <ExternalLink size={12} /> Open report
+                            <FileText size={12} /> Open Vector PDF
+                          </button>
+                          <button
+                            className="btn btn-secondary"
+                            disabled={!r.available || r.integrity === 'FAILED'}
+                            onClick={() => action(() => api.openReport(r.report.report_id, 'html'))}
+                            style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+                          >
+                            <ExternalLink size={12} /> Open HTML
                           </button>
                           <button
                             className="btn btn-secondary"
@@ -1691,6 +1845,406 @@ export const ProjectDetailView = ({
               </div>
             </div>
           )}
+
+          {/* 6. IN-BROWSER EVIDENCE DOSSIER VIEWER MODAL */}
+          {activeEvidence && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                backgroundColor: 'rgba(5, 7, 13, 0.85)',
+                backdropFilter: 'blur(4px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 9999,
+                padding: '20px',
+              }}
+              onClick={() => setActiveEvidence(null)}
+            >
+              <div
+                style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '10px',
+                  width: '100%',
+                  maxWidth: '920px',
+                  maxHeight: '90vh',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflow: 'hidden',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+                  border: '1px solid var(--border)',
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Modal Header */}
+                <div
+                  style={{
+                    padding: '16px 20px',
+                    borderBottom: '1px solid var(--border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    backgroundColor: '#f8fafc',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <ShieldCheck size={20} color="#059669" />
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>
+                          {activeEvidence.check_id || 'Validation Evidence'}
+                        </h4>
+                        <span
+                          className={`badge ${
+                            activeEvidence.status === 'PASS' ? 'badge-green' : 'badge-yellow'
+                          }`}
+                        >
+                          {activeEvidence.status}
+                        </span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>
+                        File: <strong>{activeEvidence.evidence_filename}</strong> ({formatBytes(activeEvidence.size_bytes)})
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {activeEvidence.json_data && (
+                      <div style={{ display: 'inline-flex', background: '#e2e8f0', borderRadius: 4, padding: 2 }}>
+                        <button
+                          type="button"
+                          onClick={() => setEvidenceViewMode('form')}
+                          style={{
+                            padding: '3px 8px',
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            border: 'none',
+                            borderRadius: 3,
+                            cursor: 'pointer',
+                            background: evidenceViewMode === 'form' ? '#ffffff' : 'transparent',
+                            color: evidenceViewMode === 'form' ? '#1e293b' : '#64748b',
+                          }}
+                        >
+                          Form View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEvidenceViewMode('raw')}
+                          style={{
+                            padding: '3px 8px',
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            border: 'none',
+                            borderRadius: 3,
+                            cursor: 'pointer',
+                            background: evidenceViewMode === 'raw' ? '#ffffff' : 'transparent',
+                            color: evidenceViewMode === 'raw' ? '#1e293b' : '#64748b',
+                          }}
+                        >
+                          Raw Content
+                        </button>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      style={{ fontSize: '11px', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                      onClick={() => {
+                        const str = activeEvidence.json_data
+                          ? JSON.stringify(activeEvidence.json_data, null, 2)
+                          : activeEvidence.content;
+                        navigator.clipboard.writeText(str);
+                        setCopiedEvidenceContent(true);
+                        setTimeout(() => setCopiedEvidenceContent(false), 2000);
+                      }}
+                      title="Copy content"
+                    >
+                      {copiedEvidenceContent ? <Check size={12} color="#10b981" /> : <Copy size={12} />}
+                      <span>{copiedEvidenceContent ? 'Copied' : 'Copy'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      style={{ fontSize: '11px', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                      onClick={() => handleOpenInNewTab(activeEvidence.record_id)}
+                      title="Open in new browser tab"
+                    >
+                      <ExternalLink size={12} />
+                      <span>New Tab</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveEvidence(null)}
+                      style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: '4px' }}
+                      title="Close modal"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modal Body */}
+                <div style={{ padding: '16px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+                  {/* Metadata Banner */}
+                  <div
+                    style={{
+                      background: '#f8fafc',
+                      padding: '10px 14px',
+                      borderRadius: 6,
+                      border: '1px solid #e2e8f0',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: 8,
+                      fontSize: '11px',
+                      color: '#475569',
+                    }}
+                  >
+                    <div>Reviewer: <strong style={{ color: '#1e293b' }}>{activeEvidence.reviewer || 'Lead Engineer'}</strong> · Rule: <strong style={{ color: '#1e293b' }}>{activeEvidence.rule_version || 'KiCad'}</strong></div>
+                    <div style={{ fontFamily: 'monospace' }}>SHA-256: {activeEvidence.sha256}</div>
+                  </div>
+
+                  {activeEvidence.notes && (
+                    <p style={{ margin: 0, fontSize: '12px', color: '#334155', lineHeight: '1.4' }}>
+                      {activeEvidence.notes}
+                    </p>
+                  )}
+
+                  {/* Content View */}
+                  {activeEvidence.json_data && evidenceViewMode === 'form' ? (
+                    <RecordFormView record={activeEvidence.json_data} defaultMode="form" />
+                  ) : (
+                    <pre
+                      style={{
+                        margin: 0,
+                        padding: '14px',
+                        background: '#0f172a',
+                        color: '#f8fafc',
+                        borderRadius: '6px',
+                        fontSize: '11px',
+                        fontFamily: 'monospace',
+                        lineHeight: '1.45',
+                        maxHeight: '480px',
+                        overflowY: 'auto',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        userSelect: 'text',
+                      }}
+                    >
+                      {activeEvidence.json_data
+                        ? JSON.stringify(activeEvidence.json_data, null, 2)
+                        : activeEvidence.content || '(Empty file)'}
+                    </pre>
+                  )}
+                </div>
+
+                {/* Modal Footer */}
+                <div
+                  style={{
+                    padding: '12px 20px',
+                    borderTop: '1px solid var(--border)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: '#f8fafc',
+                  }}
+                >
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    style={{ fontSize: '11px', padding: '4px 10px' }}
+                    onClick={() => api.openEvidence(activeEvidence.record_id)}
+                    title="Launch with system desktop browser"
+                  >
+                    Launch in Browser / App
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ fontSize: '11px', padding: '4px 16px' }}
+                    onClick={() => setActiveEvidence(null)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. IN-APP COMPLETE PRODUCT ENGINEERING DOSSIER (CPED) MODAL */}
+          {activeReportDossier && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                backgroundColor: 'rgba(5, 7, 13, 0.85)',
+                backdropFilter: 'blur(4px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 9999,
+                padding: '20px',
+              }}
+            >
+              <div
+                className="card"
+                style={{
+                  width: '100%',
+                  maxWidth: '1240px',
+                  height: '92vh',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  boxShadow: '0 25px 70px rgba(0,0,0,0.35)',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* Modal Header */}
+                <div
+                  style={{
+                    padding: '14px 20px',
+                    borderBottom: '1px solid #e2e8f0',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    background: '#f8fafc',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '6px',
+                        background: 'rgba(37, 99, 235, 0.1)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#2563eb',
+                      }}
+                    >
+                      <FileText size={20} />
+                    </div>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                          Complete Product Engineering Dossier (CPED)
+                        </h3>
+                        {activeReportDossier.has_pdf && (
+                          <span
+                            style={{
+                              fontSize: '11px',
+                              padding: '2px 8px',
+                              borderRadius: '4px',
+                              background: '#dcfce7',
+                              color: '#15803d',
+                              fontWeight: 700,
+                              border: '1px solid #bbf7d0',
+                            }}
+                          >
+                            Vector PDF Ready ({Math.round(activeReportDossier.pdf_size_bytes / 1024)} KB)
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                        Report ID: <code style={{ color: '#334155' }}>{activeReportDossier.report_id.slice(0, 8)}…</code> · Revision: <code style={{ color: '#334155' }}>{activeReportDossier.revision_id.slice(0, 8)}…</code> · Compiled: {activeReportDossier.generated_at ? new Date(activeReportDossier.generated_at).toLocaleString() : 'N/A'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {activeReportDossier.has_pdf && (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                        onClick={() => api.openReport(activeReportDossier.report_id, 'pdf')}
+                        title="Open in system vector PDF viewer"
+                      >
+                        <FileText size={12} />
+                        <span>Open in PDF Viewer</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                      onClick={() => api.openReport(activeReportDossier.report_id, 'html')}
+                      title="Open in browser window"
+                    >
+                      <ExternalLink size={12} />
+                      <span>Open in Browser</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveReportDossier(null)}
+                      style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: '6px' }}
+                      title="Close preview"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modal Body: Embedded Sandboxed Iframe */}
+                <div style={{ flex: 1, position: 'relative', backgroundColor: '#f1f5f9' }}>
+                  <iframe
+                    srcDoc={activeReportDossier.html_content}
+                    title="Engineering Dossier Preview"
+                    sandbox="allow-same-origin allow-scripts"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      border: 'none',
+                      backgroundColor: '#ffffff',
+                    }}
+                  />
+                </div>
+
+                {/* Modal Footer */}
+                <div
+                  style={{
+                    padding: '10px 20px',
+                    borderTop: '1px solid #e2e8f0',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: '#f8fafc',
+                    fontSize: '11px',
+                    color: '#64748b',
+                  }}
+                >
+                  <div>
+                    Authoritative Dossier · KiCad 10 Schematic & 2D Layout · SPICE Oscilloscope · FEMM 4.2 FEA · IPC-9592B BOM · RS-274X Gerbers
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    style={{ fontSize: '11px', padding: '4px 14px' }}
+                    onClick={() => setActiveReportDossier(null)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
@@ -1710,6 +2264,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
       error={error}
       selectedRevisionId={selectedRevisionId}
       onSelectRevision={setSelectedRevisionId}
+      onReload={load}
     />
   );
 };

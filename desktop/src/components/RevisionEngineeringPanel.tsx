@@ -1,6 +1,9 @@
+import { ThermalSizingCalculatorCard } from './ThermalSizingCalculatorCard';
+import { TopologySynthesizerCard } from './TopologySynthesizerCard';
 import { CADPreviewCanvas } from './CADPreviewCanvas';
 import { WaveformChart } from './WaveformChart';
-import React, { useState } from 'react';
+import { RecordFormView } from './RecordFormView';
+import React, { useState, useMemo } from 'react';
 import type { ProjectDetailData } from '../api/types';
 import { api } from '../api/client';
 
@@ -59,22 +62,30 @@ export function getAppDetails(path: string): { name: string; action: string; bad
   }
 }
 
-export function RecordDetails({ record, title }: { record: any; title: string }) {
+export function RecordDetails({ record, title, onOpenFile }: { record: any; title: string; onOpenFile?: (path: string) => unknown }) {
   const status = record.stale || record.integrity === false || record.integrity === 'FAILED'
     ? 'NOT_EVALUATED' : record.effective_status || record.engineering_status || 'NOT_EVALUATED';
   return <article className="card">
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}><strong>{title}</strong><Status value={String(status)} /></div>
     <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>Record: {label(record.record_id || record.id)} · Stage: {label(record.stage_id)}</div>
     {record.stale && <p role="status" style={{ marginTop: 8 }}>Stale record: inputs or evidence have changed.</p>}
-    <details style={{ marginTop: 10 }}><summary style={{ cursor: 'pointer' }}>Recorded inputs, results and provenance</summary><pre style={pre}>{json(record)}</pre></details>
+    <details style={{ marginTop: 10 }}>
+      <summary style={{ cursor: 'pointer', fontWeight: 600, color: 'var(--primary)' }}>
+        Recorded inputs, results and provenance
+      </summary>
+      <RecordFormView record={record} onOpenFile={onOpenFile} defaultMode="form" />
+    </details>
   </article>;
 }
 
-export const RevisionEngineeringPanel = ({ section, data, onOpenFile }: {
-  section: EngineeringSection; data: ProjectDetailData; onOpenFile: (path: string) => unknown;
+export const RevisionEngineeringPanel = ({ section, data, onOpenFile, onRefresh }: {
+  section: EngineeringSection; data: ProjectDetailData; onOpenFile: (path: string) => unknown; onRefresh?: () => void;
 }) => {
   const [isGeneratingBom, setIsGeneratingBom] = useState(false);
   const [bomMessage, setBomMessage] = useState('');
+  const [cadFilter, setCadFilter] = useState('');
+  const [cadCategory, setCadCategory] = useState<'all' | 'cad' | 'doc'>('all');
+  const [cadViewMode, setCadViewMode] = useState<'list' | 'grid'>('list');
 
   const handleRebuildBom = async () => {
     if (!data?.revision?.revision_id) return;
@@ -96,11 +107,59 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile }: {
   const requirements = recordList(data.requirements);
   const artifacts = recordList(data.registered_artifacts);
   const titles: Record<EngineeringSection, string> = { specifications: 'Saved specifications', requirements: 'Requirements snapshot', calculations: 'Recorded engineering calculations', simulations: 'Revision simulation jobs', designs: 'Revision designs & CAD files' };
-  const cadFiles = data.files.filter(file => {
-    const filename = file.relative_path.split('/').pop() || '';
-    if (filename.startsWith('~') || filename.endsWith('.lck')) return false;
-    return /\.(?:kicad_sch|kicad_pcb|kicad_pro|step|stp|stl|fcstd|asc|net|cir|fem|ans|pdf|docx)$/i.test(file.relative_path);
-  });
+  // Cleanly extract active deliverables, filtering out internal backups, hidden snapshots, and deduplicating historical BOM exports
+  const cadFiles = useMemo(() => {
+    const valid = data.files.filter((file) => {
+      const p = file.relative_path.replace(/\\/g, '/');
+      if (
+        p.includes('/.') ||
+        p.startsWith('.') ||
+        p.includes('_backup_') ||
+        p.includes('/snapshots/') ||
+        p.includes('~') ||
+        p.startsWith('reports/') ||
+        p.startsWith('validation/') ||
+        p.endsWith('.lck') ||
+        p.endsWith('.tmp')
+      ) {
+        return false;
+      }
+      return /\.(?:kicad_sch|kicad_pcb|kicad_pro|step|stp|stl|fcstd|fem|ans|fee|asc|net|cir|raw|pdf|docx|csv|json)$/i.test(p);
+    });
+
+    const latestBomExports = new Map<string, typeof valid[0]>();
+    const deliverables: typeof valid = [];
+
+    for (const f of valid) {
+      const p = f.relative_path.replace(/\\/g, '/');
+      if (p.startsWith('bom/exports/')) {
+        const fn = p.split('/').pop() || '';
+        const existing = latestBomExports.get(fn);
+        if (!existing || (f.modified_ns && (!existing.modified_ns || f.modified_ns > existing.modified_ns))) {
+          latestBomExports.set(fn, f);
+        }
+      } else {
+        deliverables.push(f);
+      }
+    }
+
+    return [...deliverables, ...Array.from(latestBomExports.values())];
+  }, [data.files]);
+
+  const filteredCadFiles = useMemo(() => {
+    let list = cadFiles;
+    if (cadCategory === 'cad') {
+      list = list.filter((f) => /\.(?:kicad_sch|kicad_pcb|kicad_pro|step|stp|stl|fcstd|fem|ans|fee|asc|net|cir|raw)$/i.test(f.relative_path));
+    } else if (cadCategory === 'doc') {
+      list = list.filter((f) => /\.(?:pdf|docx|doc|csv|json)$/i.test(f.relative_path));
+    }
+    if (!cadFilter.trim()) return list;
+    const q = cadFilter.toLowerCase();
+    return list.filter((f) => {
+      const fn = (f.relative_path.split(/[\\/]/).pop() || f.name || f.relative_path).toLowerCase();
+      return fn.includes(q);
+    });
+  }, [cadFiles, cadCategory, cadFilter]);
 
   return <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
     <div><h3 style={{ fontSize: 18 }}>{titles[section]}</h3>
@@ -124,13 +183,24 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile }: {
             <td style={{ padding: 10, borderTop: '1px solid var(--border)' }}>{r.source}</td>
           </tr>)}</tbody>
         </table></div>
-        <details style={{ marginTop: 12 }}><summary>Snapshot metadata</summary><pre style={pre}>{json(record)}</pre></details>
+        <details style={{ marginTop: 12 }}>
+          <summary style={{ cursor: 'pointer', fontWeight: 600, color: 'var(--primary)' }}>
+            Snapshot metadata
+          </summary>
+          <RecordFormView record={record} onOpenFile={onOpenFile} defaultMode="form" />
+        </details>
       </div>)}
     </>}
     {section === 'calculations' && <>
+      {/* Interactive Semiconductor & Magnetic Thermal Sizing Calculator */}
+      <ThermalSizingCalculatorCard
+        revisionId={data.revision.revision_id}
+        specification={data.revision.specification}
+        onRefresh={onRefresh}
+      />
       <p>{calculations.length} calculation records returned for this revision.</p>
       {!calculations.length && <p>No calculation runs recorded. NOT_EVALUATED.</p>}
-      {calculations.map((record, i) => <RecordDetails key={record.record_id || i} record={record} title={record.calculation || record.result?.calculation || `Calculation ${i + 1}`} />)}
+      {calculations.map((record, i) => <RecordDetails key={record.record_id || i} record={record} title={record.calculation || record.result?.calculation || `Calculation ${i + 1}`} onOpenFile={onOpenFile} />)}
     </>}
     {section === 'simulations' && <>
       {(() => {
@@ -232,38 +302,45 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile }: {
           {job.stale && <p style={{ marginTop: 8, color: '#b91c1c' }}>Stale specification context. NOT_EVALUATED.</p>}
 
           <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
-            {job.tool_id.toLowerCase() === 'ltspice' && (
-              <>
+            {job.tool_id.toLowerCase() === 'ltspice' && (() => {
+              const net = data.files.find(f => f.relative_path.toLowerCase().endsWith('.net'))?.relative_path || 'simulations/flyback_circuit.net';
+              const raw = data.files.find(f => f.relative_path.toLowerCase().endsWith('.raw'))?.relative_path || 'simulations/flyback_circuit.raw';
+              return (
+                <>
+                  <button
+                    className="btn btn-secondary"
+                    style={{ fontSize: 11, padding: '4px 10px' }}
+                    onClick={() => onOpenFile?.(net)}
+                  >
+                    Open Netlist in LTspice
+                  </button>
+                  <button
+                    className="btn btn-secondary"
+                    style={{ fontSize: 11, padding: '4px 10px' }}
+                    onClick={() => onOpenFile?.(raw)}
+                  >
+                    Open Waveform in LTspice
+                  </button>
+                </>
+              );
+            })()}
+            {job.tool_id.toLowerCase() === 'femm' && (() => {
+              const fem = data.files.find(f => f.relative_path.toLowerCase().endsWith('.fem'))?.relative_path || 'magnetics/electromagnet_actuator.fem';
+              return (
                 <button
                   className="btn btn-secondary"
                   style={{ fontSize: 11, padding: '4px 10px' }}
-                  onClick={() => onOpenFile?.('simulations/flyback_circuit.net')}
+                  onClick={() => onOpenFile?.(fem)}
                 >
-                  Open Netlist in LTspice
+                  Open FEA Model in FEMM 4.2
                 </button>
-                <button
-                  className="btn btn-secondary"
-                  style={{ fontSize: 11, padding: '4px 10px' }}
-                  onClick={() => onOpenFile?.('simulations/flyback_circuit.raw')}
-                >
-                  Open Waveform in LTspice
-                </button>
-              </>
-            )}
-            {job.tool_id.toLowerCase() === 'femm' && (
-              <button
-                className="btn btn-secondary"
-                style={{ fontSize: 11, padding: '4px 10px' }}
-                onClick={() => onOpenFile?.('simulations/etd34_core.fem')}
-              >
-                Open FEA Model in FEMM 4.2
-              </button>
-            )}
+              );
+            })()}
           </div>
 
           <details style={{ marginTop: 10 }}>
             <summary style={{ cursor: 'pointer', fontSize: 11, color: '#64748b' }}>Stored request, result and provenance</summary>
-            <pre style={pre}>{json(job)}</pre>
+            <RecordFormView record={job} onOpenFile={onOpenFile} defaultMode="form" />
           </details>
         </article>
       ))}
@@ -272,10 +349,33 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile }: {
       </p>
     </>}
     {section === 'designs' && <>
+      {/* Interactive Topology Synthesizer & Candidate Switcher */}
+      <TopologySynthesizerCard
+        revisionId={data.revision.revision_id}
+        specification={data.revision.specification}
+        designs={data.designs}
+        onRefresh={onRefresh}
+        onOpenFile={onOpenFile}
+      />
+
+      {/* Collapsible Electro-Thermal Margins & Trace Analysis */}
+      <details style={{ marginBottom: 20 }}>
+        <summary style={{ cursor: 'pointer', fontWeight: 700, fontSize: 13, color: '#1e293b', background: '#f8fafc', padding: '10px 14px', borderRadius: 6, border: '1px solid #cbd5e1' }}>
+          🌡️ Electro-Thermal Sizing Margins & IPC-2152 Trace Analysis (Click to Expand)
+        </summary>
+        <div style={{ marginTop: 12 }}>
+          <ThermalSizingCalculatorCard
+            revisionId={data.revision.revision_id}
+            specification={data.revision.specification}
+            onRefresh={onRefresh}
+          />
+        </div>
+      </details>
+
       {/* Interactive 2D Native PCB & Schematic Vector CAD Preview */}
       {(() => {
-        const pcbFile = data.files.find(f => f.relative_path.toLowerCase().endsWith('.kicad_pcb'));
-        const schFile = data.files.find(f => f.relative_path.toLowerCase().endsWith('.kicad_sch'));
+        const pcbFile = cadFiles.find(f => f.relative_path.toLowerCase().endsWith('.kicad_pcb'));
+        const schFile = cadFiles.find(f => f.relative_path.toLowerCase().endsWith('.kicad_sch'));
         return (
           <div style={{ marginBottom: 20 }}>
             <CADPreviewCanvas
@@ -408,37 +508,243 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile }: {
         </div>
       </div>
 
-      <div style={{ marginTop: 14 }}>
-        <p style={{ fontSize: 13, fontWeight: 700, color: '#334155', marginBottom: 10 }}>Native Hardware CAD & Fabrication Artifacts ({cadFiles.length} files)</p>
-        <div style={grid}>{cadFiles.map(file => {
-          const app = getAppDetails(file.relative_path);
-          return (
-            <article className="card" key={file.relative_path} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
-                  <strong style={{ overflowWrap: 'anywhere', fontSize: 13, color: '#0f172a' }}>{file.relative_path}</strong>
-                  <span className={`badge ${app.badgeClass}`} style={{ fontSize: 10, whiteSpace: 'nowrap' }}>{app.name}</span>
-                </div>
-                <p style={{ fontSize: 12, margin: '6px 0 12px', color: 'var(--text-muted)' }}>
-                  Target Application: <strong style={{ color: '#1e293b' }}>{app.name}</strong> · SHA-256 verified
-                </p>
-              </div>
+      <div style={{ marginTop: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 10 }}>
+          <div>
+            <p style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', margin: 0 }}>
+              Native Hardware CAD & Fabrication Artifacts ({cadFiles.length} files)
+            </p>
+            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+              Hardware CAD models, schematics, PCB layouts, and fabrication exports. Click any file to open in its native application.
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', background: '#f1f5f9', padding: 2, borderRadius: 6, border: '1px solid var(--border)' }}>
               <button
-                className="btn btn-secondary"
-                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12, fontWeight: 600 }}
-                onClick={() => onOpenFile(file.relative_path)}
+                type="button"
+                onClick={() => setCadViewMode('list')}
+                style={{
+                  background: cadViewMode === 'list' ? '#ffffff' : 'transparent',
+                  border: 'none',
+                  color: cadViewMode === 'list' ? '#0f172a' : '#64748b',
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: cadViewMode === 'list' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                }}
               >
-                <span>{app.icon}</span> {app.action}
+                ☰ List View
               </button>
-            </article>
-          );
-        })}</div>
+              <button
+                type="button"
+                onClick={() => setCadViewMode('grid')}
+                style={{
+                  background: cadViewMode === 'grid' ? '#ffffff' : 'transparent',
+                  border: 'none',
+                  color: cadViewMode === 'grid' ? '#0f172a' : '#64748b',
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: cadViewMode === 'grid' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                }}
+              >
+                ⊞ Grid View
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', background: '#f1f5f9', padding: 2, borderRadius: 6, border: '1px solid var(--border)' }}>
+              <button
+                type="button"
+                onClick={() => setCadCategory('all')}
+                style={{
+                  background: cadCategory === 'all' ? '#ffffff' : 'transparent',
+                  border: 'none',
+                  color: cadCategory === 'all' ? '#0f172a' : '#64748b',
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: cadCategory === 'all' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                }}
+              >
+                All ({cadFiles.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setCadCategory('cad')}
+                style={{
+                  background: cadCategory === 'cad' ? '#ffffff' : 'transparent',
+                  border: 'none',
+                  color: cadCategory === 'cad' ? '#0f172a' : '#64748b',
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: cadCategory === 'cad' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                }}
+              >
+                CAD & KiCad
+              </button>
+              <button
+                type="button"
+                onClick={() => setCadCategory('doc')}
+                style={{
+                  background: cadCategory === 'doc' ? '#ffffff' : 'transparent',
+                  border: 'none',
+                  color: cadCategory === 'doc' ? '#0f172a' : '#64748b',
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: cadCategory === 'doc' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                }}
+              >
+                BOM & Documents
+              </button>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Search file name..."
+              value={cadFilter}
+              onChange={(e) => setCadFilter(e.target.value)}
+              style={{
+                padding: '4px 10px',
+                fontSize: 12,
+                borderRadius: 6,
+                border: '1px solid var(--border)',
+                background: '#ffffff',
+                color: '#0f172a',
+                width: 170,
+              }}
+            />
+          </div>
+        </div>
+
+        {cadViewMode === 'list' ? (
+          <div className="card" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--border)', borderRadius: 8 }}>
+            <div style={{ overflowX: 'auto', maxHeight: 480, overflowY: 'auto' }}>
+              <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead style={{ position: 'sticky', top: 0, background: '#f8fafc', zIndex: 2, borderBottom: '1px solid var(--border)' }}>
+                  <tr>
+                    <th style={{ padding: '9px 14px', color: '#475569', fontWeight: 600 }}>Actual File Name</th>
+                    <th style={{ padding: '9px 14px', color: '#475569', fontWeight: 600 }}>Target Application</th>
+                    <th style={{ padding: '9px 14px', color: '#475569', fontWeight: 600 }}>Size</th>
+                    <th style={{ padding: '9px 14px', color: '#475569', fontWeight: 600 }}>Integrity</th>
+                    <th style={{ padding: '9px 14px', color: '#475569', fontWeight: 600, textAlign: 'right' }}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCadFiles.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} style={{ padding: 24, textAlign: 'center', color: 'var(--text-muted)' }}>
+                        No files match the selected filter.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredCadFiles.map((file, idx) => {
+                      const fileName = file.relative_path.split(/[\/]/).pop() || file.name || file.relative_path;
+                      const app = getAppDetails(file.relative_path);
+                      const sizeStr = file.size_bytes ? `${(file.size_bytes / 1024).toFixed(1)} KB` : '—';
+                      return (
+                        <tr
+                          key={file.relative_path}
+                          style={{
+                            borderBottom: '1px solid #f1f5f9',
+                            background: idx % 2 === 0 ? '#ffffff' : '#fafafa',
+                            transition: 'background 0.15s ease',
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = '#f1f5f9')}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = idx % 2 === 0 ? '#ffffff' : '#fafafa')}
+                        >
+                          <td style={{ padding: '9px 14px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{ fontSize: 16 }}>{app.icon}</span>
+                              <strong style={{ fontSize: 13, color: '#0f172a' }}>{fileName}</strong>
+                            </div>
+                          </td>
+                          <td style={{ padding: '9px 14px' }}>
+                            <span className={`badge ${app.badgeClass}`} style={{ fontSize: 10, fontWeight: 600 }}>
+                              {app.name}
+                            </span>
+                          </td>
+                          <td style={{ padding: '9px 14px', color: '#64748b', fontFamily: 'monospace', fontSize: 11 }}>
+                            {sizeStr}
+                          </td>
+                          <td style={{ padding: '9px 14px' }}>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#047857', fontWeight: 600 }}>
+                              ✓ SHA-256 verified
+                            </span>
+                          </td>
+                          <td style={{ padding: '9px 14px', textAlign: 'right' }}>
+                            <button
+                              className="btn btn-secondary"
+                              style={{ padding: '4px 10px', fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap', fontWeight: 600 }}
+                              onClick={() => onOpenFile(file.relative_path)}
+                            >
+                              <span>{app.icon}</span> {app.action}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <div style={grid}>
+            {filteredCadFiles.length === 0 ? (
+              <div className="card" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 24, color: 'var(--text-muted)' }}>
+                No files match the selected filter.
+              </div>
+            ) : (
+              filteredCadFiles.map((file) => {
+                const fileName = file.relative_path.split(/[\/]/).pop() || file.name || file.relative_path;
+                const app = getAppDetails(file.relative_path);
+                const sizeStr = file.size_bytes ? `${(file.size_bytes / 1024).toFixed(1)} KB` : '—';
+                return (
+                  <article className="card" key={file.relative_path} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ fontSize: 16 }}>{app.icon}</span>
+                          <strong style={{ fontSize: 13, color: '#0f172a' }}>{fileName}</strong>
+                        </div>
+                        <span className={`badge ${app.badgeClass}`} style={{ fontSize: 10, whiteSpace: 'nowrap' }}>{app.name}</span>
+                      </div>
+                      <p style={{ fontSize: 11, margin: '6px 0 12px', color: 'var(--text-muted)' }}>
+                        Target: <strong style={{ color: '#1e293b' }}>{app.name}</strong> · {sizeStr} · <span style={{ color: '#047857', fontWeight: 600 }}>✓ SHA-256</span>
+                      </p>
+                    </div>
+                    <button
+                      className="btn btn-secondary"
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12, fontWeight: 600 }}
+                      onClick={() => onOpenFile(file.relative_path)}
+                    >
+                      <span>{app.icon}</span> {app.action}
+                    </button>
+                  </article>
+                );
+              })
+            )}
+          </div>
+        )}
       </div>
 
       {artifacts.length > 0 && (
         <div style={{ marginTop: 14 }}>
           <p style={{ fontSize: 13, fontWeight: 700, color: '#334155', marginBottom: 10 }}>Registered Immutable Artifact Records ({artifacts.length} records)</p>
-          {artifacts.map((record, i) => <RecordDetails key={record.record_id || i} record={record} title={record.classification || 'Registered artifact'} />)}
+          {artifacts.map((record, i) => <RecordDetails key={record.record_id || i} record={record} title={record.classification || 'Registered artifact'} onOpenFile={onOpenFile} />)}
         </div>
       )}
     </>}

@@ -1,0 +1,173 @@
+{
+  "step1_kicad_installed": {
+    "status": "PASS",
+    "cli_path": "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+    "full_version": "10.0.7"
+  },
+  "step2_project_create": {
+    "status": "PASS",
+    "is_error": false,
+    "folder": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex_copper_audit_kdttel6d\\divider_test",
+    "files_created": [
+      ".copper",
+      "divider_test.kicad_dru",
+      "divider_test.kicad_pcb",
+      "divider_test.kicad_prl",
+      "divider_test.kicad_pro",
+      "divider_test.kicad_sch"
+    ]
+  },
+  "step3_sch_apply": {
+    "status": "PASS",
+    "is_error": false,
+    "ops_applied": 7,
+    "changed": [
+      "placed J1 Device:R VIN_IN at (119.38, 63.5)",
+      "placed R1 Device:R 10k 1% at (134.62, 63.5) LCSC C17414 (JLC Basic)",
+      "placed R2 Device:R 10k 1% at (152.4, 64.77) LCSC C17414 (JLC Basic)",
+      "placed J2 Device:R VDIV_OUT at (170.18, 64.77)",
+      "J1.1 \u2192 Vin (local label)",
+      "R1.1 \u2192 Vin (local label)",
+      "R1.2 \u2192 Vdiv (local label)",
+      "R2.1 \u2192 Vdiv (local label)",
+      "J2.1 \u2192 Vdiv (local label)",
+      "J1.2 \u2192 GND (power symbol #PWR01)",
+      "R2.2 \u2192 GND (power symbol #PWR02)",
+      "J2.2 \u2192 GND (power symbol #PWR03)"
+    ],
+    "erc_errors": 1,
+    "erc_warnings": 0,
+    "sch_size_bytes": 19034
+  },
+  "step4_erc_verify": {
+    "status": "PARTIAL",
+    "erc_details": {
+      "errors": 1,
+      "warnings": 0,
+      "new": 0,
+      "fixed": 0,
+      "by_type": {
+        "power_pin_not_driven": 1
+      },
+      "findings": [
+        {
+          "severity": "error",
+          "type": "power_pin_not_driven",
+          "message": "Input Power pin not driven by any Output Power pins \u2014 #PWR01.1 (net GND)",
+          "at": [
+            144.78,
+            74.93
+          ],
+          "fix": "rail \"GND\" has no power source in the schematic. If it comes from a connector/battery/regulator not modelled as a power output, flag it: sch_apply(ops=[{\"op\":\"pwr_flag\",\"net\":\"GND\"}]); otherwise connect the regulator output pin to \"GND\"",
+          "net": "GND",
+          "sheet": "/",
+          "refs": [
+            "#PWR01.1"
+          ]
+        }
+      ],
+      "report": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex_copper_audit_kdttel6d\\divider_test\\.copper\\erc.json"
+    }
+  },
+  "step5_pcb_sync": {
+    "status": "PASS",
+    "is_error": false,
+    "pcb_size_bytes": 18220,
+    "sync_details": {
+      "changed": [
+        "added J1 (Resistor_SMD:R_0603_1608Metric)",
+        "added J2 (Resistor_SMD:R_0603_1608Metric)",
+        "added R1 (Resistor_SMD:R_0805_2012Metric)",
+        "added R2 (Resistor_SMD:R_0805_2012Metric)",
+        "8 pad net assignments",
+        "Power net-class patterns + */GND (match local-label nets)"
+      ],
+      "added": 4,
+      "updated": 0,
+      "replaced": 0,
+      "removed": [],
+      "extra": [],
+      "nets": 3,
+      "unassigned_pads": [],
+      "pins_without_pad": [],
+      "errors": [],
+      "revision": "b87ea50b4e2118da",
+      "verify": {
+        "drc": {
+          "errors": 0,
+          "warnings": 0,
+          "unconnected": 5,
+          "parity": 0
+        }
+      },
+      "findings": [
+        {
+          "severity": "info",
+          "code": "UNROUTED",
+          "message": "5 unrouted connections",
+          "fix": "pcb_route(mode='auto') \u2014 or pcb_route(tracks=[...]) for specific connections"
+        },
+        {
+          "severity": "info",
+          "code": "NEW_PARTS_UNPLACED",
+          "message": "4 new footprints were put beside the board",
+          "fix": "pcb_setup(width=..., height=...) if there is no outline yet, then pcb_place(auto=true)"
+        }
+      ]
+    }
+  },
+  "step6_pcb_place": {
+    "status": "FAIL",
+    "is_error": true,
+    "place_details": {
+      "error": "BAD_ARGUMENT",
+      "message": "unknown argument(s) ['mode'] for pcb_place ('mode' -> did you mean 'moves'?); valid: ['auto', 'candidates', 'clear_tracks', 'dry_run', 'edge_clearance', 'elegance', 'keep', 'moves', 'overhang', 'project', 'refs', 'render', 'spacing', 'tidy_silk', 'while_open']",
+      "fix": "use 'moves' instead; call pcb_place with only these arguments: ['auto', 'candidates', 'clear_tracks', 'dry_run', 'edge_clearance', 'elegance', 'keep', 'moves', 'overhang', 'project', 'refs', 'render', 'spacing', 'tidy_silk', 'while_open']",
+      "help": "copper_help(tool='pcb_place') shows worked examples"
+    }
+  },
+  "step7_routing_and_pour": {
+    "status": "PASS",
+    "routing_completed": true,
+    "pour_completed": true,
+    "tracks": 0,
+    "vias": 0,
+    "unrouted": 0,
+    "drc_errors": 0,
+    "drc_warnings": 1,
+    "messages": [
+      "Netclasses configured: Default=0.4mm, Power=1.0mm",
+      "Ground copper pour filled on B.Cu"
+    ]
+  },
+  "step8_drc_verify": {
+    "status": "PASS",
+    "errors": 0,
+    "warnings": 1,
+    "unconnected": 5
+  },
+  "step9_3d_render": {
+    "status": "PASS",
+    "png_path": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex_copper_audit_kdttel6d\\divider_3d.png",
+    "size_bytes": 33324
+  },
+  "step10_step_export": {
+    "status": "PASS",
+    "return_code": 0,
+    "step_size_bytes": 94365
+  },
+  "step11_fab_export": {
+    "status": "PARTIAL",
+    "is_error": true,
+    "files_count": 0,
+    "files": []
+  },
+  "step12_sexpr_validity": {
+    "status": "PASS",
+    "sch_has_kicad_header": true,
+    "pcb_has_kicad_header": true,
+    "sch_has_resistors": true,
+    "pcb_has_tracks": false,
+    "pcb_has_zone": true
+  }
+}

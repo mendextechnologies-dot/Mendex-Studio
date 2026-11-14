@@ -211,8 +211,9 @@ class EngineeringDesignService:
 
         # 2b. KiCad Populated PCB Layout (.kicad_pcb)
         base_title = sanitize_filename(ir.title or ir.topology, fallback="kicad_pcb")
-        pcb_path = artifacts_dir / "kicad" / f"{base_title}.kicad_pcb"
-        KiCadPCBGenerator.export_pcb(ir, pcb_path)
+        pcb_path = kicad_files.get("pcb") or (artifacts_dir / "kicad" / f"{base_title}.kicad_pcb")
+        if not pcb_path.exists():
+            KiCadPCBGenerator.export_pcb(ir, pcb_path)
         pcb_hash = CrossToolSyncService.compute_sha256(pcb_path)
         art_pcb = DesignArtifact(
             design_id=design.id,

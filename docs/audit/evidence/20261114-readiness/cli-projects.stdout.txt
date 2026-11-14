@@ -1,0 +1,32 @@
+[
+  {
+    "project_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+    "workspace_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+    "code": "AUDIT-BUCK",
+    "name": "Readiness audit buck fixture",
+    "category": "dc_dc_converter",
+    "owner": "Software evaluation fixture",
+    "description": "",
+    "active_revision_id": "c56d1a5a-4ad3-46e0-a13a-3426a6779017",
+    "status": "ACTIVE",
+    "specifications": {
+      "schema_version": "1.0",
+      "vin_min_v": 12.0,
+      "vin_nom_v": 12.0,
+      "vin_max_v": 12.0,
+      "vout_v": 5.0,
+      "iout_a": 1.0,
+      "switching_frequency_hz": 100000.0,
+      "ambient_temperature_k": null,
+      "topology": "buck",
+      "isolation_requirement": "",
+      "standards_profile": "UNASSIGNED",
+      "source": "Disposable software audit; not a commercial product",
+      "assumptions": [
+        "Idealized 12 V to 5 V / 1 A, 100 kHz, 0.1 V peak-to-peak limit; 2 ms transient requested; simulation is not physical validation."
+      ]
+    },
+    "created_at": "2026-11-14T15:09:20.193507+00:00",
+    "directory": "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017"
+  }
+]

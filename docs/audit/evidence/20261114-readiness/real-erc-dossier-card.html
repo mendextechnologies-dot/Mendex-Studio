@@ -1,0 +1,23 @@
+<div class="card avoid-break">
+  <h3>Automated EDA Rule Verification Scorecard (KiCad 10 Engine)</h3>
+  <table style="width:100%; border-collapse:collapse; margin:10px 0;">
+    <tr style="background:#f1f5f9;">
+      <th style="width:25%;">Verification Domain</th>
+      <th style="width:20%;">Status</th>
+      <th>Findings Summary</th>
+      <th>Audited Target</th>
+    </tr>
+    <tr>
+      <td><b>Electrical Rules Check (ERC)</b></td>
+      <td><span class="badge-pass">PASS</span></td>
+      <td>Errors: <b>0</b> | Warnings: <b>0</b> | Pin drive integrity: Clean</td>
+      <td><code>schematic (.kicad_sch)</code></td>
+    </tr>
+    <tr>
+      <td><b>Design Rules Check (DRC)</b></td>
+      <td><span class="badge-blocked">FAIL (2 errors, 0 unrouted)</span></td>
+      <td>Violations: <b>2</b> | Warnings: <b>16</b> | Unconnected: <b>0</b></td>
+      <td><code>board layout (.kicad_pcb)</code></td>
+    </tr>
+  </table>
+</div>

@@ -43,6 +43,40 @@ class FEMMSimulationResult(BaseModel):
 
 
 class FEMMRunner:
+    @staticmethod
+    def compare_analytical_vs_fea(
+        turns: int,
+        current_a: float,
+        air_gap_mm: float,
+        core_le_mm: float = 50.0,
+        mu_r: float = 2200.0,
+        fea_b_max: float = 0.0,
+    ) -> Dict[str, Any]:
+        """Compares FEA peak flux density against 1D magnetic reluctance calculation.
+
+        B_analytical = (mu_0 * N * I) / (l_gap + l_e / mu_r)
+        """
+        import math
+        mu_0 = 4.0 * math.pi * 1e-7
+        if turns <= 0 or current_a <= 0:
+            return {
+                "analytical_b_t": 0.0,
+                "fea_b_max_t": fea_b_max,
+                "ratio": 0.0,
+                "status": "NOT_EVALUATED (Zero Excitation)",
+            }
+        lg_m = max(1e-6, air_gap_mm * 1e-3)
+        le_m = max(1e-3, core_le_mm * 1e-3)
+        b_analytical = (mu_0 * float(turns) * float(current_a)) / (lg_m + (le_m / max(1.0, mu_r)))
+        ratio = (fea_b_max / b_analytical) if b_analytical > 0 else 0.0
+        agreement = "CONVERGED_ORDER_OF_MAGNITUDE" if 0.25 <= ratio <= 4.0 else "DIVERGENT"
+        return {
+            "analytical_b_t": round(b_analytical, 5),
+            "fea_b_max_t": round(fea_b_max, 5),
+            "ratio": round(ratio, 3),
+            "status": agreement,
+        }
+
     """Controls real FEMM 4.2 finite element solver via headless script execution."""
 
     DEFAULT_BIN = Path(r"C:\femm42\bin\femm.exe")

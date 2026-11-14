@@ -1,0 +1,7 @@
+Ref,Val,Package,PosX,PosY,Rot,Side
+"C1","Output Filter Capacitor","R_0805_2012Metric",4.409449,-5.118110,0.000000,top
+"L1","Power Inductor","R_0805_2012Metric",6.535433,-4.409449,0.000000,top
+"Q1","High-Side Switch","TO-252-2",5.118110,-4.409449,0.000000,top
+"Q2","Synchronous Low-Side Switch","TO-252-2",5.826772,-4.409449,0.000000,top
+"R_LOAD","Load Resistor","R_0805_2012Metric",5.118110,-5.118110,0.000000,top
+"V1","Input DC Supply","R_0805_2012Metric",4.409449,-4.409449,0.000000,top

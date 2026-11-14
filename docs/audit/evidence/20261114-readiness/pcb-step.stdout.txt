@@ -1,0 +1,3 @@
+STEP file 'C:/Mendex studio/docs/audit/evidence/20261114-readiness/board.step' created.
+
+Export time 0.274 s

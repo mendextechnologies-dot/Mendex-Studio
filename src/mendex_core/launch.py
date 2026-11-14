@@ -399,6 +399,23 @@ def _open_document(p: Path) -> None:
     Handles missing Windows shell associations gracefully by routing directly to VS Code,
     Notepad++, Windows Notepad, or revealing in File Explorer on the physical desktop.
     """
+    # Priority 1: Web browser for web documents, data, JSON, and reports (Edge / Chrome)
+    if os.name == "nt" and p.suffix.lower() in (".json", ".html", ".htm", ".xml", ".txt", ".md", ".csv", ".log"):
+        browser_candidates = [
+            Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
+            Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
+            Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
+            Path(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
+        ]
+        if found_edge := shutil.which("msedge"):
+            browser_candidates.insert(0, Path(found_edge))
+        if found_chrome := shutil.which("chrome"):
+            browser_candidates.append(Path(found_chrome))
+        for candidate in browser_candidates:
+            if candidate.exists():
+                _spawn_on_desktop(f'"{candidate}" "{p}"', str(p.parent), window_hints=["Edge", "Chrome", p.name])
+                return
+
     # Fallback 1: VS Code
     vscode = find_vscode()
     if vscode and vscode.exists():

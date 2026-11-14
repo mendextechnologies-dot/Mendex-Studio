@@ -52,6 +52,9 @@ PARAMETERS = {
     "losses": {"part_number": "SOFTWARE-FIXTURE", "r_ds_on_ohm": 0.02, "i_rms_a": 2, "duty_cycle": 0.4, "e_on_j": 1e-6, "e_off_j": 2e-6, "frequency_hz": 100000},
     "steinmetz": {"material": "UNQUALIFIED SOFTWARE FIXTURE", "k": 1, "alpha": 1.3, "beta": 2.5, "frequency_hz": 100000, "b_peak_t": 0.1, "core_volume_m3": 1e-5},
     "flyback": {"vin_min_v": 18, "vin_nom_v": 24, "vout_v": 12, "iout_a": 1, "frequency_hz": 100000, "d_max": 0.4, "efficiency": 0.85, "b_max_t": 0.2, "core_ae_mm2": 125, "v_diode_drop_v": 0.5},
+    "semiconductor_thermal": {"part_number": "FIXTURE-MOSFET", "p_loss_w": 2.5, "t_ambient_c": 25.0, "t_j_max_c": 150.0, "derating_factor": 0.80, "r_th_jc_c_w": 1.5, "r_th_cs_c_w": 0.5, "r_th_sa_c_w": 5.0},
+    "magnetic_thermal": {"component_name": "T1-FIXTURE", "p_core_w": 0.5, "p_winding_w": 0.5, "surface_area_cm2": 45.0, "t_ambient_c": 25.0, "t_class_max_c": 130.0, "insulation_class": "Class B (130°C)"},
+    "ipc2152_thermal": {"current_a": 5.0, "target_delta_t_c": 10.0, "copper_thickness_oz": 1.0, "is_internal": False, "layer_name": "F.Cu"},
 }
 
 

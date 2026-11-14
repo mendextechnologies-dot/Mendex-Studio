@@ -120,3 +120,22 @@ def test_femm_runner_cleans_up_processes(femm_runner, tmp_path):
         assert "femm" not in proc_out.lower()
     except Exception:
         pass  # Non-powershell or no process found is fine
+
+
+def test_emc100_electromagnet_actuator_femm_simulation(femm_runner, tmp_path):
+    """Verifies that the EMC-100 actuator geometry excited at 2.36A solves cleanly."""
+    geom = IRMagneticGeometry(
+        core_type="ACTUATOR_CORE",
+        core_material="Ferrite_N87",
+        flange_od_mm=35.0,
+        bobbin_height_mm=30.0,
+        primary_turns=450,
+        peak_current_a=2.36,
+        air_gap_mm=1.5,
+    )
+    res = femm_runner.run_magnetic_analysis(geom, tmp_path / "emc_actuator", saturation_limit_t=1.6)
+    assert res.success is True
+    assert res.solver_status == "SOLVED_CONVERGED"
+    assert res.summary_verdict == "PASSED"
+    assert res.b_max_tesla > 1e-4
+    assert res.is_saturated is False

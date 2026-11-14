@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+    "-m",
+    "mendex_core.mcp",
+    "--root",
+    "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project"
+  ],
+  "exit_code": 0,
+  "stdout": "{\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"protocolVersion\": \"2024-11-05\", \"capabilities\": {\"tools\": {}}, \"serverInfo\": {\"name\": \"mendex-engineering-mcp\", \"version\": \"2.1.0\"}}}\n{\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"status\\\": \\\"COMPLETED\\\",\\n  \\\"job_id\\\": \\\"dcda166c-52ff-4a6e-a58f-468b913a5e5b\\\",\\n  \\\"tool\\\": \\\"ltspice\\\",\\n  \\\"netlist\\\": \\\"input.net\\\",\\n  \\\"exit_code\\\": 0,\\n  \\\"execution_time_s\\\": 5.2784,\\n  \\\"raw_file\\\": \\\".mendex\\\\\\\\ij\\\\\\\\dcda166c52ff4a6ea58f468b913a5e5b\\\\\\\\input.raw\\\",\\n  \\\"log_file\\\": \\\".mendex\\\\\\\\ij\\\\\\\\dcda166c52ff4a6ea58f468b913a5e5b\\\\\\\\input.log\\\",\\n  \\\"steady_state_metrics\\\": {\\n    \\\"vout_mean_v\\\": 4.8448,\\n    \\\"vout_ripple_pk_pk_v\\\": 0.0937,\\n    \\\"vout_min_v\\\": 4.8054,\\n    \\\"vout_max_v\\\": 4.8991,\\n    \\\"i_peak_a\\\": 1.1221\\n  },\\n  \\\"convergence_status\\\": \\\"COMPLETED\\\",\\n  \\\"summary_verdict\\\": \\\"NOT_EVALUATED\\\",\\n  \\\"requirements_evaluated\\\": {},\\n  \\\"log_errors\\\": [],\\n  \\\"log_warnings\\\": [],\\n  \\\"netlist_sha256\\\": \\\"868585b39bd7ed2a28b49197d154304033c54995c4bae56b21a8e68238a3fc40\\\",\\n  \\\"duration_note\\\": \\\"Requested duration is not applied; the netlist .tran directive governs the run.\\\",\\n  \\\"error\\\": null\\n}\"}], \"isError\": false}}\n",
+  "stderr": ""
+}

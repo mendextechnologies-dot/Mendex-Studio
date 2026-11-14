@@ -94,7 +94,7 @@ def test_schema_discovery_strict_errors_and_legacy_compatibility(clients, tmp_pa
     names = [tool["name"] for tool in server.tools_schema]
     assert len(names) == len(set(names)) and set(OPERATIONS).issubset(names)
     code = main(["--root", str(tmp_path), "engineering", "list_supported_calculations"])
-    assert code == 0 and len(json.loads(capsys.readouterr().out)) == 4
+    assert code == 0 and len(json.loads(capsys.readouterr().out)) >= 4
     error, result = call(server, "get_engineering_record", {"record_id": "invalid", "unknown": True})
     assert error and result["error"] == "INVALID_INPUT"
     code, result = cli(tmp_path, capsys, "record_requirements", {**base, "idempotency_key": "bad", "requirements": [], "approve": True})

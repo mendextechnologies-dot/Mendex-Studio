@@ -115,3 +115,31 @@ def test_global_simulation_center_lists_jobs(desktop_service):
     assert "ltspice" in tools
     assert "femm" in tools
     assert all(j["project_name"] == "SpectraVolt SV-1000" for j in jobs)
+
+
+def test_emc100_electromagnet_pulse_waveform_and_metrics(desktop_service):
+    rev_id = "db8689f3-d4fe-4dca-a71c-3fa9788b5f95"
+    raw_rel = "simulations/electromagnet_pulse.raw"
+
+    res = desktop_service.waveform(WaveformQuery(
+        revision_id=rev_id,
+        relative_path=raw_rel,
+    ))
+
+    assert "samples" in res
+    assert "metrics" in res
+    assert res["total_points"] > 1000
+
+    metrics = res["metrics"]
+    assert "I(L_COIL)" in metrics
+    assert "V(gate)" in metrics
+    assert "V(coil_sw)" in metrics
+
+    # Verify gate drive amplitude (15V driver)
+    assert abs(metrics["V(gate)"]["max"] - 15.0) < 0.1
+
+    # Verify peak inductive discharge current through electromagnet
+    assert 2.0 <= metrics["I(L_COIL)"]["max"] <= 3.0
+
+    # Verify switch voltage withstand is well below IGBT 650V rating
+    assert metrics["V(coil_sw)"]["max"] < 400.0

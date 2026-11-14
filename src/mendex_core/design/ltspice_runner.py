@@ -71,6 +71,99 @@ class LTspiceSimulationResult(BaseModel):
 class LTspiceRunner:
     """Discovers and executes real LTspice solver, parsing true numerical outputs."""
 
+
+    @staticmethod
+    def calculate_buck_small_signal_bode(
+        vin_nom: float,
+        vout: float,
+        iout: float,
+        l_h: float,
+        c_f: float,
+        esr_ohm: float = 0.005,
+    ) -> Dict[str, Any]:
+        """Calculates small-signal control-to-output transfer function characteristics.
+
+        G_vd(s) = Vin * (1 + s*R_esr*C) / (1 + s*(L/R_load + R_esr*C) + s^2*L*C)
+        """
+        import math
+        if l_h <= 0 or c_f <= 0 or vin_nom <= 0 or vout <= 0 or iout <= 0:
+            raise ValueError("All electrical parameters for Bode analysis must be strictly positive.")
+
+        r_load = vout / iout
+        f_double_pole = 1.0 / (2.0 * math.pi * math.sqrt(l_h * c_f))
+        f_esr_zero = 1.0 / (2.0 * math.pi * max(1e-6, esr_ohm) * c_f)
+        q_factor = r_load * math.sqrt(c_f / l_h)
+        dc_gain_db = 20.0 * math.log10(max(1e-3, vin_nom))
+
+        return {
+            "control_mode": "OPEN_LOOP_PWM",
+            "is_closed_loop": False,
+            "f_double_pole_hz": round(f_double_pole, 2),
+            "f_esr_zero_hz": round(f_esr_zero, 2),
+            "q_factor": round(q_factor, 3),
+            "dc_gain_db": round(dc_gain_db, 2),
+            "phase_margin_deg": None,
+            "crossover_freq_hz": None,
+            "loop_compensation_status": (
+                "NOT_EVALUATED (Open-loop PWM gate drive; Type-II/III error amplifier or "
+                "peak-current-mode controller required for commercial line/load regulation)"
+            ),
+        }
+
+    @staticmethod
+    def evaluate_line_load_regulation(
+        vout_nom: float,
+        vout_line_min: float,
+        vout_line_max: float,
+        vout_load_light: float,
+        vout_load_full: float,
+        vin_min: float,
+        vin_max: float,
+    ) -> Dict[str, Any]:
+        """Computes line and load regulation performance across operating boundaries."""
+        if vout_nom <= 0 or vin_max <= vin_min:
+            raise ValueError("Nominal output and valid input voltage span required.")
+
+        delta_vout_line = abs(vout_line_max - vout_line_min)
+        delta_vin = vin_max - vin_min
+        line_reg_pct = (delta_vout_line / vout_nom) * 100.0
+
+        delta_vout_load = abs(vout_load_light - vout_load_full)
+        load_reg_pct = (delta_vout_load / vout_nom) * 100.0
+
+        return {
+            "vout_nom_v": vout_nom,
+            "delta_vout_line_v": round(delta_vout_line, 4),
+            "line_regulation_pct": round(line_reg_pct, 2),
+            "delta_vout_load_v": round(delta_vout_load, 4),
+            "load_regulation_pct": round(load_reg_pct, 2),
+            "status": "PASS" if (line_reg_pct < 10.0 and load_reg_pct < 10.0) else "MARGINAL",
+            "notes": "Open-loop baseline sensitivity without active feedback compensation.",
+        }
+
+    @staticmethod
+    def evaluate_fault_response(
+        i_peak_fault_a: float,
+        switch_i_max_a: float = 90.0,
+    ) -> Dict[str, Any]:
+        """Evaluates short-circuit and overcurrent fault response against switch ratings."""
+        if i_peak_fault_a < 0 or switch_i_max_a <= 0:
+            raise ValueError("Currents must be non-negative and switch rating positive.")
+
+        is_exceeded = i_peak_fault_a > switch_i_max_a
+        stress_ratio = i_peak_fault_a / switch_i_max_a
+
+        return {
+            "i_peak_fault_a": round(i_peak_fault_a, 2),
+            "switch_i_max_a": round(switch_i_max_a, 2),
+            "stress_ratio": round(stress_ratio, 2),
+            "fault_status": "TRIPPED_OVERCURRENT" if is_exceeded else "WITHIN_RATING",
+            "active_current_limiting": (
+                "NOT_IMPLEMENTED (Active cycle-by-cycle current limit or latching shutdown mandatory for hardware safety)"
+                if is_exceeded else "PASS_MARGIN"
+            ),
+        }
+
     DEFAULT_PATHS = [
         r"C:\Program Files\ADI\LTspice\LTspice.exe",
         r"C:\Users\Sagar\AppData\Local\Programs\ADI\LTspice\LTspice.exe",
@@ -213,12 +306,28 @@ class LTspiceRunner:
                     except ValueError:
                         pass
 
-        # Analyze steady-state metrics (use last 30% of simulation for steady state)
-        n_pts = len(vout_vals)
-        start_idx = int(n_pts * 0.70)
-        ss_vout = vout_vals[start_idx:] if start_idx < n_pts else vout_vals
+        # Analyze steady-state metrics (use last 30% of simulation time domain for steady state)
+        if time_vals and vout_vals:
+            t_start = time_vals[0]
+            t_end = time_vals[-1]
+            t_ss_start = t_start + 0.70 * (t_end - t_start)
+            ss_indices = [i for i, t in enumerate(time_vals) if t >= t_ss_start]
+            if not ss_indices:
+                ss_indices = list(range(len(vout_vals)))
+            ss_vout = [vout_vals[i] for i in ss_indices if i < len(vout_vals)]
+            ss_time = [time_vals[i] for i in ss_indices if i < len(time_vals)]
+        else:
+            ss_vout = vout_vals
+            ss_time = time_vals
 
-        v_mean = sum(ss_vout) / len(ss_vout) if ss_vout else 0.0
+        # G07 fix: Compute time-weighted average over adaptive time steps: \int V(t) dt / \Delta t
+        if len(ss_vout) >= 2 and len(ss_time) == len(ss_vout) and (ss_time[-1] - ss_time[0]) > 0:
+            dt_total = ss_time[-1] - ss_time[0]
+            integral = sum(0.5 * (ss_vout[i] + ss_vout[i+1]) * (ss_time[i+1] - ss_time[i]) for i in range(len(ss_vout) - 1))
+            v_mean = integral / dt_total
+        else:
+            v_mean = sum(ss_vout) / len(ss_vout) if ss_vout else 0.0
+
         v_min = min(ss_vout) if ss_vout else 0.0
         v_max = max(ss_vout) if ss_vout else 0.0
         v_ripple = v_max - v_min
@@ -243,7 +352,8 @@ class LTspiceRunner:
             for req in requirements:
                 p_name = req.parameter.lower()
                 if p_name in ("vout", "v_out", "target_voltage"):
-                    tol = (req.tolerance_pct or 5.0) / 100.0
+                    # G07 fix: Explicit 0.0 tolerance must not fall back to 5.0
+                    tol = (req.tolerance_pct if req.tolerance_pct is not None else 5.0) / 100.0
                     target = req.target_value
                     diff = abs(v_mean - target) / max(target, 0.01)
                     passed = diff <= tol
@@ -275,9 +385,10 @@ class LTspiceRunner:
             elapsed_time_s=round(elapsed_s, 4),
             raw_file_path=raw_path_str,
             log_file_path=log_path_str,
-            time_trace=time_vals[:200],  # sample points for preview
-            vout_trace=vout_vals[:200],
-            iin_trace=iin_vals[:200],
+            # G07 fix: Decimate over full time domain for preview rather than startup-only [:200]
+            time_trace=[time_vals[i] for i in list(range(0, len(time_vals), max(1, len(time_vals) // 500)))],
+            vout_trace=[vout_vals[i] for i in list(range(0, len(vout_vals), max(1, len(vout_vals) // 500)))],
+            iin_trace=[iin_vals[i] for i in list(range(0, len(iin_vals), max(1, len(iin_vals) // 500)))] if iin_vals else [],
             vout_mean_v=round(v_mean, 4),
             vout_ripple_pk_pk_v=round(v_ripple, 4),
             vout_min_v=round(v_min, 4),

@@ -1,0 +1,3851 @@
+[
+  {
+    "step": "MCP tool discovery",
+    "status": "EXECUTED",
+    "elapsed_s": 0.0,
+    "result": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "tools": [
+          {
+            "name": "list_lifecycle_definitions",
+            "description": "List packaged and registered lifecycle definitions.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "title": "Model",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_lifecycle_definition",
+            "description": "Retrieve one versioned data-only lifecycle definition.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "definition_id": {
+                  "default": "engineering",
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Definition Id",
+                  "type": "string"
+                },
+                "version": {
+                  "default": "3.1.0",
+                  "maxLength": 40,
+                  "minLength": 1,
+                  "title": "Version",
+                  "type": "string"
+                }
+              },
+              "title": "DefinitionQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "register_lifecycle_definition",
+            "description": "Register an immutable validated definition; no executable configuration.",
+            "inputSchema": {
+              "$defs": {
+                "Criterion": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "title": "Id",
+                      "type": "string"
+                    },
+                    "description": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Description",
+                      "type": "string"
+                    },
+                    "kind": {
+                      "enum": [
+                        "project_context",
+                        "specification_fields",
+                        "validation_record",
+                        "human_review"
+                      ],
+                      "title": "Kind",
+                      "type": "string"
+                    },
+                    "fields": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "maxItems": 30,
+                      "title": "Fields",
+                      "type": "array"
+                    },
+                    "check_id": {
+                      "anyOf": [
+                        {
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Check Id"
+                    },
+                    "evidence_kind": {
+                      "anyOf": [
+                        {
+                          "enum": [
+                            "MANUAL",
+                            "CALCULATED",
+                            "SIMULATED",
+                            "MEASURED"
+                          ],
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Evidence Kind"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "description",
+                    "kind"
+                  ],
+                  "title": "Criterion",
+                  "type": "object"
+                },
+                "LifecycleDefinition": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "schema_version": {
+                      "const": "3.1.0",
+                      "default": "3.1.0",
+                      "title": "Schema Version",
+                      "type": "string"
+                    },
+                    "id": {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "title": "Id",
+                      "type": "string"
+                    },
+                    "version": {
+                      "maxLength": 40,
+                      "minLength": 1,
+                      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+                      "title": "Version",
+                      "type": "string"
+                    },
+                    "name": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Name",
+                      "type": "string"
+                    },
+                    "stages": {
+                      "items": {
+                        "$ref": "#/$defs/StageDefinition"
+                      },
+                      "maxItems": 100,
+                      "minItems": 1,
+                      "title": "Stages",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "version",
+                    "name",
+                    "stages"
+                  ],
+                  "title": "LifecycleDefinition",
+                  "type": "object"
+                },
+                "StageDefinition": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "title": "Id",
+                      "type": "string"
+                    },
+                    "name": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Name",
+                      "type": "string"
+                    },
+                    "purpose": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Purpose",
+                      "type": "string"
+                    },
+                    "required_inputs": {
+                      "items": {
+                        "maxLength": 4000,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "maxItems": 50,
+                      "title": "Required Inputs",
+                      "type": "array"
+                    },
+                    "expected_outputs": {
+                      "items": {
+                        "maxLength": 4000,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "maxItems": 50,
+                      "title": "Expected Outputs",
+                      "type": "array"
+                    },
+                    "dependencies": {
+                      "items": {
+                        "maxLength": 80,
+                        "minLength": 1,
+                        "pattern": "^[a-z][a-z0-9_]*$",
+                        "type": "string"
+                      },
+                      "maxItems": 100,
+                      "title": "Dependencies",
+                      "type": "array"
+                    },
+                    "optional": {
+                      "default": false,
+                      "title": "Optional",
+                      "type": "boolean"
+                    },
+                    "review_required": {
+                      "default": true,
+                      "title": "Review Required",
+                      "type": "boolean"
+                    },
+                    "criteria": {
+                      "items": {
+                        "$ref": "#/$defs/Criterion"
+                      },
+                      "maxItems": 100,
+                      "minItems": 1,
+                      "title": "Criteria",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "purpose",
+                    "criteria"
+                  ],
+                  "title": "StageDefinition",
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "definition": {
+                  "$ref": "#/$defs/LifecycleDefinition"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "definition",
+                "source"
+              ],
+              "title": "RegisterDefinition",
+              "type": "object"
+            }
+          },
+          {
+            "name": "enroll_lifecycle",
+            "description": "Explicitly enroll a draft revision; no historical PASS states are inherited.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "definition_id": {
+                  "default": "engineering",
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Definition Id",
+                  "type": "string"
+                },
+                "version": {
+                  "default": "3.1.0",
+                  "maxLength": 40,
+                  "minLength": 1,
+                  "title": "Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id",
+                "source",
+                "reason",
+                "idempotency_key"
+              ],
+              "title": "Enrollment",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_project_lifecycle",
+            "description": "Read lifecycle stages and effective evidence/dependency/review blockers.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "LifecycleQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_lifecycle_history",
+            "description": "Read append-only lifecycle history with sequence pagination.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stage Id"
+                },
+                "after_sequence": {
+                  "default": 0,
+                  "minimum": 0,
+                  "title": "After Sequence",
+                  "type": "integer"
+                },
+                "limit": {
+                  "default": 100,
+                  "maximum": 500,
+                  "minimum": 1,
+                  "title": "Limit",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "HistoryQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "apply_lifecycle_stage",
+            "description": "Start/reopen/block/fail/request review/attach validation evidence/complete a stage. Completion is guarded; no approval operation.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "action": {
+                  "enum": [
+                    "start",
+                    "block",
+                    "fail",
+                    "request_review",
+                    "complete",
+                    "not_applicable",
+                    "reopen",
+                    "attach_evidence"
+                  ],
+                  "title": "Action",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "expected_sequence": {
+                  "anyOf": [
+                    {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Expected Sequence"
+                },
+                "evidence_record_id": {
+                  "anyOf": [
+                    {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Evidence Record Id"
+                }
+              },
+              "required": [
+                "revision_id",
+                "stage_id",
+                "action",
+                "source",
+                "reason",
+                "idempotency_key"
+              ],
+              "title": "StageCommand",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_project_metadata",
+            "description": "Read project metadata including the optimistic-concurrency updated_at token.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "project_id": {
+                  "format": "uuid",
+                  "title": "Project Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id"
+              ],
+              "title": "ProjectQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "update_project_metadata",
+            "description": "Update project metadata using the existing service with idempotency and concurrency guards.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "project_id": {
+                  "format": "uuid",
+                  "title": "Project Id",
+                  "type": "string"
+                },
+                "name": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "title": "Name",
+                  "type": "string"
+                },
+                "owner": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "title": "Owner",
+                  "type": "string"
+                },
+                "description": {
+                  "maxLength": 20000,
+                  "title": "Description",
+                  "type": "string"
+                },
+                "expected_updated_at": {
+                  "format": "date-time",
+                  "title": "Expected Updated At",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "project_id",
+                "name",
+                "owner",
+                "description",
+                "expected_updated_at"
+              ],
+              "title": "ProjectUpdate",
+              "type": "object"
+            }
+          },
+          {
+            "name": "record_requirements",
+            "description": "Append structured sourced requirements for an active lifecycle attempt; does not approve requirements.",
+            "inputSchema": {
+              "$defs": {
+                "Requirement": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "title": "Id",
+                      "type": "string"
+                    },
+                    "discipline": {
+                      "enum": [
+                        "electrical",
+                        "mechanical",
+                        "environmental",
+                        "safety",
+                        "performance",
+                        "standards"
+                      ],
+                      "title": "Discipline",
+                      "type": "string"
+                    },
+                    "description": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Description",
+                      "type": "string"
+                    },
+                    "source": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "title": "Source",
+                      "type": "string"
+                    },
+                    "acceptance_criterion": {
+                      "default": "",
+                      "maxLength": 4000,
+                      "title": "Acceptance Criterion",
+                      "type": "string"
+                    },
+                    "mandatory": {
+                      "default": true,
+                      "title": "Mandatory",
+                      "type": "boolean"
+                    },
+                    "specification_field": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Specification Field"
+                    },
+                    "target_value": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Target Value"
+                    },
+                    "unit": {
+                      "default": "",
+                      "maxLength": 100,
+                      "title": "Unit",
+                      "type": "string"
+                    },
+                    "assumptions": {
+                      "items": {
+                        "maxLength": 4000,
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "maxItems": 100,
+                      "title": "Assumptions",
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "discipline",
+                    "description",
+                    "source"
+                  ],
+                  "title": "Requirement",
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                },
+                "requirements": {
+                  "items": {
+                    "$ref": "#/$defs/Requirement"
+                  },
+                  "maxItems": 200,
+                  "minItems": 1,
+                  "title": "Requirements",
+                  "type": "array"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash",
+                "requirements"
+              ],
+              "title": "RequirementsWrite",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_requirements",
+            "description": "Read revision-associated requirements history.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stage Id"
+                },
+                "after_sequence": {
+                  "default": 0,
+                  "minimum": 0,
+                  "title": "After Sequence",
+                  "type": "integer"
+                },
+                "limit": {
+                  "default": 100,
+                  "maximum": 500,
+                  "minimum": 1,
+                  "title": "Limit",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RecordList",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_requirement_coverage",
+            "description": "Find missing declared inputs/criteria; no standards or engineering approval inferred.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RevisionQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_supported_calculations",
+            "description": "Discover existing deterministic calculators, required inputs/units and implementation caveats.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                }
+              },
+              "title": "VersionedRequest",
+              "type": "object"
+            }
+          },
+          {
+            "name": "record_calculation_run",
+            "description": "Run an existing calculator and persist exact inputs/results/assumptions/source digest without duplicating formulas.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                },
+                "calculation": {
+                  "enum": [
+                    "dowell",
+                    "losses",
+                    "steinmetz",
+                    "flyback",
+                    "semiconductor_thermal",
+                    "magnetic_thermal",
+                    "ipc2152_thermal"
+                  ],
+                  "title": "Calculation",
+                  "type": "string"
+                },
+                "parameters": {
+                  "additionalProperties": true,
+                  "title": "Parameters",
+                  "type": "object"
+                },
+                "assumptions": {
+                  "items": {
+                    "maxLength": 4000,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "maxItems": 100,
+                  "minItems": 1,
+                  "title": "Assumptions",
+                  "type": "array"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash",
+                "calculation",
+                "parameters",
+                "assumptions"
+              ],
+              "title": "CalculationWrite",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_calculation_runs",
+            "description": "Read persisted calculation history, including warnings and specification staleness.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stage Id"
+                },
+                "after_sequence": {
+                  "default": 0,
+                  "minimum": 0,
+                  "title": "After Sequence",
+                  "type": "integer"
+                },
+                "limit": {
+                  "default": 100,
+                  "maximum": 500,
+                  "minimum": 1,
+                  "title": "Limit",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RecordList",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_engineering_record",
+            "description": "Read a hash-checked engineering record and current effective integrity/staleness.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "record_id": {
+                  "format": "uuid",
+                  "title": "Record Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "record_id"
+              ],
+              "title": "RecordQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "register_engineering_artifact",
+            "description": "Register a confined revision file, preserving a unique immutable copy and original hash.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                },
+                "relative_path": {
+                  "maxLength": 1000,
+                  "minLength": 1,
+                  "title": "Relative Path",
+                  "type": "string"
+                },
+                "expected_sha256": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Sha256",
+                  "type": "string"
+                },
+                "classification": {
+                  "enum": [
+                    "circuit",
+                    "netlist",
+                    "waveform",
+                    "magnetic_model",
+                    "schematic",
+                    "pcb",
+                    "calculation",
+                    "documentation",
+                    "report",
+                    "other"
+                  ],
+                  "title": "Classification",
+                  "type": "string"
+                },
+                "design_id": {
+                  "anyOf": [
+                    {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Design Id"
+                },
+                "design_revision_id": {
+                  "anyOf": [
+                    {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Design Revision Id"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash",
+                "relative_path",
+                "expected_sha256",
+                "classification"
+              ],
+              "title": "ArtifactWrite",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_registered_artifacts",
+            "description": "Read registered artifacts with missing/changed original and snapshot checks.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_]*$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stage Id"
+                },
+                "after_sequence": {
+                  "default": 0,
+                  "minimum": 0,
+                  "title": "After Sequence",
+                  "type": "integer"
+                },
+                "limit": {
+                  "default": 100,
+                  "maximum": 500,
+                  "minimum": 1,
+                  "title": "Limit",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RecordList",
+              "type": "object"
+            }
+          },
+          {
+            "name": "record_validation_evidence",
+            "description": "Delegate explicit numerical evidence recording to the existing validation service. Reviewer identity remains unverified.",
+            "inputSchema": {
+              "$defs": {
+                "ManualCheck": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "check_id": {
+                      "maxLength": 100,
+                      "minLength": 1,
+                      "title": "Check Id",
+                      "type": "string"
+                    },
+                    "status": {
+                      "$ref": "#/$defs/ValidationStatus",
+                      "default": "not_evaluated"
+                    },
+                    "rule_version": {
+                      "default": "manual-1.0",
+                      "minLength": 1,
+                      "title": "Rule Version",
+                      "type": "string"
+                    },
+                    "reviewer": {
+                      "maxLength": 200,
+                      "minLength": 1,
+                      "title": "Reviewer",
+                      "type": "string"
+                    },
+                    "notes": {
+                      "minLength": 1,
+                      "title": "Notes",
+                      "type": "string"
+                    },
+                    "evidence_kind": {
+                      "default": "MANUAL",
+                      "pattern": "^(MANUAL|CALCULATED|SIMULATED|MEASURED)$",
+                      "title": "Evidence Kind",
+                      "type": "string"
+                    },
+                    "measured_value": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Measured Value"
+                    },
+                    "unit": {
+                      "default": "",
+                      "title": "Unit",
+                      "type": "string"
+                    },
+                    "minimum": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Minimum"
+                    },
+                    "maximum": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Maximum"
+                    }
+                  },
+                  "required": [
+                    "check_id",
+                    "reviewer",
+                    "notes"
+                  ],
+                  "title": "ManualCheck",
+                  "type": "object"
+                },
+                "ValidationStatus": {
+                  "enum": [
+                    "pass",
+                    "fail",
+                    "not_evaluated",
+                    "physical_verification_required"
+                  ],
+                  "title": "ValidationStatus",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                },
+                "check": {
+                  "$ref": "#/$defs/ManualCheck"
+                },
+                "evidence_path": {
+                  "anyOf": [
+                    {
+                      "maxLength": 2000,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Evidence Path"
+                },
+                "expected_evidence_sha256": {
+                  "anyOf": [
+                    {
+                      "pattern": "^[a-f0-9]{64}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Expected Evidence Sha256"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash",
+                "check"
+              ],
+              "title": "ValidationWrite",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_validation_results",
+            "description": "Read effective validation status from shared core integrity checks.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RevisionQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_simulation_status",
+            "description": "Read persisted execution state and this session's actual cancellation capability.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "job_id"
+              ],
+              "title": "JobQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_simulation_logs",
+            "description": "Read available bounded persisted job logs; absence is not success.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "job_id"
+              ],
+              "title": "JobQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_simulation_results",
+            "description": "Read persisted job results and evidence integrity, separately from engineering validation.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "job_id"
+              ],
+              "title": "JobQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_simulation_artifact",
+            "description": "Preview manifest-checked available text output; no hidden waveform transformation.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                },
+                "relative_path": {
+                  "maxLength": 1000,
+                  "minLength": 1,
+                  "title": "Relative Path",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "job_id",
+                "relative_path"
+              ],
+              "title": "JobArtifact",
+              "type": "object"
+            }
+          },
+          {
+            "name": "cancel_simulation_job",
+            "description": "Request cooperative cancellation only for jobs owned by this session; foreign jobs are not relabelled cancelled.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "job_id": {
+                  "format": "uuid",
+                  "title": "Job Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "job_id"
+              ],
+              "title": "JobCancel",
+              "type": "object"
+            }
+          },
+          {
+            "name": "generate_revision_report",
+            "description": "Use the existing report generator with stage attribution, file hashes and idempotency.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "expected_input_hash": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Expected Input Hash",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "revision_id",
+                "stage_id",
+                "expected_input_hash"
+              ],
+              "title": "ReportGenerate",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_report_metadata",
+            "description": "Read report availability/staleness and known integrity; legacy authenticity may be unverified.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "report_id": {
+                  "format": "uuid",
+                  "title": "Report Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "report_id"
+              ],
+              "title": "ReportQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_revision_reports",
+            "description": "List existing report metadata for a revision.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "RevisionQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "export_report_package",
+            "description": "Export a unique local ZIP of the existing report and frozen snapshot, retaining integrity/provenance caveats.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "source": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Source",
+                  "type": "string"
+                },
+                "reason": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                },
+                "report_id": {
+                  "format": "uuid",
+                  "title": "Report Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "reason",
+                "idempotency_key",
+                "report_id"
+              ],
+              "title": "ReportExport",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_review_package",
+            "description": "Inspect requirements package, conflicts, and verification coverage.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "default": "requirements",
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "ReviewPackageQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "request_stage_review",
+            "description": "Request formal human engineering review for a stage.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "default": "requirements",
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                },
+                "submitter": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "title": "Submitter",
+                  "type": "string"
+                },
+                "reason": {
+                  "default": "Engineer requested formal human review",
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "title": "Reason",
+                  "type": "string"
+                },
+                "idempotency_key": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "title": "Idempotency Key",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id",
+                "submitter",
+                "idempotency_key"
+              ],
+              "title": "ReviewRequestCommand",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_authorized_reviewers",
+            "description": "List qualified human reviewers and authorized roles.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "title": "Model",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_stage_review_history",
+            "description": "Read append-only review history and signatures for a stage.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "schema_version": {
+                  "const": "3.1.0",
+                  "default": "3.1.0",
+                  "title": "Schema Version",
+                  "type": "string"
+                },
+                "revision_id": {
+                  "format": "uuid",
+                  "title": "Revision Id",
+                  "type": "string"
+                },
+                "stage_id": {
+                  "default": "requirements",
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]*$",
+                  "title": "Stage Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "revision_id"
+              ],
+              "title": "ReviewPackageQuery",
+              "type": "object"
+            }
+          },
+          {
+            "name": "list_projects",
+            "description": "Lists all authoritative engineering projects and active baseline revisions.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "create_project",
+            "description": "Creates a new authoritative engineering project with baseline specifications and storage.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Project full title"
+                },
+                "code": {
+                  "type": "string",
+                  "description": "Project code (e.g. PRJ-001)"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Project category ('dc_dc_converter', 'magnetics', 'semiconductor', 'pcb')"
+                },
+                "owner": {
+                  "type": "string",
+                  "description": "Lead engineer or team name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "High-level project description"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "get_project",
+            "description": "Retrieves comprehensive engineering project status, specifications, revisions, and evidence.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "description": "Project UUID or code"
+                }
+              },
+              "required": [
+                "project_id"
+              ]
+            }
+          },
+          {
+            "name": "get_project_specifications",
+            "description": "Retrieves electrical specifications and physical hash for an engineering project.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "description": "Project UUID or code"
+                }
+              },
+              "required": [
+                "project_id"
+              ]
+            }
+          },
+          {
+            "name": "save_project_specification",
+            "description": "Persists validated operating specifications to an engineering project.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "description": "Project UUID or code"
+                },
+                "spec_data": {
+                  "type": "object",
+                  "description": "Electrical specification object containing vin_nom_v, vout_v, etc."
+                }
+              },
+              "required": [
+                "project_id",
+                "spec_data"
+              ]
+            }
+          },
+          {
+            "name": "delete_project",
+            "description": "Deletes an engineering project, its revisions, jobs, and workspace files.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "project_id": {
+                  "type": "string",
+                  "description": "Project UUID or code to delete"
+                }
+              },
+              "required": [
+                "project_id"
+              ]
+            }
+          },
+          {
+            "name": "list_workspaces",
+            "description": "Lists all active engineering workspaces and product workspaces.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "create_workspace",
+            "description": "Creates a new engineering workspace for design generation, simulation, and artifacts.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Workspace title"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Workspace description (optional)"
+                },
+                "product_id": {
+                  "type": "string",
+                  "description": "Associated product UUID (optional)"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "get_workspace_status",
+            "description": "Returns status, directories, design counts, and simulation history of a workspace.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Workspace UUID"
+                }
+              },
+              "required": [
+                "workspace_id"
+              ]
+            }
+          },
+          {
+            "name": "list_products",
+            "description": "Lists all authoritative engineering products stored in SQLite.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "create_product",
+            "description": "Creates a new authoritative engineering product and initial baseline revision.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Product code (e.g. SV-1000)"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Product full title"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Product category ('dc_dc_converter', 'magnetics', 'semiconductor', 'pcb')"
+                },
+                "owner": {
+                  "type": "string",
+                  "description": "Lead engineer or team name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "High-level product description"
+                }
+              },
+              "required": [
+                "code",
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "delete_product",
+            "description": "Deletes an engineering product, its revisions, and directory contents.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "string",
+                  "description": "Product UUID or product code to delete"
+                }
+              },
+              "required": [
+                "product_id"
+              ]
+            }
+          },
+          {
+            "name": "validate_specification",
+            "description": "Validates electrical operating parameters against SI schema and physical constraints.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "spec_data": {
+                  "type": "object",
+                  "description": "Electrical specification object containing vin_nom_v, vout_v, iout_a, etc."
+                }
+              },
+              "required": [
+                "spec_data"
+              ]
+            }
+          },
+          {
+            "name": "save_specification",
+            "description": "Persists an updated electrical specification to a product revision.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "revision_id": {
+                  "type": "string",
+                  "description": "Product revision UUID"
+                },
+                "spec_data": {
+                  "type": "object",
+                  "description": "Electrical specification object"
+                }
+              },
+              "required": [
+                "revision_id",
+                "spec_data"
+              ]
+            }
+          },
+          {
+            "name": "generate_design",
+            "description": "Synthesizes candidate converter topologies, sizes components, and generates native CAD artifacts (.kicad_sch, .kicad_pcb, .asc, .net, .step).",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "minLength": 1,
+                  "title": "Workspace Id",
+                  "type": "string"
+                },
+                "title": {
+                  "minLength": 1,
+                  "title": "Title",
+                  "type": "string"
+                },
+                "category": {
+                  "default": "dc_dc_converter",
+                  "title": "Category",
+                  "type": "string"
+                },
+                "vin_nom": {
+                  "exclusiveMinimum": 0,
+                  "title": "Vin Nom",
+                  "type": "number"
+                },
+                "vout": {
+                  "exclusiveMinimum": 0,
+                  "title": "Vout",
+                  "type": "number"
+                },
+                "iout": {
+                  "exclusiveMinimum": 0,
+                  "title": "Iout",
+                  "type": "number"
+                },
+                "fsw_hz": {
+                  "exclusiveMinimum": 0,
+                  "title": "Fsw Hz",
+                  "type": "number"
+                },
+                "ripple_v": {
+                  "exclusiveMinimum": 0,
+                  "title": "Ripple V",
+                  "type": "number"
+                },
+                "vin_min": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Vin Min"
+                },
+                "vin_max": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Vin Max"
+                },
+                "isolation_v": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Isolation V"
+                },
+                "generate_artifacts": {
+                  "default": true,
+                  "title": "Generate Artifacts",
+                  "type": "boolean"
+                },
+                "product_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Product Id"
+                }
+              },
+              "required": [
+                "workspace_id",
+                "title",
+                "vin_nom",
+                "vout",
+                "iout",
+                "fsw_hz",
+                "ripple_v"
+              ],
+              "title": "DesignGenerationRequest",
+              "type": "object"
+            }
+          },
+          {
+            "name": "get_design",
+            "description": "Retrieves synthesized engineering design details, component values, and topology.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "design_id": {
+                  "type": "string",
+                  "description": "Design UUID"
+                }
+              },
+              "required": [
+                "design_id"
+              ]
+            }
+          },
+          {
+            "name": "list_design_candidates",
+            "description": "Lists all candidate topologies synthesized for an engineering design with feasibility scores.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "design_id": {
+                  "type": "string",
+                  "description": "Design UUID"
+                }
+              },
+              "required": [
+                "design_id"
+              ]
+            }
+          },
+          {
+            "name": "run_engineering_calculations",
+            "description": "Executes first-principles deterministic engineering calculations: 'dowell' (winding losses), 'losses' (MOSFET switching/conduction), 'steinmetz' (core loss), or 'flyback' (transformer sizing).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "calc_type": {
+                  "type": "string",
+                  "enum": [
+                    "dowell",
+                    "losses",
+                    "steinmetz",
+                    "flyback"
+                  ],
+                  "description": "Type of calculation to execute"
+                },
+                "params": {
+                  "type": "object",
+                  "description": "Parameters for the calculation"
+                }
+              },
+              "required": [
+                "calc_type",
+                "params"
+              ]
+            }
+          },
+          {
+            "name": "run_simulation",
+            "description": "Executes headless industrial simulation (LTspice transient or FEMM magnetics) on generated netlists.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Workspace UUID"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "ltspice",
+                    "femm"
+                  ],
+                  "default": "ltspice",
+                  "description": "Simulation tool"
+                },
+                "netlist_name": {
+                  "type": "string",
+                  "description": "Optional specific netlist (.net / .cir) or script (.lua) filename"
+                },
+                "duration_s": {
+                  "type": "number",
+                  "default": 0.002,
+                  "description": "Simulation duration in seconds"
+                }
+              },
+              "required": [
+                "workspace_id"
+              ]
+            }
+          },
+          {
+            "name": "list_simulations",
+            "description": "Lists simulation jobs and execution status.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Optional filter by workspace UUID"
+                }
+              }
+            }
+          },
+          {
+            "name": "list_design_artifacts",
+            "description": "Lists all CAD schematics (.kicad_sch), PCB layouts (.kicad_pcb), SPICE netlists (.asc/.net), 3D STEP solids (.step), and simulation waveforms (.raw) in a workspace.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Workspace UUID"
+                }
+              },
+              "required": [
+                "workspace_id"
+              ]
+            }
+          },
+          {
+            "name": "open_artifact",
+            "description": "Opens a native design artifact in the host's specialized CAD application (KiCad, LTspice, or FreeCAD).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "description": "Workspace UUID"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "description": "Artifact relative path inside workspace"
+                }
+              },
+              "required": [
+                "workspace_id",
+                "relative_path"
+              ]
+            }
+          },
+          {
+            "name": "list_tools",
+            "description": "Lists external host engineering tools (LTspice, KiCad, FEMM, FreeCAD) and their operational status.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "check_tool",
+            "description": "Performs a live diagnostic health check on an engineering tool.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "tool_id": {
+                  "type": "string",
+                  "description": "Tool identifier (e.g. 'ltspice', 'kicad', 'femm')"
+                }
+              },
+              "required": [
+                "tool_id"
+              ]
+            }
+          },
+          {
+            "name": "open_tool_file",
+            "description": "Launches a native tool directly with a specified engineering file.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "tool_id": {
+                  "type": "string",
+                  "description": "Tool identifier"
+                },
+                "file_path": {
+                  "type": "string",
+                  "description": "Path to target file"
+                }
+              },
+              "required": [
+                "tool_id",
+                "file_path"
+              ]
+            }
+          },
+          {
+            "name": "list_revisions",
+            "description": "Lists all revision snapshots and specification hashes for a product.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "string",
+                  "description": "Product UUID"
+                }
+              },
+              "required": [
+                "product_id"
+              ]
+            }
+          },
+          {
+            "name": "create_revision",
+            "description": "Creates a new immutable revision baseline for a product.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "string",
+                  "description": "Product UUID"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Revision label (e.g. 'Rev B')"
+                }
+              },
+              "required": [
+                "product_id",
+                "label"
+              ]
+            }
+          },
+          {
+            "name": "get_validation_summary",
+            "description": "Returns formal engineering validation summary and gate status for a revision.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "revision_id": {
+                  "type": "string",
+                  "description": "Product revision UUID"
+                }
+              },
+              "required": [
+                "revision_id"
+              ]
+            }
+          },
+          {
+            "name": "generate_engineering_report",
+            "description": "Generates a formal, immutable engineering dossier report (HTML + JSON snapshot with SHA-256).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "revision_id": {
+                  "type": "string",
+                  "description": "Product revision UUID (optional; defaults to first active)"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "step": "Disposable project and default lifecycle",
+    "status": "EXECUTED",
+    "elapsed_s": 0.158,
+    "result": {
+      "status": "CREATED",
+      "project_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+      "workspace_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+      "code": "AUDIT-BUCK",
+      "name": "Readiness audit buck fixture",
+      "category": "dc_dc_converter",
+      "revision_id": "c56d1a5a-4ad3-46e0-a13a-3426a6779017",
+      "revision_label": "R001"
+    }
+  },
+  {
+    "step": "Explicit fixture specification",
+    "status": "EXECUTED",
+    "elapsed_s": 0.028,
+    "result": {
+      "status": "UPDATED",
+      "revision_id": "c56d1a5a-4ad3-46e0-a13a-3426a6779017",
+      "specification_hash": "efc3f93f8c889d6271e560603aa9764059d7c1d462543f22a6ad4897d2e967f2",
+      "specification": {
+        "schema_version": "1.0",
+        "vin_min_v": 12.0,
+        "vin_nom_v": 12.0,
+        "vin_max_v": 12.0,
+        "vout_v": 5.0,
+        "iout_a": 1.0,
+        "switching_frequency_hz": 100000.0,
+        "ambient_temperature_k": null,
+        "topology": "buck",
+        "isolation_requirement": "",
+        "standards_profile": "UNASSIGNED",
+        "source": "Disposable software audit; not a commercial product",
+        "assumptions": [
+          "Idealized 12 V to 5 V / 1 A, 100 kHz, 0.1 V peak-to-peak limit; 2 ms transient requested; simulation is not physical validation."
+        ]
+      },
+      "project_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c"
+    }
+  },
+  {
+    "step": "Initialization start",
+    "status": "EXECUTED",
+    "elapsed_s": 0.031,
+    "result": {
+      "sequence": 2,
+      "schema_version": "3.1.0",
+      "event_id": "e0eec104-82f6-4b7b-9c37-ee8038967be5",
+      "assignment_id": "e60d6ef7-765b-467b-a358-7c55f24958e5",
+      "revision_id": "c56d1a5a-4ad3-46e0-a13a-3426a6779017",
+      "source": "Audit fixture",
+      "reason": "Software evaluation only",
+      "timestamp": "2026-11-14T15:09:20.436038+00:00",
+      "status": "IN_PROGRESS",
+      "attempt": 1,
+      "input_hash": "efc3f93f8c889d6271e560603aa9764059d7c1d462543f22a6ad4897d2e967f2",
+      "evidence_record_ids": [],
+      "last_activity": "2026-11-14T15:09:20.435966+00:00",
+      "review_status": "NOT_REQUESTED",
+      "action": "start",
+      "stage_id": "project_initialization",
+      "project_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+      "criteria_snapshot": [
+        {
+          "id": "project_identity",
+          "status": "PASS",
+          "evidence_record_id": null
+        }
+      ],
+      "evidence_record_id": null
+    }
+  },
+  {
+    "step": "Initialization completion",
+    "status": "EXECUTED",
+    "elapsed_s": 0.042,
+    "result": {
+      "sequence": 3,
+      "schema_version": "3.1.0",
+      "event_id": "abe8c845-0815-4b95-9e2f-89c5015819bd",
+      "assignment_id": "e60d6ef7-765b-467b-a358-7c55f24958e5",
+      "revision_id": "c56d1a5a-4ad3-46e0-a13a-3426a6779017",
+      "source": "Audit fixture",
+      "reason": "Software evaluation only",
+      "timestamp": "2026-11-14T15:09:20.472437+00:00",
+      "status": "COMPLETED",
+      "attempt": 1,
+      "input_hash": "efc3f93f8c889d6271e560603aa9764059d7c1d462543f22a6ad4897d2e967f2",
+      "evidence_record_ids": [],
+      "last_activity": "2026-11-14T15:09:20.472357+00:00",
+      "review_status": "NOT_REQUESTED",
+      "action": "complete",
+      "stage_id": "project_initialization",
+      "project_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+      "criteria_snapshot": [
+        {
+          "id": "project_identity",
+          "status": "PASS",
+          "evidence_record_id": null
+        }
+      ],
+      "evidence_record_id": null
+    }
+  },
+  {
+    "step": "Requirements start",
+    "status": "EXECUTED",
+    "elapsed_s": 0.046,
+    "result": {
+      "sequence": 4,
+      "schema_version": "3.1.0",
+      "event_id": "98988cd0-19f6-4fab-8e78-dcc1ee68a9a0",
+      "assignment_id": "e60d6ef7-765b-467b-a358-7c55f24958e5",
+      "revision_id": "c56d1a5a-4ad3-46e0-a13a-3426a6779017",
+      "source": "Audit fixture",
+      "reason": "Software evaluation only",
+      "timestamp": "2026-11-14T15:09:20.518559+00:00",
+      "status": "IN_PROGRESS",
+      "attempt": 1,
+      "input_hash": "efc3f93f8c889d6271e560603aa9764059d7c1d462543f22a6ad4897d2e967f2",
+      "evidence_record_ids": [],
+      "last_activity": "2026-11-14T15:09:20.518500+00:00",
+      "review_status": "NOT_REQUESTED",
+      "action": "start",
+      "stage_id": "requirements",
+      "project_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+      "criteria_snapshot": [
+        {
+          "id": "requirements_acceptance",
+          "status": "NOT_EVALUATED",
+          "evidence_record_id": null
+        }
+      ],
+      "evidence_record_id": null
+    }
+  },
+  {
+    "step": "Persist measurable requirements",
+    "status": "EXECUTED",
+    "elapsed_s": 0.081,
+    "result": {
+      "sequence": 1,
+      "schema_version": "3.1.0",
+      "record_id": "565ba7ae-b13a-4aa7-b7df-a80bf84dddd9",
+      "kind": "requirements",
+      "project_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+      "revision_id": "c56d1a5a-4ad3-46e0-a13a-3426a6779017",
+      "stage_id": "requirements",
+      "assignment_id": "e60d6ef7-765b-467b-a358-7c55f24958e5",
+      "attempt": 1,
+      "input_hash": "efc3f93f8c889d6271e560603aa9764059d7c1d462543f22a6ad4897d2e967f2",
+      "specification": {
+        "schema_version": "1.0",
+        "vin_min_v": 12.0,
+        "vin_nom_v": 12.0,
+        "vin_max_v": 12.0,
+        "vout_v": 5.0,
+        "iout_a": 1.0,
+        "switching_frequency_hz": 100000.0,
+        "ambient_temperature_k": null,
+        "topology": "buck",
+        "isolation_requirement": "",
+        "standards_profile": "UNASSIGNED",
+        "source": "Disposable software audit; not a commercial product",
+        "assumptions": [
+          "Idealized 12 V to 5 V / 1 A, 100 kHz, 0.1 V peak-to-peak limit; 2 ms transient requested; simulation is not physical validation."
+        ]
+      },
+      "source": "Explicit audit assumptions",
+      "reason": "Traceability fixture, no approval",
+      "timestamp": "2026-11-14T15:09:20.615536+00:00",
+      "engineering_status": "NOT_EVALUATED",
+      "requirements": [
+        {
+          "id": "audit_vout",
+          "discipline": "electrical",
+          "description": "Nominal output 5 V",
+          "source": "Software audit fixture",
+          "acceptance_criterion": "Steady-state mean 4.75 to 5.25 V in this illustrative fixture",
+          "mandatory": true,
+          "specification_field": "vout_v",
+          "target_value": 5.0,
+          "unit": "V",
+          "assumptions": []
+        },
+        {
+          "id": "audit_ripple",
+          "discipline": "performance",
+          "description": "Peak-to-peak ripple limit",
+          "source": "Software audit fixture",
+          "acceptance_criterion": "Steady-state peak-to-peak <=0.1 V; settling and measurement window must be justified",
+          "mandatory": true,
+          "specification_field": null,
+          "target_value": 0.1,
+          "unit": "V",
+          "assumptions": []
+        }
+      ],
+      "requirements_version": 1,
+      "supersedes_record_id": null
+    }
+  },
+  {
+    "step": "Attempt stage handoff without review",
+    "status": "EXECUTED",
+    "elapsed_s": 0.031,
+    "result": {
+      "sequence": 5,
+      "schema_version": "3.1.0",
+      "event_id": "d545b048-73d1-41bf-a6ed-6596fba7a785",
+      "assignment_id": "e60d6ef7-765b-467b-a358-7c55f24958e5",
+      "revision_id": "c56d1a5a-4ad3-46e0-a13a-3426a6779017",
+      "source": "Audit fixture",
+      "reason": "Software evaluation only",
+      "timestamp": "2026-11-14T15:09:20.649052+00:00",
+      "status": "IN_PROGRESS",
+      "attempt": 1,
+      "input_hash": "efc3f93f8c889d6271e560603aa9764059d7c1d462543f22a6ad4897d2e967f2",
+      "evidence_record_ids": [],
+      "last_activity": "2026-11-14T15:09:20.648988+00:00",
+      "review_status": "NOT_REQUESTED",
+      "action": "start",
+      "stage_id": "calculations",
+      "project_id": "49f8e26c-b8ed-415d-8d0b-b104320f490c",
+      "criteria_snapshot": [
+        {
+          "id": "calculations_acceptance",
+          "status": "NOT_EVALUATED",
+          "evidence_record_id": null
+        }
+      ],
+      "evidence_record_id": null
+    }
+  },
+  {
+    "step": "MCP design generation",
+    "status": "EXECUTED",
+    "elapsed_s": 0.146,
+    "result": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"status\": \"SYNTHESIZED\",\n  \"assumptions\": [],\n  \"design_id\": \"34265a00-3078-4a13-b087-8ab30b036f10\",\n  \"title\": \"Audit ideal buck\",\n  \"category\": \"dc_dc_converter\",\n  \"workspace_id\": \"49f8e26c-b8ed-415d-8d0b-b104320f490c\",\n  \"revision_id\": \"c56d1a5a-4ad3-46e0-a13a-3426a6779017\",\n  \"active_revision\": \"Rev 1\",\n  \"topology\": \"Buck\",\n  \"candidate_count\": 2,\n  \"candidates\": [\n    {\n      \"id\": \"49e8dcd2-6ccc-4e15-bff5-c68053474c92\",\n      \"name\": \"Non-Isolated Synchronous Buck\",\n      \"topology\": \"Synchronous Buck Converter\",\n      \"score\": 0.95\n    },\n    {\n      \"id\": \"2622eab3-9a8b-445e-9aef-ad8312132b1d\",\n      \"name\": \"Isolated Single-Switch Flyback\",\n      \"topology\": \"Discontinuous Flyback Converter\",\n      \"score\": 0.8\n    }\n  ],\n  \"generated_artifacts\": [\n    {\n      \"id\": \"ed8764a3-412e-4b2e-a3ba-e14bb6a8f562\",\n      \"design_id\": \"34265a00-3078-4a13-b087-8ab30b036f10\",\n      \"revision_id\": \"a85b1cdd-10e9-4db9-b2f4-6d87176e4601\",\n      \"kind\": \"netlist\",\n      \"name\": \"LTspice Circuit Netlist\",\n      \"path\": \".mendex\\\\ga\\\\eea3d609c19646e5ae0ff2b8165e5eff\\\\buck_circuit.net\",\n      \"format\": \"SPICE Netlist (.net)\",\n      \"sha256\": \"868585b39bd7ed2a28b49197d154304033c54995c4bae56b21a8e68238a3fc40\",\n      \"source_service\": \"LTspiceNetlistGenerator\",\n      \"parent_ids\": [],\n      \"edit_provenance\": \"Deterministic Generator\",\n      \"is_external_modified\": false,\n      \"created_at\": \"2026-11-14T15:09:20.736271+00:00\"\n    },\n    {\n      \"id\": \"8f75c2d0-ddc2-4a81-be72-8fa868faa90a\",\n      \"design_id\": \"34265a00-3078-4a13-b087-8ab30b036f10\",\n      \"revision_id\": \"a85b1cdd-10e9-4db9-b2f4-6d87176e4601\",\n      \"kind\": \"netlist\",\n      \"name\": \"LTspice Graphical Schematic\",\n      \"path\": \".mendex\\\\ga\\\\eea3d609c19646e5ae0ff2b8165e5eff\\\\buck_schematic.asc\",\n      \"format\": \"LTspice Schematic (.asc)\",\n      \"sha256\": \"0614d2813c6a3928a8dfbab89fa331910e128ff9474188589b87bac36a1d62b6\",\n      \"source_service\": \"LTspiceNetlistGenerator\",\n      \"parent_ids\": [],\n      \"edit_provenance\": \"Deterministic Generator\",\n      \"is_external_modified\": false,\n      \"created_at\": \"2026-11-14T15:09:20.753703+00:00\"\n    },\n    {\n      \"id\": \"f5801475-f6df-4759-be3c-ce17a8be2341\",\n      \"design_id\": \"34265a00-3078-4a13-b087-8ab30b036f10\",\n      \"revision_id\": \"a85b1cdd-10e9-4db9-b2f4-6d87176e4601\",\n      \"kind\": \"kicad_sch\",\n      \"name\": \"KiCad 9 Schematic\",\n      \"path\": \".mendex\\\\ga\\\\eea3d609c19646e5ae0ff2b8165e5eff\\\\kicad\\\\audit_ideal_buck.kicad_sch\",\n      \"format\": \"KiCad S-Expression (.kicad_sch)\",\n      \"sha256\": \"55bf542481975d947e748a80bf982959b4fcdec6fe50c7c44847cc8575e6bade\",\n      \"source_service\": \"KiCadSchematicGenerator\",\n      \"parent_ids\": [],\n      \"edit_provenance\": \"Deterministic Generator\",\n      \"is_external_modified\": false,\n      \"created_at\": \"2026-11-14T15:09:20.769401+00:00\"\n    },\n    {\n      \"id\": \"14e98b61-b1d2-4428-9f7e-923ef987b273\",\n      \"design_id\": \"34265a00-3078-4a13-b087-8ab30b036f10\",\n      \"revision_id\": \"a85b1cdd-10e9-4db9-b2f4-6d87176e4601\",\n      \"kind\": \"kicad_pcb\",\n      \"name\": \"KiCad 9 Populated PCB Layout\",\n      \"path\": \".mendex\\\\ga\\\\eea3d609c19646e5ae0ff2b8165e5eff\\\\kicad\\\\audit_ideal_buck.kicad_pcb\",\n      \"format\": \"KiCad PCB (.kicad_pcb)\",\n      \"sha256\": \"c75e2318e58b5c6db13bc9c776f7ef5e9c89651c8adce3be75a0821b3e864c07\",\n      \"source_service\": \"KiCadPCBGenerator\",\n      \"parent_ids\": [],\n      \"edit_provenance\": \"Deterministic Generator\",\n      \"is_external_modified\": false,\n      \"created_at\": \"2026-11-14T15:09:20.796515+00:00\"\n    }\n  ],\n  \"electrical_summary\": {\n    \"vin_nom\": 12.0,\n    \"vout\": 5.0,\n    \"iout\": 1.0,\n    \"pout_w\": 5.0,\n    \"switching_frequency_hz\": 100000.0\n  }\n}"
+          }
+        ],
+        "isError": false
+      }
+    }
+  },
+  {
+    "step": "Topology and sizing inspection",
+    "status": "EXECUTED",
+    "elapsed_s": 0.0,
+    "result": {
+      "topology": "Buck",
+      "candidate_metrics": [
+        {
+          "topology": "Synchronous Buck Converter",
+          "metrics": {
+            "estimated_efficiency": 0.94,
+            "switch_voltage_stress_v": 15.0,
+            "peak_inductor_current_a": 1.15,
+            "component_count": 8.0
+          }
+        },
+        {
+          "topology": "Discontinuous Flyback Converter",
+          "metrics": {
+            "estimated_efficiency": 0.88,
+            "switch_voltage_stress_v": 71.81818181818181,
+            "peak_primary_current_a": 2.1043771043771042,
+            "component_count": 10.0
+          }
+        }
+      ],
+      "components": [
+        {
+          "id": "3f1c6c0a-26a3-40e7-9786-ea1f83efdc4a",
+          "designator": "V1",
+          "name": "Input DC Supply",
+          "type": "voltage_source",
+          "value": 12.0,
+          "unit": "V",
+          "pins": [
+            {
+              "pin_id": "p",
+              "name": "+",
+              "direction": "bidirectional"
+            },
+            {
+              "pin_id": "n",
+              "name": "-",
+              "direction": "bidirectional"
+            }
+          ],
+          "parameters": {},
+          "footprint": null,
+          "spice_model": null,
+          "mpn": null,
+          "manufacturer": null
+        },
+        {
+          "id": "ae1ee3b7-0a1a-47b3-a92e-cb244a811372",
+          "designator": "Q1",
+          "name": "High-Side Switch",
+          "type": "mosfet",
+          "value": 0.0,
+          "unit": "",
+          "pins": [
+            {
+              "pin_id": "d",
+              "name": "D",
+              "direction": "bidirectional"
+            },
+            {
+              "pin_id": "g",
+              "name": "G",
+              "direction": "bidirectional"
+            },
+            {
+              "pin_id": "s",
+              "name": "S",
+              "direction": "bidirectional"
+            }
+          ],
+          "parameters": {
+            "rds_on": 0.025,
+            "v_ds_max": 60.0
+          },
+          "footprint": null,
+          "spice_model": "BSC026N08NS5",
+          "mpn": null,
+          "manufacturer": null
+        },
+        {
+          "id": "d3194604-9cc5-4b46-8ef6-f6297a20d575",
+          "designator": "Q2",
+          "name": "Synchronous Low-Side Switch",
+          "type": "mosfet",
+          "value": 0.0,
+          "unit": "",
+          "pins": [
+            {
+              "pin_id": "d",
+              "name": "D",
+              "direction": "bidirectional"
+            },
+            {
+              "pin_id": "g",
+              "name": "G",
+              "direction": "bidirectional"
+            },
+            {
+              "pin_id": "s",
+              "name": "S",
+              "direction": "bidirectional"
+            }
+          ],
+          "parameters": {
+            "rds_on": 0.015,
+            "v_ds_max": 60.0
+          },
+          "footprint": null,
+          "spice_model": "BSC026N08NS5",
+          "mpn": null,
+          "manufacturer": null
+        },
+        {
+          "id": "a9022283-caa1-46f8-81b1-1703f649a460",
+          "designator": "L1",
+          "name": "Power Inductor",
+          "type": "inductor",
+          "value": 9.722222222222223e-05,
+          "unit": "H",
+          "pins": [
+            {
+              "pin_id": "1",
+              "name": "1",
+              "direction": "bidirectional"
+            },
+            {
+              "pin_id": "2",
+              "name": "2",
+              "direction": "bidirectional"
+            }
+          ],
+          "parameters": {
+            "dcr": 0.012,
+            "isat": 1.5
+          },
+          "footprint": null,
+          "spice_model": null,
+          "mpn": null,
+          "manufacturer": null
+        },
+        {
+          "id": "24732887-d449-4821-acc8-324b2ea8bd41",
+          "designator": "C1",
+          "name": "Output Filter Capacitor",
+          "type": "capacitor",
+          "value": 3.7499999999999997e-06,
+          "unit": "F",
+          "pins": [
+            {
+              "pin_id": "1",
+              "name": "+",
+              "direction": "bidirectional"
+            },
+            {
+              "pin_id": "2",
+              "name": "-",
+              "direction": "bidirectional"
+            }
+          ],
+          "parameters": {
+            "esr": 0.005
+          },
+          "footprint": null,
+          "spice_model": null,
+          "mpn": null,
+          "manufacturer": null
+        },
+        {
+          "id": "a35cbcc9-b82f-43bd-a921-8437ed862fe7",
+          "designator": "R_LOAD",
+          "name": "Load Resistor",
+          "type": "resistor",
+          "value": 5.0,
+          "unit": "Ohm",
+          "pins": [
+            {
+              "pin_id": "1",
+              "name": "1",
+              "direction": "bidirectional"
+            },
+            {
+              "pin_id": "2",
+              "name": "2",
+              "direction": "bidirectional"
+            }
+          ],
+          "parameters": {},
+          "footprint": null,
+          "spice_model": null,
+          "mpn": null,
+          "manufacturer": null
+        }
+      ]
+    }
+  },
+  {
+    "step": "Representative sourced part lookup",
+    "status": "EXECUTED",
+    "elapsed_s": 0.0,
+    "result": {
+      "datasheet_url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsc026n08ns5-datasheet-en.pdf",
+      "source_checked_on": "2026-11-13",
+      "verification_status": "NOT_EVALUATED",
+      "provenance": "Reference only; application qualification NOT_EVALUATED",
+      "conditions": "RDS(on) maximum; review gate voltage, junction temperature and SOA in datasheet. Current rating not transcribed pending thermal-condition review.",
+      "lifecycle_status": "UNKNOWN",
+      "id": "8d02a638-e0fa-5fcd-859c-0eef1a663a45",
+      "mpn": "BSC026N08NS5",
+      "manufacturer": "Infineon",
+      "category": "mosfet",
+      "description": "OptiMOS 5 silicon N-channel MOSFET",
+      "package": "PG-TDSON-8",
+      "record_kind": "PART",
+      "voltage_rating_v": 80.0,
+      "current_rating_a": null,
+      "power_rating_w": null,
+      "rds_on_ohm": 0.0026,
+      "esr_ohm": null,
+      "kicad_footprint": "Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.81mm",
+      "kicad_symbol": "Device:Q_NMOS_DGS",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.81mm.step",
+      "spice_model_name": "BSC026N08NS5"
+    }
+  },
+  {
+    "step": "Native converter execution and extraction",
+    "status": "EXECUTED",
+    "elapsed_s": 4.797,
+    "result": {
+      "success": true,
+      "exit_code": 0,
+      "raw_file_path": "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\dr\\ae82b92d77de43b6a1138dfbd6c4d9f2\\input.raw",
+      "log_file_path": "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\dr\\ae82b92d77de43b6a1138dfbd6c4d9f2\\input.log",
+      "elapsed_time_s": 2.4275,
+      "time_trace": [
+        0.0,
+        9.999999439624929e-11,
+        1.999999887924986e-10,
+        3.999999775849972e-10,
+        7.999999551699943e-10,
+        1.599999910339989e-09,
+        1.799999899132487e-09,
+        2.199999876717484e-09,
+        2.999999831887479e-09,
+        3.003124831712362e-09,
+        3.003278028065302e-09,
+        3.003584420771184e-09,
+        3.004197206182947e-09,
+        3.004339481008051e-09,
+        3.004624030658261e-09,
+        3.004695168070813e-09,
+        3.004837442895917e-09,
+        3.004873011602194e-09,
+        3.004944149014746e-09,
+        3.004961933367884e-09,
+        3.00499750207416e-09,
+        3.005006394250729e-09,
+        3.005024178603868e-09,
+        3.005059747310144e-09,
+        3.005130884722696e-09,
+        3.005273159547801e-09,
+        3.00555770919801e-09,
+        3.006126808498428e-09,
+        3.007265007099266e-09,
+        3.00954140430094e-09,
+        3.01409419870429e-09,
+        3.023199787510988e-09,
+        3.041410965124386e-09,
+        3.077833320351181e-09,
+        3.15067803080477e-09,
+        3.296367451711948e-09,
+        3.587746293526305e-09,
+        4.170503977155019e-09,
+        5.336019344412446e-09,
+        7.667050078927302e-09,
+        1e-08,
+        1.46658998421454e-08,
+        2.399769952643619e-08,
+        4.266129889501777e-08,
+        7.998849763218094e-08,
+        1.546428951065073e-07,
+        3.0395169005516e-07,
+        6.025692799524653e-07,
+        1.199804459747076e-06,
+        2.394274819336297e-06,
+        4.176667e-06,
+        4.186667e-06,
+        4.216667e-06,
+        4.226667e-06,
+        4.346666999999998e-06,
+        4.586666999999994e-06,
+        5.066666999999986e-06,
+        6.02666699999997e-06,
+        7.946666999999938e-06,
+        9.96e-06,
+        9.97e-06,
+        1e-05,
+        1.000125e-05,
+        1.000375e-05,
+        1.0003828125e-05,
+        1.000384765625e-05,
+        1.000388671875e-05,
+        1.000396484375e-05,
+        1.000396728515625e-05,
+        1.000396789550781e-05,
+        1.000396911621094e-05,
+        1.000396942138672e-05,
+        1.000397003173828e-05,
+        1.000397005081177e-05,
+        1.000397008895874e-05,
+        1.000397009849548e-05,
+        1.000397011756897e-05,
+        1.000397012233734e-05,
+        1.000397013187408e-05,
+        1.000397015094757e-05,
+        1.000397018909454e-05,
+        1.000397026538849e-05,
+        1.000397041797638e-05,
+        1.000397072315216e-05,
+        1.000397133350372e-05,
+        1.000397255420685e-05,
+        1.00039749956131e-05,
+        1.00039798784256e-05,
+        1.00039896440506e-05,
+        1.00040091753006e-05,
+        1.00040482378006e-05,
+        1.00041263628006e-05,
+        1.00042826128006e-05,
+        1.00045951128006e-05,
+        1.00052201128006e-05,
+        1.00064701128006e-05,
+        1.00089701128006e-05,
+        1.001e-05,
+        1.00139701128006e-05,
+        1.002191033840179e-05,
+        1.003779078960418e-05,
+        1.006955169200895e-05,
+        1.013307349681849e-05,
+        1.026011710643757e-05,
+        1.051420432567574e-05,
+        1.102237876415207e-05,
+        1.203872764110474e-05,
+        1.407142539501008e-05,
+        1.4176667e-05,
+        1.4186667e-05,
+        1.4216667e-05,
+        1.4226667e-05,
+        1.4346667e-05,
+        1.458666699999999e-05,
+        1.506666699999998e-05,
+        1.602666699999996e-05,
+        1.794666699999991e-05,
+        1.996e-05,
+        1.997e-05,
+        2e-05,
+        2.000125e-05,
+        2.000375e-05,
+        2.0003828125e-05,
+        2.0003984375e-05,
+        2.00040234375e-05,
+        2.00041015625e-05,
+        2.00042578125e-05,
+        2.00042626953125e-05,
+        2.00042724609375e-05,
+        2.000427490234375e-05,
+        2.000427551269531e-05,
+        2.000427673339844e-05,
+        2.000427703857422e-05,
+        2.000427764892578e-05,
+        2.000427780151367e-05,
+        2.000427783966064e-05,
+        2.000427791595459e-05,
+        2.000427793502808e-05,
+        2.000427797317505e-05,
+        2.000427798271179e-05,
+        2.000427800178528e-05,
+        2.000427803993225e-05,
+        2.00042781162262e-05,
+        2.000427826881409e-05,
+        2.000427857398987e-05,
+        2.000427918434143e-05,
+        2.000428040504456e-05,
+        2.000428284645081e-05,
+        2.000428772926331e-05,
+        2.000429749488831e-05,
+        2.000431702613831e-05,
+        2.000435608863831e-05,
+        2.000443421363831e-05,
+        2.000459046363831e-05,
+        2.000490296363831e-05,
+        2.000552796363831e-05,
+        2.000677796363831e-05,
+        2.000927796363831e-05,
+        2.001e-05,
+        2.001427796363831e-05,
+        2.002283389091493e-05,
+        2.003994574546816e-05,
+        2.007416945457462e-05,
+        2.014261687278755e-05,
+        2.02795117092134e-05,
+        2.05533013820651e-05,
+        2.11008807277685e-05,
+        2.219603941917531e-05,
+        2.4176667e-05,
+        2.418666700000001e-05,
+        2.4216667e-05,
+        2.4226667e-05,
+        2.434666700000003e-05,
+        2.458666700000009e-05,
+        2.506666700000021e-05,
+        2.602666700000044e-05,
+        2.794666700000091e-05,
+        2.996e-05,
+        2.997000000000001e-05,
+        3e-05,
+        3.000125e-05,
+        3.000375e-05,
+        3.0004375e-05,
+        3.000439453125e-05,
+        3.00043994140625e-05,
+        3.00044091796875e-05,
+        3.000441162109375e-05,
+        3.000441650390625e-05,
+        3.000442626953126e-05,
+        3.000442630767823e-05,
+        3.000442638397217e-05,
+        3.000442640304566e-05,
+        3.000442644119263e-05,
+        3.000442645072938e-05,
+        3.000442646980286e-05,
+        3.000442647457124e-05,
+        3.000442648410798e-05,
+        3.000442650318147e-05,
+        3.000442654132844e-05,
+        3.000442661762239e-05
+      ],
+      "vout_trace": [
+        1.200493996296443e-10,
+        1.200493996295744e-10,
+        1.200493996294005e-10,
+        1.200493996288112e-10,
+        1.200493996281625e-10,
+        1.200493996235759e-10,
+        1.200493996241945e-10,
+        1.200493996277455e-10,
+        1.200493996225018e-10,
+        1.202149966155702e-10,
+        1.202236474756524e-10,
+        1.202421093074313e-10,
+        1.202870784181553e-10,
+        1.202995823859112e-10,
+        1.203261493978403e-10,
+        1.203333911279409e-10,
+        1.203483069397722e-10,
+        1.203522000283376e-10,
+        1.203600998255721e-10,
+        1.2036211763839e-10,
+        1.2036617937004e-10,
+        1.203672039337327e-10,
+        1.203692582676051e-10,
+        1.203733981710259e-10,
+        1.203818029038762e-10,
+        1.203991120225587e-10,
+        1.204357287551628e-10,
+        1.205169560205286e-10,
+        1.207113858373398e-10,
+        1.212281492501566e-10,
+        1.227733062551869e-10,
+        1.279102017736332e-10,
+        1.463705149570079e-10,
+        2.160377490744062e-10,
+        4.863597026828585e-10,
+        1.550954093956019e-09,
+        5.775930992664247e-09,
+        2.260888755893661e-08,
+        8.980553278685377e-08,
+        3.583113534022588e-07,
+        8.060591178400488e-07,
+        2.238736514917641e-06,
+        7.252130894530525e-06,
+        2.586556507988182e-05,
+        9.739491509453188e-05,
+        0.0003773107950005409,
+        0.001481750210520285,
+        0.005846507271877434,
+        0.02301942210884676,
+        0.08970437944837728,
+        0.2637730822064995,
+        0.2649911423167765,
+        0.2686429316015439,
+        0.2698585750210032,
+        0.2843880479578051,
+        0.313125999031913,
+        0.3693216750891825,
+        0.476625821666622,
+        0.6712097405726136,
+        0.8472540686965497,
+        0.8480580974898073,
+        0.8504656941783263,
+        0.8505658567972785,
+        0.8507661583721484,
+        0.8507724170106948,
+        0.8507739816674442,
+        0.8507771109751684,
+        0.8507833695559721,
+        0.8507835651358553,
+        0.8507836140308233,
+        0.8507837118207536,
+        0.850783736268234,
+        0.8507837851631934,
+        0.850783786691161,
+        0.8507837897470961,
+        0.8507837905110799,
+        0.8507837920390476,
+        0.8507837924210393,
+        0.8507837931850228,
+        0.8507837947129909,
+        0.8507837977689274,
+        0.8507838038807997,
+        0.8507838161045442,
+        0.8507838405520358,
+        0.8507838894470257,
+        0.8507839872370317,
+        0.850784182817151,
+        0.8507845739778174,
+        0.8507853563008686,
+        0.8507869209538826,
+        0.8507900502877579,
+        0.8507963090679251,
+        0.8508088270828469,
+        0.8508338649529587,
+        0.8508839481430547,
+        0.8509841446430475,
+        0.8511846591342274,
+        0.8512673093360831,
+        0.8515861765671849,
+        0.8522251443496569,
+        0.8535080100720217,
+        0.8560934371903646,
+        0.8613428746036895,
+        0.8721544872231588,
+        0.8950159245302086,
+        0.94559007507253,
+        1.065336878393149,
+        1.372883010092546,
+        1.391175409171035,
+        1.392923906258741,
+        1.398163437083364,
+        1.399907138356695,
+        1.420725884564747,
+        1.461780460528274,
+        1.541571472371727,
+        1.691994208298758,
+        1.957182791110058,
+        2.18607234373884,
+        2.187086711854445,
+        2.190122437541489,
+        2.190248674788323,
+        2.190501110642314,
+        2.190508997979813,
+        2.190524772503929,
+        2.190528716078378,
+        2.190536603189563,
+        2.190552377185669,
+        2.19055287011804,
+        2.190553855982193,
+        2.19055410244801,
+        2.190554164064459,
+        2.19055428729735,
+        2.190554318105569,
+        2.190554379722004,
+        2.190554395126112,
+        2.190554398977139,
+        2.190554406679192,
+        2.190554408604706,
+        2.190554412455734,
+        2.190554413418491,
+        2.190554415344005,
+        2.190554419195032,
+        2.190554426897088,
+        2.190554442301201,
+        2.190554473109429,
+        2.190554534725887,
+        2.190554657958823,
+        2.19055490442478,
+        2.190555397357024,
+        2.19055638322283,
+        2.190558354959761,
+        2.190562298455147,
+        2.190570185533264,
+        2.190585960044964,
+        2.190617510518213,
+        2.190680617382112,
+        2.190806855226339,
+        2.191059428871321,
+        2.191132400272128,
+        2.191564971729005,
+        2.192431275612598,
+        2.194168523839715,
+        2.197661554881154,
+        2.204721537638132,
+        2.21913544631736,
+        2.249125150589699,
+        2.313641528825111,
+        2.459946280996508,
+        2.777663648768883,
+        2.779432893733976,
+        2.784732309885249,
+        2.786495187369972,
+        2.807512772951929,
+        2.84879278159428,
+        2.928356846054596,
+        3.075703587029527,
+        3.324959583956768,
+        3.524375710493774,
+        3.52521311889693,
+        3.527716322941866,
+        3.527820316416694,
+        3.528028256218042,
+        3.528080223492502,
+        3.528081847464078,
+        3.528082253456614,
+        3.528083065440967,
+        3.528083268436786,
+        3.528083674428244,
+        3.528084486410081,
+        3.528084489581882,
+        3.528084495925483,
+        3.528084497511384,
+        3.528084500683186,
+        3.528084501476137,
+        3.528084503062038,
+        3.528084503458514,
+        3.528084504251465,
+        3.528084505837366,
+        3.52808450900917,
+        3.528084515352774
+      ],
+      "iin_trace": [
+        2.40098799259257e-11,
+        2.400987730258645e-11,
+        2.400987340532274e-11,
+        2.400986434828673e-11,
+        2.40098833406579e-11,
+        2.40098335102894e-11,
+        2.400989152402476e-11,
+        2.400993490728125e-11,
+        2.400977578269624e-11,
+        1.987404458169871e-07,
+        2.11783167486122e-07,
+        2.401808351644438e-07,
+        3.102529749597709e-07,
+        3.295966252903651e-07,
+        3.706898918157919e-07,
+        3.817709828000998e-07,
+        4.045623497121507e-07,
+        4.104714452532605e-07,
+        4.224503868996052e-07,
+        4.254990958489496e-07,
+        4.310037796449609e-07,
+        4.321019272072929e-07,
+        4.342976850041717e-07,
+        4.386883797547033e-07,
+        4.474686021853594e-07,
+        4.650275623489031e-07,
+        5.001438937291655e-07,
+        5.703756350782916e-07,
+        7.108406103398959e-07,
+        9.917777819005323e-07,
+        1.55366984543092e-06,
+        2.677486835059057e-06,
+        4.925170763911143e-06,
+        9.42060376327336e-06,
+        1.841154587448792e-05,
+        3.63935129859439e-05,
+        7.235753261906707e-05,
+        0.0001442856555960091,
+        0.0002881419704254165,
+        0.0005758546039136432,
+        0.0008638040387274833,
+        0.001439700576455905,
+        0.002591480170501649,
+        0.00489498440220467,
+        0.009501764804234657,
+        0.01871434763271095,
+        0.03713507805557396,
+        0.07395465141781382,
+        0.1474737162605141,
+        0.2937814591145135,
+        0.5093652214320465,
+        0.5099327061307962,
+        0.5097414300050845,
+        0.5096914361177161,
+        0.5092499536650706,
+        0.5083138333914453,
+        0.5062331398277611,
+        0.5012700046641551,
+        0.4883905411362193,
+        0.4710965982979365,
+        0.4709874300924752,
+        0.4706165003708525,
+        0.4706010282160713,
+        0.4705700994284141,
+        0.470569133633784,
+        0.4705688922012997,
+        0.4705684093697873,
+        0.4705674439165802,
+        0.4705674137509259,
+        0.4705674062095306,
+        0.4705673911267767,
+        0.4705673873561019,
+        0.4705673798147616,
+        0.4705673795790949,
+        0.4705673791077617,
+        0.4705673789899285,
+        0.4705673787542621,
+        0.4705673955326247,
+        0.4705674902114554,
+        0.470567498282952,
+        0.4705675023148966,
+        0.4705675103442475,
+        0.4705675264177751,
+        0.4705675585432566,
+        0.4705676227983372,
+        0.4705677514182727,
+        0.4705680091085753,
+        0.4705685258887608,
+        0.4705695634335883,
+        0.4705716493714155,
+        0.4705758490483806,
+        0.4705843189143074,
+        0.4706014245697612,
+        0.47063599650146,
+        0.4707058472485994,
+        0.4708467712512797,
+        0.471130463020165,
+        0.4712477045934376,
+        0.4716998900532334,
+        0.472604213620624,
+        0.4744126658552787,
+        0.4780287964671963,
+        0.4852579303114744,
+        0.499703434085626,
+        0.52854137002022,
+        0.5859891341633,
+        0.6998505265003823,
+        0.9225396192984198,
+        0.9338724141660348,
+        0.9343202647025407,
+        0.9337799102824109,
+        0.9336101599751472,
+        0.9316880923352076,
+        0.9277686852533826,
+        0.9196362613808878,
+        0.9022544991917285,
+        0.863473802526832,
+        0.8178288453547079,
+        0.8175790528266755,
+        0.8167941988137751,
+        0.8167614754576032,
+        0.8166960435995283,
+        0.8166939995617803,
+        0.8166899120435049,
+        0.8166888903804003,
+        0.8166868472180191,
+        0.8166827619493242,
+        0.8166826343089665,
+        0.8166823790313138,
+        0.8166823152130503,
+        0.8166822992585085,
+        0.8166822673494732,
+        0.8166822593722326,
+        0.8166822434177632,
+        0.8166822394291501,
+        0.8166822384319968,
+        0.8166822364376908,
+        0.8166822359391143,
+        0.8166822349419613,
+        0.8166822346926732,
+        0.8166822341940969,
+        0.8166823488681755,
+        0.8166823559599357,
+        0.8166823694741848,
+        0.8166823964455359,
+        0.8166824503919213,
+        0.8166825583835305,
+        0.816682774888543,
+        0.8166832095491962,
+        0.8166840835643292,
+        0.8166858444300105,
+        0.8166894001290339,
+        0.8166965959979595,
+        0.8167111947094692,
+        0.8167408573312265,
+        0.8168011350084013,
+        0.8169234248406538,
+        0.8171707669051921,
+        0.8172425916731375,
+        0.8176684337631873,
+        0.8185200558640993,
+        0.8202230252226013,
+        0.8236278983463378,
+        0.8304333499329876,
+        0.8440268175720236,
+        0.8711419780953099,
+        0.9250692980700158,
+        1.031590402401187,
+        1.21902512858313,
+        1.219327903404782,
+        1.218359175299973,
+        1.21804443785632,
+        1.214356265393563,
+        1.206905127897917,
+        1.191713304824414,
+        1.160245195666851,
+        1.093543676731541,
+        1.019181592897995,
+        1.018792475634865,
+        1.017594423966673,
+        1.017544487768143,
+        1.017444630800099,
+        1.01741969145402,
+        1.01741891212662,
+        1.017418717296466,
+        1.017418327639565,
+        1.017418230226618,
+        1.017418035401582,
+        1.017417645756673,
+        1.017417644234637,
+        1.017417641190563,
+        1.017417640429545,
+        1.017417638907508,
+        1.017417638526999,
+        1.01741763776598,
+        1.017417637575726,
+        1.017417750023488,
+        1.017417751439085,
+        1.017417754216635,
+        1.017417759816715
+      ],
+      "vout_mean_v": 4.8448,
+      "vout_ripple_pk_pk_v": 0.0937,
+      "vout_min_v": 4.8054,
+      "vout_max_v": 4.8991,
+      "i_peak_a": 1.1221,
+      "convergence_status": "COMPLETED",
+      "log_errors": [],
+      "log_warnings": [],
+      "requirements_evaluated": {
+        "vout": "PASSED (Measured 4.84V vs Target 5.00V, diff 3.1%)",
+        "ripple": "PASSED (Ripple 93.7mV vs Max 100.0mV)"
+      },
+      "measurements": {},
+      "summary_verdict": "PASSED",
+      "error_message": null
+    }
+  },
+  {
+    "step": "kicad-version",
+    "status": "EXECUTED",
+    "elapsed_s": 0.324,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "10.0.7\n",
+      "stderr": ""
+    }
+  },
+  {
+    "step": "schematic-erc",
+    "status": "EXECUTED",
+    "elapsed_s": 7.727,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "sch",
+        "erc",
+        "--format",
+        "json",
+        "--output",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\erc.json",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_sch"
+      ],
+      "exit_code": 0,
+      "stdout": "Found 38 violations\nSaved ERC Report to C:/Mendex studio/docs/audit/evidence/20261114-readiness/erc.json\n",
+      "stderr": ""
+    }
+  },
+  {
+    "step": "schematic-svg",
+    "status": "EXECUTED",
+    "elapsed_s": 0.331,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "sch",
+        "export",
+        "svg",
+        "--output",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\schematic-svg",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_sch"
+      ],
+      "exit_code": 0,
+      "stdout": "Plotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\schematic-svg\\audit_ideal_buck.svg'.\nDone.\n",
+      "stderr": ""
+    }
+  },
+  {
+    "step": "pcb-drc-before",
+    "status": "EXECUTED",
+    "elapsed_s": 6.862,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "pcb",
+        "drc",
+        "--format",
+        "json",
+        "--output",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\drc-before.json",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pcb"
+      ],
+      "exit_code": 0,
+      "stdout": "Found 17 violations\nFound 4 unconnected items\nSaved DRC Report to C:/Mendex studio/docs/audit/evidence/20261114-readiness/drc-before.json\n",
+      "stderr": ""
+    }
+  },
+  {
+    "step": "Copper availability",
+    "status": "EXECUTED",
+    "elapsed_s": 0.225,
+    "result": {
+      "available": true
+    }
+  },
+  {
+    "step": "Copper routing actual board",
+    "status": "EXECUTED",
+    "elapsed_s": 42.976,
+    "result": {
+      "pcb_path": "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pcb",
+      "pour_completed": true,
+      "routing_completed": true,
+      "unrouted_before": -1,
+      "unrouted_after": 0,
+      "tracks": 21,
+      "vias": 0,
+      "drc_errors": 2,
+      "netclasses": {
+        "Default": {
+          "track": 0.4,
+          "clearance": 0.2,
+          "via": [
+            0.6,
+            0.3
+          ]
+        },
+        "Power": {
+          "track": 1.2,
+          "clearance": 0.2,
+          "via": [
+            0.8,
+            0.4
+          ],
+          "patterns": [
+            "*HV*",
+            "*DRAIN*",
+            "*PRI*",
+            "*SEC*",
+            "*VOUT*",
+            "*VIN*"
+          ]
+        }
+      },
+      "messages": [
+        "Netclasses configured: Default=0.4mm, Power=1.2mm",
+        "Ground copper pour filled on ['B.Cu'] (thermal_spoke=0.5mm, thermal_gap=0.5mm, pad_conn=tht_thermal)"
+      ],
+      "drc_warnings": 22
+    }
+  },
+  {
+    "step": "pcb-drc-after",
+    "status": "EXECUTED",
+    "elapsed_s": 3.148,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "pcb",
+        "drc",
+        "--format",
+        "json",
+        "--output",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\drc-after.json",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pcb"
+      ],
+      "exit_code": 0,
+      "stdout": "Found 18 violations\nFound 0 unconnected items\nSaved DRC Report to C:/Mendex studio/docs/audit/evidence/20261114-readiness/drc-after.json\n",
+      "stderr": ""
+    }
+  },
+  {
+    "step": "Copper native PCB 3D render",
+    "status": "EXECUTED",
+    "elapsed_s": 0.77,
+    "result": "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\board-3d.png"
+  },
+  {
+    "step": "pcb-step",
+    "status": "EXECUTED",
+    "elapsed_s": 0.627,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "pcb",
+        "export",
+        "step",
+        "--output",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\board.step",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pcb"
+      ],
+      "exit_code": 0,
+      "stdout": "STEP file 'C:/Mendex studio/docs/audit/evidence/20261114-readiness/board.step' created.\n\nExport time 0.274 s\n",
+      "stderr": ""
+    }
+  },
+  {
+    "step": "gerbers",
+    "status": "EXECUTED",
+    "elapsed_s": 0.607,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "pcb",
+        "export",
+        "gerbers",
+        "--output",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pcb"
+      ],
+      "exit_code": 0,
+      "stdout": "Plotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-F_Cu.gtl'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-B_Cu.gbl'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-F_Silkscreen.gto'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-B_Silkscreen.gbo'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-F_Mask.gts'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-B_Mask.gbs'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-Edge_Cuts.gm1'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-Margin.gbr'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-F_Courtyard.gbr'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-B_Courtyard.gbr'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-F_Fab.gbr'.\nPlotted to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-B_Fab.gbr'.\n",
+      "stderr": ""
+    }
+  },
+  {
+    "step": "drill",
+    "status": "EXECUTED",
+    "elapsed_s": 0.236,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "pcb",
+        "export",
+        "drill",
+        "--output",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\drill",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pcb"
+      ],
+      "exit_code": 0,
+      "stdout": "Created file 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\drill\\audit_ideal_buck.drl'\nDone.\n",
+      "stderr": ""
+    }
+  },
+  {
+    "step": "pick-place",
+    "status": "EXECUTED",
+    "elapsed_s": 0.266,
+    "result": {
+      "argv": [
+        "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+        "pcb",
+        "export",
+        "pos",
+        "--format",
+        "csv",
+        "--output",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\positions.csv",
+        "C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pcb"
+      ],
+      "exit_code": 0,
+      "stdout": "Wrote position data to 'C:\\Mendex studio\\docs\\audit\\evidence\\20261114-readiness\\positions.csv'.\n",
+      "stderr": ""
+    }
+  }
+]

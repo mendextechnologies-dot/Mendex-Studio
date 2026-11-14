@@ -1,0 +1,1 @@
+Stopped after discovering a newly added test module explicitly opens StudioService(Path(".")) and a hardcoded live project. Partial run is not accepted as a pass.

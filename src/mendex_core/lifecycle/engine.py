@@ -69,7 +69,7 @@ class ProductLifecycleEngine:
 
     def __init__(self, service: Any):
         self.service = service
-        self.kicad = KiCadLifecycleService()
+        self.kicad = KiCadLifecycleService(service=self.service)
         self._init_tables()
 
     def _init_tables(self):
@@ -1098,20 +1098,33 @@ class ProductLifecycleEngine:
                 pass
 
             elif stage_key in (LifecycleStage.PHYSICAL_TESTING,):
+                genuine_physical_measurements = []
                 for m in measurements:
+                    inst = (getattr(m, "instrument_name", "") or "").lower()
+                    proc = (getattr(m, "procedure_reference", "") or "").lower()
+                    if any(kw in inst or kw in proc for kw in ("ltspice", "spice", "simulation", "calc")):
+                        continue
+                    genuine_physical_measurements.append(m)
                     ev_list.append(UnifiedEvidenceRecord(
                         workspace_id=workspace_id,
                         stage_id=LifecycleStage.PHYSICAL_TESTING,
                         artifact_type=ArtifactType.VALIDATION_CHECK,
-                        source_tool=m.instrument_name,
-                        source_file=m.test_name,
-                        sha256=m.waveform_sha256 or "N/A",
-                        validation_result=m.pass_fail,
+                        source_tool=getattr(m, "instrument_name", "Laboratory Instrument"),
+                        source_file=getattr(m, "test_name", "Physical Test"),
+                        sha256=getattr(m, "waveform_sha256", "N/A") or "N/A",
+                        validation_result=getattr(m, "pass_fail", "NOT_EVALUATED"),
                     ))
-                if measurements and any(m.pass_fail == "PASSED" for m in measurements):
+                if not genuine_physical_measurements:
+                    st_status = StageStatus.NOT_STARTED
+                    blockers.append("Physical hardware measurements and instrument traces not recorded; simulation records cannot satisfy physical testing")
+                elif any(getattr(m, "pass_fail", "") == "FAILED" for m in genuine_physical_measurements):
+                    st_status = StageStatus.FAILED
+                    blockers.append("Physical hardware measurements failed acceptance criteria")
+                elif all(getattr(m, "pass_fail", "") == "PASSED" for m in genuine_physical_measurements) and any(getattr(m, "waveform_sha256", None) for m in genuine_physical_measurements):
                     st_status = StageStatus.PASSED
                 else:
-                    st_status = StageStatus.NOT_STARTED
+                    st_status = StageStatus.PENDING_VERIFICATION
+                    blockers.append("Physical measurements recorded but pending verification of waveform traces")
 
             elif stage_key in (LifecycleStage.ENGINEERING_RELEASE,):
                 rel_files = [f for rel, f in file_map.items() if rel.startswith("release/") or "dossier" in rel.lower()]
@@ -1126,7 +1139,16 @@ class ProductLifecycleEngine:
                         file_size_bytes=rlf.stat().st_size,
                         validation_result="PASSED",
                     ))
-                st_status = StageStatus.PASSED if rel_files else StageStatus.IN_PROGRESS
+                physical_st = stages.get(LifecycleStage.PHYSICAL_TESTING.value)
+                physical_passed = physical_st and physical_st.status == StageStatus.PASSED
+                if not rel_files:
+                    st_status = StageStatus.NOT_STARTED
+                    blockers.append("No release dossier or manufacturing package found in release/ directory")
+                elif not physical_passed:
+                    st_status = StageStatus.IN_PROGRESS
+                    blockers.append("Physical testing has not been performed on manufactured hardware. Release archive is restricted to DRAFT design data; final production release is BLOCKED pending physical laboratory verification.")
+                else:
+                    st_status = StageStatus.PASSED
 
             stages[stage_key.value] = StageEvaluation(
                 stage_id=stage_key,
@@ -1178,7 +1200,11 @@ class ProductLifecycleEngine:
                 reason=stg.blockers[0] if (stg and stg.blockers) else ("Passed" if is_passed else "Pending"),
             ))
 
-        overall = StageStatus.PASSED if proto_ready else StageStatus.IN_PROGRESS
+        if profile == "15_stage":
+            rel_stage = stages.get(LifecycleStage.ENGINEERING_RELEASE.value)
+            overall = StageStatus.PASSED if (proto_ready and rel_stage and rel_stage.status == StageStatus.PASSED) else StageStatus.IN_PROGRESS
+        else:
+            overall = StageStatus.PASSED if proto_ready else StageStatus.IN_PROGRESS
         return ProductLifecycleAssessment(
             workspace_id=workspace_id,
             workspace_name=ws_name,

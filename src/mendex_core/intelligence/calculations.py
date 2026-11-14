@@ -214,18 +214,28 @@ class DeterministicCalculationService:
         b_peak_t: float,
         core_volume_mm3: float,
         core_ae_mm2: float,
-        cm: float = 16.9,
-        alpha: float = 1.25,
-        beta: float = 2.35,
+        cm: float = 16.7,
+        alpha: float = 1.35,
+        beta: float = 2.40,
         b_sat_t: float = 0.40,
         vin_v: Optional[float] = None,
         duty_cycle: Optional[float] = None,
+        convention: str = "empirical_khz",
     ) -> CalculationResult:
         """Evaluates Steinmetz volumetric loss, total core dissipation, and saturation margins."""
         if frequency_hz <= 0 or b_peak_t <= 0 or core_volume_mm3 <= 0 or core_ae_mm2 <= 0:
             raise ValueError("Frequency, flux density, volume, and area must be positive.")
+        if cm <= 0 or alpha <= 0 or beta <= 0 or b_sat_t <= 0:
+            raise ValueError("Steinmetz parameters and B_sat must be strictly positive.")
 
-        p_v = cm * (frequency_hz ** alpha) * (b_peak_t ** beta)
+        norm_conv = convention.strip().lower()
+        if norm_conv in ("empirical_khz", "khz", "datasheet"):
+            p_v = cm * ((frequency_hz / 1000.0) ** alpha) * (b_peak_t ** beta) * 1000.0
+        elif norm_conv in ("si_hz", "si", "hz"):
+            p_v = cm * (frequency_hz ** alpha) * (b_peak_t ** beta)
+        else:
+            raise ValueError(f"Unknown Steinmetz convention '{convention}'. Supported: 'empirical_khz', 'si_hz'")
+
         core_volume_m3 = core_volume_mm3 * 1e-9
         p_core_total = p_v * core_volume_m3
 
@@ -363,6 +373,7 @@ class DeterministicCalculationService:
         cm: float = 16.7,
         alpha: float = 1.35,
         beta: float = 2.40,
+        convention: str = "empirical_khz",
     ) -> CalculationResult:
         if not math.isfinite(frequency_hz) or frequency_hz <= 0:
             raise ValueError("frequency_hz must be strictly positive and finite.")
@@ -370,21 +381,37 @@ class DeterministicCalculationService:
             raise ValueError("b_max_t must be strictly positive and finite.")
         if not math.isfinite(core_volume_m3) or core_volume_m3 <= 0:
             raise ValueError("core_volume_m3 must be strictly positive and finite.")
+        if not math.isfinite(cm) or cm <= 0:
+            raise ValueError("cm must be strictly positive and finite.")
+        if not math.isfinite(alpha) or alpha <= 0:
+            raise ValueError("alpha must be strictly positive and finite.")
+        if not math.isfinite(beta) or beta <= 0:
+            raise ValueError("beta must be strictly positive and finite.")
 
-        # Modified Steinmetz Equation: P_v (W/m^3) = Cm * f^alpha * B^beta
-        p_v = cm * (frequency_hz ** alpha) * (b_max_t ** beta)
+        norm_conv = convention.strip().lower()
+        if norm_conv in ("empirical_khz", "khz", "datasheet"):
+            p_v = cm * ((frequency_hz / 1000.0) ** alpha) * (b_max_t ** beta) * 1000.0
+            conv_desc = "Datasheet empirical convention (Cm calibrated for f in kHz, Pv in mW/cm^3 = kW/m^3)"
+            cm_unit = "mW/(cm^3 * kHz^alpha * T^beta)"
+        elif norm_conv in ("si_hz", "si", "hz"):
+            p_v = cm * (frequency_hz ** alpha) * (b_max_t ** beta)
+            conv_desc = "SI convention (Cm in W*s^alpha / (m^3 * T^beta) for f in Hz, Pv in W/m^3)"
+            cm_unit = "W*s^alpha / (m^3 * T^beta)"
+        else:
+            raise ValueError(f"Unknown Steinmetz convention '{convention}'. Supported: 'empirical_khz', 'si_hz'")
+
         p_total = p_v * core_volume_m3
 
         return CalculationResult(
             formula_id="EQ-STEINMETZ-01",
             name="Steinmetz Magnetic Core Loss",
-            inputs={"frequency_hz": frequency_hz, "b_max_t": b_max_t, "core_volume_m3": core_volume_m3},
-            input_units={"frequency_hz": "Hz", "b_max_t": "T", "core_volume_m3": "m^3"},
+            inputs={"frequency_hz": frequency_hz, "b_max_t": b_max_t, "core_volume_m3": core_volume_m3, "cm": cm, "alpha": alpha, "beta": beta},
+            input_units={"frequency_hz": "Hz", "b_max_t": "T", "core_volume_m3": "m^3", "cm": cm_unit, "alpha": "dimensionless", "beta": "dimensionless"},
             outputs={"volumetric_loss_w_m3": p_v, "total_core_loss_w": p_total},
             output_units={"volumetric_loss_w_m3": "W/m^3", "total_core_loss_w": "W"},
             provenance="src/mendex_core/intelligence/calculations.py::calculate_steinmetz_loss",
             reference_source="Modified Steinmetz Equation, validated against Princeton MagNet dataset",
-            notes=[f"Evaluated with parameters Cm={cm}, alpha={alpha}, beta={beta}"],
+            notes=[f"Evaluated with parameters Cm={cm} [{cm_unit}], alpha={alpha}, beta={beta} under {conv_desc}"],
         )
 
     def calculate_semiconductor_losses(

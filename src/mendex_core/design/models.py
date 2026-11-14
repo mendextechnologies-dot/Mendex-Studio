@@ -63,6 +63,8 @@ class DesignCandidate(BaseModel):
     status: CandidateApprovalStatus = CandidateApprovalStatus.PROPOSED
     reviewer_notes: Optional[str] = None
     ir_snapshot: Optional[DesignIntermediateRepresentation] = None
+    readiness_status: str = "EXPERIMENTAL"
+    qualification_notes: List[str] = Field(default_factory=list)
 
     @property
     def topology_name(self) -> str:

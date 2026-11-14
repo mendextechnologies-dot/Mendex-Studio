@@ -201,6 +201,105 @@ def main(argv=None):
     c_flyback.add_argument("--bmax", type=float, required=True, help="Max flux density (T)")
     c_flyback.add_argument("--ae", type=float, required=True, help="Core effective cross section (mm^2)")
 
+    c_semi_th = calc_sub.add_parser("semiconductor-thermal", help="Semiconductor junction temperature and heatsink sizing")
+    c_semi_th.add_argument("--part", default="UNSPECIFIED", help="Component part number")
+    c_semi_th.add_argument("--ploss", type=float, required=True, help="Total power dissipation (W)")
+    c_semi_th.add_argument("--tamb", type=float, default=25.0, help="Ambient temperature (C)")
+    c_semi_th.add_argument("--tj-max", type=float, default=150.0, help="Maximum junction temperature (C)")
+    c_semi_th.add_argument("--derating", type=float, default=0.8, help="Thermal derating factor (0..1)")
+    c_semi_th.add_argument("--rth-jc", type=float, required=True, help="Junction-to-case thermal resistance (C/W)")
+    c_semi_th.add_argument("--rth-cs", type=float, default=0.5, help="Case-to-sink thermal resistance (C/W)")
+    c_semi_th.add_argument("--rth-sa", type=float, default=0.0, help="Sink-to-ambient heatsink thermal resistance (C/W)")
+
+    c_mag_th = calc_sub.add_parser("magnetic-thermal", help="Magnetic component temperature rise calculation")
+    c_mag_th.add_argument("--component", default="T1", help="Component reference designator")
+    c_mag_th.add_argument("--pcore", type=float, required=True, help="Core loss (W)")
+    c_mag_th.add_argument("--pwinding", type=float, required=True, help="Winding copper loss (W)")
+    c_mag_th.add_argument("--area-cm2", type=float, required=True, help="Effective surface area (cm^2)")
+    c_mag_th.add_argument("--tamb", type=float, default=25.0, help="Ambient temperature (C)")
+    c_mag_th.add_argument("--tclass", type=float, default=130.0, help="Insulation class maximum temperature (C)")
+
+    c_trace_th = calc_sub.add_parser("ipc2152-thermal", help="IPC-2152 copper trace thermal sizing")
+    c_trace_th.add_argument("--current", type=float, required=True, help="Continuous trace current (A)")
+    c_trace_th.add_argument("--delta-t", type=float, default=10.0, help="Allowable temperature rise (C)")
+    c_trace_th.add_argument("--oz", type=float, default=1.0, help="Copper weight in oz/ft^2")
+    c_trace_th.add_argument("--internal", action="store_true", help="Internal layer flag")
+
+    # 4b. PCB & Copper Commands
+    pcb_cmd = commands.add_parser("pcb", help="Native KiCad / Copper PCB layout operations")
+    pcb_sub = pcb_cmd.add_subparsers(dest="subaction", required=True)
+    p_route = pcb_sub.add_parser("route", help="Run Copper guided autorouter on revision PCB")
+    p_route.add_argument("--revision", required=True, help="Revision UUID")
+    p_route.add_argument("--ground-net", default="GND", help="Ground net name")
+    p_render = pcb_sub.add_parser("render-3d", help="Raytraced 3D render of revision PCB")
+    p_render.add_argument("--revision", required=True, help="Revision UUID")
+    p_render.add_argument("--view", choices=("iso", "top", "bottom", "iso_bottom"), default="iso")
+    p_render.add_argument("--width", type=int, default=1200)
+    p_render.add_argument("--height", type=int, default=900)
+    p_step = pcb_sub.add_parser("step", help="Export 3D STEP solid model")
+    p_step.add_argument("--revision", required=True, help="Revision UUID")
+    p_gerber = pcb_sub.add_parser("gerber", help="Export production Gerber zip package")
+    p_gerber.add_argument("--revision", required=True, help="Revision UUID")
+    p_drc = pcb_sub.add_parser("drc", help="Run native KiCad DRC check")
+    p_drc.add_argument("--revision", required=True, help="Revision UUID")
+
+    # Additional PCB & Copper Tools
+    p_mill = pcb_sub.add_parser("mill-slot", help="Mill high-voltage isolation slot in PCB")
+    p_mill.add_argument("--revision", required=True, help="Revision UUID")
+    p_mill.add_argument("--width", type=float, default=2.5, help="Slot width (mm)")
+    p_mill.add_argument("--length", type=float, default=None, help="Slot length (mm)")
+    p_mill.add_argument("--center-x", type=float, default=None, help="Center X coordinate (mm)")
+    p_mill.add_argument("--center-y", type=float, default=None, help="Center Y coordinate (mm)")
+    p_mill.add_argument("--idempotency-key", default=None, help="Optional idempotency key")
+
+    p_4layer = pcb_sub.add_parser("setup-4layer", help="Setup 4-layer internal power and ground planes")
+    p_4layer.add_argument("--revision", required=True, help="Revision UUID")
+    p_4layer.add_argument("--gnd-net", default="PRI_GND", help="Internal GND plane net name")
+    p_4layer.add_argument("--pwr-net", default="VIN", help="Internal Power plane net name")
+    p_4layer.add_argument("--clearance", type=float, default=0.5, help="Zone clearance (mm)")
+    p_4layer.add_argument("--thermal-spoke", type=float, default=0.5, help="Thermal spoke width (mm)")
+    p_4layer.add_argument("--idempotency-key", default=None, help="Optional idempotency key")
+
+    p_inspect_gbr = pcb_sub.add_parser("inspect-gerber", help="Inspect exported Gerber layers and checksums")
+    p_inspect_gbr.add_argument("--revision", required=True, help="Revision UUID")
+    p_inspect_gbr.add_argument("--no-export", action="store_true", help="Do not trigger auto-export if missing")
+
+    # 4c. Thermal Sizing Calculator
+    therm_cmd = commands.add_parser("thermal", help="Calculate electro-thermal sizing and margins")
+    therm_cmd.add_argument("--revision", required=True, help="Revision UUID")
+    therm_cmd.add_argument("--tamb", type=float, default=None, help="Ambient temperature in deg C")
+    therm_cmd.add_argument("--p-loss", type=float, default=None, help="Primary switch power loss (W)")
+    therm_cmd.add_argument("--tj-max", type=float, default=None, help="Max junction temperature (deg C)")
+    therm_cmd.add_argument("--derating", type=float, default=None, help="Thermal derating factor (e.g. 0.8)")
+    therm_cmd.add_argument("--rth-jc", type=float, default=None, help="Junction-to-case Rth (C/W)")
+    therm_cmd.add_argument("--rth-cs", type=float, default=None, help="Case-to-sink Rth (C/W)")
+    therm_cmd.add_argument("--rth-sa", type=float, default=None, help="Sink-to-ambient Rth (C/W)")
+    therm_cmd.add_argument("--transformer-area", type=float, default=None, help="Transformer surface area (cm^2)")
+    therm_cmd.add_argument("--trace-current", type=float, default=None, help="PCB trace current (A)")
+    therm_cmd.add_argument("--trace-delta-t", type=float, default=None, help="Target trace delta T (C)")
+    therm_cmd.add_argument("--copper-oz", type=float, default=None, help="Copper weight (oz)")
+    therm_cmd.add_argument("--internal-trace", action="store_true", default=None, help="Internal trace flag")
+    therm_cmd.add_argument("--record-evidence", action="store_true", default=False, help="Record calculation as formal audit evidence")
+    therm_cmd.add_argument("--idempotency-key", default=None, help="Optional idempotency key")
+
+    # 4d. Topologies
+    top_cmd = commands.add_parser("topologies", help="Power converter topology synthesis and candidate selection")
+    top_sub = top_cmd.add_subparsers(dest="subaction", required=True)
+    top_synth = top_sub.add_parser("synthesize", help="Synthesize candidate topologies from specification")
+    top_synth.add_argument("--revision", required=True, help="Revision UUID")
+    top_synth.add_argument("--idempotency-key", default=None, help="Optional idempotency key")
+
+    top_select = top_sub.add_parser("select", help="Promote a topology candidate into active design revision")
+    top_select.add_argument("--revision", required=True, help="Revision UUID")
+    top_select.add_argument("--candidate", required=True, help="Candidate ID (e.g. LLC_Resonant_500W)")
+    top_select.add_argument("--no-export", action="store_true", help="Do not auto-export KiCad schematic")
+
+    # 4e. Operation Receipts
+    rec_cmd = commands.add_parser("receipt", help="Query operation receipt by ID, idempotency key, or revision")
+    rec_cmd.add_argument("--id", default=None, help="Operation UUID")
+    rec_cmd.add_argument("--key", default=None, help="Idempotency key")
+    rec_cmd.add_argument("--revision", default=None, help="Revision UUID")
+
     # 5. SIMULATION
     sim_cmd = commands.add_parser("simulation", help="Industrial simulation dispatch and monitoring")
     sim_sub = sim_cmd.add_subparsers(dest="subaction", required=True)
@@ -433,6 +532,138 @@ def execute(args):
                 "core_ae_mm2": args.ae,
             }
             print(json.dumps(controller.run_calculation("flyback", params), indent=2))
+        elif args.subaction == "semiconductor-thermal":
+            params = {
+                "part_number": args.part,
+                "p_loss_w": args.ploss,
+                "t_ambient_c": args.tamb,
+                "t_j_max_c": args.tj_max,
+                "derating_factor": args.derating,
+                "r_th_jc_c_w": args.rth_jc,
+                "r_th_cs_c_w": args.rth_cs,
+                "r_th_sa_c_w": args.rth_sa,
+            }
+            print(json.dumps(controller.run_calculation("semiconductor_thermal", params), indent=2))
+        elif args.subaction == "magnetic-thermal":
+            params = {
+                "component_name": args.component,
+                "p_core_w": args.pcore,
+                "p_winding_w": args.pwinding,
+                "surface_area_cm2": args.area_cm2,
+                "t_ambient_c": args.tamb,
+                "t_class_max_c": args.tclass,
+            }
+            print(json.dumps(controller.run_calculation("magnetic_thermal", params), indent=2))
+        elif args.subaction == "ipc2152-thermal":
+            params = {
+                "current_a": args.current,
+                "target_delta_t_c": args.delta_t,
+                "copper_thickness_oz": args.oz,
+                "is_internal": args.internal,
+            }
+            print(json.dumps(controller.run_calculation("ipc2152_thermal", params), indent=2))
+        return None
+
+    elif args.command == "pcb":
+        from .desktop.service import DesktopService
+        from .desktop import models as dmodels
+        desktop = DesktopService(controller.service)
+        if args.subaction == "route":
+            query = dmodels.AutoRouteQuery(revision_id=UUID(args.revision), ground_net=args.ground_net)
+            print(json.dumps(desktop.auto_route_pcb(query), indent=2))
+        elif args.subaction == "render-3d":
+            query = dmodels.Render3DQuery(revision_id=UUID(args.revision), view=args.view, width=args.width, height=args.height)
+            print(json.dumps(desktop.render_3d_pcb(query), indent=2))
+        elif args.subaction == "step":
+            query = dmodels.STEPExportQuery(revision_id=UUID(args.revision))
+            print(json.dumps(desktop.export_cad_step(query), indent=2))
+        elif args.subaction == "gerber":
+            query = dmodels.GerberExportQuery(revision_id=UUID(args.revision))
+            print(json.dumps(desktop.export_gerbers(query), indent=2))
+        elif args.subaction == "drc":
+            query = dmodels.CADPreviewQuery(revision_id=UUID(args.revision))
+            print(json.dumps(desktop.run_pcb_drc(query), indent=2))
+        elif args.subaction == "mill-slot":
+            query = dmodels.IsolationSlotQuery(
+                revision_id=UUID(args.revision),
+                slot_width=args.width,
+                slot_length=args.length,
+                center_x=args.center_x,
+                center_y=args.center_y,
+                idempotency_key=args.idempotency_key,
+            )
+            print(json.dumps(desktop.mill_isolation_slot(query), indent=2))
+        elif args.subaction == "setup-4layer":
+            query = dmodels.FourLayerPlanesQuery(
+                revision_id=UUID(args.revision),
+                gnd_net=args.gnd_net,
+                pwr_net=args.pwr_net,
+                zone_clearance=args.clearance,
+                thermal_spoke=args.thermal_spoke,
+                idempotency_key=args.idempotency_key,
+            )
+            print(json.dumps(desktop.setup_4layer_planes(query), indent=2))
+        elif args.subaction == "inspect-gerber":
+            query = dmodels.GerberInspectQuery(
+                revision_id=UUID(args.revision),
+                auto_export=not args.no_export,
+            )
+            print(json.dumps(desktop.inspect_gerber_layers(query), indent=2))
+        return None
+
+    elif args.command == "thermal":
+        from .desktop.service import DesktopService
+        from .desktop import models as dmodels
+        desktop = DesktopService(controller.service)
+        query = dmodels.ThermalSizingQuery(
+            revision_id=UUID(args.revision),
+            ambient_temp_c=args.tamb,
+            p_switch_loss_w=args.p_loss,
+            t_j_max_c=args.tj_max,
+            derating_factor=args.derating,
+            r_th_jc_c_w=args.rth_jc,
+            r_th_cs_c_w=args.rth_cs,
+            r_th_sa_c_w=args.rth_sa,
+            transformer_surface_area_cm2=args.transformer_area,
+            trace_current_a=args.trace_current,
+            target_trace_delta_t_c=args.trace_delta_t,
+            copper_thickness_oz=args.copper_oz,
+            is_internal_trace=args.internal_trace,
+            record_evidence=args.record_evidence,
+            idempotency_key=args.idempotency_key,
+        )
+        print(json.dumps(desktop.calculate_thermal_sizing(query), indent=2))
+        return None
+
+    elif args.command == "topologies":
+        from .desktop.service import DesktopService
+        from .desktop import models as dmodels
+        desktop = DesktopService(controller.service)
+        if args.subaction == "synthesize":
+            query = dmodels.TopologySynthesizeQuery(
+                revision_id=UUID(args.revision),
+                idempotency_key=args.idempotency_key,
+            )
+            print(json.dumps(desktop.synthesize_topologies(query), indent=2))
+        elif args.subaction == "select":
+            query = dmodels.CandidateSelectQuery(
+                revision_id=UUID(args.revision),
+                candidate_id=args.candidate,
+                auto_export_kicad=not args.no_export,
+            )
+            print(json.dumps(desktop.select_candidate(query), indent=2))
+        return None
+
+    elif args.command == "receipt":
+        from .desktop.service import DesktopService
+        from .desktop import models as dmodels
+        desktop = DesktopService(controller.service)
+        query = dmodels.OperationReceiptQuery(
+            operation_id=UUID(args.id) if args.id else None,
+            idempotency_key=args.key,
+            revision_id=UUID(args.revision) if args.revision else None,
+        )
+        print(json.dumps(desktop.get_operation_receipt(query), indent=2))
         return None
 
     elif args.command == "simulation":

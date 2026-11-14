@@ -179,7 +179,24 @@ def _generate_footprint_pads(
     pins = [str(p.pin_id) for p in comp.pins] if comp.pins else []
 
     def get_net_expr(pid: str) -> str:
-        net_info = comp_pin_to_net.get((comp.id, pid), (0, ""))
+        net_info = comp_pin_to_net.get((comp.id, pid))
+        if not net_info:
+            aliases = [pid]
+            if comp.type in (ComponentType.SWITCH_MOSFET, ComponentType.SWITCH_GAN, ComponentType.SWITCH_SIC):
+                if pid == "1": aliases.extend(["g", "gate", "G"])
+                elif pid == "2": aliases.extend(["d", "drain", "D"])
+                elif pid == "3": aliases.extend(["s", "source", "S"])
+            elif comp.type == ComponentType.DIODE:
+                if pid == "1": aliases.extend(["k", "cathode", "K"])
+                elif pid == "2": aliases.extend(["a", "anode", "A"])
+            elif comp.type in (ComponentType.VOLTAGE_SOURCE, ComponentType.CONNECTOR):
+                if pid == "1": aliases.extend(["p", "+", "pos"])
+                elif pid == "2": aliases.extend(["n", "-", "neg"])
+            for alias in aliases:
+                net_info = comp_pin_to_net.get((comp.id, alias))
+                if net_info:
+                    break
+        net_info = net_info or (0, "")
         return f'(net {net_info[0]} "{net_info[1]}")' if net_info[0] > 0 else '(net 0 "")'
 
     # 1. TO-252-2 (D-PAK)
@@ -383,7 +400,17 @@ def _generate_copper_tracks(
             if conn.component_id in comp_positions:
                 fx, fy, fp_name = comp_positions[conn.component_id]
                 offsets = _get_pad_offsets(fp_name)
-                ox, oy = offsets.get(str(conn.pin_id), (0.0, 0.0))
+                pin_key = str(conn.pin_id)
+                if pin_key not in offsets:
+                    pkl = pin_key.lower()
+                    if pkl in ("g", "gate"): pin_key = "1"
+                    elif pkl in ("d", "drain"): pin_key = "2"
+                    elif pkl in ("s", "source"): pin_key = "3"
+                    elif pkl in ("k", "cathode"): pin_key = "1"
+                    elif pkl in ("a", "anode"): pin_key = "2"
+                    elif pkl in ("p", "+", "pos"): pin_key = "1"
+                    elif pkl in ("n", "-", "neg"): pin_key = "2"
+                ox, oy = offsets.get(pin_key, (0.0, 0.0))
                 pads.append((fx + ox, fy + oy))
 
         for i in range(len(pads) - 1):
@@ -480,7 +507,18 @@ class KiCadPCBGenerator:
         ])
 
         # High-voltage isolation barrier milling slot (IEC-61010-1: 5.0 mm clearance)
-        has_hv = any(c.type == ComponentType.TRANSFORMER for c in ir.components) or any("VOUT" in n.name for n in ir.nets)
+        # G14 fix: Only isolated topologies with distinct primary and secondary ground domains
+        # require an isolation slot. Non-isolated buck/boost with common GND must NEVER be slotted.
+        is_isolated = (
+            any(c.type == ComponentType.TRANSFORMER for c in ir.components)
+            or ir.metadata.get("isolated", False)
+            or ir.topology.lower() in ("flyback", "forward", "push_pull", "llc", "psfb", "isolated_dc_dc")
+        )
+        has_separate_grounds = (
+            any("PRI_GND" in n.name.upper() for n in ir.nets)
+            and any("SEC_GND" in n.name.upper() for n in ir.nets)
+        )
+        has_hv = is_isolated and has_separate_grounds
         if has_hv:
             slot_x1 = origin_x + board_width_mm * 0.48
             slot_x2 = slot_x1 + 5.0

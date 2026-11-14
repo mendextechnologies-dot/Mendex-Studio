@@ -41,13 +41,30 @@ class LTspiceNetlistGenerator:
             pin_map = comp_pin_to_net.get(comp.id, {})
 
             sym_name = "res"
-            val_str = f"{comp.value:.6g}"
+            val_str = f"{comp.value:.6g}" if comp.value is not None else "1k"
             if comp.type == ComponentType.CAPACITOR:
                 sym_name = "cap"
             elif comp.type == ComponentType.INDUCTOR:
                 sym_name = "ind"
             elif comp.type == ComponentType.VOLTAGE_SOURCE:
                 sym_name = "voltage"
+                if comp.parameters.get("pulse"):
+                    val_str = comp.parameters["pulse"]
+                elif comp.designator.startswith("V_G"):
+                    # Calculate pulse for gate source
+                    fsw_p = ir.parameters.get("Fsw", ir.parameters.get("fsw", None))
+                    fsw_v = fsw_p.value if fsw_p else 100000.0
+                    period_v = 1.0 / max(fsw_v, 1000.0)
+                    vin_p = ir.parameters.get("Vin", ir.parameters.get("vin", None))
+                    vout_p = ir.parameters.get("Vout", ir.parameters.get("vout", None))
+                    vin_v = vin_p.value if vin_p else 12.0
+                    vout_v = vout_p.value if vout_p else 5.0
+                    d_v = min(max(vout_v / max(vin_v, 1.0), 0.05), 0.95)
+                    ton_v = d_v * period_v
+                    if "1" in comp.designator or "HI" in comp.name.upper():
+                        val_str = f"PULSE(0 10 0 10n 10n {ton_v:.6e} {period_v:.6e})"
+                    else:
+                        val_str = f"PULSE(0 10 {ton_v + 50e-9:.6e} 10n 10n {max(period_v - ton_v - 100e-9, 1e-7):.6e} {period_v:.6e})"
             elif comp.type == ComponentType.DIODE:
                 sym_name = "diode"
                 val_str = "D_IDEAL"
@@ -61,29 +78,47 @@ class LTspiceNetlistGenerator:
                 f"SYMATTR Value {val_str}",
             ])
 
-            # Attach net flags to pins for electrical connectivity
-            if sym_name in ("res", "cap", "ind", "diode"):
-                p1_net = pin_map.get("1", pin_map.get("a", "0"))
-                p2_net = pin_map.get("2", pin_map.get("k", "0"))
+            # Attach net flags to exact symbol pin coordinates to prevent NC_* floating nodes
+            if sym_name == "res":
+                p1_net = pin_map.get("1", "0")
+                p2_net = pin_map.get("2", "0")
+                lines.append(f"FLAG {x + 16} {y + 16} {p1_net}")
+                lines.append(f"FLAG {x + 16} {y + 96} {p2_net}")
+            elif sym_name == "ind":
+                p1_net = pin_map.get("1", "0")
+                p2_net = pin_map.get("2", "0")
+                lines.append(f"FLAG {x + 16} {y + 16} {p1_net}")
+                lines.append(f"FLAG {x + 16} {y + 96} {p2_net}")
+            elif sym_name == "cap":
+                p1_net = pin_map.get("1", "0")
+                p2_net = pin_map.get("2", "0")
+                lines.append(f"FLAG {x + 16} {y} {p1_net}")
+                lines.append(f"FLAG {x + 16} {y + 64} {p2_net}")
+            elif sym_name == "diode":
+                p1_net = pin_map.get("a", pin_map.get("1", "0"))
+                p2_net = pin_map.get("k", pin_map.get("2", "0"))
                 lines.append(f"FLAG {x + 16} {y} {p1_net}")
                 lines.append(f"FLAG {x + 16} {y + 64} {p2_net}")
             elif sym_name == "voltage":
-                p_net = pin_map.get("p", "VIN")
-                n_net = pin_map.get("n", "0")
+                p_net = pin_map.get("p", pin_map.get("1", "VIN"))
+                n_net = pin_map.get("n", pin_map.get("2", "0"))
                 lines.append(f"FLAG {x} {y + 16} {p_net}")
                 lines.append(f"FLAG {x} {y + 96} {n_net}")
             elif sym_name == "nmos":
-                d_net = pin_map.get("d", "SW")
-                g_net = pin_map.get("g", "GATE")
-                s_net = pin_map.get("s", "0")
-                lines.append(f"FLAG {x + 48} {y + 16} {d_net}")
-                lines.append(f"FLAG {x} {y + 64} {g_net}")
+                d_net = pin_map.get("d", pin_map.get("2", "SW"))
+                g_net = pin_map.get("g", pin_map.get("1", "GATE"))
+                s_net = pin_map.get("s", pin_map.get("3", "0"))
+                lines.append(f"FLAG {x + 48} {y} {d_net}")
+                lines.append(f"FLAG {x} {y + 80} {g_net}")
                 lines.append(f"FLAG {x + 48} {y + 96} {s_net}")
 
-        # Add ground flags and simulation command
+        # Add ground flags, simulation command and device models
         lines.extend([
             "FLAG 100 450 0",
-            f"TEXT 100 500 Left 2 !.tran {sim_time_s:.6g}",
+            f"TEXT 100 500 Left 2 !.tran 0 {sim_time_s:.6g} 0 10u",
+            "TEXT 100 550 Left 2 !.model BSC026N08NS5 VDMOS(Rg=1.0 Vto=3.0 Rd=0.015)",
+            "TEXT 100 600 Left 2 !.model D_IDEAL D(Ron=0.005 Roff=1Meg Vfwd=0.35)",
+            "TEXT 100 650 Left 2 !.model NMOS_DEFAULT VDMOS(Rg=1.0 Vto=3.0 Rd=0.025)",
         ])
 
         return "\n".join(lines) + "\n"
@@ -129,9 +164,12 @@ class LTspiceNetlistGenerator:
                 lines.append(f"{des} {p1} {p2} {comp.value:.6g}")
 
             elif comp.type == ComponentType.VOLTAGE_SOURCE:
-                p = pin_map.get("p", "VIN")
-                n = pin_map.get("n", "0")
-                lines.append(f"{des} {p} {n} {comp.value:.6g}")
+                p = pin_map.get("p", pin_map.get("1", "VIN"))
+                n = pin_map.get("n", pin_map.get("2", "0"))
+                if comp.parameters.get("pulse"):
+                    lines.append(f"{des} {p} {n} {comp.parameters['pulse']}")
+                else:
+                    lines.append(f"{des} {p} {n} {comp.value:.6g}")
 
             elif comp.type in (ComponentType.SWITCH_MOSFET, ComponentType.SWITCH_GAN, ComponentType.SWITCH_SIC):
                 d = pin_map.get("d", "SW")
@@ -179,7 +217,8 @@ class LTspiceNetlistGenerator:
         # Drive every switch gate relative to its own source node: first switch is the main switch,
         # a second switch (synchronous rectifier) receives the complementary pulse with dead time.
         switches = [c for c in ir.components if c.type in (ComponentType.SWITCH_MOSFET, ComponentType.SWITCH_GAN, ComponentType.SWITCH_SIC)]
-        if switches:
+        has_explicit_gate_sources = any(c.designator.startswith("V_G") for c in ir.components)
+        if switches and not has_explicit_gate_sources:
             lines.extend(["", "* Gate Drive Pulse Sources (open-loop PWM)"])
             for index, sw in enumerate(switches[:2]):
                 pins = comp_pin_to_net.get(sw.id, {})
@@ -189,8 +228,8 @@ class LTspiceNetlistGenerator:
                     lines.append(f"V_G{index + 1} {gate} {source} PULSE(0 10 0 10n 10n {ton:.6e} {period:.6e})")
                 else:
                     lines.append(f"V_G{index + 1} {gate} {source} PULSE(0 10 {ton + 50e-9:.6e} 10n 10n {max(period - ton - 100e-9, 1e-7):.6e} {period:.6e})")
-            if any("SW" in pins.values() for pins in comp_pin_to_net.values()):
-                lines.append("D_FW 0 SW D_IDEAL")
+        if any("SW" in pins.values() for pins in comp_pin_to_net.values()):
+            lines.append("D_FW 0 SW D_IDEAL")
 
         # Models & directives
         lines.extend([

@@ -225,21 +225,50 @@ def parse_ascii_raw_waveforms(raw_path: Path) -> dict[str, Any]:
 parse_raw_waveforms = parse_ascii_raw_waveforms
 
 
-def calculate_waveform_metrics(waveforms: dict[str, Any]) -> dict[str, dict[str, float]]:
-    """Calculates RMS, Peak-to-Peak, Mean, Min, and Max metrics for all waveform channels."""
+def calculate_waveform_metrics(waveforms: dict[str, Any], steady_state_ratio: float = 0.30) -> dict[str, dict[str, float]]:
+    """Calculates RMS, Peak-to-Peak, Time-Weighted Mean, Min, and Max metrics for all waveform channels over steady-state."""
     if np is None:
         raise ImportError("NumPy is required for waveform metrics calculation")
+
+    time_arr = waveforms.get("time") if "time" in waveforms else waveforms.get("Time")
+    if time_arr is None or len(time_arr) == 0:
+        return {}
+
+    t_start = float(time_arr[0])
+    t_end = float(time_arr[-1])
+    # G07 fix: Base steady-state settling window on time domain rather than sample count
+    t_threshold = t_start + (1.0 - steady_state_ratio) * (t_end - t_start)
+    ss_indices = np.where(time_arr >= t_threshold)[0]
+    if len(ss_indices) == 0:
+        ss_indices = np.arange(len(time_arr))
+
+    ss_time = time_arr[ss_indices]
 
     metrics: dict[str, dict[str, float]] = {}
     for name, signal in waveforms.items():
         if name.lower() == "time":
             continue
         if isinstance(signal, np.ndarray) and len(signal) > 0:
+            ss_signal = signal[ss_indices] if len(ss_indices) <= len(signal) else signal
+            dt_total = float(ss_time[-1] - ss_time[0]) if len(ss_time) >= 2 else 0.0
+
+            if dt_total > 0 and len(ss_signal) == len(ss_time):
+                trapz_fn = getattr(np, "trapezoid", getattr(np, "trapz", None))
+                if trapz_fn:
+                    tw_mean = float(trapz_fn(ss_signal, ss_time) / dt_total)
+                else:
+                    tw_mean = float(np.mean(ss_signal))
+            else:
+                tw_mean = float(np.mean(ss_signal))
+
             metrics[name] = {
-                "rms": float(np.sqrt(np.mean(signal**2))),
-                "p2p": float(np.ptp(signal)),
-                "mean": float(np.mean(signal)),
-                "min": float(np.min(signal)),
-                "max": float(np.max(signal)),
+                "rms": float(np.sqrt(np.mean(ss_signal**2))),
+                "p2p": float(np.ptp(ss_signal)),
+                "mean": tw_mean,
+                "min": float(np.min(ss_signal)),
+                "max": float(np.max(ss_signal)),
+                "sample_mean": float(np.mean(ss_signal)),
+                "window_start_time": float(ss_time[0]) if len(ss_time) > 0 else 0.0,
+                "window_end_time": float(ss_time[-1]) if len(ss_time) > 0 else 0.0,
             }
     return metrics

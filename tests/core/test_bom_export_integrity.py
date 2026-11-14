@@ -61,3 +61,34 @@ def test_archived_revision_cannot_receive_bom_exports(context):
         bom_generator.generate_bom_deliverables(studio, revision.revision_id)
     assert exc.value.code == 'IMMUTABLE'
     assert not source.parent.exists()
+
+
+def test_emc100_reference_design_bom_compilation():
+    from pathlib import Path
+    from mendex_core.desktop.service import DesktopService
+    studio = StudioService(Path("."))
+    product = studio.get_product("5b0852dd-7920-4451-b869-049f46254387")
+    rev = studio.get_revision(product.active_revision_id)
+    ws_dir = studio.workspace_path(rev)
+    bom_file = ws_dir / "bom" / "bom.json"
+    assert bom_file.exists()
+    items = json.loads(bom_file.read_bytes())
+    assert len(items) == 30
+    assert all(item["quantity"] > 0 for item in items)
+    designators = {item["designator"] for item in items}
+    assert "Q1" in designators
+    assert "U3" in designators
+    assert "U2A" in designators
+    assert "C4" in designators
+    assert "D4" in designators
+
+    desktop = DesktopService(studio)
+    res = desktop.dispatch("generate_bom", {"revision_id": str(rev.revision_id)})
+    assert res["success"] is True
+    assert res["items_count"] == 30
+    assert res["engineering_status"] == "NOT_EVALUATED"
+    assert (ws_dir / res["docx_path"]).exists()
+    assert (ws_dir / res["csv_path"]).exists()
+    assert (ws_dir / res["json_path"]).exists()
+    if res["pdf_available"]:
+        assert (ws_dir / res["pdf_path"]).exists()

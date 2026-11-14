@@ -1,0 +1,45 @@
+ M desktop/src/api/client.ts
+ M desktop/src/components/CADPreviewCanvas.tsx
+ M desktop/src/components/RevisionEngineeringPanel.tsx
+ M desktop/src/pages/ProjectDetail.tsx
+ M desktop/src/pages/Reports.tsx
+ M docs/implementation-checklist.md
+ M src/integrations/adapters/copper_kicad_adapter.py
+ M src/mendex_core/controller.py
+ M src/mendex_core/design/generators/kicad_generator.py
+ M src/mendex_core/design/synthesis.py
+ M src/mendex_core/desktop/models.py
+ M src/mendex_core/desktop/service.py
+ M src/mendex_core/engineering_records/calculations.py
+ M src/mendex_core/engineering_records/models.py
+ M src/mendex_core/launch.py
+ M src/mendex_core/lifecycle/ecr.py
+ M src/mendex_core/lifecycle/engine.py
+ M src/mendex_core/lifecycle/kicad_service.py
+ M src/mendex_core/service.py
+ M tests/adapters/test_calculations.py
+ M tests/core/test_bom_export_integrity.py
+ M tests/core/test_cad_preview_and_reports.py
+ M tests/core/test_engineering_records.py
+ M tests/core/test_femm_excitation.py
+ M tests/core/test_v19_design_synthesis.py
+ M tests/core/test_waveform_and_simulation_metrics.py
+ M tests/integrations/test_copper_kicad_adapter.py
+?? desktop/src/components/RecordFormView.tsx
+?? desktop/src/components/ThermalSizingCalculatorCard.tsx
+?? desktop/src/components/TopologySynthesizerCard.tsx
+?? docs/audit/COPPER_KICAD_POST_INTEGRATION_AUDIT.md
+?? docs/audit/copper_e2e_test_evidence.json
+?? docs/audit/evidence/20261114-readiness/
+?? engineering_designs/
+?? scratch/
+?? src/integrations/calculations/thermal_sizing.py
+?? src/mendex_core/dossier_generator.py
+?? tests/core/test_artifact_ingestion_and_3d_preview.py
+?? tests/core/test_complete_dossier_pdf.py
+?? tests/core/test_ecr_schematic_integration.py
+?? tests/core/test_emc100_lifecycle_progression.py
+?? tests/core/test_kicad_copper_bridge.py
+?? tests/core/test_render_3d_rpc.py
+?? tests/core/test_thermal_sizing_rpc.py
+?? tests/core/test_topology_synthesis_rpc.py

@@ -653,12 +653,36 @@ class MendexEngineeringController:
                       ("core_volume_m3", ("volume",))],
         "flyback": [("vin_min_v", ()), ("vin_nom_v", ()), ("vout_v", ()), ("iout_a", ()), ("frequency_hz", ()), ("d_max", ()),
                     ("efficiency", ()), ("b_max_t", ()), ("core_ae_mm2", ())],
+        "semiconductor_thermal": [
+            ("p_loss_w", ("ploss", "power_loss")),
+            ("t_ambient_c", ("tamb", "t_ambient")),
+            ("t_j_max_c", ("tj_max", "t_max")),
+            ("derating_factor", ("derating",)),
+            ("r_th_jc_c_w", ("rth_jc",)),
+            ("r_th_cs_c_w", ("rth_cs",)),
+            ("r_th_sa_c_w", ("rth_sa",)),
+        ],
+        "magnetic_thermal": [
+            ("p_core_w", ("pcore", "p_fe")),
+            ("p_winding_w", ("pwinding", "p_cu")),
+            ("surface_area_cm2", ("area_cm2", "surface_area")),
+            ("t_ambient_c", ("tamb", "t_ambient")),
+            ("t_class_max_c", ("tclass", "t_max")),
+        ],
+        "ipc2152_thermal": [
+            ("current_a", ("i_rms", "current")),
+            ("target_delta_t_c", ("delta_t", "rise_c")),
+            ("copper_thickness_oz", ("oz", "copper_weight")),
+        ],
     }
     CALCULATION_ALIASES = {
         "dowell": "dowell", "winding_loss": "dowell", "ac_loss": "dowell",
         "losses": "losses", "semiconductor_loss": "losses", "mosfet_loss": "losses",
         "steinmetz": "steinmetz", "core_loss": "steinmetz", "magnetics": "steinmetz",
         "flyback": "flyback", "transformer": "flyback", "transformer_design": "flyback",
+        "semiconductor_thermal": "semiconductor_thermal", "thermal_semi": "semiconductor_thermal", "semi_thermal": "semiconductor_thermal", "heatsink_sizing": "semiconductor_thermal",
+        "magnetic_thermal": "magnetic_thermal", "thermal_mag": "magnetic_thermal", "mag_thermal": "magnetic_thermal", "transformer_thermal": "magnetic_thermal",
+        "ipc2152_thermal": "ipc2152_thermal", "ipc2152": "ipc2152_thermal", "trace_thermal": "ipc2152_thermal", "pcb_thermal": "ipc2152_thermal",
     }
 
     def run_calculation(self, calc_type: str, params: Dict[str, Any]) -> Dict[str, Any]:
@@ -720,6 +744,23 @@ class MendexEngineeringController:
                 core_volume_m3=values["core_volume_m3"],
             )
             name = "steinmetz_core_loss"
+        elif calc == "semiconductor_thermal":
+            from integrations.calculations.thermal_sizing import calculate_semiconductor_thermal
+            part_number = str(params.get("part_number") or "UNSPECIFIED")
+            res = calculate_semiconductor_thermal(part_number=part_number, **values)
+            name = "semiconductor_thermal_sizing"
+        elif calc == "magnetic_thermal":
+            from integrations.calculations.thermal_sizing import calculate_magnetic_thermal
+            comp_name = str(params.get("component_name") or "T1")
+            ins_class = str(params.get("insulation_class") or "Class B (130°C)")
+            res = calculate_magnetic_thermal(component_name=comp_name, insulation_class=ins_class, **values)
+            name = "magnetic_component_thermal"
+        elif calc == "ipc2152_thermal":
+            from integrations.calculations.thermal_sizing import calculate_ipc2152_trace_thermal
+            is_internal = bool(params.get("is_internal", False))
+            layer_name = str(params.get("layer_name") or ("In1.Cu" if is_internal else "F.Cu"))
+            res = calculate_ipc2152_trace_thermal(is_internal=is_internal, layer_name=layer_name, **values)
+            name = "ipc2152_trace_thermal_sizing"
         else:
             from integrations.calculations.transformer_design import calculate_flyback_transformer_parameters
             explicit = {"v_diode_drop_v": float(params["v_diode_drop_v"])} if "v_diode_drop_v" in params else {}

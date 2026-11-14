@@ -256,13 +256,21 @@ class MendexMCPServer:
             # 4. Analytical Calculations
             {
                 "name": "run_engineering_calculations",
-                "description": "Executes first-principles deterministic engineering calculations: 'dowell' (winding losses), 'losses' (MOSFET switching/conduction), 'steinmetz' (core loss), or 'flyback' (transformer sizing).",
+                "description": "Executes first-principles deterministic engineering calculations: 'dowell' (winding losses), 'losses' (MOSFET switching/conduction), 'steinmetz' (core loss), 'flyback' (transformer sizing), 'semiconductor_thermal' (junction-to-ambient heatsink sizing), 'magnetic_thermal' (transformer temperature rise), or 'ipc2152_thermal' (copper trace sizing).",
                 "inputSchema": {
                     "type": "object",
                     "properties": {
                         "calc_type": {
                             "type": "string",
-                            "enum": ["dowell", "losses", "steinmetz", "flyback"],
+                            "enum": [
+                                "dowell",
+                                "losses",
+                                "steinmetz",
+                                "flyback",
+                                "semiconductor_thermal",
+                                "magnetic_thermal",
+                                "ipc2152_thermal",
+                            ],
                             "description": "Type of calculation to execute",
                         },
                         "params": {
@@ -408,6 +416,156 @@ class MendexMCPServer:
                     "type": "object",
                     "properties": {
                         "revision_id": {"type": "string", "description": "Product revision UUID (optional; defaults to first active)"},
+                    },
+                },
+            },
+            # 10. Copper PCB & Manufacturing Layout Operations
+            {
+                "name": "copper_route_pcb",
+                "description": "Runs the Copper guided autorouter on the revision PCB layout, enforcing netlist equivalence, power loop routing, thermal reliefs, and DRC verification.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                        "pour_ground": {"type": "boolean", "default": True, "description": "Whether to pour ground planes on outer layers"},
+                        "ground_net": {"type": "string", "default": "GND", "description": "Net name for ground copper pour"},
+                        "ripup": {"type": "string", "default": "all", "description": "Ripup strategy before routing"},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "copper_render_3d",
+                "description": "Generates an on-demand KiCad 10 raytraced 3D perspective render of the revision PCB with 3D model coverage accounting and mechanical envelope check.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                        "view": {"type": "string", "enum": ["iso", "top", "bottom", "iso_bottom"], "default": "iso"},
+                        "width": {"type": "integer", "default": 1200},
+                        "height": {"type": "integer", "default": 900},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "copper_export_step",
+                "description": "Exports a solid 3D mechanical STEP model of the revision PCB assembly for MCAD integration and clearance checking.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "copper_export_gerbers",
+                "description": "Generates manufacturing Gerber X2 and Excellon drill production files. Gated by zero unrouted connections and zero critical DRC violations.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                        "auto_route": {"type": "boolean", "default": True},
+                        "check_drc": {"type": "boolean", "default": True},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "copper_drc_check",
+                "description": "Executes native KiCad PCB design-rule checking (DRC) and returns truthful violation summaries.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "calculate_thermal_sizing",
+                "description": "Computes thermal dissipation, junction temperatures, and required heatsink thermal resistance from revision operating parameters.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                        "overrides": {"type": "object", "description": "Optional thermal parameter overrides"},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "synthesize_topologies",
+                "description": "Synthesizes candidate power electronic converter topologies from electrical specifications with qualified reference vs experimental stamping.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "inspect_gerber_layers",
+                "description": "Inspects production Gerber and Excellon drill layers with aperture counts, layer stackup, bounding box, and drill hole coordinates.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                        "auto_export": {"type": "boolean", "default": True, "description": "Whether to auto-generate Gerbers if not present"},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "mill_isolation_slot",
+                "description": "Mills an authoritative physical IEC 61010-1 / IEC 60664-1 reinforced isolation air slot on Edge.Cuts with automated zone refill back-off.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                        "slot_width": {"type": "number", "default": 2.5, "description": "Slot width in mm"},
+                        "slot_length": {"type": "number", "description": "Optional slot length in mm"},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "setup_4layer_planes",
+                "description": "Configures a 4-layer internal power and ground plane stackup (In1.Cu / In2.Cu) with thermal relief connections.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                        "gnd_net": {"type": "string", "default": "PRI_GND", "description": "Layer In1.Cu GND net name"},
+                        "pwr_net": {"type": "string", "default": "VIN", "description": "Layer In2.Cu PWR net name"},
+                        "zone_clearance": {"type": "number", "default": 0.5, "description": "Zone clearance in mm"},
+                    },
+                    "required": ["revision_id"],
+                },
+            },
+            {
+                "name": "select_candidate",
+                "description": "Selects a synthesized power converter topology candidate as the active candidate for design and routing.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
+                        "candidate_id": {"type": "string", "description": "Synthesized candidate ID (e.g. buck_sync, flyback_qr)"},
+                    },
+                    "required": ["revision_id", "candidate_id"],
+                },
+            },
+            {
+                "name": "get_operation_receipt",
+                "description": "Queries execution status, idempotency receipt, and outcome for a native EDA operation.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "operation_id": {"type": "string", "description": "Operation UUID"},
+                        "idempotency_key": {"type": "string", "description": "Client idempotency key"},
+                        "revision_id": {"type": "string", "description": "Revision UUID"},
                     },
                 },
             },
@@ -648,6 +806,66 @@ class MendexMCPServer:
             return ctrl.get_validation_summary(args["revision_id"])
         elif name == "generate_engineering_report":
             return ctrl.generate_report(args.get("revision_id"))
+        elif name == "copper_route_pcb":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import AutoRouteQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.auto_route_pcb(AutoRouteQuery.model_validate(args))
+        elif name == "copper_render_3d":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import Render3DQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.render_3d_pcb(Render3DQuery.model_validate(args))
+        elif name == "copper_export_step":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import STEPExportQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.export_cad_step(STEPExportQuery.model_validate(args))
+        elif name == "copper_export_gerbers":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import GerberExportQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.export_gerbers(GerberExportQuery.model_validate(args))
+        elif name == "copper_drc_check":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import CADPreviewQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.run_pcb_drc(CADPreviewQuery.model_validate(args))
+        elif name == "calculate_thermal_sizing":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import ThermalSizingQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.calculate_thermal_sizing(ThermalSizingQuery.model_validate(args))
+        elif name == "synthesize_topologies":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import TopologySynthesizeQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.synthesize_topologies(TopologySynthesizeQuery.model_validate(args))
+        elif name == "inspect_gerber_layers":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import GerberInspectQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.inspect_gerber_layers(GerberInspectQuery.model_validate(args))
+        elif name == "mill_isolation_slot":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import IsolationSlotQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.mill_isolation_slot(IsolationSlotQuery.model_validate(args))
+        elif name == "setup_4layer_planes":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import FourLayerPlanesQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.setup_4layer_planes(FourLayerPlanesQuery.model_validate(args))
+        elif name == "select_candidate":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import CandidateSelectQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.select_candidate(CandidateSelectQuery.model_validate(args))
+        elif name == "get_operation_receipt":
+            from ..desktop.service import DesktopService
+            from ..desktop.models import OperationReceiptQuery
+            desktop = DesktopService(ctrl.service)
+            return desktop.get_operation_receipt(OperationReceiptQuery.model_validate(args))
         else:
             raise ValueError(f"Unknown MCP tool '{name}'")
 

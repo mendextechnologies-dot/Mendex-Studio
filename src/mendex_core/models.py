@@ -36,6 +36,17 @@ class Specification(Model):
     iout_a: float | None = Field(default=None, ge=0)
     switching_frequency_hz: float | None = Field(default=None, gt=0)
     ambient_temperature_k: float | None = Field(default=None, gt=0)
+    ambient_temperature_c: float | None = Field(default=None, ge=-273.15)
+    target_efficiency_pct: float | None = Field(default=None, gt=0, le=100)
+    vout_ripple_max_mv: float | None = Field(default=None, gt=0)
+    line_regulation_pct: float | None = Field(default=None, ge=0)
+    load_regulation_pct: float | None = Field(default=None, ge=0)
+    max_junction_temperature_c: float | None = Field(default=150.0, gt=0)
+    cooling_method: str = Field(default="natural_convection")
+    max_pcb_width_mm: float | None = Field(default=None, gt=0)
+    max_pcb_height_mm: float | None = Field(default=None, gt=0)
+    target_cost_usd: float | None = Field(default=None, ge=0)
+    reliability_mtbf_hours: float | None = Field(default=None, gt=0)
     topology: str = ""
     isolation_requirement: str = ""
     standards_profile: str = "UNASSIGNED"
@@ -47,6 +58,12 @@ class Specification(Model):
         values = [v for v in (self.vin_min_v, self.vin_nom_v, self.vin_max_v) if v is not None]
         if values != sorted(values):
             raise ValueError("Input voltages must satisfy minimum <= nominal <= maximum")
+        if self.ambient_temperature_k is not None and self.ambient_temperature_c is not None:
+            if abs((self.ambient_temperature_c + 273.15) - self.ambient_temperature_k) > 1.0:
+                raise ValueError("ambient_temperature_c and ambient_temperature_k must be thermodynamically consistent")
+        if self.vout_ripple_max_mv is not None and self.vout_v is not None:
+            if self.vout_ripple_max_mv >= (self.vout_v * 1000.0):
+                raise ValueError("vout_ripple_max_mv must be strictly less than nominal output voltage")
         return self
 
 

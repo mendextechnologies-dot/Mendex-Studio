@@ -1,0 +1,3 @@
+Found 18 violations
+Found 0 unconnected items
+Saved DRC Report to C:/Mendex studio/docs/audit/evidence/20261114-readiness/drc-after.json

@@ -1,0 +1,82 @@
+{
+  "production": {
+    "checked": 220,
+    "changed_or_missing": [
+      {
+        "path": "engineering_designs/3b906923-74bb-488c-9855-248732c60e8d.json",
+        "before": "7d1c8caf8c7efd87c1e14af5689b5c20437a6675a7a2462b58f5be93e12fef37",
+        "after": null
+      }
+    ]
+  },
+  "tracked_source": {
+    "checked": 579,
+    "changed_or_missing": [
+      {
+        "path": "desktop/src/api/client.ts",
+        "before": "d92367436c18fbaf50ad72e409c88798778547c2c211f7a21a55f62c56214fc0",
+        "after": "ddcedfacc019b75344f2c224016be4c94c5549549df313340dfebde7c8c99253"
+      },
+      {
+        "path": "desktop/src/components/CADPreviewCanvas.tsx",
+        "before": "b734b41547272502d75898c92808df0d85e44d848d3dd18e47489ce2cc033558",
+        "after": "ff472dfbb02bbec93ad55a6d299d868b35b1b100556541143f151b85fcc2b464"
+      },
+      {
+        "path": "src/integrations/adapters/copper_kicad_adapter.py",
+        "before": "43008b2c416073edc65f5b8dd6cc98fbe7f8a58c7792677e85f87aaf25520f4d",
+        "after": "daa46146e0a46d84ae2c4c2177b990546b1e7945d3acbd670be456ee2c47d252"
+      },
+      {
+        "path": "src/mendex_core/design/generators/kicad_generator.py",
+        "before": "bd661a90ca4464299a21ba26acd9eeb5292198980a3fce9c7b641f12d7ba3f00",
+        "after": "9b35a950d833c6371cf4f90c7e67787492eeeec187810965a1de3ff781f43900"
+      },
+      {
+        "path": "src/mendex_core/desktop/models.py",
+        "before": "1f2a1b3699192a6288fd09b23865a0bab78542421d9be028efcd1c84525653b0",
+        "after": "bcbe8520f2372acfae12c9ddc434f92a6c2a212ff2da4f14a747e6e7ed1fe45a"
+      },
+      {
+        "path": "src/mendex_core/desktop/service.py",
+        "before": "043fc1aa6e16f8644252cb6b52a1d8a9c6901c2446794587ef1404f595280f27",
+        "after": "0f2a1e796fd22aac5662b0d8aafa901d61ff67aa503ad6fcf2eeed726258eb06"
+      }
+    ]
+  },
+  "implementation_source": {
+    "checked": 492,
+    "changed_or_missing": [
+      {
+        "path": "src/mendex_core/desktop/models.py",
+        "before": "1f2a1b3699192a6288fd09b23865a0bab78542421d9be028efcd1c84525653b0",
+        "after": "bcbe8520f2372acfae12c9ddc434f92a6c2a212ff2da4f14a747e6e7ed1fe45a"
+      },
+      {
+        "path": "src/mendex_core/desktop/service.py",
+        "before": "043fc1aa6e16f8644252cb6b52a1d8a9c6901c2446794587ef1404f595280f27",
+        "after": "0f2a1e796fd22aac5662b0d8aafa901d61ff67aa503ad6fcf2eeed726258eb06"
+      },
+      {
+        "path": "src/mendex_core/design/generators/kicad_generator.py",
+        "before": "bd661a90ca4464299a21ba26acd9eeb5292198980a3fce9c7b641f12d7ba3f00",
+        "after": "9b35a950d833c6371cf4f90c7e67787492eeeec187810965a1de3ff781f43900"
+      },
+      {
+        "path": "src/integrations/adapters/copper_kicad_adapter.py",
+        "before": "43008b2c416073edc65f5b8dd6cc98fbe7f8a58c7792677e85f87aaf25520f4d",
+        "after": "daa46146e0a46d84ae2c4c2177b990546b1e7945d3acbd670be456ee2c47d252"
+      },
+      {
+        "path": "desktop/src/api/client.ts",
+        "before": "d92367436c18fbaf50ad72e409c88798778547c2c211f7a21a55f62c56214fc0",
+        "after": "ddcedfacc019b75344f2c224016be4c94c5549549df313340dfebde7c8c99253"
+      },
+      {
+        "path": "desktop/src/components/CADPreviewCanvas.tsx",
+        "before": "b734b41547272502d75898c92808df0d85e44d848d3dd18e47489ce2cc033558",
+        "after": "ff472dfbb02bbec93ad55a6d299d868b35b1b100556541143f151b85fcc2b464"
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "start": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"headlessPid\": 7840,\n  \"ok\": true,\n  \"port\": 50061\n}"
+      }
+    ],
+    "isError": false
+  },
+  "open": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"already_open\":\"false\",\"path\":\"C:\\\\Mendex studio\\\\docs\\\\audit\\\\evidence\\\\20261114-readiness\\\\disposable-project\\\\.mendex\\\\ga\\\\eea3d609c19646e5ae0ff2b8165e5eff\\\\buck_schematic.asc\",\"status\":\"ok\",\"type\":\"schematic\"}"
+      }
+    ]
+  }
+}

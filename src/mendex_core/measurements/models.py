@@ -60,6 +60,7 @@ class MeasurementRecord(BaseModel):
     tolerance_max: Optional[float] = None
     pass_fail: str = "NOT_EVALUATED"  # PASSED, FAILED, NOT_EVALUATED
     notes: str = ""
+    evidence_source: str = "physical_test"
     workspace_id: Optional[str] = None
     product_id: Optional[UUID] = None
     revision_id: Optional[UUID] = None

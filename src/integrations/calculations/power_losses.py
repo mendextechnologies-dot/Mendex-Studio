@@ -72,17 +72,31 @@ def calculate_core_loss_steinmetz(
     frequency_hz: float,
     b_peak_t: float,
     core_volume_m3: float,
+    convention: str = "empirical_khz",
 ) -> CoreLossResult:
-    """Calculates volumetric and total magnetic core loss using Steinmetz parameters
+    """Calculates volumetric and total magnetic core loss using Steinmetz parameters.
 
-    derived from verified MagNet material datasets.
-    Pv = k * (f/1e3)^alpha * B^beta (W/m^3 or mW/cm^3 converted to W/m^3)
+    Supported conventions:
+    - "empirical_khz" (default / datasheet convention): k is in mW/cm^3 (or kW/m^3) with f in kHz.
+      Pv [W/m^3] = k * (f_hz / 1000.0)^alpha * (B_t)^beta * 1000.0
+    - "si_hz": k is pure SI unit [W*s^alpha / (m^3 * T^beta)] with f in Hz.
+      Pv [W/m^3] = k * (f_hz)^alpha * (B_t)^beta
     """
     if frequency_hz <= 0.0 or b_peak_t <= 0.0 or core_volume_m3 <= 0.0:
         raise ValueError("Frequency, peak flux density, and core volume must be strictly positive")
+    if k <= 0.0 or alpha <= 0.0 or beta <= 0.0:
+        raise ValueError("Steinmetz coefficients (k, alpha, beta) must be strictly positive")
 
-    # Standard empirical Steinmetz form: Pv [W/m^3] = k * (f_hz / 1e3)^alpha * (B_t)^beta
-    pv = k * ((frequency_hz / 1000.0) ** alpha) * (b_peak_t ** beta) * 1000.0
+    norm_conv = convention.strip().lower()
+    if norm_conv in ("empirical_khz", "khz", "datasheet"):
+        pv = k * ((frequency_hz / 1000.0) ** alpha) * (b_peak_t ** beta) * 1000.0
+        method_str = f"Steinmetz Equation (empirical kHz convention): Pv = {k} * (f/1e3)^{alpha} * B^{beta} * 1000 [W/m^3]"
+    elif norm_conv in ("si_hz", "si", "hz"):
+        pv = k * (frequency_hz ** alpha) * (b_peak_t ** beta)
+        method_str = f"Steinmetz Equation (SI Hz convention): Pv = {k} * f^{alpha} * B^{beta} [W/m^3]"
+    else:
+        raise ValueError(f"Unknown Steinmetz convention '{convention}'. Supported: 'empirical_khz', 'si_hz'")
+
     p_total = pv * core_volume_m3
 
     return CoreLossResult(
@@ -92,4 +106,5 @@ def calculate_core_loss_steinmetz(
         frequency_hz=frequency_hz,
         b_peak_t=b_peak_t,
         core_volume_m3=core_volume_m3,
+        method=method_str,
     )

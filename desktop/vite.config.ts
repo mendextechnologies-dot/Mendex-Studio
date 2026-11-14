@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { spawn } from 'child_process';
 import path from 'path';
+import fs from 'fs';
 
 // Vite plugin to bridge /api/rpc to Python DesktopService stdio
 function pythonDesktopBridgePlugin() {
@@ -31,7 +32,8 @@ function pythonDesktopBridgePlugin() {
       for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed) continue;
-        console.log('[Python Desktop stdout line]:', trimmed);
+        const preview = trimmed.length > 180 ? `${trimmed.slice(0, 160)}... (${trimmed.length} chars)` : trimmed;
+        console.log('[Python Desktop stdout line]:', preview);
         try {
           const parsed = JSON.parse(trimmed);
           const reqId = parsed.id;
@@ -75,6 +77,159 @@ function pythonDesktopBridgePlugin() {
     name: 'python-desktop-bridge',
     configureServer(server: any) {
       ensurePython();
+
+      // Auto-restart Python desktop backend when src/**/*.py files change
+      server.watcher.add(path.resolve(projectRoot, 'src'));
+      server.watcher.on('change', (file: string) => {
+        if (file.endsWith('.py')) {
+          console.log('[Python Desktop Bridge] Python backend file changed, restarting bridge:', file);
+          if (pyProc && !pyProc.killed) {
+            pyProc.kill();
+            pyProc = null;
+          }
+        }
+      });
+
+      // Direct report file access endpoint (PDF viewer, HTML view, ZIP download)
+      server.middlewares.use('/api/report-file', (req: any, res: any) => {
+        try {
+          const url = new URL(req.url, 'http://127.0.0.1:5173');
+          const reportId = url.searchParams.get('id');
+          const format = (url.searchParams.get('type') || 'html').toLowerCase();
+
+          if (!reportId || !/^[0-9a-fA-F-]+$/.test(reportId)) {
+            res.statusCode = 400;
+            res.end('Valid report id required');
+            return;
+          }
+
+          // 1. If export package requested, locate exported ZIP package
+          if (format === 'export' || format === 'zip') {
+            const expBase = path.resolve(projectRoot, '.mendex', 'engineering-records', 'exports');
+            if (fs.existsSync(expBase)) {
+              const entries = fs.readdirSync(expBase)
+                .map((d: string) => {
+                  const fp = path.join(expBase, d, 'report-package.zip');
+                  if (fs.existsSync(fp)) {
+                    return { fp, mtime: fs.statSync(fp).mtimeMs };
+                  }
+                  return null;
+                })
+                .filter(Boolean)
+                .sort((a: any, b: any) => b.mtime - a.mtime);
+
+              if (entries.length > 0 && entries[0]) {
+                res.setHeader('Content-Type', 'application/zip');
+                res.setHeader('Content-Disposition', `attachment; filename="report-package-${reportId.slice(0, 8)}.zip"`);
+                fs.createReadStream(entries[0].fp).pipe(res);
+                return;
+              }
+            }
+            res.statusCode = 404;
+            res.end('Exported package not found');
+            return;
+          }
+
+          // 2. Locate report directory under products/**/reports/<reportId>
+          let foundRepDir: string | null = null;
+          const productsDir = path.resolve(projectRoot, 'products');
+          if (fs.existsSync(productsDir)) {
+            for (const p of fs.readdirSync(productsDir)) {
+              const revDir = path.join(productsDir, p, 'revisions');
+              if (fs.existsSync(revDir)) {
+                for (const r of fs.readdirSync(revDir)) {
+                  const repDir = path.join(revDir, r, 'reports', reportId);
+                  if (fs.existsSync(repDir)) {
+                    foundRepDir = repDir;
+                    break;
+                  }
+                }
+              }
+              if (foundRepDir) break;
+            }
+          }
+
+          if (!foundRepDir) {
+            res.statusCode = 404;
+            res.end('Report not found');
+            return;
+          }
+
+          if (format === 'pdf') {
+            const pdfPath = path.join(foundRepDir, 'report.pdf');
+            if (fs.existsSync(pdfPath)) {
+              res.setHeader('Content-Type', 'application/pdf');
+              res.setHeader('Content-Disposition', `inline; filename="report-${reportId.slice(0, 8)}.pdf"`);
+              fs.createReadStream(pdfPath).pipe(res);
+              return;
+            }
+          }
+
+          // Default fallback to HTML
+          const htmlPath = path.join(foundRepDir, 'report.html');
+          if (fs.existsSync(htmlPath)) {
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            fs.createReadStream(htmlPath).pipe(res);
+            return;
+          }
+
+          res.statusCode = 404;
+          res.end('Requested report format not available');
+        } catch (err: any) {
+          res.statusCode = 500;
+          res.end(err.message || 'Internal server error');
+        }
+      });
+
+      // Direct workspace file access endpoint (HTML reports, CSV downloads, etc.)
+      server.middlewares.use('/api/workspace-file', (req: any, res: any) => {
+        try {
+          const url = new URL(req.url, 'http://127.0.0.1:5173');
+          const relPath = url.searchParams.get('path');
+          if (!relPath || relPath.includes('..')) {
+            res.statusCode = 400;
+            res.end('Valid relative workspace path required');
+            return;
+          }
+
+          // Search in products/**/<relPath>
+          let targetPath: string | null = null;
+          const productsDir = path.resolve(projectRoot, 'products');
+          if (fs.existsSync(productsDir)) {
+            for (const p of fs.readdirSync(productsDir)) {
+              const revDir = path.join(productsDir, p, 'revisions');
+              if (fs.existsSync(revDir)) {
+                for (const r of fs.readdirSync(revDir)) {
+                  const candidate = path.resolve(revDir, r, relPath);
+                  if (fs.existsSync(candidate) && candidate.startsWith(productsDir)) {
+                    targetPath = candidate;
+                    break;
+                  }
+                }
+              }
+              if (targetPath) break;
+            }
+          }
+
+          if (!targetPath || !fs.existsSync(targetPath)) {
+            res.statusCode = 404;
+            res.end('Workspace file not found');
+            return;
+          }
+
+          const ext = path.extname(targetPath).toLowerCase();
+          if (ext === '.html') res.setHeader('Content-Type', 'text/html; charset=utf-8');
+          else if (ext === '.csv') res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+          else if (ext === '.json') res.setHeader('Content-Type', 'application/json');
+          else if (ext === '.pdf') res.setHeader('Content-Type', 'application/pdf');
+          else res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+
+          fs.createReadStream(targetPath).pipe(res);
+        } catch (err: any) {
+          res.statusCode = 500;
+          res.end(err.message || 'Internal server error');
+        }
+      });
 
       server.middlewares.use('/api/rpc', async (req: any, res: any) => {
         const allowedHosts = new Set(['127.0.0.1:5173', 'localhost:5173', '[::1]:5173']);
@@ -127,9 +282,9 @@ function pythonDesktopBridgePlugin() {
               if (pendingRequests.has(reqId)) {
                 pendingRequests.delete(reqId);
                 res.statusCode = 504;
-                res.end(JSON.stringify({ error: { code: 'TIMEOUT', message: 'Python RPC timeout after 30s' } }));
+                res.end(JSON.stringify({ error: { code: 'TIMEOUT', message: 'Python RPC timeout after 120s' } }));
               }
-            }, 30000);
+            }, 120000);
 
             pendingRequests.set(reqId, { res, timer });
             console.log('[RPC in]:', parsed.method, reqId);
