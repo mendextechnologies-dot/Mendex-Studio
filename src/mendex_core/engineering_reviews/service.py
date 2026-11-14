@@ -15,6 +15,30 @@ from . import models, storage
 MAX_FILE = 50 * 1024 * 1024
 
 
+
+def is_ephemeral_workspace_file(rel: str) -> bool:
+    """Returns True if the path is an ephemeral cache, auto-generated artifact,
+    or interactive UI calculation that should not invalidate human review staleness."""
+    parts = rel.replace("\\", "/").split("/")
+    ignored_dirs = {
+        ".copper",
+        "tests",
+        "release_package",
+        "node_modules",
+        "__pycache__",
+        ".git",
+        ".pytest_cache",
+        "scratch",
+    }
+    if any(p in ignored_dirs for p in parts):
+        return True
+    fname = parts[-1]
+    if fname.endswith(".lck") or fname.endswith(".tmp") or fname.endswith(".log") or fname.startswith("~"):
+        return True
+    if "thermal_analysis.json" in fname or "wcca_analysis.json" in fname:
+        return True
+    return False
+
 class EngineeringReviewService:
     def __init__(self, studio):
         self.studio = studio
@@ -94,7 +118,8 @@ class EngineeringReviewService:
             for f in sorted(ws_path.glob("**/*")):
                 if f.is_file() and f.stat().st_size <= MAX_FILE:
                     rel = f.relative_to(ws_path).as_posix()
-                    doc_hashes[rel] = file_hash(f)
+                    if not is_ephemeral_workspace_file(rel):
+                        doc_hashes[rel] = file_hash(f)
 
         # 5. Evidence hashes attached to current attempt
         evidence_hashes = {}
@@ -475,6 +500,8 @@ class EngineeringReviewService:
         # Check staleness: Document files changed or deleted?
         ws_path = self.studio.workspace_path(revision)
         for rel, expected_hash in record.get("document_hashes", {}).items():
+            if is_ephemeral_workspace_file(rel):
+                continue
             file_p = ws_path / rel
             if not file_p.is_file() or file_hash(file_p) != expected_hash:
                 stale = True
