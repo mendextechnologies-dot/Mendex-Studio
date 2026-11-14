@@ -1113,18 +1113,6 @@ export const SpecificationDetailCard: React.FC<SpecificationDetailCardProps> = (
               </>
             );
           })()}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              color: copiedKey === 'spec_hash' ? '#10b981' : '#64748b',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            title="Copy full SHA-256 hash"
-          >
-            {copiedKey === 'spec_hash' ? <Check size={13} /> : <Copy size={13} />}
-          </button>
 
           <span className="badge badge-green" style={{ fontSize: 10, padding: '3px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
             <CheckCircle2 size={11} />
