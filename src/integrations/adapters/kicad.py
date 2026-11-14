@@ -71,9 +71,16 @@ class KiCadAdapter(BaseToolAdapter):
             input_file = Path(request.input_paths[0]) if request.input_paths else (workdir / "board.kicad_pcb")
             output_step = workdir / f"{input_file.stem}.step"
             cmd = [str(exe), "pcb", "export", "step", "--output", str(output_step.resolve()), str(input_file.resolve())]
-        elif operation == "export_gerber":
+        elif operation in ("export_gerber", "export_gerbers"):
             input_file = Path(request.input_paths[0]) if request.input_paths else (workdir / "board.kicad_pcb")
             force = bool((request.parameters or {}).get("force", False))
+            auto_route_param = bool((request.parameters or {}).get("auto_route", False))
+
+            if not force and input_file.exists() and auto_route_param:
+                from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+                copper = CopperKiCadAdapter(kicad_cli_path=str(exe))
+                copper.route_pcb(input_file)
+
             if not force and input_file.exists():
                 from mendex_core.pcb import native_structure
                 struct = None
@@ -99,10 +106,6 @@ class KiCadAdapter(BaseToolAdapter):
                             diagnostics=["Board is placement-only (0 copper tracks). Manufacturing Gerber export blocked."],
                             artifacts=[],
                         )
-            if not force and input_file.exists() and (request.parameters or {}).get("auto_route", False):
-                from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
-                copper = CopperKiCadAdapter(kicad_cli_path=str(exe))
-                copper.route_pcb(input_file)
 
             gerber_dir = workdir / "gerbers"
             gerber_dir.mkdir(parents=True, exist_ok=True)

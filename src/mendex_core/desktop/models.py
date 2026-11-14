@@ -62,7 +62,8 @@ class BOMQuery(Model):
 
 class CADPreviewQuery(Model):
     revision_id: UUID
-    kind: Literal["pcb", "schematic", "3d"] = "pcb" 
+    kind: Literal["pcb", "schematic", "3d"] = "pcb"
+    view: str = "iso" 
 
 
 class AutoRouteQuery(Model):
@@ -72,6 +73,12 @@ class AutoRouteQuery(Model):
     ripup: str = "all"
     default_track: float = 0.4
     power_track: float = 1.2
+
+
+class GerberExportQuery(Model):
+    revision_id: UUID
+    auto_route: bool = True
+    check_drc: bool = True
 
 
 class ReviewRequestQuery(Model):

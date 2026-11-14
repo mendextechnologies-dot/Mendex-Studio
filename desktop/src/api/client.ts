@@ -70,8 +70,12 @@ export const api = {
     rpcCall<any>('reveal_file', { revision_id: revisionId, relative_path: relativePath }),
   generateBom: (revisionId: string) =>
     rpcCall<BOMGenerationResult>('generate_bom', { revision_id: revisionId }),
-  cadPreview: (revisionId: string, kind: 'pcb' | 'schematic' | '3d' = 'pcb') =>
-    rpcCall<any>('cad_preview', { revision_id: revisionId, kind }),
+  cadPreview: (
+    revisionId: string,
+    kind: 'pcb' | 'schematic' | '3d' = 'pcb',
+    view: 'iso' | 'top' | 'bottom' = 'iso'
+  ) =>
+    rpcCall<any>('cad_preview', { revision_id: revisionId, kind, view }),
   autoRoutePCB: (
     revisionId: string,
     pourGround: boolean = true,
@@ -84,6 +88,8 @@ export const api = {
       power_track: powerTrack,
       default_track: defaultTrack,
     }),
+  exportGerbers: (revisionId: string, autoRoute: boolean = true) =>
+    rpcCall<any>('export_gerbers', { revision_id: revisionId, auto_route: autoRoute }),
   openEvidence: (recordId: string) => rpcCall<any>('open_evidence', { record_id: recordId }),
   openReport: (reportId: string) => rpcCall<any>('open_report', { report_id: reportId }),
   exportReport: (reportId: string) => rpcCall<any>('export_report', {

@@ -67,7 +67,8 @@ FOOTPRINT_3D_MODEL_MAP: Dict[str, str] = {
     "Diode_SMD:D_SOD-123": "${KICAD10_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-123.step",
     "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal": "${KICAD10_3DMODEL_DIR}/Diode_THT.3dshapes/D_DO-41_SOD81_P10.16mm_Horizontal.step",
     "Diode_THT:D_DO-15_P10.16mm_Horizontal": "${KICAD10_3DMODEL_DIR}/Diode_THT.3dshapes/D_DO-15_P10.16mm_Horizontal.step",
-    "Diode_THT:Diode_Bridge_19.0x3.5mm_P5.1mm": "${KICAD10_3DMODEL_DIR}/Diode_THT.3dshapes/Diode_Bridge_19.0x3.5mm_P5.1mm.step",
+    "Diode_THT:Diode_Bridge_19.0x3.5mm_P5.1mm": "${KICAD10_3DMODEL_DIR}/Diode_THT.3dshapes/Diode_Bridge_19.0x3.5x10.0mm_P5.0mm.step",
+    "Diode_THT:Diode_Bridge_19.0x3.5x10.0mm_P5.0mm": "${KICAD10_3DMODEL_DIR}/Diode_THT.3dshapes/Diode_Bridge_19.0x3.5x10.0mm_P5.0mm.step",
 
     # Terminal Blocks & Connectors
     "TerminalBlock:TerminalBlock_bornier-2_P5.08mm": "${KICAD10_3DMODEL_DIR}/TerminalBlock_Phoenix.3dshapes/TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal.step",

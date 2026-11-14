@@ -1,6 +1,7 @@
 """Desktop JSON-RPC dispatch, read views, and native file launch service."""
 import json
 import re
+import time
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
 
@@ -230,13 +231,15 @@ class DesktopService:
     def _get_pcb_checks(self, revision_id) -> list:
         checks = []
         try:
-            for v in self.studio.list_validation(revision_id):
+            for item in self.studio.validation_summary(revision_id):
+                v = item["record"]
+                status_val = v.check.status.value if hasattr(v.check.status, "value") else str(v.check.status)
                 checks.append({
                     "record_id": str(v.record_id),
                     "check_id": v.check.check_id,
-                    "title": v.check.title,
-                    "status": v.check.status.value if hasattr(v.check.status, "value") else str(v.check.status),
-                    "effective_status": v.effective_status.value if hasattr(v.effective_status, "value") else str(v.effective_status),
+                    "title": getattr(v.check, "title", v.check.check_id),
+                    "status": status_val,
+                    "effective_status": item["effective_status"],
                     "notes": v.check.notes,
                 })
         except Exception:
@@ -482,6 +485,7 @@ class DesktopService:
         
         kind = getattr(request, "kind", "pcb").lower()
         if kind == "3d":
+            view_angle = (getattr(request, "view", "iso") or "iso").lower()
             pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
             if not pcb_files:
                 pcb_files = list(ws_dir.glob("*.kicad_pcb"))
@@ -489,11 +493,12 @@ class DesktopService:
                 return {"kind": "3d", "available": False, "error": "No .kicad_pcb file found in this revision"}
 
             pcb_path = pcb_files[0]
-            render_png = pcb_path.parent / "board_3d_render.png"
+            render_filename = "board_3d_render.png" if view_angle == "iso" else f"board_3d_{view_angle}.png"
+            render_png = pcb_path.parent / render_filename
 
             # Check alternative render names if primary does not exist
             if not render_png.exists() or render_png.stat().st_size == 0:
-                for alt_name in ["pcb-3d-iso.png", f"{pcb_path.stem}_3d.png", "render/pcb-3d-iso.png"]:
+                for alt_name in [f"pcb-3d-{view_angle}.png", f"{pcb_path.stem}_3d_{view_angle}.png", f"render/pcb-3d-{view_angle}.png", "board_3d_render.png"]:
                     alt_path = pcb_path.parent / alt_name
                     if alt_path.exists() and alt_path.stat().st_size > 0:
                         render_png = alt_path
@@ -504,7 +509,7 @@ class DesktopService:
                 try:
                     from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
                     adapter = CopperKiCadAdapter()
-                    rendered = adapter.render_3d(pcb_path, output_png=render_png, view="iso")
+                    rendered = adapter.render_3d(pcb_path, output_png=render_png, view=view_angle)
                     if Path(rendered).exists() and Path(rendered).stat().st_size > 0:
                         render_png = Path(rendered)
                 except Exception:
@@ -513,20 +518,28 @@ class DesktopService:
             if render_png.exists() and render_png.stat().st_size > 0:
                 import base64
                 b64_img = base64.b64encode(render_png.read_bytes()).decode("ascii")
+                view_labels = {
+                    "iso": "Isometric Perspective",
+                    "top": "Top View (Component Placement)",
+                    "bottom": "Bottom View (Solder / Ground Plane)",
+                    "iso_bottom": "Isometric Underside View",
+                }
                 return {
                     "kind": "3d",
+                    "view": view_angle,
                     "available": True,
                     "filename": pcb_path.name,
                     "render_image": f"data:image/png;base64,{b64_img}",
                     "render_bytes": render_png.stat().st_size,
-                    "title": f"{pcb_path.stem} Photorealistic 3D Assembly",
+                    "title": f"{pcb_path.stem} 3D Assembly ({view_labels.get(view_angle, view_angle.upper())})",
                 }
             else:
                 return {
                     "kind": "3d",
+                    "view": view_angle,
                     "available": False,
                     "filename": pcb_path.name,
-                    "error": "KiCad 10 raytraced 3D render could not be generated.",
+                    "error": f"KiCad 10 raytraced 3D render ({view_angle}) could not be generated.",
                 }
 
         elif kind == "pcb":
@@ -763,6 +776,44 @@ class DesktopService:
             "netclasses": result.get("netclasses", {}),
         }
 
+    def export_gerbers(self, request):
+        """Exports manufacturing Gerbers for the revision, auto-routing unrouted boards if requested."""
+        revision = self.studio.get_revision(request.revision_id)
+        ws_dir = self.studio.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+        pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+        if not pcb_files:
+            pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+        if not pcb_files:
+            return {"success": False, "error": "No .kicad_pcb file found in this revision"}
+
+        pcb_path = pcb_files[0]
+        try:
+            from ..lifecycle.kicad_service import KiCadLifecycleService
+            kicad_service = getattr(getattr(self.studio, "engineering_lifecycle", None), "kicad", None) or KiCadLifecycleService()
+            out_dir = kicad_service.export_gerbers(
+                pcb_path,
+                auto_route=getattr(request, "auto_route", True),
+                check_drc=getattr(request, "check_drc", True),
+            )
+            try:
+                kicad_service.export_drill(pcb_path, output_dir=out_dir, auto_route=getattr(request, "auto_route", True))
+            except Exception:
+                pass
+
+            gerber_files = [f.name for f in out_dir.iterdir() if f.is_file()]
+            return {
+                "success": True,
+                "output_dir": str(out_dir),
+                "file_count": len(gerber_files),
+                "files": gerber_files,
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+            }
+
     def dispatch(self, method, params):
         route = ROUTES.get(method)
         if route is None:
@@ -818,6 +869,8 @@ class DesktopService:
             return self.cad_preview(request)
         if method == "auto_route_pcb":
             return self.auto_route_pcb(request)
+        if method == "export_gerbers":
+            return self.export_gerbers(request)
         if method == "generate_bom":
             from ..bom_generator import generate_bom_deliverables
             return generate_bom_deliverables(self.studio, request.revision_id)
@@ -856,6 +909,7 @@ ROUTES.update(
     generate_bom=models.BOMQuery,
     cad_preview=models.CADPreviewQuery,
     auto_route_pcb=models.AutoRouteQuery,
+    export_gerbers=models.GerberExportQuery,
     open_report=models.ReportQuery,
     open_evidence=models.EvidenceQuery,
     export_report=models.ExportReportQuery,

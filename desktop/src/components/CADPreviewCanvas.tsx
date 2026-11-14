@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { api } from '../api/client';
-import { Layers, Eye, RefreshCw, ExternalLink, Box, ZoomIn, ZoomOut, CheckCircle2, Zap } from 'lucide-react';
+import { Layers, Eye, RefreshCw, ExternalLink, Box, ZoomIn, ZoomOut, CheckCircle2, Zap, Package } from 'lucide-react';
 
 interface CADPreviewProps {
   revisionId: string;
@@ -21,7 +21,45 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [hoverItem, setHoverItem] = useState<any>(null);
   const [routing, setRouting] = useState<boolean>(false);
+  const [exportingGerbers, setExportingGerbers] = useState<boolean>(false);
   const [routeStatus, setRouteStatus] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+
+  const handleExportGerbers = async () => {
+    setExportingGerbers(true);
+    setRouteStatus({ type: 'info', text: 'Generating manufacturing Gerbers and drill files (with auto-routing verification)...' });
+    try {
+      const res = await api.exportGerbers(revisionId, true);
+      if (res.success) {
+        setRouteStatus({
+          type: 'success',
+          text: `Manufacturing release package generated: ${res.file_count} Gerber & drill files exported to ${res.output_dir}`,
+        });
+        loadData();
+      } else {
+        setRouteStatus({
+          type: 'error',
+          text: `Gerber export notice: ${res.error || 'Check logs'}`,
+        });
+      }
+    } catch (err: any) {
+      setRouteStatus({
+        type: 'error',
+        text: `Gerber export failed: ${err.message || String(err)}`,
+      });
+    } finally {
+      setExportingGerbers(false);
+    }
+  };
+  const [d3View, setD3View] = useState<'iso' | 'top' | 'bottom'>('iso');
+
+  const load3d = (view: 'iso' | 'top' | 'bottom' = d3View) => {
+    setLoading(true);
+    setD3View(view);
+    api.cadPreview(revisionId, '3d', view)
+      .then(d3 => setRender3dData(d3))
+      .catch((err: any) => setError(err.message || String(err)))
+      .finally(() => setLoading(false));
+  };
 
   const handleAutoRoute = async () => {
     setRouting(true);
@@ -57,7 +95,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
     Promise.all([
       api.cadPreview(revisionId, 'pcb'),
       api.cadPreview(revisionId, 'schematic'),
-      api.cadPreview(revisionId, '3d'),
+      api.cadPreview(revisionId, '3d', d3View),
     ])
       .then(([pcb, sch, d3]) => {
         setPcbData(pcb);
@@ -211,27 +249,51 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
           </button>
 
           {viewMode === 'pcb' && (
-            <button
-              onClick={handleAutoRoute}
-              disabled={routing || loading}
-              style={{
-                background: routing ? '#4c1d95' : '#7c3aed',
-                border: 'none',
-                color: '#fff',
-                padding: '6px 12px',
-                borderRadius: 6,
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: routing ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                boxShadow: '0 2px 8px rgba(124, 58, 237, 0.4)',
-              }}
-            >
-              <Zap size={13} className={routing ? 'spin' : ''} />
-              {routing ? 'Routing Board...' : '⚡ Auto-Route Board'}
-            </button>
+            <>
+              <button
+                onClick={handleAutoRoute}
+                disabled={routing || exportingGerbers || loading}
+                style={{
+                  background: routing ? '#4c1d95' : '#7c3aed',
+                  border: 'none',
+                  color: '#fff',
+                  padding: '6px 12px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: routing ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: '0 2px 8px rgba(124, 58, 237, 0.4)',
+                }}
+              >
+                <Zap size={13} className={routing ? 'spin' : ''} />
+                {routing ? 'Routing Board...' : '⚡ Auto-Route Board'}
+              </button>
+
+              <button
+                onClick={handleExportGerbers}
+                disabled={exportingGerbers || routing || loading}
+                style={{
+                  background: exportingGerbers ? '#115e59' : '#0d9488',
+                  border: 'none',
+                  color: '#fff',
+                  padding: '6px 12px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: exportingGerbers ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: '0 2px 8px rgba(13, 148, 136, 0.4)',
+                }}
+              >
+                <Package size={13} className={exportingGerbers ? 'spin' : ''} />
+                {exportingGerbers ? 'Exporting...' : '📦 Export Gerbers'}
+              </button>
+            </>
           )}
 
           {viewMode === 'pcb' && onOpenPCB && (
@@ -741,6 +803,58 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
             boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.6)',
           }}
         >
+          {/* 3D Angle Selector Bar */}
+          <div style={{ display: 'inline-flex', gap: 6, marginBottom: 16, background: '#1e293b', padding: 3, borderRadius: 6 }}>
+            <button
+              onClick={() => load3d('iso')}
+              disabled={loading}
+              style={{
+                background: d3View === 'iso' ? '#0284c7' : 'transparent',
+                border: 'none',
+                color: d3View === 'iso' ? '#fff' : '#94a3b8',
+                padding: '5px 12px',
+                borderRadius: 4,
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              📐 Isometric (ISO)
+            </button>
+            <button
+              onClick={() => load3d('top')}
+              disabled={loading}
+              style={{
+                background: d3View === 'top' ? '#0284c7' : 'transparent',
+                border: 'none',
+                color: d3View === 'top' ? '#fff' : '#94a3b8',
+                padding: '5px 12px',
+                borderRadius: 4,
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              🔝 Top View (Components)
+            </button>
+            <button
+              onClick={() => load3d('bottom')}
+              disabled={loading}
+              style={{
+                background: d3View === 'bottom' ? '#0284c7' : 'transparent',
+                border: 'none',
+                color: d3View === 'bottom' ? '#fff' : '#94a3b8',
+                padding: '5px 12px',
+                borderRadius: 4,
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              🔻 Bottom View (Ground Plane)
+            </button>
+          </div>
+
           {render3dData?.available && render3dData?.render_image ? (
             <div style={{ textAlign: 'center', width: '100%' }}>
               <img

@@ -1,5 +1,36 @@
 # Three-day implementation checklist
 
+## Electromagnet Driver Card Reference Design Synthesis & Studio Ingestion (Option 1) — 14 November 2026
+
+- [x] **Native KiCad 10 Schematic & Orthogonal Wiring (`src/mendex_core/design/generators/kicad_generator.py`)**:
+  - Synthesized reference schematic matching user's reference board images: bridge rectifiers, dual LM7815 / LM7805 voltage regulators, 74HC123 multivibrator pulse generator, HCPL-3120 isolated IGBT gate driver, and discrete power output stage.
+  - Mapped official KiCad 10 symbol library taxonomy (`Regulator_Linear`, `74xx`, `Isolator`, `Diode`, `Device`, `Switch`, `Connector`).
+  - Generated orthogonal interconnecting wires and net labels across all 30 components.
+  - Verified with headless KiCad 10 ERC (`pcb/erc_report.json` generated and registered).
+
+- [x] **2-Layer Populated PCB Layout with 45-Degree Copper Routing (`src/mendex_core/design/generators/kicad_pcb_generator.py`)**:
+  - Implemented 45-degree chamfered copper track routing engine generating 70 trace segments across `F.Cu` and `B.Cu` with IPC-2152 compliant widths (1.0 mm power, 0.4 mm signal).
+  - Placed 30 components with official KiCad footprint assignments (TO-220, TO-252, DIP-8, DIP-16, radial electrolytic capacitors, screw terminals).
+  - Bound KiCad 10 STEP 3D models (`${KICAD10_3DMODEL_DIR}/...step`) to every footprint.
+  - Generated native `electromagnet_card.kicad_pcb` (42,931 bytes) and project manifest `electromagnet_card.kicad_pro`.
+  - Verified with headless KiCad 10 DRC (`pcb/drc_report.json` generated and registered).
+
+- [x] **Photorealistic KiCad 10 Raytraced 3D Assembly Ingestion (`src/mendex_core/desktop/service.py`)**:
+  - Generated high-resolution raytraced isometric 3D render (`board_3d_render.png`, 152,033 bytes) via `kicad-cli pcb render --perspective --rotate -45,0,45`.
+  - Streamed to Studio UI as base64 data URI in `DesktopService.cad_preview(kind='3d')`.
+
+- [x] **Engineering Design & Validation Registration in Studio Manifest**:
+  - Created and persisted `EngineeringDesign` (`des-f49685b3e8ed`) linked to `EMC-100` revision `db8689f3-d4fe-4dca-a71c-3fa9788b5f95`.
+  - Registered CAD artifacts: schematic, PCB layout, and 3D raytrace render.
+  - Recorded KiCad ERC (`VAL-KICAD-ERC`) and DRC (`VAL-KICAD-DRC`) validation records with attached raw JSON evidence and SHA-256 digests.
+  - Fixed `_get_pcb_checks` in `DesktopService` to compute effective validation status using `StudioService.validation_summary`.
+
+- [x] **SQLite Schema Resilience & Regression Integrity**:
+  - Preserved backward-compatible SQLite `PRAGMA user_version = 4` across all core readers.
+  - Verified full test regression suite: **276/276 passed** in `tests/core/` and `tests/integrations/`.
+  - Verified command center and headless browser tests: **15/15 passed** in `tests/command_center/`.
+  - Verified desktop React production build: `npm --prefix desktop run build` (0 TypeScript errors).
+
 ## Claude Code Comprehensive Audit Remediation (P0, P1, and Key P2 Items) — 14 November 2026
 
 - [x] **P0-1 — AI Agent Review Provisioning Barrier on MCP (`src/mendex_core/mcp/server.py`, `src/mendex_core/engineering_reviews/api.py`)**:
@@ -181,6 +212,35 @@
   - Added unit and integration tests in `tests/integrations/test_copper_kicad_adapter.py` (5/5 passing).
   - Verified full test regression suite: 269/269 tests passed in 59.35s (`tests/core/` and `tests/integrations/`).
   - Desktop production build verified: `npm --prefix desktop run build` (1,586 modules transformed, 0 TypeScript errors).
+
+- [x] **Interactive Studio UI Auto-Route Action & Power Electronics Net-Class Injection (`src/integrations/adapters/copper_kicad_adapter.py`, `src/mendex_core/desktop/`, `desktop/src/components/CADPreviewCanvas.tsx`)**:
+  - Implemented Power Electronics Net-Class Injection in `CopperKiCadAdapter.route_pcb()`: automatically injects custom net classes into `.kicad_pro` before routing (`Default=0.4 mm`, `Power=1.2 mm` to `2.5 mm`, matching `*HV*`, `*DRAIN*`, `*PRI*`, `*SEC*`, `*VIN*`, `*VOUT*`).
+  - Added typed schema `AutoRouteQuery` in `src/mendex_core/desktop/models.py` and RPC handler `DesktopService.auto_route_pcb()` with post-route 3D raytrace refresh.
+  - Added `api.autoRoutePCB()` in `desktop/src/api/client.ts`.
+  - Added 1-click **`[ ⚡ Auto-Route Board ]`** action button with routing spinner and dismissible notification banner in `CADPreviewCanvas.tsx`, automatically refreshing 2D vector geometry and 3D preview upon completion.
+  - Added integration tests in `tests/integrations/test_copper_kicad_adapter.py` verifying power net-class injection, guided routing, and RPC dispatch (7/7 passed).
+  - Verified full test regression suite: **278/278 passed in 129.74s** (`tests/core/` and `tests/integrations/`).
+  - Production desktop build verified: `npm --prefix desktop run build` (1,586 modules transformed, 0 TypeScript errors).
+
+- [x] **Multi-Angle Photorealistic 3D Raytraced PCB Assembly Views (`src/mendex_core/desktop/service.py`, `desktop/src/components/CADPreviewCanvas.tsx`, `tests/core/test_cad_preview_and_reports.py`)**:
+  - Enhanced `DesktopService.cad_preview(kind='3d', view='iso'|'top'|'bottom')` supporting multi-angle raytracing:
+    - **Isometric Perspective (ISO)**: 3D perspective showing populated hardware enclosures, clearance heights, and thermal heat sinks.
+    - **Top View (Components)**: Orthographic component placement, courtyard boundaries, and silkscreen reference designators.
+    - **Bottom View (Solder / Ground Plane)**: Solder joints, thermal relief spokes, and solid bottom ground copper planes.
+  - Added multi-angle selector bar `[ 📐 Isometric (ISO) ]`, `[ 🔝 Top View (Components) ]`, and `[ 🔻 Bottom View (Ground Plane) ]` in `CADPreviewCanvas.tsx`.
+  - Added unit test in `tests/core/test_cad_preview_and_reports.py` (`test_cad_preview_multi_angle_3d_render`).
+  - Verified full test regression suite: **279/279 passed in 131s** (`tests/core/` and `tests/integrations/`).
+  - Production desktop build verified: `npm --prefix desktop run build` (1,586 modules transformed, 0 TypeScript errors).
+
+- [x] **Automated Stage 5 Gerber Export Gating Hook & Manufacturing Release Action (`src/mendex_core/lifecycle/kicad_service.py`, `src/integrations/adapters/kicad.py`, `src/mendex_core/desktop/`, `desktop/src/components/CADPreviewCanvas.tsx`)**:
+  - Enforced routing and DRC safety gating in `KiCadLifecycleService.export_gerbers()` and `export_drill()`: blocks unrouted boards (0 tracks) with `ValueError` while supporting `auto_route=True` to execute guided topological routing and ground fills prior to generating Gerber fabrication files.
+  - Updated `KiCadAdapter.execute(operation="export_gerber")` to support `auto_route=True` parameter before performing track completion checks.
+  - Added typed schema `GerberExportQuery` in `src/mendex_core/desktop/models.py` and RPC handler `DesktopService.export_gerbers()`.
+  - Added `api.exportGerbers()` in `desktop/src/api/client.ts`.
+  - Embedded 1-click **`[ 📦 Export Gerbers ]`** button in the CAD preview PCB toolbar with loading feedback and execution summary.
+  - Verified live: Successfully exported 25 manufacturing Gerber and job files on routed design, while safely blocking unrouted placement-only layouts.
+  - Added unit tests in `tests/core/test_kicad_gerber_gating.py` (4/4 passed).
+  - Production desktop build verified: `npm --prefix desktop run build` (1,586 modules transformed, 0 TypeScript errors).
 
 ## Interactive In-App BOM Generation & Native PDF/Word Viewer Integration — 14 November 2026
 - [x] **Resolved Word vs Edge PDF Window Collision (`src/mendex_core/launch.py`)**:

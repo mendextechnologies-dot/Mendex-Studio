@@ -97,3 +97,24 @@ def test_kicad_adapter_blocks_gerber_export_for_unrouted_board(tmp_path):
     assert result.exit_code == 1
     assert "0 routed tracks" in result.stderr
     assert len(result.artifacts) == 0
+
+
+def test_desktop_service_export_gerbers_rpc():
+    """Verifies DesktopService export_gerbers route registration and schema validation."""
+    from mendex_core.desktop.service import DesktopService, ROUTES
+    from mendex_core.desktop.models import GerberExportQuery
+    from mendex_core.paths import default_data_root
+    from mendex_core.service import StudioService
+
+    root = default_data_root()
+    studio = StudioService(root)
+    desktop = DesktopService(studio)
+
+    assert "export_gerbers" in ROUTES
+    query = GerberExportQuery(
+        revision_id="9b7c1396-64da-41f8-8649-77dc0f24e103",
+        auto_route=True,
+        check_drc=True,
+    )
+    assert query.auto_route is True
+    assert query.check_drc is True

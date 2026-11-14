@@ -170,11 +170,12 @@ class KiCadLifecycleService:
         require_routed: bool = True,
         check_drc: bool = True,
         force: bool = False,
+        auto_route: bool = False,
     ) -> Path:
         """Exports manufacturing Gerbers for a KiCad PCB layout.
 
-        Gated by routing completion and DRC verification. Unrouted boards (placement-only)
-        or boards with DRC violations cannot produce fabrication outputs unless explicitly forced.
+        Gated by routing completion and DRC verification. If auto_route=True, unrouted
+        boards are automatically guided-routed and poured prior to Gerber generation.
         """
         board = pcb_path.resolve()
         if not board.exists():
@@ -182,6 +183,11 @@ class KiCadLifecycleService:
 
         structure = _structure(board)
         routed_tracks = structure.get("segment", 0) + structure.get("arc", 0)
+
+        if not force and auto_route and routed_tracks == 0:
+            self.auto_route(board, pour_ground=True)
+            structure = _structure(board)
+            routed_tracks = structure.get("segment", 0) + structure.get("arc", 0)
 
         if not force:
             if require_routed and routed_tracks == 0:
@@ -225,6 +231,7 @@ class KiCadLifecycleService:
         output_dir: Optional[Path] = None,
         require_routed: bool = True,
         force: bool = False,
+        auto_route: bool = False,
     ) -> Path:
         """Exports Excellon drill files for a KiCad PCB layout."""
         board = pcb_path.resolve()
@@ -233,6 +240,11 @@ class KiCadLifecycleService:
 
         structure = _structure(board)
         routed_tracks = structure.get("segment", 0) + structure.get("arc", 0)
+
+        if not force and auto_route and routed_tracks == 0:
+            self.auto_route(board, pour_ground=True)
+            structure = _structure(board)
+            routed_tracks = structure.get("segment", 0) + structure.get("arc", 0)
 
         if not force and require_routed and routed_tracks == 0:
             raise ValueError(

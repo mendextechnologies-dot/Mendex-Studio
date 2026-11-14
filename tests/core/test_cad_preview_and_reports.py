@@ -145,3 +145,43 @@ def test_cad_preview_extracts_3d_render(tmp_path):
     assert res["filename"] == "board.kicad_pcb"
     assert res["render_bytes"] == len(dummy_png_bytes)
     assert res["render_image"].startswith("data:image/png;base64,")
+
+
+def test_cad_preview_multi_angle_3d_render(tmp_path):
+    controller = MendexEngineeringController(tmp_path)
+    proj = controller.create_project("CAD Test Proj Multi", code="CTPM", auto_enroll=True)
+    try:
+        studio = controller.service
+        product = studio.get_product(proj["project_id"])
+        rev = studio.get_revision(product.active_revision_id)
+        ws = studio.workspace_path(rev)
+        pcb_dir = ws / "pcb"
+        pcb_dir.mkdir(parents=True, exist_ok=True)
+
+        (pcb_dir / "board.kicad_pcb").write_text("(kicad_pcb)", encoding="utf-8")
+        dummy_png = b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15c4\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82"
+        (pcb_dir / "board_3d_top.png").write_bytes(dummy_png)
+        (pcb_dir / "board_3d_bottom.png").write_bytes(dummy_png)
+
+        desktop = DesktopService(studio)
+        res_top = desktop.cad_preview(CADPreviewQuery(revision_id=rev.revision_id, kind="3d", view="top"))
+        assert res_top["available"] is True
+        assert res_top["view"] == "top"
+        assert "Top View" in res_top["title"]
+
+        res_bot = desktop.cad_preview(CADPreviewQuery(revision_id=rev.revision_id, kind="3d", view="bottom"))
+        assert res_bot["available"] is True
+        assert res_bot["view"] == "bottom"
+        assert "Bottom View" in res_bot["title"]
+    finally:
+        ed = Path("engineering_designs")
+        if ed.exists():
+            for f in list(ed.iterdir()):
+                try:
+                    f.unlink()
+                except Exception:
+                    pass
+            try:
+                ed.rmdir()
+            except Exception:
+                pass
