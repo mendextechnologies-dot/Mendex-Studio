@@ -178,7 +178,7 @@ class EngineeringReviewService:
                 "name": stage["definition"]["name"],
                 "purpose": stage["definition"]["purpose"],
                 "attempt": stage["attempt"],
-                "status": stage["status"],
+                "status": stage.get("effective_status", stage["status"]),
                 "review_status": stage["review_status"],
             },
             "requirements_package": {
