@@ -2272,9 +2272,9 @@ export const ProjectDetailView = ({
   );
 };
 
-export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack: () => void }) => {
+export const ProjectDetail = ({ projectId, onBack, refreshKey }: { projectId: string; onBack: () => void; refreshKey?: number }) => {
   const [selectedRevisionId, setSelectedRevisionId] = useState<string | null>(null);
-  const load = useCallback(() => api.project(projectId, selectedRevisionId || undefined), [projectId, selectedRevisionId]);
+  const load = useCallback(() => api.project(projectId, selectedRevisionId || undefined), [projectId, selectedRevisionId, refreshKey]);
   const { data, error } = usePolling(load);
   return (
     <ProjectDetailView

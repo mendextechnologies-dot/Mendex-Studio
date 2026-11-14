@@ -29,6 +29,8 @@ def is_ephemeral_workspace_file(rel: str) -> bool:
         ".git",
         ".pytest_cache",
         "scratch",
+        "exports",
+        "reports",
     }
     if any(p in ignored_dirs for p in parts):
         return True

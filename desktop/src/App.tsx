@@ -65,9 +65,41 @@ export const App: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const updateUrl = (route: RouteId, projectId: string | null) => {
+    try {
+      const url = new URL(window.location.href);
+      if (route === 'dashboard') {
+        url.searchParams.delete('page');
+      } else {
+        url.searchParams.set('page', route);
+      }
+      if (projectId && route === 'projects') {
+        url.searchParams.set('project', projectId);
+      } else {
+        url.searchParams.delete('project');
+      }
+      window.history.replaceState(null, '', url.toString());
+    } catch {
+      // Ignore URL errors
+    }
+  };
+
   const handleSelectProject = (projectId: string) => {
     setSelectedProjectId(projectId);
     setCurrentRoute('projects');
+    updateUrl('projects', projectId);
+  };
+
+  const handleBackToProjects = () => {
+    setSelectedProjectId(null);
+    updateUrl('projects', null);
+  };
+
+  const handleRefresh = async () => {
+    setRefreshTrigger((prev) => prev + 1);
+    await syncData();
   };
 
   const getPageTitle = () => {
@@ -98,9 +130,11 @@ export const App: React.FC = () => {
         currentRoute={currentRoute}
         onNavigate={(route) => {
           setCurrentRoute(route);
+          const nextProj = route === 'projects' ? selectedProjectId : null;
           if (route !== 'projects') {
             setSelectedProjectId(null);
           }
+          updateUrl(route, nextProj);
         }}
       />
 
@@ -110,7 +144,7 @@ export const App: React.FC = () => {
           title={getPageTitle()}
           isSyncing={isSyncing}
           lastSyncTime={lastSyncTime}
-          onRefresh={syncData}
+          onRefresh={handleRefresh}
         />
 
         <main style={{ flex: 1, overflowY: 'auto', backgroundColor: 'var(--bg-app)' }}>
@@ -127,7 +161,8 @@ export const App: React.FC = () => {
             selectedProjectId ? (
               <ProjectDetail
                 projectId={selectedProjectId}
-                onBack={() => setSelectedProjectId(null)}
+                onBack={handleBackToProjects}
+                refreshKey={refreshTrigger}
               />
             ) : (
               <Projects
