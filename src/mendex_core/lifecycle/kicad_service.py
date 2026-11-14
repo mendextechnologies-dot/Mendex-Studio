@@ -273,6 +273,61 @@ class KiCadLifecycleService:
         subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
         return out_pos
 
+    def export_ipcd356(
+        self,
+        pcb_path: Path,
+        output_file: Optional[Path] = None,
+    ) -> Path:
+        """Exports IPC-D-356 bare board electrical test netlist file."""
+        if not self.is_available():
+            raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
+        board = pcb_path.resolve()
+        if not board.exists():
+            raise FileNotFoundError(f"PCB file not found: {board}")
+
+        out_d356 = output_file.resolve() if output_file else (board.parent / "gerbers" / f"{board.stem}.d356").resolve()
+        out_d356.parent.mkdir(parents=True, exist_ok=True)
+        cmd = [
+            str(self.kicad_cli),
+            "pcb",
+            "export",
+            "ipcd356",
+            "--output",
+            str(out_d356),
+            str(board),
+        ]
+        subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
+        return out_d356
+
+    def export_stats(
+        self,
+        pcb_path: Path,
+        output_file: Optional[Path] = None,
+        format: str = "json",
+    ) -> Path:
+        """Exports board statistics report (dimensions, drill counts, pad density)."""
+        if not self.is_available():
+            raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
+        board = pcb_path.resolve()
+        if not board.exists():
+            raise FileNotFoundError(f"PCB file not found: {board}")
+
+        out_stats = output_file.resolve() if output_file else (board.parent / "gerbers" / f"{board.stem}_stats.json").resolve()
+        out_stats.parent.mkdir(parents=True, exist_ok=True)
+        cmd = [
+            str(self.kicad_cli),
+            "pcb",
+            "export",
+            "stats",
+            "--format",
+            format,
+            "--output",
+            str(out_stats),
+            str(board),
+        ]
+        subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
+        return out_stats
+
     def export_drill(
         self,
         pcb_path: Path,

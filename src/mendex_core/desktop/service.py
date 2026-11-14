@@ -1425,11 +1425,51 @@ class DesktopService:
             except Exception:
                 pass
 
+            # Export Pick-and-Place (CPL / POS) Centroid file for automated SMT assembly
+            try:
+                kicad_service.export_pos(pcb_path, output_file=out_dir / f"{pcb_path.stem}_cpl.csv", side="both", format="csv", units="mm")
+            except Exception:
+                pass
+
+            # Export IPC-D-356 bare board electrical test netlist
+            try:
+                kicad_service.export_ipcd356(pcb_path, output_file=out_dir / f"{pcb_path.stem}.d356")
+            except Exception:
+                pass
+
+            # Export board fabrication statistics
+            try:
+                kicad_service.export_stats(pcb_path, output_file=out_dir / f"{pcb_path.stem}_board_stats.json")
+            except Exception:
+                pass
+
+            # Copy Procurement BOM into release bundle if available
+            bom_cands = [
+                ws_dir / "bom" / "exports" / "procurement_bom.csv",
+                ws_dir / "bom" / f"{pcb_path.stem}_bom.csv",
+                pcb_path.parent / f"{pcb_path.stem}_bom.csv",
+            ]
+            for bc in bom_cands:
+                if bc.exists() and bc.stat().st_size > 0:
+                    import shutil
+                    try:
+                        shutil.copy2(bc, out_dir / f"{pcb_path.stem}_bom.csv")
+                        break
+                    except Exception:
+                        pass
+
             import zipfile
             zip_path = out_dir / f"{pcb_path.stem}_gerbers.zip"
+            turnkey_zip_path = out_dir / f"{pcb_path.stem}_turnkey_manufacturing.zip"
+
             with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
                 for gf in sorted(out_dir.iterdir()):
-                    if gf.is_file() and gf.suffix.lower() != ".zip":
+                    if gf.is_file() and gf.suffix.lower() not in (".zip", ".lck"):
+                        zf.write(gf, gf.name)
+
+            with zipfile.ZipFile(turnkey_zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+                for gf in sorted(out_dir.iterdir()):
+                    if gf.is_file() and gf.suffix.lower() not in (".zip", ".lck"):
                         zf.write(gf, gf.name)
 
             from ..design.models import ArtifactKind
@@ -1442,6 +1482,18 @@ class DesktopService:
                 "zip",
                 "Deterministic Manufacturing Release",
             )
+            try:
+                _ingest_design_artifact(
+                    self.studio,
+                    revision,
+                    ArtifactKind.MANUFACTURING_BUNDLE,
+                    turnkey_zip_path,
+                    turnkey_zip_path.name,
+                    "zip",
+                    "Turnkey SMT Assembly & Manufacturing Release",
+                )
+            except Exception:
+                pass
 
             import base64
             zip_bytes = zip_path.read_bytes()
@@ -1515,11 +1567,21 @@ class DesktopService:
 
         pcb_path = pcb_files[0]
         gerber_out_dir = pcb_path.parent / "gerbers"
-        cand_zips = [
-            gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
-            pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
-            pcb_path.parent / "gerbers.zip",
-        ]
+        pkg_type = getattr(request, "package_type", "gerber")
+        if pkg_type == "turnkey":
+            cand_zips = [
+                gerber_out_dir / f"{pcb_path.stem}_turnkey_manufacturing.zip",
+                pcb_path.parent / f"{pcb_path.stem}_turnkey_manufacturing.zip",
+                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / "gerbers.zip",
+            ]
+        else:
+            cand_zips = [
+                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / "gerbers.zip",
+            ]
         zip_path = None
         for cz in cand_zips:
             if cz.exists() and cz.stat().st_size > 0:
@@ -1887,6 +1949,78 @@ class DesktopService:
         pth_count = sum(1 for h in final_drill_hits if h.get("plated", True))
         npth_count = total_holes - pth_count
 
+        # SMT Pick-and-Place (CPL) Centroid Parsing
+        files_in_dir = list(gerber_out_dir.iterdir()) if gerber_out_dir.exists() else []
+        cpl_candidates = [
+            f for f in files_in_dir
+            if f.is_file() and (f.name.endswith("_cpl.csv") or f.name.endswith("-all-pos.csv") or f.suffix.lower() == ".pos")
+        ]
+        cpl_components = []
+        cpl_file = cpl_candidates[0] if cpl_candidates else None
+        if cpl_file and cpl_file.exists():
+            try:
+                import csv, io
+                cpl_txt = cpl_file.read_text(encoding="utf-8", errors="replace")
+                reader = csv.DictReader(io.StringIO(cpl_txt))
+                for row in reader:
+                    r_ref = (row.get("Ref") or "").strip().strip('"')
+                    if not r_ref or r_ref.startswith("#"):
+                        continue
+                    r_val = (row.get("Val") or "").strip().strip('"')
+                    r_pkg = (row.get("Package") or "").strip().strip('"')
+                    r_side = (row.get("Side") or "top").strip().strip('"').lower()
+                    try:
+                        r_x = float(row.get("PosX", 0.0))
+                        r_y = float(row.get("PosY", 0.0))
+                        r_rot = float(row.get("Rot", 0.0))
+                    except (ValueError, TypeError):
+                        r_x, r_y, r_rot = 0.0, 0.0, 0.0
+                    cpl_components.append({
+                        "ref": r_ref,
+                        "val": r_val,
+                        "package": r_pkg,
+                        "x": r_x,
+                        "y": r_y,
+                        "rot": r_rot,
+                        "side": r_side,
+                    })
+            except Exception:
+                pass
+
+        total_cpl = len(cpl_components)
+        top_cpl = sum(1 for c in cpl_components if c["side"] == "top")
+        bottom_cpl = total_cpl - top_cpl
+        smd_cpl = sum(1 for c in cpl_components if not any(k in c["package"].lower() for k in ("th", "thru", "pinheader", "mountinghole", "dip", "radial", "axial", "p15.", "p2.54")))
+        tht_cpl = total_cpl - smd_cpl
+
+        d356_files = [f for f in files_in_dir if f.is_file() and f.suffix.lower() == ".d356"]
+        d356_file = d356_files[0] if d356_files else None
+        stats_files = [f for f in files_in_dir if f.is_file() and (f.name.endswith("_stats.json") or f.name.endswith("_board_stats.json"))]
+        stats_file = stats_files[0] if stats_files else None
+
+        turnkey_cand_zips = [
+            gerber_out_dir / f"{pcb_path.stem}_turnkey_manufacturing.zip",
+            pcb_path.parent / f"{pcb_path.stem}_turnkey_manufacturing.zip",
+        ]
+        turnkey_zip = None
+        for tz in turnkey_cand_zips:
+            if tz.exists() and tz.stat().st_size > 0:
+                turnkey_zip = tz
+                break
+
+        has_turnkey = turnkey_zip is not None
+        turnkey_sha256 = _file_sha256(turnkey_zip) if has_turnkey else None
+        turnkey_bytes = turnkey_zip.stat().st_size if has_turnkey else 0
+        turnkey_rel_path = (
+            str(turnkey_zip.relative_to(ws_dir).as_posix())
+            if has_turnkey and turnkey_zip.is_relative_to(ws_dir)
+            else (
+                str(turnkey_zip.relative_to(self.studio.root).as_posix())
+                if has_turnkey and turnkey_zip.is_relative_to(self.studio.root)
+                else str(turnkey_zip) if has_turnkey else None
+            )
+        )
+
         return {
             "success": True,
             "board_name": pcb_path.stem,
@@ -1916,6 +2050,28 @@ class DesktopService:
             "gerber_zip_bytes": gerber_bytes,
             "gerber_zip_sha256": gerber_sha256,
             "gerber_zip_path": gerber_rel_path,
+            "cpl_summary": {
+                "available": total_cpl > 0,
+                "filename": cpl_file.name if cpl_file else None,
+                "total_components": total_cpl,
+                "smd_count": smd_cpl,
+                "tht_count": tht_cpl,
+                "top_side_count": top_cpl,
+                "bottom_side_count": bottom_cpl,
+                "components": cpl_components,
+            },
+            "turnkey_package": {
+                "available": has_turnkey,
+                "filename": turnkey_zip.name if has_turnkey else None,
+                "size_bytes": turnkey_bytes,
+                "sha256": turnkey_sha256,
+                "path": turnkey_rel_path,
+                "has_cpl": total_cpl > 0,
+                "has_d356": d356_file is not None,
+                "d356_filename": d356_file.name if d356_file else None,
+                "has_board_stats": stats_file is not None,
+                "stats_filename": stats_file.name if stats_file else None,
+            },
         }
 
     def apply_schematic(self, request):
@@ -2616,6 +2772,12 @@ class DesktopService:
             return self.studio.generate_bom_pricing_schedule(request.revision_id, currency=getattr(request, "currency", "USD"))
         if method == "get_bom_pricing":
             return self.studio.get_bom_pricing_schedule(request.revision_id)
+        if method == "get_release_package":
+            return self.studio.get_release_package(request.revision_id)
+        if method == "build_release_package":
+            return self.studio.generate_release_package(request.revision_id, author=getattr(request, "author", "Lead Systems Engineer"))
+        if method == "reveal_release_package":
+            return {"revealed": self.studio.reveal_release_package(request.revision_id)}
         if method == "backup":
             dest = getattr(request, "destination", None) if request else None
             backup_path = self.studio.backup_database(dest)
@@ -2728,4 +2890,7 @@ ROUTES.update(
     get_test_plan=models.TestPlanQuery,
     generate_bom_pricing=models.BOMPricingQuery,
     get_bom_pricing=models.BOMPricingQuery,
+    get_release_package=models.ReleasePackageQuery,
+    build_release_package=models.ReleasePackageQuery,
+    reveal_release_package=models.ReleasePackageQuery,
 )

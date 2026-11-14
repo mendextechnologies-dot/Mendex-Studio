@@ -823,3 +823,14 @@ class StudioService:
         from .design.bom_pricing import get_bom_pricing_schedule
         return get_bom_pricing_schedule(self, revision_id)
 
+    def generate_release_package(self, revision_id, author="Lead Systems Engineer"):
+        from .design.release_packager import build_release_package
+        return build_release_package(self, revision_id, author=author)
+
+    def get_release_package(self, revision_id):
+        from .design.release_packager import get_release_package
+        return get_release_package(self, revision_id)
+
+    def reveal_release_package(self, revision_id):
+        return self.reveal_project_file(revision_id, "release_package")
+

@@ -132,7 +132,7 @@ export const api = {
     }>('setup_4layer_planes', params),
   exportGerbers: (revisionId: string, autoRoute: boolean = true) =>
     rpcCall<any>('export_gerbers', { revision_id: revisionId, auto_route: autoRoute }),
-  downloadGerbers: (revisionId: string) =>
+  downloadGerbers: (revisionId: string, packageType: string = 'gerber') =>
     rpcCall<{
       success: boolean;
       filename: string;
@@ -141,7 +141,7 @@ export const api = {
       size_bytes: number;
       data_uri: string;
       error?: string;
-    }>('download_gerbers', { revision_id: revisionId }),
+    }>('download_gerbers', { revision_id: revisionId, package_type: packageType }),
   inspectGerberLayers: (revisionId: string, autoExport: boolean = true) =>
     rpcCall<{
       success: boolean;
@@ -480,4 +480,13 @@ export const api = {
       sha256: string;
       disclaimer: string;
     }>('get_bom_pricing', { revision_id: revisionId }),
+  getReleasePackage: (revisionId: string) =>
+    rpcCall<import('./types').ReleasePackageData>('get_release_package', { revision_id: revisionId }),
+  buildReleasePackage: (revisionId: string, author?: string) =>
+    rpcCall<import('./types').ReleasePackageData>('build_release_package', {
+      revision_id: revisionId,
+      author: author || 'Lead Systems Engineer',
+    }),
+  revealReleasePackage: (revisionId: string) =>
+    rpcCall<{ revealed: boolean }>('reveal_release_package', { revision_id: revisionId }),
 };

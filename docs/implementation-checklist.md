@@ -2243,3 +2243,21 @@ un_pcb_drc) return structured operation receipts with operation_id, operation_ty
   - Frontend TypeScript build (
 pm --prefix desktop run build): **0 ERRORS**, built in 1.64s.
   - Automated test suite (	ests/core/test_waveform_calipers_ui.py): **1/1 PASSED in 0.73s**.
+
+### Milestone: Formal Production Release Handover Package Builder (Option 4) — 15 November 2026 — VERIFIED FIXED
+- [x] **Formal Production Release Handover Package Builder Backend (`src/mendex_core/design/release_packager.py`, `src/mendex_core/service.py`, `src/mendex_core/desktop/service.py`)**:
+  - Implemented multi-disciplinary deliverables packaging engine: collects KiCad schematics (`.kicad_sch`), PCB layouts (`.kicad_pcb`), project files (`.kicad_pro`), RS-274X Gerber layer stacks, Excellon CNC drill decks, SMT Pick-and-Place CPL centroid files, 3D raytrace visuals, assembly guides, derated BOM JSON/CSV schedules, high-voltage test plans, and engineering dossiers.
+  - Generates official release ZIP archive `<PRODUCT_CODE>_<REVISION_LABEL>_Complete_Manufacturing_Release.zip` preserving relative folder paths without filename collisions.
+  - Synthesizes authoritative `release_manifest.json` registering constituent deliverables categorized across 5 disciplines (`cad`, `fabrication`, `assembly`, `bom`, `testing_qa`) with cryptographic SHA-256 digests and file sizes.
+  - Implemented single core service RPC endpoints: `get_release_package`, `build_release_package`, and `reveal_release_package`.
+- [x] **Production Release Handover UI Card (`desktop/src/components/ReleaseHandoverCard.tsx`, `desktop/src/pages/ProjectDetail.tsx`)**:
+  - Created publication-grade release management card mounted in the Reports & Evidence tab of `ProjectDetail.tsx`.
+  - Executive Telemetry HUD: Release bundle status badge (`✓ RELEASE BUNDLE READY` / `⏳ PENDING COMPILATION`), total files count, DEFLATE compressed archive size, attributable signatory, and SHA-256 registration.
+  - Interactive deliverables explorer with discipline filter pills (`CAD & Netlists`, `RS-274X Fabrication`, `SMT Assembly & CPL`, `Procurement BOM`, `Quality & Test Plans`), live search, and per-item SHA-256 copy buttons.
+  - Cryptographic Fingerprint Ribbon with 1-click ZIP SHA-256 copy and expandable raw `release_manifest.json` drawer with instant JSON copy.
+  - Actions: 1-click "Build / Recompile Release Package", "Reveal in Explorer" (Windows Explorer folder opening), and file inspection links.
+  - Strict governance callout reinforcing project rules: design package is cryptographically signed; physical laboratory verification must precede production fabrication.
+- [x] **Verification**:
+  - Frontend TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 1.86s.
+  - Automated test suite (`tests/core/test_release_handover_package.py`): **1/1 PASSED in 0.78s**.
+  - Multi-option regression test suite (Options 1, 2, 3, 4 + Turnkey): **8/8 PASSED**.

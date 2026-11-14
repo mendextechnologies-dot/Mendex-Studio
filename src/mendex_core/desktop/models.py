@@ -134,6 +134,7 @@ class CandidateSelectQuery(Model):
 
 class GerberDownloadQuery(Model):
     revision_id: UUID
+    package_type: str = "gerber"  # 'gerber' or 'turnkey'
 
 
 class SchematicApplyQuery(Model):
@@ -262,4 +263,8 @@ class TestPlanQuery(Model):
 class BOMPricingQuery(Model):
     revision_id: UUID
     currency: str = "USD"
+
+class ReleasePackageQuery(Model):
+    revision_id: UUID
+    author: Optional[str] = "Lead Systems Engineer"
 

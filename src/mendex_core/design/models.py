@@ -86,6 +86,9 @@ class ArtifactKind(str, Enum):
     CALCULATION_SHEET = "calculation_sheet"
     BOM = "bom"
     GERBER_BUNDLE = "gerber_bundle"
+    MANUFACTURING_BUNDLE = "manufacturing_bundle"
+    POS_CENTROID = "pos_centroid"
+    IPCD356_NETLIST = "ipcd356_netlist"
 
 
 class DesignArtifact(BaseModel):

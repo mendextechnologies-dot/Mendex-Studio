@@ -6,6 +6,7 @@ import { RevisionEngineeringPanel, effectiveStageStatus, validationStatus } from
 import { LaboratoryTestPlanCard } from '../components/LaboratoryTestPlanCard';
 import { ECRManagementCard } from '../components/ECRManagementCard';
 import { BOMPricingScheduleCard } from '../components/BOMPricingScheduleCard';
+import { ReleaseHandoverCard } from '../components/ReleaseHandoverCard';
 import { RecordFormView } from '../components/RecordFormView';
 import {
   ArrowLeft,
@@ -1410,6 +1411,14 @@ export const ProjectDetailView = ({
                     {isGeneratingReport ? 'Compiling Dossier…' : 'Compile Complete Dossier (PDF)'}
                   </button>
                 </div>
+
+                {/* Formal Production Release Handover Package Builder (Option 4) */}
+                <ReleaseHandoverCard
+                  revisionId={data.revision.revision_id}
+                  projectCode={data.product.code}
+                  projectName={data.product.name}
+                  onOpenProjectFile={(rel) => action(() => api.openFile(data.revision.revision_id, rel))}
+                />
 
                 {/* Production BOM Cost Rollup & Purchasing Intelligence (Option 3 / G05) */}
                 <BOMPricingScheduleCard

@@ -264,11 +264,16 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
     });
   };
 
+  const [downloadingTurnkey, setDownloadingTurnkey] = useState(false);
+  const [sidebarTab, setSidebarTab] = useState<'layers' | 'cpl' | 'drills'>('layers');
+  const [cplSearch, setCplSearch] = useState('');
+  const [highlightedCplRef, setHighlightedCplRef] = useState<string | null>(null);
+
   const handleDownload = async () => {
     setDownloading(true);
     setActionMessage(null);
     try {
-      const res = await api.downloadGerbers(revisionId);
+      const res = await api.downloadGerbers(revisionId, 'gerber');
       if (res.success && res.data_uri) {
         const link = document.createElement('a');
         link.href = res.data_uri;
@@ -284,6 +289,29 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
       setActionMessage(`Error: ${err.message || String(err)}`);
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleDownloadTurnkey = async () => {
+    setDownloadingTurnkey(true);
+    setActionMessage(null);
+    try {
+      const res = await api.downloadGerbers(revisionId, 'turnkey');
+      if (res.success && res.data_uri) {
+        const link = document.createElement('a');
+        link.href = res.data_uri;
+        link.download = res.filename || 'turnkey_manufacturing.zip';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setActionMessage(`Downloaded turnkey manufacturing package ${res.filename} (${(res.size_bytes / 1024).toFixed(1)} KB)`);
+      } else {
+        setActionMessage(`Turnkey download failed: ${res.error}`);
+      }
+    } catch (err: any) {
+      setActionMessage(`Error: ${err.message || String(err)}`);
+    } finally {
+      setDownloadingTurnkey(false);
     }
   };
 
@@ -599,6 +627,29 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
           </div>
 
           <button
+            onClick={handleDownloadTurnkey}
+            disabled={downloadingTurnkey}
+            style={{
+              background: '#4f46e5',
+              border: 'none',
+              color: '#fff',
+              padding: '6px 12px',
+              borderRadius: 6,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: downloadingTurnkey ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              boxShadow: '0 2px 6px rgba(79, 70, 229, 0.4)',
+            }}
+            title="Download turnkey assembly release: Gerbers + Drills + Pick-and-Place CPL Centroid + IPC-D-356 Netlist + BOM + Stats"
+          >
+            <Download size={13} className={downloadingTurnkey ? 'spin' : ''} />
+            {downloadingTurnkey ? 'Downloading...' : '📦 Turnkey Assembly ZIP'}
+          </button>
+
+          <button
             onClick={handleDownload}
             disabled={downloading}
             style={{
@@ -653,7 +704,191 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
       {/* Main Workspace Body */}
       <div style={{ display: 'flex', flex: 1, minHeight: 0, position: 'relative' }}>
         {/* Left Side Panel: Layer Stack Controls */}
-        <div style={{ width: 310, background: '#0b1329', borderRight: '1px solid #1e293b', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+        <div style={{ width: 320, background: '#0b1329', borderRight: '1px solid #1e293b', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+          {/* Sidebar Navigation Tabs */}
+          <div style={{ display: 'flex', borderBottom: '1px solid #1e293b', background: '#070d1e' }}>
+            <button
+              onClick={() => setSidebarTab('layers')}
+              style={{
+                flex: 1,
+                padding: '9px 4px',
+                fontSize: 11,
+                fontWeight: 700,
+                background: sidebarTab === 'layers' ? '#131e38' : 'transparent',
+                color: sidebarTab === 'layers' ? '#38bdf8' : '#64748b',
+                border: 'none',
+                borderBottom: sidebarTab === 'layers' ? '2px solid #38bdf8' : 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Layers ({data?.layers?.length || 0})
+            </button>
+            <button
+              onClick={() => setSidebarTab('cpl')}
+              style={{
+                flex: 1,
+                padding: '9px 4px',
+                fontSize: 11,
+                fontWeight: 700,
+                background: sidebarTab === 'cpl' ? '#131e38' : 'transparent',
+                color: sidebarTab === 'cpl' ? '#10b981' : '#64748b',
+                border: 'none',
+                borderBottom: sidebarTab === 'cpl' ? '2px solid #10b981' : 'none',
+                cursor: 'pointer',
+              }}
+              title="Pick-and-Place component centroid list for automated SMT assembly"
+            >
+              SMT CPL ({data?.cpl_summary?.total_components || 0})
+            </button>
+            <button
+              onClick={() => setSidebarTab('drills')}
+              style={{
+                flex: 1,
+                padding: '9px 4px',
+                fontSize: 11,
+                fontWeight: 700,
+                background: sidebarTab === 'drills' ? '#131e38' : 'transparent',
+                color: sidebarTab === 'drills' ? '#f59e0b' : '#64748b',
+                border: 'none',
+                borderBottom: sidebarTab === 'drills' ? '2px solid #f59e0b' : 'none',
+                cursor: 'pointer',
+              }}
+              title="Excellon tool drill schedule"
+            >
+              Drills ({data?.drill_summary?.total_holes || 0})
+            </button>
+          </div>
+
+          {sidebarTab === 'cpl' && (
+            <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Centroid Positions
+                </span>
+                <span style={{ fontSize: 10, color: '#94a3b8' }}>
+                  {data?.cpl_summary?.filename || 'No CPL file'}
+                </span>
+              </div>
+
+              {/* SMT KPI metrics */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+                <div style={{ background: '#131c38', padding: '6px 8px', borderRadius: 4, border: '1px solid #1e293b' }}>
+                  <div style={{ fontSize: 9, color: '#94a3b8' }}>Total Parts</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#f8fafc' }}>{data?.cpl_summary?.total_components || 0}</div>
+                </div>
+                <div style={{ background: '#131c38', padding: '6px 8px', borderRadius: 4, border: '1px solid #1e293b' }}>
+                  <div style={{ fontSize: 9, color: '#10b981' }}>SMD SMT</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>{data?.cpl_summary?.smd_count || 0}</div>
+                </div>
+                <div style={{ background: '#131c38', padding: '6px 8px', borderRadius: 4, border: '1px solid #1e293b' }}>
+                  <div style={{ fontSize: 9, color: '#38bdf8' }}>Through-Hole</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#38bdf8' }}>{data?.cpl_summary?.tht_count || 0}</div>
+                </div>
+              </div>
+
+              {/* Search */}
+              <input
+                type="text"
+                placeholder="Filter Ref, Value, Package..."
+                value={cplSearch}
+                onChange={(e) => setCplSearch(e.target.value)}
+                style={{
+                  background: '#070d1e',
+                  border: '1px solid #334155',
+                  color: '#f8fafc',
+                  padding: '6px 10px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  outline: 'none',
+                }}
+              />
+
+              {/* Component list */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, overflowY: 'auto', maxHeight: 'calc(100vh - 420px)' }}>
+                {(data?.cpl_summary?.components || [])
+                  .filter((c: any) =>
+                    !cplSearch ||
+                    c.ref.toLowerCase().includes(cplSearch.toLowerCase()) ||
+                    c.val.toLowerCase().includes(cplSearch.toLowerCase()) ||
+                    c.package.toLowerCase().includes(cplSearch.toLowerCase())
+                  )
+                  .map((comp: any) => {
+                    const isHighlighted = highlightedCplRef === comp.ref;
+                    return (
+                      <div
+                        key={comp.ref}
+                        onMouseEnter={() => setHighlightedCplRef(comp.ref)}
+                        onMouseLeave={() => setHighlightedCplRef(null)}
+                        onClick={() => setHighlightedCplRef(isHighlighted ? null : comp.ref)}
+                        style={{
+                          background: isHighlighted ? '#1e3a8a' : '#0c1326',
+                          border: `1px solid ${isHighlighted ? '#38bdf8' : '#1e293b'}`,
+                          borderRadius: 6,
+                          padding: '8px 10px',
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: '#f8fafc' }}>{comp.ref}</span>
+                          <span
+                            style={{
+                              fontSize: 9,
+                              fontWeight: 600,
+                              background: comp.side === 'top' ? '#064e3b' : '#312e81',
+                              color: comp.side === 'top' ? '#34d399' : '#818cf8',
+                              padding: '2px 5px',
+                              borderRadius: 3,
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            {comp.side}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 11, color: '#38bdf8', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {comp.val || comp.package}
+                        </div>
+                        <div style={{ fontSize: 10, color: '#64748b', display: 'flex', justifyContent: 'space-between' }}>
+                          <span>{comp.package}</span>
+                          <span>X: {comp.x.toFixed(1)} Y: {comp.y.toFixed(1)} ({comp.rot}°)</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+
+          {sidebarTab === 'drills' && (
+            <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Excellon Drill Schedule
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
+                <div style={{ background: '#131c38', padding: '6px 8px', borderRadius: 4, border: '1px solid #1e293b' }}>
+                  <div style={{ fontSize: 9, color: '#94a3b8' }}>Plated (PTH)</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>{data?.drill_summary?.pth_count || 0}</div>
+                </div>
+                <div style={{ background: '#131c38', padding: '6px 8px', borderRadius: 4, border: '1px solid #1e293b' }}>
+                  <div style={{ fontSize: 9, color: '#94a3b8' }}>Non-Plated (NPTH)</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#f59e0b' }}>{data?.drill_summary?.npth_count || 0}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, overflowY: 'auto', maxHeight: 'calc(100vh - 420px)' }}>
+                {(data?.drill_tools || []).map((t: any) => (
+                  <div key={t.tool_id} style={{ background: '#0c1326', border: '1px solid #1e293b', borderRadius: 6, padding: '8px 10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: '#f8fafc' }}>{t.tool_id}: ⌀ {t.diameter_mm} mm ({t.diameter_mils} mil)</span>
+                      <span style={{ fontSize: 10, color: '#38bdf8', fontWeight: 600 }}>{t.count} holes</span>
+                    </div>
+                    <div style={{ fontSize: 10, color: '#64748b' }}>{t.usage}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {sidebarTab === 'layers' && <>
           {/* Preset Buttons */}
           <div style={{ padding: '12px 14px', borderBottom: '1px solid #1e293b' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8, letterSpacing: '0.05em' }}>
@@ -847,6 +1082,7 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
               })}
             </div>
           </div>
+          </>}
         </div>
 
         {/* Center: Interactive High-Contrast Gerber SVG Canvas */}

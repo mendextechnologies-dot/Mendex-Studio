@@ -222,3 +222,36 @@ export interface BOMGenerationResult {
   pdf_size_bytes: number;
   message: string;
 }
+
+export interface ReleaseDeliverableItem {
+  file: string;
+  category: 'cad' | 'fabrication' | 'assembly' | 'bom' | 'testing_qa' | 'other';
+  size_bytes: number;
+  sha256: string;
+}
+
+export interface ReleasePackageData {
+  status: 'READY' | 'PENDING_GENERATION';
+  package_exists: boolean;
+  product_code: string;
+  product_name: string;
+  revision_label: string;
+  revision_id: string;
+  package_filename: string | null;
+  package_relative_path: string | null;
+  package_size_bytes: number;
+  package_sha256: string | null;
+  generated_at: string | null;
+  generator: string | null;
+  contents: ReleaseDeliverableItem[];
+  categories: Record<string, ReleaseDeliverableItem[]>;
+  available_candidates_count: number;
+  available_candidates?: Array<{
+    name: string;
+    relative_path: string;
+    category: string;
+    size_bytes: number;
+  }>;
+  governance_notice: string;
+}
+
