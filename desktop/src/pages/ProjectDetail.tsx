@@ -4,6 +4,7 @@ import { usePolling } from '../usePolling';
 import type { ProjectDetailData } from '../api/types';
 import { RevisionEngineeringPanel, effectiveStageStatus, validationStatus } from '../components/RevisionEngineeringPanel';
 import { LaboratoryTestPlanCard } from '../components/LaboratoryTestPlanCard';
+import { ECRManagementCard } from '../components/ECRManagementCard';
 import { BOMPricingScheduleCard } from '../components/BOMPricingScheduleCard';
 import { RecordFormView } from '../components/RecordFormView';
 import {
@@ -47,6 +48,7 @@ import {
   CheckCheck,
   Copy,
   FileCheck,
+  GitPullRequest,
 } from 'lucide-react';
 
 const TAB_DEFS = [
@@ -59,6 +61,7 @@ const TAB_DEFS = [
   { id: 'files', label: 'Revision Files', icon: FileText },
   { id: 'validation', label: 'Validation', icon: ShieldCheck },
   { id: 'revisions', label: 'Revisions', icon: History },
+  { id: 'ecr', label: 'Changes (ECR)', icon: GitPullRequest },
   { id: 'reports', label: 'Reports', icon: FileBarChart },
 ] as const;
 
@@ -1374,6 +1377,15 @@ export const ProjectDetailView = ({
                   })}
                 </div>
               </div>
+            )}
+
+            {/* TAB: ECR */}
+            {tab === 'ecr' && (
+              <ECRManagementCard
+                data={data}
+                onRefresh={onReload}
+                onOpenFile={(path) => action(() => api.openFile(data.revision.revision_id, path))}
+              />
             )}
 
             {/* TAB 10: REPORTS */}

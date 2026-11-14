@@ -2,6 +2,18 @@
 
 ## Audit Remediation — Mendex Engineering Studio Quality & Integrity Hardening — 14 November 2026
 
+### Milestone: Interactive ECR / ECO Management & Schematic Diff Viewer (Option 2) — 15 November 2026 — VERIFIED FIXED
+- [x] **Interactive ECR / ECO Management & Schematic Diff Viewer (`desktop/src/components/ECRManagementCard.tsx`, `ProjectDetail.tsx`)**:
+  - Implemented closed-loop Engineering Change Management panel directly mounted as a primary tab `Changes (ECR)` in `ProjectDetail.tsx`.
+  - **Executive KPI Dashboard**: Total ECR count, status distribution (`APPROVED`, `IMPLEMENTED`, `UNDER_REVIEW`, `DRAFT`, `REJECTED`), and affected lifecycle stages chips (`calculations`, `simulation`, `schematic_design`, `bom_review`).
+  - **Atomic Schematic Operations Diff Viewer**: Visual breakdown of individual KiCad operations (`set_field`, `place`, `connect`) showing component reference, target field, and new values/MPNs.
+  - **Interactive ECR Creation Modal**: Full workflow modal supporting technical justification, impact analysis, affected stage tagging, and schematic ops payload builder.
+  - **Human Engineering Review Modal**: Attributable reviewer sign-off interface with decision selection (`APPROVED`, `UNDER_REVIEW`, `REJECTED`) and verification notes.
+  - **1-Click ECO Forward-Annotation Engine**: Action button calling `api.applyECRSchematic(ecrId, implementedBy, forwardAnnotate=true)`, synchronizing native KiCad schematic netlists into PCB layout while preserving routed copper tracks, refilling ground planes, and rendering the ECO Execution Scorecard.
+- [x] **Test Verification & Production Build**:
+  - `tests/core/test_ecr_ui_integration.py`: **2/2 PASSED** (verified desktop RPC create/list/review routes and component registration).
+  - Production frontend build (`npm --prefix desktop run build`): **PASSED with 0 TypeScript/Vite errors (1,595 modules transformed in 2.76s)**.
+
 ### Milestone: Publication-Grade Requirements Traceability Matrix (RTM) Card (Option 1) — 15 November 2026 — VERIFIED FIXED
 - [x] **Publication-Grade Requirements Traceability Matrix (RTM) Card (`desktop/src/components/RequirementsTraceabilityMatrixCard.tsx`)**:
   - Implemented aerospace/automotive-grade Requirements Verification & Traceability Matrix mounted in `RevisionEngineeringPanel.tsx`.
