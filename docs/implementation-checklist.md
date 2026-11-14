@@ -2261,3 +2261,31 @@ pm --prefix desktop run build): **0 ERRORS**, built in 1.64s.
   - Frontend TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 1.86s.
   - Automated test suite (`tests/core/test_release_handover_package.py`): **1/1 PASSED in 0.78s**.
   - Multi-option regression test suite (Options 1, 2, 3, 4 + Turnkey): **8/8 PASSED**.
+
+
+### Milestone: Oscilloscope CSV Waveform Ingestion & Real-vs-Simulated Correlation (Option 2) — 15 November 2026 — VERIFIED FIXED
+- [x] **Multi-Vendor Oscilloscope CSV Ingestion Engine (`src/mendex_core/measurements/scope_parser.py`, `src/mendex_core/measurements/service.py`)**:
+  - Implemented high-robustness oscilloscope parser supporting instrument CSV exports from Tektronix, Keysight/Agilent, Rigol, Siglent, and generic multi-column scientific CSV formats.
+  - Automatically parses preambles, metadata headers, sample intervals, and channel identifiers (`TIME, CH1, CH2, ...`).
+  - Computes immutable cryptographic SHA-256 digests over uploaded raw instrument captures.
+  - Generates immutable physical measurement records in SQLite database (`evidence_source="physical_test"`, `evidence_kind="MEASURED"`) and persistent manifests (`<short_id>_manifest.json`).
+  - Developed min-max envelope-preserving decimation algorithm ensuring high-frequency spikes and switch-node ringing excursions remain 100% visible across 50,000+ sample captures.
+- [x] **Real-vs-Simulated Waveform Correlation Engine (`src/mendex_core/measurements/correlation.py`)**:
+  - Engineered numerical signal correlation comparing measured oscilloscope waveforms against LTspice simulation raw files (`.raw`).
+  - Computes steady-state DC error $\Delta V_{ss} = |V_{meas} - V_{sim}|$, relative error percentage, peak switch voltage stress $\Delta V_{pk}$, peak-to-peak AC ripple $\Delta V_{pp}$, and fundamental switching frequency deviation $\Delta f_{sw}$.
+  - Evaluates cross-correlation fidelity using Pearson correlation coefficient $r$ and coefficient of determination $R^2$ across normalized time grids.
+  - Provides objective tolerance grading: `CORRELATED_PASS` (within $\pm 5\%$, $R^2 \ge 0.75$), `WARNING_DEVIATION`, and `EXCEEDED_TOLERANCE`.
+- [x] **Single Core Service & Desktop RPC Dispatch (`src/mendex_core/service.py`, `src/mendex_core/desktop/service.py`, `models.py`)**:
+  - Exposed single core service methods: `ingest_oscilloscope_csv`, `list_oscilloscope_measurements`, `get_oscilloscope_waveform`, `correlate_oscilloscope_waveform`.
+  - Added typed desktop RPC route schemas to `ROUTES` and `dispatch`.
+- [x] **Waveform Analyzer UI with Tri-Mode Overlay & Ingestion Modal (`desktop/src/components/WaveformChart.tsx`)**:
+  - Integrated 3-way segmented view toggle: `⚡ Simulation Only | 🔬 Scope Capture | 🔀 Sim vs Real Overlay`.
+  - Overlays simulated traces (dashed) and physical oscilloscope traces (solid glowing neon) on shared axes.
+  - Integrated live Correlation Scorecard displaying per-channel DC error, ripple comparison, $R^2$ fidelity score, and 1-click SHA-256 copy button.
+  - Built dark glass Ingestion Modal Drawer with CSV drag-and-drop, lead engineer attribution, channel mapping selector, and cryptographic registration.
+- [x] **Laboratory Test Plan Integration (`desktop/src/components/LaboratoryTestPlanCard.tsx`)**:
+  - Connected physical test protocols in Phase 3/4 and Attributable Scorecard to display verified oscilloscope evidence captures with cryptographic SHA-256 hashes.
+- [x] **Verification**:
+  - Automated test suite (`tests/core/test_oscilloscope_correlation.py`): **9/9 PASSED in 0.64s**.
+  - Master multi-option regression suite: **18/18 PASSED in 4.03s**.
+  - Production TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 2.05s.

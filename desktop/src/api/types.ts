@@ -255,3 +255,99 @@ export interface ReleasePackageData {
   governance_notice: string;
 }
 
+
+// ============================================================================
+// OSCILLOSCOPE CSV INGESTION & REAL-VS-SIMULATED CORRELATION (OPTION 2)
+// ============================================================================
+
+export interface ScopeChannelMetrics {
+  mean: number;
+  rms: number;
+  min: number;
+  max: number;
+  pk_pk: number;
+  est_freq_hz: number;
+  rise_time_s: number;
+}
+
+export interface ScopeMeasurementSummary {
+  measurement_id: string;
+  revision_id: string;
+  original_filename: string;
+  saved_filename?: string;
+  relative_path: string;
+  sha256: string;
+  vendor: string;
+  operator: string;
+  test_name: string;
+  procedure_reference: string;
+  instrument_name: string;
+  instrument_serial: string;
+  calibration_reference: string;
+  notes: string;
+  timestamp: string;
+  sample_rate_hz: number;
+  duration_s: number;
+  total_points: number;
+  channels: string[];
+  channel_metrics: Record<string, ScopeChannelMetrics>;
+  channel_mapping?: Record<string, string>;
+}
+
+export interface ScopeWaveformData {
+  measurement_id: string;
+  filename: string;
+  sha256: string;
+  vendor: string;
+  samples: Array<{ time: number; [key: string]: number }>;
+  traces: string[];
+  total_points: number;
+  returned_points: number;
+  sample_rate_hz: number;
+  duration_s: number;
+  channel_metrics: Record<string, ScopeChannelMetrics>;
+  operator: string;
+  timestamp: string;
+  error?: string;
+}
+
+export interface ChannelCorrelation {
+  channel: string;
+  scope_channel: string;
+  sim_trace: string;
+  status: 'CORRELATED_PASS' | 'WARNING_DEVIATION' | 'EXCEEDED_TOLERANCE' | 'UNAVAILABLE';
+  status_description: string;
+  dc_simulated: number;
+  dc_measured: number;
+  dc_delta_abs: number;
+  dc_error_percent: number;
+  ripple_simulated_pk_pk: number;
+  ripple_measured_pk_pk: number;
+  ripple_delta_abs: number;
+  peak_simulated: number;
+  peak_measured: number;
+  peak_delta_abs: number;
+  frequency_simulated_hz: number | null;
+  frequency_measured_hz: number | null;
+  frequency_delta_hz: number | null;
+  pearson_r: number;
+  r_squared: number;
+}
+
+export interface ScopeCorrelationReport {
+  status: 'CORRELATED_PASS' | 'WARNING_DEVIATION' | 'EXCEEDED_TOLERANCE' | 'NOT_EVALUATED' | 'UNAVAILABLE';
+  measurement_id: string;
+  original_filename: string;
+  sim_relative_path: string;
+  operator: string;
+  channel_mapping: Record<string, string>;
+  channels_evaluated: number;
+  average_r_squared: number;
+  average_dc_error_percent: number;
+  channel_correlations: ChannelCorrelation[];
+  measurement_sha256: string;
+  vendor: string;
+  total_measured_points: number;
+  sampling_rate_hz: number;
+  reason?: string;
+}

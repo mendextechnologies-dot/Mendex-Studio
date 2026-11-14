@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { api } from '../api/client';
+import type {
+  ScopeMeasurementSummary,
+  ScopeWaveformData,
+  ScopeCorrelationReport,
+} from '../api/types';
 import {
   Activity,
   Play,
@@ -15,6 +20,16 @@ import {
   AlertTriangle,
   MoveHorizontal,
   Zap,
+  Upload,
+  FileText,
+  Copy,
+  Check,
+  ChevronDown,
+  Layers,
+  Cpu,
+  ShieldCheck,
+  Radio,
+  X,
 } from 'lucide-react';
 
 interface WaveformPoint {
@@ -48,6 +63,13 @@ const TRACE_COLORS = [
   '#f97316', // Orange
 ];
 
+const SCOPE_TRACE_COLORS = [
+  '#22c55e', // Neon Green
+  '#f43f5e', // Rose
+  '#a855f7', // Vivid Purple
+  '#eab308', // Vivid Yellow
+];
+
 export const WaveformChart: React.FC<WaveformChartProps> = ({
   revisionId,
   relativePath,
@@ -55,6 +77,10 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
   onOpenNative,
   targetRippleMaxMv,
 }) => {
+  // --- View Mode ---
+  const [viewMode, setViewMode] = useState<'sim' | 'scope' | 'overlay'>('sim');
+
+  // --- Simulation Waveform State ---
   const [data, setData] = useState<WaveformResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,13 +88,34 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  // Dual-Cursor Measurement Calipers Mode
+  // --- Oscilloscope Physical Measurements State ---
+  const [scopeList, setScopeList] = useState<ScopeMeasurementSummary[]>([]);
+  const [selectedScopeId, setSelectedScopeId] = useState<string | null>(null);
+  const [scopeData, setScopeData] = useState<ScopeWaveformData | null>(null);
+  const [activeScopeTraces, setActiveScopeTraces] = useState<Record<string, boolean>>({});
+  const [correlationReport, setCorrelationReport] = useState<ScopeCorrelationReport | null>(null);
+  const [correlating, setCorrelating] = useState<boolean>(false);
+
+  // --- Ingestion Modal State ---
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadText, setUploadText] = useState<string>('');
+  const [uploadOperator, setUploadOperator] = useState<string>('Lead Hardware Engineer');
+  const [uploadNotes, setUploadNotes] = useState<string>('Bench oscilloscope verification capture');
+  const [channelMapCh1, setChannelMapCh1] = useState<string>('V(vout)');
+  const [channelMapCh2, setChannelMapCh2] = useState<string>('V(pri_drain)');
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [copiedSha, setCopiedSha] = useState<boolean>(false);
+
+  // --- Dual-Cursor Measurement Calipers ---
   const [cursorMode, setCursorMode] = useState<boolean>(true);
   const [activeCursor, setActiveCursor] = useState<'A' | 'B'>('A');
   const [cursorAIndex, setCursorAIndex] = useState<number | null>(null);
   const [cursorBIndex, setCursorBIndex] = useState<number | null>(null);
   const [isDraggingCursor, setIsDraggingCursor] = useState<'A' | 'B' | null>(null);
 
+  // --- Load Simulation Data ---
   const loadWaveform = () => {
     setLoading(true);
     setError(null);
@@ -84,7 +131,6 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
           });
           setActiveTraces(initialActive);
 
-          // Auto-initialize Cursors A and B around steady-state
           const smp = res.samples || [];
           if (smp.length > 10) {
             const idxA = Math.floor(smp.length * 0.75);
@@ -100,31 +146,160 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
       .finally(() => setLoading(false));
   };
 
+  // --- Load Scope Measurements List ---
+  const loadScopeList = async () => {
+    try {
+      const list = await api.listScopeMeasurements(revisionId);
+      setScopeList(list || []);
+      if (list && list.length > 0 && !selectedScopeId) {
+        setSelectedScopeId(list[0].measurement_id);
+      }
+    } catch (err) {
+      console.warn('Could not load scope measurements:', err);
+    }
+  };
+
+  // --- Load Specific Scope Waveform ---
+  const loadScopeWaveform = async (measId: string) => {
+    try {
+      const res = await api.getScopeWaveform({
+        revisionId,
+        measurementId: measId,
+        limit: 2000,
+        decimate: true,
+      });
+      if (res && res.samples) {
+        setScopeData(res);
+        const active: Record<string, boolean> = {};
+        (res.traces || []).forEach((tr) => {
+          active[tr] = true;
+        });
+        setActiveScopeTraces(active);
+      }
+    } catch (err) {
+      console.warn('Failed to load scope waveform:', err);
+    }
+  };
+
+  // --- Run Real-vs-Simulated Correlation ---
+  const runCorrelation = async (measId: string) => {
+    setCorrelating(true);
+    try {
+      const mapping: Record<string, string> = {
+        CH1: channelMapCh1 || 'V(vout)',
+        CH2: channelMapCh2 || 'V(pri_drain)',
+      };
+      const report = await api.correlateScopeWaveform({
+        revisionId,
+        measurementId: measId,
+        simRelativePath: relativePath,
+        channelMapping: mapping,
+        targetTolerancePct: 5.0,
+      });
+      setCorrelationReport(report);
+    } catch (err) {
+      console.warn('Correlation failed:', err);
+    } finally {
+      setCorrelating(false);
+    }
+  };
+
   useEffect(() => {
     loadWaveform();
+    loadScopeList();
   }, [revisionId, relativePath]);
 
-  const samples = data?.samples || [];
-  const traces = data?.traces || [];
+  useEffect(() => {
+    if (selectedScopeId) {
+      loadScopeWaveform(selectedScopeId);
+      if (viewMode === 'overlay') {
+        runCorrelation(selectedScopeId);
+      }
+    }
+  }, [selectedScopeId, viewMode]);
 
-  // Compute stats and bounds
+  // Handle File Upload Change
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadFile(file);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setUploadText((event.target?.result as string) || '');
+    };
+    reader.readAsText(file);
+  };
+
+  // Submit Scope CSV Ingestion
+  const handleIngestSubmit = async () => {
+    if (!uploadText || !uploadFile) {
+      setUploadError('Please select a valid oscilloscope CSV file.');
+      return;
+    }
+    setIsUploading(true);
+    setUploadError(null);
+    try {
+      const res = await api.ingestScopeCsv({
+        revisionId,
+        filename: uploadFile.name,
+        content: uploadText,
+        channelMapping: {
+          CH1: channelMapCh1,
+          CH2: channelMapCh2,
+        },
+        operator: uploadOperator,
+        notes: uploadNotes,
+      });
+      if (res.success) {
+        setIsModalOpen(false);
+        setUploadFile(null);
+        setUploadText('');
+        await loadScopeList();
+        setSelectedScopeId(res.measurement_id);
+        setViewMode('overlay');
+      } else {
+        setUploadError('Ingestion failed. Ensure the CSV contains valid numerical waveform columns.');
+      }
+    } catch (err: any) {
+      setUploadError(err.message || String(err));
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleCopySha = (sha: string) => {
+    navigator.clipboard.writeText(sha);
+    setCopiedSha(true);
+    setTimeout(() => setCopiedSha(false), 2500);
+  };
+
+  // --- Active Samples and Bounds ---
+  const simSamples = data?.samples || [];
+  const simTraces = data?.traces || [];
+  const scopeSamples = scopeData?.samples || [];
+  const scopeTraces = scopeData?.traces || [];
+
+  const activeSampleSet = viewMode === 'scope' ? scopeSamples : simSamples;
+
   const { minT, maxT, traceBounds, stats } = useMemo(() => {
-    if (!samples.length) {
+    if (!activeSampleSet.length) {
       return { minT: 0, maxT: 1, traceBounds: {}, stats: {} };
     }
-    const minT = samples[0].time;
-    const maxT = samples[samples.length - 1].time;
+    const minT = activeSampleSet[0].time;
+    const maxT = activeSampleSet[activeSampleSet.length - 1].time;
 
     const bounds: Record<string, { min: number; max: number }> = {};
     const st: Record<string, { min: number; max: number; mean: number; p2p: number }> = {};
 
-    traces.forEach((t) => {
+    const targetTraces = viewMode === 'scope' ? scopeTraces : simTraces;
+
+    targetTraces.forEach((t) => {
       let min = Infinity;
       let max = -Infinity;
       let sum = 0;
       let count = 0;
-      for (let i = 0; i < samples.length; i++) {
-        const val = samples[i][t];
+      for (let i = 0; i < activeSampleSet.length; i++) {
+        const val = activeSampleSet[i][t];
         if (val !== undefined && !isNaN(val)) {
           if (val < min) min = val;
           if (val > max) max = val;
@@ -140,147 +315,174 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
     });
 
     return { minT, maxT, traceBounds: bounds, stats: st };
-  }, [samples, traces]);
+  }, [activeSampleSet, simTraces, scopeTraces, viewMode]);
 
   const toggleTrace = (t: string) => {
     setActiveTraces((prev) => ({ ...prev, [t]: !prev[t] }));
   };
 
+  const toggleScopeTrace = (t: string) => {
+    setActiveScopeTraces((prev) => ({ ...prev, [t]: !prev[t] }));
+  };
+
   // Dimensions for SVG
   const width = 860;
-  const height = 340;
+  const height = 360;
   const padLeft = 70;
   const padRight = 30;
-  const padTop = 24;
-  const padBottom = 35;
+  const padTop = 30;
+  const padBottom = 45;
   const chartW = width - padLeft - padRight;
   const chartH = height - padTop - padBottom;
 
-  // Selected traces
-  const visibleTraces = traces.filter((t) => activeTraces[t]);
+  const visibleTraces = useMemo(() => {
+    return simTraces.filter((t) => activeTraces[t]);
+  }, [simTraces, activeTraces]);
 
-  // Overall min/max across active traces
-  const { yMin, yMax } = useMemo(() => {
-    let yMin = Infinity;
-    let yMax = -Infinity;
-    visibleTraces.forEach((t) => {
-      const b = traceBounds[t];
-      if (b) {
-        if (b.min < yMin) yMin = b.min;
-        if (b.max > yMax) yMax = b.max;
-      }
-    });
-    if (yMin === Infinity || yMax === -Infinity) {
-      return { yMin: 0, yMax: 1 };
-    }
-    if (Math.abs(yMax - yMin) < 1e-9) {
-      yMin -= 1;
-      yMax += 1;
-    } else {
-      const margin = (yMax - yMin) * 0.08;
-      yMin -= margin;
-      yMax += margin;
-    }
-    return { yMin, yMax };
-  }, [visibleTraces, traceBounds]);
+  const visibleScopeTraces = useMemo(() => {
+    return scopeTraces.filter((t) => activeScopeTraces[t]);
+  }, [scopeTraces, activeScopeTraces]);
 
+  // Overall Y-Bounds across visible traces
+  const { globalMinY, globalMaxY } = useMemo(() => {
+    let min = Infinity;
+    let max = -Infinity;
+
+    if (viewMode === 'sim' || viewMode === 'overlay') {
+      visibleTraces.forEach((t) => {
+        const b = traceBounds[t];
+        if (b) {
+          if (b.min < min) min = b.min;
+          if (b.max > max) max = b.max;
+        }
+      });
+    }
+
+    if (viewMode === 'scope' || viewMode === 'overlay') {
+      visibleScopeTraces.forEach((t) => {
+        const smp = scopeSamples;
+        for (let i = 0; i < smp.length; i++) {
+          const v = smp[i][t];
+          if (v !== undefined && !isNaN(v)) {
+            if (v < min) min = v;
+            if (v > max) max = v;
+          }
+        }
+      });
+    }
+
+    if (min === Infinity || max === -Infinity) {
+      return { globalMinY: 0, globalMaxY: 10 };
+    }
+    const span = max - min || 1;
+    return {
+      globalMinY: min - span * 0.08,
+      globalMaxY: max + span * 0.08,
+    };
+  }, [visibleTraces, visibleScopeTraces, traceBounds, scopeSamples, viewMode]);
+
+  // Scaling helpers
   const scaleX = (t: number) => {
     if (maxT === minT) return padLeft;
     return padLeft + ((t - minT) / (maxT - minT)) * chartW;
   };
 
   const scaleY = (v: number) => {
-    if (yMax === yMin) return padTop + chartH / 2;
-    return padTop + chartH - ((v - yMin) / (yMax - yMin)) * chartH;
+    if (globalMaxY === globalMinY) return padTop + chartH / 2;
+    return padTop + chartH - ((v - globalMinY) / (globalMaxY - globalMinY)) * chartH;
   };
 
-  const formatTime = (seconds: number) => {
-    if (Math.abs(seconds) < 1e-6) return `${(seconds * 1e9).toFixed(1)} ns`;
-    if (Math.abs(seconds) < 1e-3) return `${(seconds * 1e6).toFixed(1)} µs`;
-    if (Math.abs(seconds) < 1) return `${(seconds * 1e3).toFixed(2)} ms`;
-    return `${seconds.toFixed(4)} s`;
+  const invScaleX = (x: number) => {
+    const clampedX = Math.max(padLeft, Math.min(x, padLeft + chartW));
+    return minT + ((clampedX - padLeft) / chartW) * (maxT - minT);
   };
 
-  const formatFrequency = (hz: number) => {
-    if (hz >= 1e6) return `${(hz / 1e6).toFixed(2)} MHz`;
+  const findClosestIndex = (timeVal: number, smp: WaveformPoint[]) => {
+    if (!smp.length) return 0;
+    let low = 0;
+    let high = smp.length - 1;
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      if (smp[mid].time < timeVal) low = mid + 1;
+      else high = mid - 1;
+    }
+    const idx1 = Math.max(0, Math.min(low, smp.length - 1));
+    const idx2 = Math.max(0, Math.min(high, smp.length - 1));
+    return Math.abs(smp[idx1].time - timeVal) < Math.abs(smp[idx2].time - timeVal) ? idx1 : idx2;
+  };
+
+  // Format Helpers
+  const formatTime = (t: number) => {
+    const absT = Math.abs(t);
+    if (absT === 0) return '0 s';
+    if (absT >= 1) return `${t.toFixed(3)} s`;
+    if (absT >= 1e-3) return `${(t * 1e3).toFixed(2)} ms`;
+    if (absT >= 1e-6) return `${(t * 1e6).toFixed(2)} µs`;
+    return `${(t * 1e9).toFixed(1)} ns`;
+  };
+
+  const formatFreq = (hz: number) => {
+    if (hz >= 1e6) return `${(hz / 1e6).toFixed(3)} MHz`;
     if (hz >= 1e3) return `${(hz / 1e3).toFixed(2)} kHz`;
     return `${hz.toFixed(1)} Hz`;
   };
 
-  const formatValue = (v: number, traceName: string) => {
+  const formatValue = (v: number, traceName = '') => {
     const isCurrent = traceName.startsWith('I(');
     const unit = isCurrent ? 'A' : 'V';
-    if (Math.abs(v) < 1e-3) return `${(v * 1e3).toFixed(2)} m${unit}`;
-    return `${v.toFixed(3)} ${unit}`;
+    const absV = Math.abs(v);
+    if (absV === 0) return `0 ${unit}`;
+    if (absV >= 1000) return `${(v / 1e3).toFixed(2)} k${unit}`;
+    if (absV >= 1) return `${v.toFixed(3)} ${unit}`;
+    if (absV >= 1e-3) return `${(v * 1e3).toFixed(2)} m${unit}`;
+    return `${(v * 1e6).toFixed(1)} µ${unit}`;
   };
 
-  // Build SVG paths for each trace
-  const tracePaths = useMemo(() => {
-    const paths: Record<string, string> = {};
-    visibleTraces.forEach((t) => {
-      let d = '';
-      for (let i = 0; i < samples.length; i++) {
-        const pt = samples[i];
-        const val = pt[t];
-        if (val !== undefined && !isNaN(val)) {
-          const x = scaleX(pt.time);
-          const y = scaleY(val);
-          d += i === 0 ? `M ${x.toFixed(2)} ${y.toFixed(2)}` : ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
-        }
-      }
-      paths[t] = d;
-    });
-    return paths;
-  }, [visibleTraces, samples, yMin, yMax, minT, maxT]);
+  // SVG Export
+  const handleExportSvg = () => {
+    if (!svgRef.current) return;
+    const svgEl = svgRef.current;
+    const serializer = new XMLSerializer();
+    const source = serializer.serializeToString(svgEl);
+    const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `waveform_${viewMode}_${new Date().toISOString().slice(0, 10)}.svg`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
-  // Cursor Sample points
-  const sampleA = cursorAIndex !== null && samples[cursorAIndex] ? samples[cursorAIndex] : null;
-  const sampleB = cursorBIndex !== null && samples[cursorBIndex] ? samples[cursorBIndex] : null;
+  // Calipers
+  const sampleA = cursorAIndex !== null && activeSampleSet[cursorAIndex] ? activeSampleSet[cursorAIndex] : null;
+  const sampleB = cursorBIndex !== null && activeSampleSet[cursorBIndex] ? activeSampleSet[cursorBIndex] : null;
 
-  // Measurement Calipers Math
   const caliperMetrics = useMemo(() => {
     if (!sampleA || !sampleB) return null;
     const dt = Math.abs(sampleB.time - sampleA.time);
-    const freq = dt > 1e-12 ? 1 / dt : 0;
+    const freq = dt > 0 ? 1 / dt : 0;
+    const deltas: Record<string, { va: number; vb: number; dv: number }> = {};
 
-    // Delta across visible traces
-    const traceDeltas: Record<string, { valA: number; valB: number; dv: number; slewRate: number }> = {};
-    visibleTraces.forEach((t) => {
-      const vA = sampleA[t] ?? 0;
-      const vB = sampleB[t] ?? 0;
-      const dv = vB - vA;
-      const slewRate = dt > 1e-12 ? Math.abs(dv / dt) : 0; // V/s
-      traceDeltas[t] = { valA: vA, valB: vB, dv, slewRate };
+    const targetTraces = viewMode === 'scope' ? visibleScopeTraces : visibleTraces;
+    targetTraces.forEach((t) => {
+      const va = sampleA[t] ?? 0;
+      const vb = sampleB[t] ?? 0;
+      deltas[t] = { va, vb, dv: vb - va };
     });
 
-    return { dt, freq, traceDeltas };
-  }, [sampleA, sampleB, visibleTraces]);
+    return { dt, freq, deltas };
+  }, [sampleA, sampleB, visibleTraces, visibleScopeTraces, viewMode]);
 
-  // Handle Mouse Events for Cursors
-  const getIndexFromX = (clientX: number) => {
-    if (!svgRef.current || !samples.length) return 0;
+  // Handle Chart Interaction
+  const handleSvgPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!cursorMode || !svgRef.current) return;
     const rect = svgRef.current.getBoundingClientRect();
-    const mouseX = clientX - rect.left;
-    const relX = (mouseX / rect.width) * width;
-    const clampedX = Math.max(padLeft, Math.min(width - padRight, relX));
-    const ratio = (clampedX - padLeft) / chartW;
-    const targetTime = minT + ratio * (maxT - minT);
+    const mouseX = e.clientX - rect.left;
+    const timeVal = invScaleX(mouseX);
+    const idx = findClosestIndex(timeVal, activeSampleSet);
 
-    let bestIdx = 0;
-    let minDiff = Infinity;
-    for (let i = 0; i < samples.length; i++) {
-      const diff = Math.abs(samples[i].time - targetTime);
-      if (diff < minDiff) {
-        minDiff = diff;
-        bestIdx = i;
-      }
-    }
-    return bestIdx;
-  };
-
-  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (!cursorMode) return;
-    const idx = getIndexFromX(e.clientX);
     if (activeCursor === 'A') {
       setCursorAIndex(idx);
       setIsDraggingCursor('A');
@@ -290,69 +492,188 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (isDraggingCursor === 'A') {
-      setCursorAIndex(getIndexFromX(e.clientX));
-      return;
-    }
-    if (isDraggingCursor === 'B') {
-      setCursorBIndex(getIndexFromX(e.clientX));
-      return;
-    }
+  const handleSvgPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!svgRef.current) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const timeVal = invScaleX(mouseX);
+    const idx = findClosestIndex(timeVal, activeSampleSet);
 
-    // Normal Hover
-    const idx = getIndexFromX(e.clientX);
-    setHoverIndex(idx);
+    if (isDraggingCursor) {
+      if (isDraggingCursor === 'A') setCursorAIndex(idx);
+      if (isDraggingCursor === 'B') setCursorBIndex(idx);
+    } else {
+      setHoverIndex(idx);
+    }
   };
 
-  const handleMouseUp = () => {
+  const handleSvgPointerUp = () => {
     setIsDraggingCursor(null);
   };
 
-  // Export SVG Capture
-  const handleExportSvg = () => {
-    if (!svgRef.current) return;
-    const svgStr = new XMLSerializer().serializeToString(svgRef.current);
-    const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `waveform_${relativePath.replace(/[\/\\]/g, '_')}_capture.svg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const hoverSample = hoverIndex !== null && samples[hoverIndex] ? samples[hoverIndex] : null;
+  const hoverSample = hoverIndex !== null && activeSampleSet[hoverIndex] ? activeSampleSet[hoverIndex] : null;
 
   return (
-    <div style={{ background: '#0b1120', borderRadius: 10, padding: 20, color: '#f8fafc', border: '1px solid #1e293b' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Activity size={18} color="#38bdf8" />
-            <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#f8fafc' }}>{title}</h4>
-            {data?.total_points && (
-              <span style={{ fontSize: 11, background: '#1e293b', color: '#94a3b8', padding: '2px 8px', borderRadius: 4 }}>
-                {data.total_points.toLocaleString()} solver steps
-              </span>
-            )}
+    <div
+      style={{
+        background: '#0b1120',
+        borderRadius: 8,
+        border: '1px solid #1e293b',
+        padding: 16,
+        color: '#f8fafc',
+        boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
+      }}
+    >
+      {/* 1. Header Bar with Segmented View Control */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12,
+          borderBottom: '1px solid #1e293b',
+          paddingBottom: 14,
+          marginBottom: 14,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 6,
+              background: 'rgba(6, 182, 212, 0.15)',
+              border: '1px solid #06b6d4',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#06b6d4',
+            }}
+          >
+            <Activity size={18} />
           </div>
-          <span style={{ fontSize: 11, color: '#64748b', display: 'block', marginTop: 4 }}>
-            File: <code>{relativePath}</code> • Downsampled to {samples.length} display vectors
-          </span>
+          <div>
+            <h4 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#f8fafc' }}>{title}</h4>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
+              <span style={{ fontSize: 11, color: '#64748b', fontFamily: 'monospace' }}>{relativePath}</span>
+              <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 4, background: '#1e293b', color: '#94a3b8' }}>
+                {viewMode === 'overlay' ? 'Sim vs Measured Overlay' : viewMode === 'scope' ? 'Lab Oscilloscope' : 'LTspice Transient'}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-          {/* Cursor Toggle Button */}
+        {/* View Mode Segmented Controls */}
+        <div style={{ display: 'flex', background: '#070b14', padding: 3, borderRadius: 6, border: '1px solid #1e293b' }}>
+          <button
+            onClick={() => setViewMode('sim')}
+            style={{
+              background: viewMode === 'sim' ? '#1e293b' : 'transparent',
+              color: viewMode === 'sim' ? '#38bdf8' : '#64748b',
+              fontWeight: 700,
+              fontSize: 11.5,
+              padding: '5px 12px',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+            }}
+          >
+            <Zap size={13} /> Simulation
+          </button>
+          <button
+            onClick={() => setViewMode('scope')}
+            style={{
+              background: viewMode === 'scope' ? '#1e293b' : 'transparent',
+              color: viewMode === 'scope' ? '#22c55e' : '#64748b',
+              fontWeight: 700,
+              fontSize: 11.5,
+              padding: '5px 12px',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+            }}
+          >
+            <Radio size={13} /> Scope Capture
+          </button>
+          <button
+            onClick={() => setViewMode('overlay')}
+            style={{
+              background: viewMode === 'overlay' ? '#1e293b' : 'transparent',
+              color: viewMode === 'overlay' ? '#ec4899' : '#64748b',
+              fontWeight: 700,
+              fontSize: 11.5,
+              padding: '5px 12px',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+            }}
+          >
+            <Layers size={13} /> Overlay (Sim vs Real)
+          </button>
+        </div>
+
+        {/* Scope Actions & Upload Button */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {/* Scope Selector dropdown if captures exist */}
+          {scopeList.length > 0 && (
+            <select
+              value={selectedScopeId || ''}
+              onChange={(e) => setSelectedScopeId(e.target.value)}
+              style={{
+                background: '#0f172a',
+                border: '1px solid #334155',
+                color: '#e2e8f0',
+                fontSize: 11.5,
+                padding: '5px 8px',
+                borderRadius: 6,
+                cursor: 'pointer',
+              }}
+            >
+              {scopeList.map((sc) => (
+                <option key={sc.measurement_id} value={sc.measurement_id}>
+                  {sc.original_filename} ({sc.vendor})
+                </option>
+              ))}
+            </select>
+          )}
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            style={{
+              background: 'linear-gradient(180deg, #16a34a 0%, #15803d 100%)',
+              border: 'none',
+              color: '#fff',
+              padding: '6px 12px',
+              borderRadius: 6,
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+            }}
+          >
+            <Upload size={13} /> Ingest Scope CSV
+          </button>
+
           <button
             onClick={() => setCursorMode(!cursorMode)}
             style={{
-              background: cursorMode ? 'rgba(59, 130, 246, 0.2)' : '#1e293b',
-              border: `1px solid ${cursorMode ? '#3b82f6' : '#334155'}`,
-              color: cursorMode ? '#60a5fa' : '#94a3b8',
-              padding: '6px 12px',
+              background: cursorMode ? 'rgba(6, 182, 212, 0.2)' : '#1e293b',
+              border: `1px solid ${cursorMode ? '#06b6d4' : '#334155'}`,
+              color: cursorMode ? '#06b6d4' : '#94a3b8',
+              padding: '6px 10px',
               borderRadius: 6,
               fontSize: 12,
               fontWeight: 600,
@@ -361,9 +682,9 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
               alignItems: 'center',
               gap: 6,
             }}
+            title="Toggle Dual-Cursor Calipers"
           >
-            <Ruler size={13} />
-            Dual Calipers {cursorMode ? '(ON)' : '(OFF)'}
+            <Ruler size={13} /> Calipers
           </button>
 
           <button
@@ -371,8 +692,8 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
             style={{
               background: '#1e293b',
               border: '1px solid #334155',
-              color: '#e2e8f0',
-              padding: '6px 12px',
+              color: '#cbd5e1',
+              padding: '6px 10px',
               borderRadius: 6,
               fontSize: 12,
               cursor: 'pointer',
@@ -382,7 +703,7 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
             }}
             title="Export high-resolution SVG capture"
           >
-            <Download size={13} /> SVG Capture
+            <Download size={13} /> SVG
           </button>
 
           <button
@@ -392,7 +713,7 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
               background: '#1e293b',
               border: '1px solid #334155',
               color: '#e2e8f0',
-              padding: '6px 12px',
+              padding: '6px 10px',
               borderRadius: 6,
               fontSize: 12,
               cursor: 'pointer',
@@ -402,84 +723,93 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
             }}
           >
             <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
-            Refresh
           </button>
-
-          {onOpenNative && (
-            <button
-              onClick={onOpenNative}
-              style={{
-                background: '#0284c7',
-                border: 'none',
-                color: '#fff',
-                padding: '6px 12px',
-                borderRadius: 6,
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-              }}
-            >
-              <ExternalLink size={13} />
-              Open in LTspice GUI
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Trace Toggles Bar */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
-        {traces.map((traceName, idx) => {
-          const color = TRACE_COLORS[idx % TRACE_COLORS.length];
-          const active = activeTraces[traceName];
-          return (
-            <button
-              key={traceName}
-              onClick={() => toggleTrace(traceName)}
-              style={{
-                background: active ? `${color}22` : '#1e293b',
-                border: `1px solid ${active ? color : '#334155'}`,
-                color: active ? color : '#64748b',
-                padding: '4px 10px',
-                borderRadius: 20,
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                transition: 'all 0.15s ease',
-              }}
-            >
-              {active ? <Eye size={13} /> : <EyeOff size={13} />}
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
-              {traceName}
-            </button>
-          );
-        })}
+      {/* 2. Trace Toggles Bar */}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12, alignItems: 'center' }}>
+        {/* Simulation Traces */}
+        {(viewMode === 'sim' || viewMode === 'overlay') &&
+          simTraces.map((traceName, idx) => {
+            const color = TRACE_COLORS[idx % TRACE_COLORS.length];
+            const active = activeTraces[traceName];
+            return (
+              <button
+                key={traceName}
+                onClick={() => toggleTrace(traceName)}
+                style={{
+                  background: active ? `${color}22` : '#1e293b',
+                  border: `1px solid ${active ? color : '#334155'}`,
+                  color: active ? color : '#64748b',
+                  padding: '3px 10px',
+                  borderRadius: 20,
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}
+              >
+                {active ? <Eye size={12} /> : <EyeOff size={12} />}
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
+                <span>Sim: {traceName}</span>
+              </button>
+            );
+          })}
+
+        {/* Physical Scope Traces */}
+        {(viewMode === 'scope' || viewMode === 'overlay') &&
+          scopeTraces.map((traceName, idx) => {
+            const color = SCOPE_TRACE_COLORS[idx % SCOPE_TRACE_COLORS.length];
+            const active = activeScopeTraces[traceName];
+            return (
+              <button
+                key={traceName}
+                onClick={() => toggleScopeTrace(traceName)}
+                style={{
+                  background: active ? `${color}25` : '#1e293b',
+                  border: `1px solid ${active ? color : '#334155'}`,
+                  color: active ? color : '#64748b',
+                  padding: '3px 10px',
+                  borderRadius: 20,
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}
+              >
+                {active ? <Eye size={12} /> : <EyeOff size={12} />}
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: color }} />
+                <span>Real: {traceName}</span>
+              </button>
+            );
+          })}
       </div>
 
-      {/* Dual Caliper Controls & Live HUD */}
+      {/* 3. Dual Caliper Controls & Live HUD */}
       {cursorMode && caliperMetrics && sampleA && sampleB && (
         <div
           style={{
             background: 'rgba(15, 23, 42, 0.85)',
             border: '1px solid rgba(59, 130, 246, 0.3)',
             borderRadius: 8,
-            padding: '12px 16px',
-            marginBottom: 14,
+            padding: '10px 14px',
+            marginBottom: 12,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: 14,
+            gap: 12,
           }}
         >
-          {/* Caliper Selector Radio */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Active Caliper:</span>
+            <span style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              Active Caliper:
+            </span>
             <div style={{ display: 'flex', borderRadius: 4, overflow: 'hidden', border: '1px solid #334155' }}>
               <button
                 onClick={() => setActiveCursor('A')}
@@ -488,7 +818,7 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
                   color: activeCursor === 'A' ? '#0f172a' : '#06b6d4',
                   fontWeight: 700,
                   fontSize: 11,
-                  padding: '4px 12px',
+                  padding: '3px 10px',
                   border: 'none',
                   cursor: 'pointer',
                 }}
@@ -502,7 +832,7 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
                   color: activeCursor === 'B' ? '#0f172a' : '#f59e0b',
                   fontWeight: 700,
                   fontSize: 11,
-                  padding: '4px 12px',
+                  padding: '3px 10px',
                   border: 'none',
                   cursor: 'pointer',
                 }}
@@ -510,117 +840,129 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
                 Cursor B ({formatTime(sampleB.time)})
               </button>
             </div>
-            <span style={{ fontSize: 11, color: '#64748b' }}>(Click or drag on chart)</span>
           </div>
 
-          {/* Mathematical Caliper Readout Ribbon */}
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap', fontFamily: 'monospace' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ color: '#94a3b8', fontSize: 11 }}>ΔT:</span>
-              <strong style={{ color: '#38bdf8', fontSize: 13 }}>{formatTime(caliperMetrics.dt)}</strong>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontFamily: 'monospace', fontSize: 11.5 }}>
+            <div>
+              <span style={{ color: '#64748b' }}>ΔT: </span>
+              <strong style={{ color: '#38bdf8' }}>{formatTime(caliperMetrics.dt)}</strong>
             </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ color: '#94a3b8', fontSize: 11 }}>1/ΔT (f):</span>
-              <strong style={{ color: '#10b981', fontSize: 13 }}>{formatFrequency(caliperMetrics.freq)}</strong>
+            <div>
+              <span style={{ color: '#64748b' }}>Frequency: </span>
+              <strong style={{ color: '#34d399' }}>{formatFreq(caliperMetrics.freq)}</strong>
             </div>
-
-            {visibleTraces.slice(0, 2).map((t) => {
-              const d = caliperMetrics.traceDeltas[t];
-              if (!d) return null;
-              const idx = traces.indexOf(t);
-              const color = TRACE_COLORS[idx % TRACE_COLORS.length];
-              return (
-                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ color: '#94a3b8', fontSize: 11 }}>Δ{t}:</span>
-                  <strong style={{ color, fontSize: 13 }}>{formatValue(d.dv, t)}</strong>
-                </div>
-              );
-            })}
           </div>
         </div>
       )}
 
-      {/* Loading & Error States */}
-      {loading && (
-        <div style={{ height: height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
-          <RefreshCw size={24} style={{ animation: 'spin 1s linear infinite', marginRight: 10 }} />
-          Parsing high-resolution simulation vectors...
+      {/* 4. Main SVG Waveform Canvas */}
+      {loading ? (
+        <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+          <RefreshCw size={24} className="animate-spin" />
+          <span style={{ marginLeft: 8 }}>Loading waveforms...</span>
         </div>
-      )}
-
-      {error && !loading && (
-        <div style={{ padding: 24, background: '#450a0a', border: '1px solid #7f1d1d', borderRadius: 8, color: '#fca5a5', fontSize: 13 }}>
-          <strong>Waveform Ingestion Error:</strong> {error}
+      ) : error ? (
+        <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f43f5e' }}>
+          <AlertTriangle size={24} />
+          <span style={{ marginLeft: 8 }}>{error}</span>
         </div>
-      )}
-
-      {/* SVG Canvas Oscilloscope */}
-      {!loading && !error && samples.length > 0 && (
-        <div style={{ position: 'relative' }}>
+      ) : (
+        <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 6, background: '#070b14' }}>
           <svg
             ref={svgRef}
             viewBox={`0 0 ${width} ${height}`}
-            style={{ width: '100%', height: 'auto', background: '#070b14', borderRadius: 8, border: '1px solid #1e293b', cursor: cursorMode ? 'col-resize' : 'crosshair' }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={() => {
-              setHoverIndex(null);
-              setIsDraggingCursor(null);
-            }}
+            style={{ width: '100%', height: 'auto', display: 'block', cursor: cursorMode ? 'crosshair' : 'default' }}
+            onPointerDown={handleSvgPointerDown}
+            onPointerMove={handleSvgPointerMove}
+            onPointerUp={handleSvgPointerUp}
           >
-            {/* Horizontal Grid lines (5 ticks) */}
-            {[0, 0.25, 0.5, 0.75, 1.0].map((ratio) => {
-              const y = padTop + ratio * chartH;
-              const val = yMax - ratio * (yMax - yMin);
+            {/* Grid Lines */}
+            {[0, 0.25, 0.5, 0.75, 1.0].map((frac) => {
+              const y = padTop + chartH * frac;
+              const val = globalMaxY - frac * (globalMaxY - globalMinY);
               return (
-                <g key={`y-${ratio}`}>
-                  <line x1={padLeft} y1={y} x2={width - padRight} y2={y} stroke="#1e293b" strokeDasharray="3 3" />
-                  <text x={padLeft - 8} y={y + 4} textAnchor="end" fill="#64748b" fontSize="10" fontFamily="monospace">
-                    {val >= 100 ? val.toFixed(0) : val >= 1 ? val.toFixed(1) : val.toFixed(3)}
+                <g key={`y-grid-${frac}`}>
+                  <line x1={padLeft} y1={y} x2={padLeft + chartW} y2={y} stroke="#1e293b" strokeWidth="1" strokeDasharray="3 3" />
+                  <text x={padLeft - 8} y={y + 4} fill="#64748b" fontSize="10" textAnchor="end" fontFamily="monospace">
+                    {formatValue(val)}
                   </text>
                 </g>
               );
             })}
 
-            {/* Vertical Grid lines (5 ticks) */}
-            {[0, 0.25, 0.5, 0.75, 1.0].map((ratio) => {
-              const x = padLeft + ratio * chartW;
-              const t = minT + ratio * (maxT - minT);
+            {[0, 0.25, 0.5, 0.75, 1.0].map((frac) => {
+              const x = padLeft + chartW * frac;
+              const t = minT + frac * (maxT - minT);
               return (
-                <g key={`x-${ratio}`}>
-                  <line x1={x} y1={padTop} x2={x} y2={padTop + chartH} stroke="#1e293b" strokeDasharray="3 3" />
-                  <text x={x} y={padTop + chartH + 18} textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="monospace">
+                <g key={`x-grid-${frac}`}>
+                  <line x1={x} y1={padTop} x2={x} y2={padTop + chartH} stroke="#1e293b" strokeWidth="1" strokeDasharray="3 3" />
+                  <text x={x} y={padTop + chartH + 16} fill="#64748b" fontSize="10" textAnchor="middle" fontFamily="monospace">
                     {formatTime(t)}
                   </text>
                 </g>
               );
             })}
 
-            {/* Axis borders */}
-            <line x1={padLeft} y1={padTop} x2={padLeft} y2={padTop + chartH} stroke="#334155" strokeWidth="1.5" />
-            <line x1={padLeft} y1={padTop + chartH} x2={width - padRight} y2={padTop + chartH} stroke="#334155" strokeWidth="1.5" />
+            {/* Axes Border */}
+            <rect x={padLeft} y={padTop} width={chartW} height={chartH} fill="none" stroke="#334155" strokeWidth="1" />
 
-            {/* Signal Paths */}
-            {visibleTraces.map((traceName) => {
-              const idx = traces.indexOf(traceName);
-              const color = TRACE_COLORS[idx % TRACE_COLORS.length];
-              return (
-                <path
-                  key={traceName}
-                  d={tracePaths[traceName] || ''}
-                  fill="none"
-                  stroke={color}
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  opacity={0.92}
-                />
-              );
-            })}
+            {/* 1. Simulation Waveform Traces (Dashed if in overlay mode) */}
+            {(viewMode === 'sim' || viewMode === 'overlay') &&
+              visibleTraces.map((t) => {
+                const idx = simTraces.indexOf(t);
+                const color = TRACE_COLORS[idx % TRACE_COLORS.length];
+                const smp = simSamples;
+                let pathD = '';
+                for (let i = 0; i < smp.length; i++) {
+                  const val = smp[i][t];
+                  if (val !== undefined && !isNaN(val)) {
+                    const x = scaleX(smp[i].time);
+                    const y = scaleY(val);
+                    pathD += `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)} `;
+                  }
+                }
+                return (
+                  <path
+                    key={`sim-${t}`}
+                    d={pathD}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={viewMode === 'overlay' ? '1.8' : '2'}
+                    strokeDasharray={viewMode === 'overlay' ? '4 2' : 'none'}
+                    opacity={viewMode === 'overlay' ? 0.75 : 1}
+                  />
+                );
+              })}
 
-            {/* Caliper Cursor A */}
+            {/* 2. Physical Oscilloscope Waveform Traces (Solid vivid lines) */}
+            {(viewMode === 'scope' || viewMode === 'overlay') &&
+              visibleScopeTraces.map((t) => {
+                const idx = scopeTraces.indexOf(t);
+                const color = SCOPE_TRACE_COLORS[idx % SCOPE_TRACE_COLORS.length];
+                const smp = scopeSamples;
+                let pathD = '';
+                for (let i = 0; i < smp.length; i++) {
+                  const val = smp[i][t];
+                  if (val !== undefined && !isNaN(val)) {
+                    const x = scaleX(smp[i].time);
+                    const y = scaleY(val);
+                    pathD += `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)} `;
+                  }
+                }
+                return (
+                  <path
+                    key={`scope-${t}`}
+                    d={pathD}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                );
+              })}
+
+            {/* Calipers Vertical Lines */}
             {cursorMode && sampleA && (
               <g>
                 <line
@@ -632,28 +974,13 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
                   strokeWidth="2"
                   strokeDasharray="5 3"
                 />
-                <rect
-                  x={scaleX(sampleA.time) - 14}
-                  y={padTop - 18}
-                  width="28"
-                  height="16"
-                  rx="3"
-                  fill="#06b6d4"
-                />
-                <text
-                  x={scaleX(sampleA.time)}
-                  y={padTop - 6}
-                  textAnchor="middle"
-                  fill="#0f172a"
-                  fontSize="10"
-                  fontWeight="800"
-                >
-                  CA
+                <rect x={scaleX(sampleA.time) - 12} y={padTop - 18} width="24" height="16" rx="3" fill="#06b6d4" />
+                <text x={scaleX(sampleA.time)} y={padTop - 6} fill="#0f172a" fontSize="10" fontWeight="bold" textAnchor="middle">
+                  A
                 </text>
               </g>
             )}
 
-            {/* Caliper Cursor B */}
             {cursorMode && sampleB && (
               <g>
                 <line
@@ -665,133 +992,404 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
                   strokeWidth="2"
                   strokeDasharray="5 3"
                 />
-                <rect
-                  x={scaleX(sampleB.time) - 14}
-                  y={padTop - 18}
-                  width="28"
-                  height="16"
-                  rx="3"
-                  fill="#f59e0b"
-                />
-                <text
-                  x={scaleX(sampleB.time)}
-                  y={padTop - 6}
-                  textAnchor="middle"
-                  fill="#0f172a"
-                  fontSize="10"
-                  fontWeight="800"
-                >
-                  CB
+                <rect x={scaleX(sampleB.time) - 12} y={padTop - 18} width="24" height="16" rx="3" fill="#f59e0b" />
+                <text x={scaleX(sampleB.time)} y={padTop - 6} fill="#0f172a" fontSize="10" fontWeight="bold" textAnchor="middle">
+                  B
                 </text>
               </g>
             )}
 
-            {/* Measurement Tine / Interval Box between A and B */}
-            {cursorMode && sampleA && sampleB && (
-              <g>
-                <rect
-                  x={Math.min(scaleX(sampleA.time), scaleX(sampleB.time))}
-                  y={padTop}
-                  width={Math.abs(scaleX(sampleB.time) - scaleX(sampleA.time))}
-                  height={chartH}
-                  fill="rgba(59, 130, 246, 0.08)"
-                />
-              </g>
-            )}
-
-            {/* Hover Crosshair (when not dragging) */}
-            {hoverSample && !isDraggingCursor && (
-              <g>
-                <line
-                  x1={scaleX(hoverSample.time)}
-                  y1={padTop}
-                  x2={scaleX(hoverSample.time)}
-                  y2={padTop + chartH}
-                  stroke="#f8fafc"
-                  strokeWidth="1"
-                  strokeDasharray="4 2"
-                  opacity={0.4}
-                />
-              </g>
+            {/* Hover Indicator */}
+            {hoverSample && (
+              <line
+                x1={scaleX(hoverSample.time)}
+                y1={padTop}
+                x2={scaleX(hoverSample.time)}
+                y2={padTop + chartH}
+                stroke="#fff"
+                strokeWidth="1"
+                strokeDasharray="2 2"
+                opacity={0.5}
+              />
             )}
           </svg>
         </div>
       )}
 
-      {/* Signal Statistics & Ripple Verification Table */}
-      {!loading && !error && visibleTraces.length > 0 && (
-        <div style={{ marginTop: 18 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-            <h5 style={{ fontSize: 12, fontWeight: 700, color: '#94a3b8', margin: 0 }}>
-              Signal Steady-State Statistics & Numerical Ripple Verification
-            </h5>
-            {targetRippleMaxMv && (
-              <span style={{ fontSize: 11, color: '#93c5fd' }}>
-                Target Max Ripple Limit: <strong>{targetRippleMaxMv} mV</strong>
+      {/* 5. Real-vs-Simulated Correlation Telemetry Card (When Overlay Active) */}
+      {viewMode === 'overlay' && (
+        <div
+          style={{
+            marginTop: 14,
+            padding: 14,
+            background: '#070b14',
+            border: '1px solid #1e293b',
+            borderRadius: 8,
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  background:
+                    correlationReport?.status === 'CORRELATED_PASS'
+                      ? 'rgba(34, 197, 94, 0.2)'
+                      : correlationReport?.status === 'WARNING_DEVIATION'
+                      ? 'rgba(245, 158, 11, 0.2)'
+                      : 'rgba(244, 63, 94, 0.2)',
+                  color:
+                    correlationReport?.status === 'CORRELATED_PASS'
+                      ? '#22c55e'
+                      : correlationReport?.status === 'WARNING_DEVIATION'
+                      ? '#f59e0b'
+                      : '#f43f5e',
+                  border: `1px solid ${
+                    correlationReport?.status === 'CORRELATED_PASS'
+                      ? '#22c55e'
+                      : correlationReport?.status === 'WARNING_DEVIATION'
+                      ? '#f59e0b'
+                      : '#f43f5e'
+                  }`,
+                }}
+              >
+                {correlationReport?.status || 'CORRELATING...'}
               </span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#f8fafc' }}>
+                Physical Instrument Correlation Analysis
+              </span>
+            </div>
+
+            {correlationReport?.measurement_sha256 && (
+              <button
+                onClick={() => handleCopySha(correlationReport.measurement_sha256)}
+                style={{
+                  background: '#0f172a',
+                  border: '1px solid #334155',
+                  color: '#94a3b8',
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  fontSize: 10.5,
+                  fontFamily: 'monospace',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 5,
+                }}
+                title="Copy SHA-256 Digest of raw oscilloscope capture"
+              >
+                {copiedSha ? <Check size={11} color="#22c55e" /> : <Copy size={11} />}
+                <span>SHA-256: {correlationReport.measurement_sha256.slice(0, 16)}...</span>
+              </button>
             )}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 10 }}>
-            {visibleTraces.map((t) => {
-              const sm = data?.metrics?.[t];
-              const st = sm ? { mean: sm.mean, p2p: sm.p2p, min: sm.min, max: sm.max, rms: sm.rms } : stats[t];
-              const idx = traces.indexOf(t);
-              const color = TRACE_COLORS[idx % TRACE_COLORS.length];
-              if (!st) return null;
+          {correlating ? (
+            <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+              <RefreshCw size={16} className="animate-spin" style={{ display: 'inline', marginRight: 6 }} />
+              Correlating physical measurements against LTspice vectors...
+            </div>
+          ) : correlationReport?.channel_correlations?.length ? (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #1e293b', color: '#64748b' }}>
+                    <th style={{ padding: '6px 8px' }}>Channel Mapping</th>
+                    <th style={{ padding: '6px 8px' }}>Simulated DC</th>
+                    <th style={{ padding: '6px 8px' }}>Measured DC</th>
+                    <th style={{ padding: '6px 8px' }}>Δ DC Error</th>
+                    <th style={{ padding: '6px 8px' }}>Ripple Match</th>
+                    <th style={{ padding: '6px 8px' }}>Pearson R²</th>
+                    <th style={{ padding: '6px 8px' }}>Grade</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {correlationReport.channel_correlations.map((ch, idx) => (
+                    <tr key={idx} style={{ borderBottom: '1px solid #0f172a' }}>
+                      <td style={{ padding: '6px 8px', fontWeight: 700, color: '#38bdf8' }}>{ch.channel}</td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace' }}>{ch.dc_simulated.toFixed(3)} V</td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace', color: '#22c55e' }}>
+                        {ch.dc_measured.toFixed(3)} V
+                      </td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace' }}>
+                        {ch.dc_error_percent.toFixed(2)}% ({ch.dc_delta_abs.toFixed(3)} V)
+                      </td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace' }}>
+                        Sim: {ch.ripple_simulated_pk_pk.toFixed(3)}V / Meas: {ch.ripple_measured_pk_pk.toFixed(3)}V
+                      </td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace', fontWeight: 700 }}>
+                        {(ch.r_squared * 100).toFixed(1)}%
+                      </td>
+                      <td style={{ padding: '6px 8px' }}>
+                        <span
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 700,
+                            padding: '2px 6px',
+                            borderRadius: 3,
+                            background:
+                              ch.status === 'CORRELATED_PASS'
+                                ? 'rgba(34, 197, 94, 0.2)'
+                                : ch.status === 'WARNING_DEVIATION'
+                                ? 'rgba(245, 158, 11, 0.2)'
+                                : 'rgba(244, 63, 94, 0.2)',
+                            color:
+                              ch.status === 'CORRELATED_PASS'
+                                ? '#22c55e'
+                                : ch.status === 'WARNING_DEVIATION'
+                                ? '#f59e0b'
+                                : '#f43f5e',
+                          }}
+                        >
+                          {ch.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{ fontSize: 11.5, color: '#64748b' }}>
+              No correlation records computed. Ingest an oscilloscope capture to verify hardware against simulation.
+            </div>
+          )}
+        </div>
+      )}
 
-              // Ripple Percentage relative to mean
-              const ripplePct = st.mean !== 0 ? Math.abs((st.p2p / st.mean) * 100) : 0;
-              const isVout = t.toLowerCase().includes('vout') || t.toLowerCase().includes('hv');
-
-              return (
+      {/* 6. Ingestion Modal Drawer */}
+      {isModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(5, 7, 13, 0.75)',
+            backdropFilter: 'blur(3px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: 20,
+          }}
+        >
+          <div
+            style={{
+              background: '#0b1120',
+              border: '1px solid #334155',
+              borderRadius: 10,
+              width: '100%',
+              maxWidth: 580,
+              padding: 24,
+              boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div
-                  key={t}
                   style={{
-                    background: '#070b14',
-                    border: '1px solid #1e293b',
-                    borderLeft: `3px solid ${color}`,
+                    width: 32,
+                    height: 32,
                     borderRadius: 6,
-                    padding: '10px 14px',
-                    fontSize: 11,
-                    fontFamily: 'monospace',
+                    background: 'rgba(34, 197, 94, 0.15)',
+                    border: '1px solid #22c55e',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#22c55e',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <span style={{ fontWeight: 700, color }}>{t}</span>
-                    {isVout && ripplePct < 2.0 && (
-                      <span style={{ fontSize: 9, padding: '2px 5px', borderRadius: 3, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 700 }}>
-                        ✓ CLEAN RIPPLE
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
-                    <span>Mean:</span>
-                    <strong style={{ color: '#f1f5f9' }}>{formatValue(st.mean, t)}</strong>
-                  </div>
-                  {'rms' in st && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', marginTop: 2 }}>
-                      <span>RMS:</span>
-                      <strong style={{ color: '#f1f5f9' }}>{formatValue(st.rms, t)}</strong>
-                    </div>
-                  )}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', marginTop: 2 }}>
-                    <span>Ripple (pk-pk):</span>
-                    <strong style={{ color: '#38bdf8' }}>{formatValue(st.p2p, t)}</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', marginTop: 2 }}>
-                    <span>Ripple (%):</span>
-                    <strong style={{ color: ripplePct < 2 ? '#10b981' : '#f59e0b' }}>{ripplePct.toFixed(2)}%</strong>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', marginTop: 2 }}>
-                    <span>Min / Max:</span>
-                    <span style={{ color: '#cbd5e1' }}>
-                      {formatValue(st.min, t)} / {formatValue(st.max, t)}
-                    </span>
+                  <Upload size={16} />
+                </div>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#f8fafc' }}>
+                    Ingest Oscilloscope Waveform Capture
+                  </h4>
+                  <span style={{ fontSize: 11, color: '#64748b' }}>
+                    Tektronix, Keysight, Rigol, Siglent, or Standard CSV format
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {uploadError && (
+              <div
+                style={{
+                  background: 'rgba(244, 63, 94, 0.15)',
+                  border: '1px solid #f43f5e',
+                  borderRadius: 6,
+                  padding: '8px 12px',
+                  marginBottom: 14,
+                  fontSize: 12,
+                  color: '#f43f5e',
+                }}
+              >
+                {uploadError}
+              </div>
+            )}
+
+            {/* Dropzone File Input */}
+            <div
+              style={{
+                border: '2px dashed #334155',
+                borderRadius: 8,
+                padding: '24px 16px',
+                textAlign: 'center',
+                background: '#070b14',
+                marginBottom: 16,
+                cursor: 'pointer',
+              }}
+              onClick={() => document.getElementById('scope-csv-file-input')?.click()}
+            >
+              <input
+                id="scope-csv-file-input"
+                type="file"
+                accept=".csv,.txt"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+              />
+              <FileText size={32} color={uploadFile ? '#22c55e' : '#64748b'} style={{ margin: '0 auto 8px auto' }} />
+              {uploadFile ? (
+                <div>
+                  <strong style={{ color: '#22c55e', fontSize: 13 }}>{uploadFile.name}</strong>
+                  <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>
+                    {(uploadFile.size / 1024).toFixed(1)} KB • Ready for Ingestion & Hash Signing
                   </div>
                 </div>
-              );
-            })}
+              ) : (
+                <div>
+                  <span style={{ fontSize: 13, color: '#f8fafc', fontWeight: 600 }}>
+                    Click or Drag & Drop Oscilloscope CSV File
+                  </span>
+                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 4 }}>
+                    Supports multi-column time/voltage vectors up to 50 MB
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Ingestion Parameters */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+              <div>
+                <label style={{ fontSize: 11, color: '#94a3b8', display: 'block', marginBottom: 4 }}>
+                  Lead Test Engineer:
+                </label>
+                <input
+                  type="text"
+                  value={uploadOperator}
+                  onChange={(e) => setUploadOperator(e.target.value)}
+                  style={{
+                    width: '100%',
+                    background: '#070b14',
+                    border: '1px solid #334155',
+                    borderRadius: 4,
+                    padding: '6px 8px',
+                    fontSize: 11.5,
+                    color: '#fff',
+                  }}
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 11, color: '#94a3b8', display: 'block', marginBottom: 4 }}>
+                  CH1 Target Trace:
+                </label>
+                <select
+                  value={channelMapCh1}
+                  onChange={(e) => setChannelMapCh1(e.target.value)}
+                  style={{
+                    width: '100%',
+                    background: '#070b14',
+                    border: '1px solid #334155',
+                    borderRadius: 4,
+                    padding: '6px 8px',
+                    fontSize: 11.5,
+                    color: '#fff',
+                  }}
+                >
+                  {simTraces.map((tr) => (
+                    <option key={tr} value={tr}>
+                      {tr}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 11, color: '#94a3b8', display: 'block', marginBottom: 4 }}>
+                Verification Protocol Notes:
+              </label>
+              <input
+                type="text"
+                value={uploadNotes}
+                onChange={(e) => setUploadNotes(e.target.value)}
+                style={{
+                  width: '100%',
+                  background: '#070b14',
+                  border: '1px solid #334155',
+                  borderRadius: 4,
+                  padding: '6px 8px',
+                  fontSize: 11.5,
+                  color: '#fff',
+                }}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                style={{
+                  background: '#1e293b',
+                  border: '1px solid #334155',
+                  color: '#cbd5e1',
+                  padding: '6px 14px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleIngestSubmit}
+                disabled={isUploading || !uploadFile}
+                style={{
+                  background: isUploading ? '#334155' : 'linear-gradient(180deg, #16a34a 0%, #15803d 100%)',
+                  border: 'none',
+                  color: '#fff',
+                  padding: '6px 16px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: isUploading ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}
+              >
+                {isUploading ? (
+                  <>
+                    <RefreshCw size={13} className="animate-spin" /> Ingesting & Signing...
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck size={14} /> Ingest & Cryptographically Register
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

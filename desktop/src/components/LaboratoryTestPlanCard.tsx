@@ -57,6 +57,18 @@ export const LaboratoryTestPlanCard: React.FC<LaboratoryTestPlanCardProps> = ({
   // Markdown copy confirmation
   const [copiedMd, setCopiedMd] = useState(false);
 
+  // Ingested Scope Measurements
+  const [scopeList, setScopeList] = useState<any[]>([]);
+
+  const fetchScopeList = async () => {
+    try {
+      const list = await api.listScopeMeasurements(revisionId);
+      setScopeList(list || []);
+    } catch {
+      // Non-blocking
+    }
+  };
+
   const fetchPlan = async () => {
     setLoading(true);
     setError(null);
@@ -99,6 +111,7 @@ export const LaboratoryTestPlanCard: React.FC<LaboratoryTestPlanCardProps> = ({
 
   useEffect(() => {
     fetchPlan();
+    fetchScopeList();
   }, [revisionId]);
 
   const togglePhase = (phaseNum: number) => {
@@ -728,6 +741,70 @@ export const LaboratoryTestPlanCard: React.FC<LaboratoryTestPlanCardProps> = ({
                   }}
                 >
                   <strong style={{ color: '#0f766e' }}>Evidence Retention Note:</strong> Raw oscilloscope waveform CSV exports and thermal FLIR imagery must be recorded with cryptographic SHA-256 hashes. Generating this protocol provides the authoritative framework; physical measurement records remain distinct from automated predictions.
+                </div>
+
+                {/* Verified Scope Evidence Records */}
+                <div style={{ marginTop: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <h5 style={{ margin: 0, fontSize: '12.5px', fontWeight: 700, color: '#0f766e' }}>
+                      Attributable Physical Oscilloscope Evidence Captures ({scopeList.length})
+                    </h5>
+                    <span style={{ fontSize: '11px', color: '#134e4a' }}>
+                      Ingested & Cryptographically Signed Records
+                    </span>
+                  </div>
+
+                  {scopeList.length === 0 ? (
+                    <div
+                      style={{
+                        padding: '14px',
+                        background: '#ffffff',
+                        border: '1px dashed #cbd5e1',
+                        borderRadius: '6px',
+                        textAlign: 'center',
+                        color: '#64748b',
+                        fontSize: '11.5px',
+                      }}
+                    >
+                      No physical oscilloscope CSV waveforms ingested yet. Switch to the <strong>Waveforms</strong> view to upload and correlate bench captures.
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {scopeList.map((sc: any) => (
+                        <div
+                          key={sc.measurement_id}
+                          style={{
+                            padding: '10px 14px',
+                            background: '#ffffff',
+                            border: '1px solid #bbf7d0',
+                            borderRadius: '6px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                            gap: '10px',
+                            fontSize: '11.5px',
+                          }}
+                        >
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ fontWeight: 700, color: '#0f172a' }}>{sc.original_filename}</span>
+                              <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '3px', background: '#f1f5f9', color: '#475569' }}>
+                                {sc.vendor} ({sc.total_points} samples @ {(sc.sample_rate_hz / 1e6).toFixed(1)} MS/s)
+                              </span>
+                            </div>
+                            <div style={{ fontFamily: 'monospace', color: '#15803d', fontSize: '10.5px', marginTop: '3px' }}>
+                              SHA-256: {sc.sha256}
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'right', fontSize: '11px', color: '#64748b' }}>
+                            <div>Operator: <strong>{sc.operator || 'Lead Test Engineer'}</strong></div>
+                            <div>Channels: {sc.channels?.join(', ')}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

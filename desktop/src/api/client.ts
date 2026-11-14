@@ -489,4 +489,68 @@ export const api = {
     }),
   revealReleasePackage: (revisionId: string) =>
     rpcCall<{ revealed: boolean }>('reveal_release_package', { revision_id: revisionId }),
+  ingestScopeCsv: (params: {
+    revisionId: string;
+    filename: string;
+    content: string;
+    channelMapping?: Record<string, string>;
+    operator?: string;
+    notes?: string;
+  }) =>
+    rpcCall<{
+      success: boolean;
+      measurement_id: string;
+      filename: string;
+      relative_path: string;
+      sha256: string;
+      vendor: string;
+      sample_rate_hz: number;
+      duration_s: number;
+      total_points: number;
+      channels: string[];
+      channel_metrics: Record<string, any>;
+      operator: string;
+      timestamp: string;
+    }>('ingest_oscilloscope_csv', {
+      revision_id: params.revisionId,
+      filename: params.filename,
+      content: params.content,
+      channel_mapping: params.channelMapping,
+      operator: params.operator,
+      notes: params.notes,
+    }),
+  listScopeMeasurements: (revisionId: string) =>
+    rpcCall<import('./types').ScopeMeasurementSummary[]>('list_oscilloscope_measurements', {
+      revision_id: revisionId,
+    }),
+  getScopeWaveform: (params: {
+    revisionId: string;
+    measurementId: string;
+    traces?: string[];
+    start?: number;
+    limit?: number;
+    decimate?: boolean;
+  }) =>
+    rpcCall<import('./types').ScopeWaveformData>('get_oscilloscope_waveform', {
+      revision_id: params.revisionId,
+      measurement_id: params.measurementId,
+      traces: params.traces,
+      start: params.start || 0,
+      limit: params.limit || 2000,
+      decimate: params.decimate !== false,
+    }),
+  correlateScopeWaveform: (params: {
+    revisionId: string;
+    measurementId: string;
+    simRelativePath: string;
+    channelMapping: Record<string, string>;
+    targetTolerancePct?: number;
+  }) =>
+    rpcCall<import('./types').ScopeCorrelationReport>('correlate_oscilloscope_waveform', {
+      revision_id: params.revisionId,
+      measurement_id: params.measurementId,
+      sim_relative_path: params.simRelativePath,
+      channel_mapping: params.channelMapping,
+      target_tolerance_pct: params.targetTolerancePct || 5.0,
+    }),
 };
