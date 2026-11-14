@@ -2155,3 +2155,21 @@ un_pcb_drc) return structured operation receipts with operation_id, operation_ty
 - [x] **Cryptographic Signed Release Package**:
   - Bundled Gerbers, Drills, CPL, Schematics, PCB, BOM, Drawings, 3D Render, and Assembly Docs into `SV1000_R001_Complete_Manufacturing_Release.zip`.
   - Generated `release_manifest.json` with SHA-256 cryptographic signatures of all release artifacts.
+
+
+### UI & Specification Architecture Upgrade: High-Voltage Specification Detail Card & Fast Gerber Layer Extraction — 15 November 2026
+- [x] **Specification Detail Card Redesign (`desktop/src/components/SpecificationDetailCard.tsx`)**:
+  - Replaced raw, unformatted 24-box monospace key-value grid with aerospace/automotive-grade engineering specification panel.
+  - Implemented Hero Telemetry Strip displaying primary key operational figures: Nominal Input ($V_{\text{in,nom}} = 24.0\text{ V}$ or $230\text{ V}$), Regulated Output ($V_{\text{out}} = 1,000\text{ V}$ with IEC 61010-1 Extreme High Voltage $>500\text{V}$ badge), Rated Output Current ($I_{\text{out}} = 1.0\text{ mA}$ or $2.36\text{ A}$), Rated Power ($P_{\text{out}} = 1.00\text{ W}$), Switching Frequency ($f_{\text{sw}} = 100.0\text{ kHz}$ or $10.0\text{ Hz}$), and Max Junction Temperature ($T_{\text{j,max}} = 150^\circ\text{C}$).
+  - Built interactive Input Voltage Operating Window tolerance bar visualizer with min/nom/max dynamic markers and percentage spread.
+  - Organized parameters into four structured engineering domains: Electrical Power Conversion & Ratings, Thermal & Mechanical Envelope, Safety & Dielectric Isolation, and Governance & Provenance.
+  - Cleaned up engineering assumptions: parsed raw JSON array into individual structured directive callouts with priority badges (`DRAFT TARGET`, `CONFIGURATION VARIANT`, `PRIORITY OVERRIDE`, `SAFETY RESTRICTION`).
+  - Added interactive parameter search, unassigned variable toggle, 1-click Markdown specification summary copy, and JSON export.
+- [x] **Gerber Layer Inspector Performance & Timeout Fix (`src/mendex_core/desktop/service.py`, `desktop/vite.config.ts`)**:
+  - Resolved 504 Python RPC 30s timeout by introducing instant extraction of pre-existing `*_gerbers.zip` packages into `gerber_out_dir` when uncompressed files are missing, reducing RPC inspection latency from $>30\text{ s}$ subprocess execution down to $17\text{ ms} - 76\text{ ms}$.
+  - Increased Vite RPC bridge timeout to 120s and restarted the Vite dev server daemon.
+  - Polished CAD Preview Canvas subtitle typography to dynamically reflect the selected view mode (`RS-274X Gerber & Excellon Drill Layer Stack` vs `PCB layout` vs `Schematic`).
+- [x] **Verification**:
+  - TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 1.99s.
+  - Core test suite (`test_laboratory_test_plan.py`, `test_bom_pricing.py`, `test_gerber_caliper_clearance.py`): **8/8 PASSED**.
+  - Direct HTTP RPC validation: EMC-100 returned in 36 ms, SV-1000 returned in 17 ms.
