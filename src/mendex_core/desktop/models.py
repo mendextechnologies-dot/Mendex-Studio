@@ -300,3 +300,16 @@ class ScopeCorrelateQuery(Model):
     sim_relative_path: str
     channel_mapping: Dict[str, str]
     target_tolerance_pct: float = 5.0
+
+
+class WccaRunQuery(Model):
+    idempotency_key: Optional[str] = None
+    revision_id: UUID
+    num_iterations: int = Field(default=50, ge=10, le=500)
+    distribution: str = "gaussian"
+    temp_min_c: float = -40.0
+    temp_max_c: float = 85.0
+
+
+class WccaGetQuery(Model):
+    revision_id: UUID

@@ -351,3 +351,74 @@ export interface ScopeCorrelationReport {
   sampling_rate_hz: number;
   reason?: string;
 }
+
+// ============================================================================
+// WORST-CASE & MONTE CARLO TOLERANCE ANALYSIS (OPTION 3)
+// ============================================================================
+
+export interface WccaStatistics {
+  mean_v: number;
+  std_dev_v: number;
+  median_v: number;
+  min_v: number;
+  max_v: number;
+  three_sigma_lower_v: number;
+  three_sigma_upper_v: number;
+  cp: number;
+  cpk: number;
+  statistical_yield_percent: number;
+}
+
+export interface WccaHistogramBin {
+  bin_start: number;
+  bin_end: number;
+  bin_center: number;
+  count: number;
+  frequency: number;
+}
+
+export interface WccaEvaCorner {
+  corner_name: string;
+  condition: string;
+  vout_v: number;
+  vsw_peak_v: number;
+  ripple_mv: number;
+  margin_status: string;
+}
+
+export interface WccaSensitivity {
+  component: string;
+  parameter: string;
+  tolerance_pct: number;
+  sensitivity_pct: number;
+}
+
+export interface WccaMonteCarloRun {
+  iteration: number;
+  vout_v: number;
+  ripple_mv: number;
+  vsw_peak_v: number;
+  temperature_c: number;
+  vin_v: number;
+}
+
+export interface WccaAnalysisReport {
+  success: boolean;
+  revision_id: string;
+  distribution: string;
+  num_iterations: number;
+  overall_readiness: 'PRODUCTION_READY' | 'MARGINAL_REQUIRES_TRIMMING';
+  specification_limits: {
+    vout_nominal_v: number;
+    lsl_vout_v: number;
+    usl_vout_v: number;
+    tolerance_percent: number;
+    ripple_limit_mv: number;
+  };
+  statistics: WccaStatistics;
+  histogram_bins: WccaHistogramBin[];
+  eva_corners: WccaEvaCorner[];
+  sensitivities: WccaSensitivity[];
+  monte_carlo_runs: WccaMonteCarloRun[];
+  report_sha256?: string;
+}

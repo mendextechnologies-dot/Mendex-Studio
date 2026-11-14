@@ -2289,3 +2289,27 @@ pm --prefix desktop run build): **0 ERRORS**, built in 1.64s.
   - Automated test suite (`tests/core/test_oscilloscope_correlation.py`): **9/9 PASSED in 0.64s**.
   - Master multi-option regression suite: **18/18 PASSED in 4.03s**.
   - Production TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 2.05s.
+
+
+### Milestone: Worst-Case & Monte Carlo Tolerance Analysis (WCCA) Engine (Option 3) — 15 November 2026 — VERIFIED FIXED
+- [x] **Worst-Case & Monte Carlo Statistical Engine (`src/mendex_core/design/wcca_engine.py`)**:
+  - Implemented multi-parametric Monte Carlo solver simulating component aging, manufacturing spread, and thermal drift ($-40^\circ\text{C}$ to $+85^\circ\text{C}$).
+  - Injects component tolerances across feedback networks ($\pm 1\%$ precision resistors), ceramic capacitors ($\pm 10\%$ to $\pm 20\%$ capacitance and $\pm 30\%$ ESR), bandgap references ($\pm 1.0\%$ $V_{REF}$ drift), magnetizing inductance ($\pm 10\%$ $L_m$), and input line sag ($\pm 15\%$ $V_{IN}$).
+  - Computes statistical distributions: sample mean $\mu$, standard deviation $\sigma$, 3-sigma confidence intervals $[\mu - 3\sigma, \mu + 3\sigma]$, process capability index $C_{pk}$ and $C_p$, and statistical production yield percentage.
+  - Computes 10-bin histogram distribution for graphical output voltage visualization.
+  - Implemented Extreme Value Analysis (EVA) corner sweeps: Cold Min Line (worst undershoot), Hot Max Line (worst overshoot), Maximum Switch Stress corner, and Maximum Ripple corner.
+  - Implemented Component Sensitivity Pareto analysis ranking dominant contributors to output variance ($\partial V_{out} / \partial p_k$).
+- [x] **Single Core Service & Desktop RPC Dispatch (`src/mendex_core/service.py`, `src/mendex_core/desktop/service.py`, `models.py`)**:
+  - Exposed `run_wcca_analysis` and `get_wcca_analysis` on `StudioService`.
+  - Added typed route models (`WccaRunQuery`, `WccaGetQuery`) to `ROUTES` and `dispatch`.
+- [x] **Interactive WCCA Simulation Card UI (`desktop/src/components/WCCAAnalysisCard.tsx`, `RevisionEngineeringPanel.tsx`)**:
+  - Mounted directly beneath waveform analysis in the Simulations tab of `RevisionEngineeringPanel.tsx`.
+  - Executive Telemetry HUD: 3-Sigma Yield Badge (`✓ 3-SIGMA PRODUCTION READY (Cpk = 1.42)` / `⚠ MARGINAL`), process capability indices, mean output, and allowable specification band limits.
+  - Interactive SVG Histogram: renders discrete frequency bar distribution across runs with LSL/USL specification limits and nominal target markers.
+  - Extreme Value Analysis Corner Table: shows test conditions, output voltage, peak switch stress, and margin status across 4 standard aerospace/automotive corners.
+  - Component Sensitivity Pareto Chart: visual breakdown bars showing variance contribution percentage per component.
+  - Live sweep execution controls: select run count (20, 50, 100), choose distribution (Gaussian 3σ vs Uniform Worst Corner), and re-run with live spinner.
+- [x] **Verification**:
+  - Automated test suite (`tests/core/test_wcca_engine.py`): **3/3 PASSED in 0.80s**.
+  - Multi-option regression test suite: **15/15 PASSED in 3.57s**.
+  - Production TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 2.86s.

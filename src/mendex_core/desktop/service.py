@@ -2806,6 +2806,16 @@ class DesktopService:
                 channel_mapping=request.channel_mapping,
                 target_tolerance_pct=request.target_tolerance_pct,
             )
+        if method == "run_wcca_analysis":
+            return self.studio.run_wcca_analysis(
+                revision_id=request.revision_id,
+                num_iterations=getattr(request, "num_iterations", 50),
+                distribution=getattr(request, "distribution", "gaussian"),
+                temp_min_c=getattr(request, "temp_min_c", -40.0),
+                temp_max_c=getattr(request, "temp_max_c", 85.0),
+            )
+        if method == "get_wcca_analysis":
+            return self.studio.get_wcca_analysis(request.revision_id)
         if method == "backup":
             dest = getattr(request, "destination", None) if request else None
             backup_path = self.studio.backup_database(dest)
@@ -2925,4 +2935,6 @@ ROUTES.update(
     list_oscilloscope_measurements=models.ScopeListQuery,
     get_oscilloscope_waveform=models.ScopeWaveformQuery,
     correlate_oscilloscope_waveform=models.ScopeCorrelateQuery,
+    run_wcca_analysis=models.WccaRunQuery,
+    get_wcca_analysis=models.WccaGetQuery,
 )

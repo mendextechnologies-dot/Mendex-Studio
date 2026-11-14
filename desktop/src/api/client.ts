@@ -553,4 +553,22 @@ export const api = {
       channel_mapping: params.channelMapping,
       target_tolerance_pct: params.targetTolerancePct || 5.0,
     }),
+  getWccaAnalysis: (revisionId: string) =>
+    rpcCall<import('./types').WccaAnalysisReport>('get_wcca_analysis', {
+      revision_id: revisionId,
+    }),
+  runWccaAnalysis: (params: {
+    revisionId: string;
+    numIterations?: number;
+    distribution?: string;
+    tempMinC?: number;
+    tempMaxC?: number;
+  }) =>
+    rpcCall<import('./types').WccaAnalysisReport>('run_wcca_analysis', {
+      revision_id: params.revisionId,
+      num_iterations: params.numIterations || 50,
+      distribution: params.distribution || 'gaussian',
+      temp_min_c: params.tempMinC ?? -40.0,
+      temp_max_c: params.tempMaxC ?? 85.0,
+    }),
 };

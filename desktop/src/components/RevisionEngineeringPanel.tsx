@@ -4,6 +4,7 @@ import { ThermalSizingCalculatorCard } from './ThermalSizingCalculatorCard';
 import { TopologySynthesizerCard } from './TopologySynthesizerCard';
 import { CADPreviewCanvas } from './CADPreviewCanvas';
 import { WaveformChart } from './WaveformChart';
+import { WCCAAnalysisCard } from './WCCAAnalysisCard';
 import { RecordFormView } from './RecordFormView';
 import React, { useState, useMemo } from 'react';
 import type { ProjectDetailData } from '../api/types';
@@ -202,10 +203,11 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile, onRefresh 
                 onOpenNative={() => onOpenFile?.(rawFile.relative_path)}
                 targetRippleMaxMv={(data.revision?.specification as any)?.vout_ripple_max_mv ?? null}
               />
+              <WCCAAnalysisCard revisionId={data.revision.revision_id} projectCode={data.product.code} />
             </div>
           );
         }
-        return null;
+        return <WCCAAnalysisCard revisionId={data.revision.revision_id} projectCode={data.product.code} />;
       })()}
 
       {/* Simulation Acceptance & Solver Verification Metrics Card */}

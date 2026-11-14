@@ -866,3 +866,27 @@ class StudioService:
             target_tolerance_pct=target_tolerance_pct,
         )
 
+    def run_wcca_analysis(self, revision_id, num_iterations=50, distribution="gaussian", temp_min_c=-40.0, temp_max_c=85.0):
+        from .design.wcca_engine import WCCAEngine
+        revision = self.get_revision(revision_id)
+        spec = revision.specification.model_dump()
+        spec["product_id"] = str(revision.product_id)
+        engine = WCCAEngine(self.root)
+        return engine.run_analysis(
+            revision_id=revision_id,
+            specification=spec,
+            num_iterations=num_iterations,
+            distribution=distribution,
+            temp_min_c=temp_min_c,
+            temp_max_c=temp_max_c,
+        )
+
+    def get_wcca_analysis(self, revision_id):
+        from .design.wcca_engine import WCCAEngine
+        engine = WCCAEngine(self.root)
+        report = engine.get_analysis(revision_id)
+        if report:
+            return report
+        # If not yet generated, auto-run with nominal parameters
+        return self.run_wcca_analysis(revision_id)
+
