@@ -1,0 +1,2542 @@
+{
+  "schema_version": "1.9.0",
+  "id": "a694e01a-bb54-41a3-9d40-19933577b6d6",
+  "workspace_id": "default",
+  "title": "SpectraVolt SV-1000 Engineering Design",
+  "category": "dc_dc_converter",
+  "status": "DRAFT",
+  "active_revision_id": null,
+  "product_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+  "core_revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+  "requirements": [
+    {
+      "id": "fd224f05-eeca-43f3-9ad0-a07f66d2f1ea",
+      "parameter": "vin_nom",
+      "target_value": 24.0,
+      "unit": "V",
+      "min_value": 21.0,
+      "max_value": 28.0,
+      "tolerance_pct": null,
+      "mandatory": true,
+      "provenance": "User Specification",
+      "assumptions": "",
+      "approval_status": "DRAFT",
+      "approved_by": null,
+      "approved_at": null,
+      "version": 1
+    },
+    {
+      "id": "7c3a0afa-4e28-46d6-9644-b53f6a337d30",
+      "parameter": "vin_min",
+      "target_value": 21.0,
+      "unit": "V",
+      "min_value": null,
+      "max_value": null,
+      "tolerance_pct": null,
+      "mandatory": true,
+      "provenance": "User Specification",
+      "assumptions": "",
+      "approval_status": "DRAFT",
+      "approved_by": null,
+      "approved_at": null,
+      "version": 1
+    },
+    {
+      "id": "28229ecc-928c-4a26-a5b6-a3a79c2bcefc",
+      "parameter": "vin_max",
+      "target_value": 28.0,
+      "unit": "V",
+      "min_value": null,
+      "max_value": null,
+      "tolerance_pct": null,
+      "mandatory": true,
+      "provenance": "User Specification",
+      "assumptions": "",
+      "approval_status": "DRAFT",
+      "approved_by": null,
+      "approved_at": null,
+      "version": 1
+    },
+    {
+      "id": "e51d5595-0d05-4361-8f5a-8271fa6fb5a2",
+      "parameter": "vout",
+      "target_value": 1000.0,
+      "unit": "V",
+      "min_value": null,
+      "max_value": null,
+      "tolerance_pct": null,
+      "mandatory": true,
+      "provenance": "User Specification",
+      "assumptions": "",
+      "approval_status": "DRAFT",
+      "approved_by": null,
+      "approved_at": null,
+      "version": 1
+    },
+    {
+      "id": "f6f22643-bf55-448a-92bd-b847db5439e1",
+      "parameter": "iout",
+      "target_value": 0.001,
+      "unit": "A",
+      "min_value": null,
+      "max_value": null,
+      "tolerance_pct": null,
+      "mandatory": true,
+      "provenance": "User Specification",
+      "assumptions": "",
+      "approval_status": "DRAFT",
+      "approved_by": null,
+      "approved_at": null,
+      "version": 1
+    },
+    {
+      "id": "6a2f7196-02c3-4003-a6a3-60ebc7045066",
+      "parameter": "frequency_hz",
+      "target_value": 100000.0,
+      "unit": "Hz",
+      "min_value": null,
+      "max_value": null,
+      "tolerance_pct": null,
+      "mandatory": true,
+      "provenance": "User Specification",
+      "assumptions": "",
+      "approval_status": "DRAFT",
+      "approved_by": null,
+      "approved_at": null,
+      "version": 1
+    },
+    {
+      "id": "d442e0d6-671f-430f-b369-7cc2c825bf3c",
+      "parameter": "isolation",
+      "target_value": 1500.0,
+      "unit": "V",
+      "min_value": null,
+      "max_value": null,
+      "tolerance_pct": null,
+      "mandatory": true,
+      "provenance": "User Specification",
+      "assumptions": "",
+      "approval_status": "DRAFT",
+      "approved_by": null,
+      "approved_at": null,
+      "version": 1
+    }
+  ],
+  "candidates": [
+    {
+      "id": "453678ad-acdf-4596-8182-bb04045c2b28",
+      "topology": "Discontinuous Flyback Converter",
+      "name": "Isolated Single-Switch Flyback",
+      "description": "Isolated flyback converter utilizing coupled inductor with energy storage.",
+      "parameters": {
+        "d_nom": 0.45,
+        "lm_uh": 392.93100000000004,
+        "turns_ratio_np_ns": 0.017169799322292578,
+        "fsw_khz": 100.0
+      },
+      "calculated_metrics": {
+        "estimated_efficiency": 0.88,
+        "switch_voltage_stress_v": 95.18181818181819,
+        "peak_primary_current_a": 0.2405002405002405,
+        "component_count": 10.0
+      },
+      "rationale": "Provides galvanic isolation and simple single-switch architecture.",
+      "constraints_satisfied": true,
+      "feasibility_score": 0.9,
+      "status": "SELECTED",
+      "reviewer_notes": null,
+      "ir_snapshot": {
+        "schema_version": "1.9.0",
+        "id": "f7d330f8-076e-407c-827d-46dfd7a69bf6",
+        "title": "Isolated Flyback Converter",
+        "topology": "Flyback",
+        "category": "isolated_dcdc",
+        "parameters": {
+          "Vin": {
+            "name": "Vin",
+            "expression": null,
+            "value": 24.0,
+            "unit": "V",
+            "tolerance_pct": 0.0,
+            "description": ""
+          },
+          "Vout": {
+            "name": "Vout",
+            "expression": null,
+            "value": 1000.0,
+            "unit": "V",
+            "tolerance_pct": 0.0,
+            "description": ""
+          },
+          "Iout": {
+            "name": "Iout",
+            "expression": null,
+            "value": 0.001,
+            "unit": "A",
+            "tolerance_pct": 0.0,
+            "description": ""
+          },
+          "Fsw": {
+            "name": "Fsw",
+            "expression": null,
+            "value": 100000.0,
+            "unit": "Hz",
+            "tolerance_pct": 0.0,
+            "description": ""
+          },
+          "Lm": {
+            "name": "Lm",
+            "expression": null,
+            "value": 0.00039293100000000006,
+            "unit": "H",
+            "tolerance_pct": 0.0,
+            "description": ""
+          },
+          "N_ratio": {
+            "name": "N_ratio",
+            "expression": null,
+            "value": 0.017169799322292578,
+            "unit": "ratio",
+            "tolerance_pct": 0.0,
+            "description": ""
+          },
+          "d_nom": {
+            "name": "d_nom",
+            "expression": null,
+            "value": 0.4172185430463576,
+            "unit": "ratio",
+            "tolerance_pct": 0.0,
+            "description": "Open-loop CCM duty cycle at nominal input (diode Vf = 0.7 V assumed)"
+          }
+        },
+        "components": [
+          {
+            "id": "3f7c9f90-d8e9-40f4-b24e-57ac24ee4ba0",
+            "designator": "V1",
+            "name": "Input DC Supply",
+            "type": "voltage_source",
+            "value": 24.0,
+            "unit": "V",
+            "pins": [
+              {
+                "pin_id": "p",
+                "name": "+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "n",
+                "name": "-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "4fca12a1-a049-4337-a2b7-5fef2bb5eb4a",
+            "designator": "T1",
+            "name": "Coupled Flyback Transformer",
+            "type": "transformer",
+            "value": 0.00039293100000000006,
+            "unit": "H",
+            "pins": [
+              {
+                "pin_id": "pri_dot",
+                "name": "PRI+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "pri_undot",
+                "name": "PRI-",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec_dot",
+                "name": "SEC+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec_undot",
+                "name": "SEC-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "primary_inductance": 0.00039293100000000006,
+              "turns_ratio": 0.017169799322292578
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "62b00eb8-3d6c-43ce-8b9c-39816e3bf7dd",
+            "designator": "Q1",
+            "name": "Primary Switching MOSFET",
+            "type": "mosfet",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "d",
+                "name": "D",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "g",
+                "name": "G",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "s",
+                "name": "S",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "v_ds_max": 200.0,
+              "rds_on": 0.055
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "05bb14ed-5433-4dd6-87df-1bb738027991",
+            "designator": "D1",
+            "name": "Secondary Rectifier Diode",
+            "type": "diode",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "a",
+                "name": "A",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "k",
+                "name": "K",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "vf": 0.45,
+              "vr_max": 100.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "0c9842c9-d259-4763-9325-a32715ac4189",
+            "designator": "C1",
+            "name": "Secondary Output Capacitor",
+            "type": "capacitor",
+            "value": 0.0001,
+            "unit": "F",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "c4ed8d57-76a3-4959-8a32-48a1ec029dd5",
+            "designator": "R_LOAD",
+            "name": "Output Load",
+            "type": "resistor",
+            "value": 100000.0,
+            "unit": "Ohm",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          }
+        ],
+        "nets": [
+          {
+            "id": "0b531bb5-4867-4dd5-8823-9819448eb8af",
+            "name": "VIN",
+            "connections": [
+              {
+                "component_id": "3f7c9f90-d8e9-40f4-b24e-57ac24ee4ba0",
+                "pin_id": "p"
+              },
+              {
+                "component_id": "4fca12a1-a049-4337-a2b7-5fef2bb5eb4a",
+                "pin_id": "pri_dot"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "9a7627f7-516b-420c-a13e-b444a048d213",
+            "name": "DRAIN",
+            "connections": [
+              {
+                "component_id": "4fca12a1-a049-4337-a2b7-5fef2bb5eb4a",
+                "pin_id": "pri_undot"
+              },
+              {
+                "component_id": "62b00eb8-3d6c-43ce-8b9c-39816e3bf7dd",
+                "pin_id": "d"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "fdbd3d9c-09da-4e1c-8979-7d509fd95e20",
+            "name": "PRI_GND",
+            "connections": [
+              {
+                "component_id": "3f7c9f90-d8e9-40f4-b24e-57ac24ee4ba0",
+                "pin_id": "n"
+              },
+              {
+                "component_id": "62b00eb8-3d6c-43ce-8b9c-39816e3bf7dd",
+                "pin_id": "s"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "edacae9f-15ca-4ebd-a875-de77307b8e7d",
+            "name": "GATE",
+            "connections": [
+              {
+                "component_id": "62b00eb8-3d6c-43ce-8b9c-39816e3bf7dd",
+                "pin_id": "g"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "500cacc4-bc92-4033-9af1-c0f89da03dd3",
+            "name": "SEC_ANODE",
+            "connections": [
+              {
+                "component_id": "4fca12a1-a049-4337-a2b7-5fef2bb5eb4a",
+                "pin_id": "sec_undot"
+              },
+              {
+                "component_id": "05bb14ed-5433-4dd6-87df-1bb738027991",
+                "pin_id": "a"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "8a4afbb4-0d6f-4a0d-8427-84282c171a38",
+            "name": "VOUT",
+            "connections": [
+              {
+                "component_id": "05bb14ed-5433-4dd6-87df-1bb738027991",
+                "pin_id": "k"
+              },
+              {
+                "component_id": "0c9842c9-d259-4763-9325-a32715ac4189",
+                "pin_id": "1"
+              },
+              {
+                "component_id": "c4ed8d57-76a3-4959-8a32-48a1ec029dd5",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "f9aef57d-8063-452b-a72d-02fbdccabf13",
+            "name": "SEC_GND",
+            "connections": [
+              {
+                "component_id": "4fca12a1-a049-4337-a2b7-5fef2bb5eb4a",
+                "pin_id": "sec_dot"
+              },
+              {
+                "component_id": "0c9842c9-d259-4763-9325-a32715ac4189",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "c4ed8d57-76a3-4959-8a32-48a1ec029dd5",
+                "pin_id": "2"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          }
+        ],
+        "ports": [],
+        "magnetic_geometry": {
+          "core_type": "ETD34",
+          "core_material": "N87",
+          "effective_area_ae_mm2": 97.1,
+          "effective_length_le_mm": 78.6,
+          "effective_volume_ve_mm3": 7630.0,
+          "air_gap_mm": 0.65,
+          "al_nh": 210.0,
+          "primary_turns": 12,
+          "secondary_turns": 12,
+          "bobbin_height_mm": 21.0,
+          "flange_od_mm": 34.0,
+          "barrel_od_mm": 18.0,
+          "core_id_mm": 16.0,
+          "peak_current_a": 0.0
+        },
+        "metadata": {}
+      },
+      "readiness_status": "EXPERIMENTAL",
+      "qualification_notes": [
+        "Analytical sizing model available. Transformer construction and primary snubber require independent engineering review."
+      ]
+    },
+    {
+      "id": "db425715-fe37-434f-961d-61e96e6b9f10",
+      "topology": "Phase-Shifted Full-Bridge Converter",
+      "name": "Isolated Phase-Shifted Full-Bridge",
+      "description": "High-power isolated converter with 4-switch bridge, zero-voltage switching (ZVS), and full-wave rectification.",
+      "parameters": {
+        "turns_ratio_np_ns": 0.009444333399960024,
+        "d_eff": 0.7,
+        "l_shim_uh": 15.0,
+        "l_out_uh": 489999.99999999994,
+        "c_out_uf": 100.0,
+        "fsw_khz": 100.0
+      },
+      "calculated_metrics": {
+        "estimated_efficiency": 0.95,
+        "switch_voltage_stress_v": 28.0,
+        "peak_primary_current_a": 0.07730364873222018,
+        "component_count": 14.0
+      },
+      "rationale": "Ideal for high-power applications (kW range) requiring galvanic isolation and high efficiency via soft switching.",
+      "constraints_satisfied": true,
+      "feasibility_score": 0.86,
+      "status": "PROPOSED",
+      "reviewer_notes": null,
+      "ir_snapshot": {
+        "schema_version": "1.9.0",
+        "id": "0cf7ce87-ae01-490b-b4fd-7c5491ad39f7",
+        "title": "Phase-Shifted Full-Bridge Converter",
+        "topology": "Generic",
+        "category": "power_electronics",
+        "parameters": {},
+        "components": [
+          {
+            "id": "63e7c0d9-9ce7-4673-97c6-4243ab724269",
+            "designator": "V1",
+            "name": "DC Input Source",
+            "type": "voltage_source",
+            "value": 24.0,
+            "unit": "V",
+            "pins": [
+              {
+                "pin_id": "p",
+                "name": "+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "n",
+                "name": "-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "cbf392a4-8c72-49c6-9a2a-e2664535a616",
+            "designator": "Q1",
+            "name": "Leg A High-Side MOSFET",
+            "type": "mosfet",
+            "value": 36.0,
+            "unit": "V",
+            "pins": [
+              {
+                "pin_id": "d",
+                "name": "D",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "g",
+                "name": "G",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "s",
+                "name": "S",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "rds_on": 0.04,
+              "v_ds_max": 36.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "e1c6559e-1efb-41fe-bdc8-83a2b0bbb301",
+            "designator": "Q2",
+            "name": "Leg A Low-Side MOSFET",
+            "type": "mosfet",
+            "value": 36.0,
+            "unit": "V",
+            "pins": [
+              {
+                "pin_id": "d",
+                "name": "D",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "g",
+                "name": "G",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "s",
+                "name": "S",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "rds_on": 0.04,
+              "v_ds_max": 36.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "9c2e2a7d-7972-469e-b9a2-d0a3c3eb327c",
+            "designator": "J_GATE_A_HI",
+            "name": "Leg A High Gate Control Header",
+            "type": "connector",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "GATE",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "SOURCE",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "64730532-c8e9-4f4f-9ec9-7f43a8dfe474",
+            "designator": "J_GATE_A_LO",
+            "name": "Leg A Low Gate Control Header",
+            "type": "connector",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "GATE",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "SOURCE",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "7594657c-9c34-4652-8ba2-db4ce4da12ee",
+            "designator": "Q3",
+            "name": "Leg B High-Side MOSFET",
+            "type": "mosfet",
+            "value": 36.0,
+            "unit": "V",
+            "pins": [
+              {
+                "pin_id": "d",
+                "name": "D",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "g",
+                "name": "G",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "s",
+                "name": "S",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "rds_on": 0.04,
+              "v_ds_max": 36.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "0861231c-e498-4f36-ba82-5cebdb50eaad",
+            "designator": "Q4",
+            "name": "Leg B Low-Side MOSFET",
+            "type": "mosfet",
+            "value": 36.0,
+            "unit": "V",
+            "pins": [
+              {
+                "pin_id": "d",
+                "name": "D",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "g",
+                "name": "G",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "s",
+                "name": "S",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "rds_on": 0.04,
+              "v_ds_max": 36.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "2124b337-edb6-4e72-a3d8-b5ee715cf5d6",
+            "designator": "J_GATE_B_HI",
+            "name": "Leg B High Gate Control Header",
+            "type": "connector",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "GATE",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "SOURCE",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "7e37d631-5370-4f31-a9a8-6be26e07c50e",
+            "designator": "J_GATE_B_LO",
+            "name": "Leg B Low Gate Control Header",
+            "type": "connector",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "GATE",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "SOURCE",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "a42556d2-e7fe-42ad-b892-58cf17c9ffd4",
+            "designator": "L_SHIM",
+            "name": "Primary ZVS Shim Inductor",
+            "type": "inductor",
+            "value": 0.000015,
+            "unit": "H",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "d577cdb4-5f10-4bc4-ac7e-72ec30675362",
+            "designator": "T1",
+            "name": "PSFB Isolation Transformer",
+            "type": "transformer",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "pri_dot",
+                "name": "PRI_DOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "pri_undot",
+                "name": "PRI_UNDOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec1_dot",
+                "name": "SEC1_DOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec1_undot",
+                "name": "SEC1_UNDOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec2_dot",
+                "name": "SEC2_DOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec2_undot",
+                "name": "SEC2_UNDOT",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "turns_ratio": 0.009444333399960024
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "c8c96922-3fb4-41ab-a9d0-9b449370775f",
+            "designator": "D1",
+            "name": "Secondary Rectifier Diode 1",
+            "type": "diode",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "a",
+                "name": "A",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "k",
+                "name": "K",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "vf": 0.5,
+              "vr_max": 2500.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "d875975c-e643-492d-8d19-7596d4a4244b",
+            "designator": "D2",
+            "name": "Secondary Rectifier Diode 2",
+            "type": "diode",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "a",
+                "name": "A",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "k",
+                "name": "K",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "vf": 0.5,
+              "vr_max": 2500.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "f629eda8-ef24-40f0-9b76-73ef1a6241d2",
+            "designator": "L_OUT",
+            "name": "Secondary Output Filter Inductor",
+            "type": "inductor",
+            "value": 0.48999999999999994,
+            "unit": "H",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "05c849df-13bc-403f-9555-5e5f654290fa",
+            "designator": "C_OUT",
+            "name": "Secondary Output Filter Capacitor",
+            "type": "capacitor",
+            "value": 0.0001,
+            "unit": "F",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "9491e09d-8ac1-475f-a4cf-4797cb41f6c3",
+            "designator": "R_LOAD",
+            "name": "Output Load Resistor",
+            "type": "resistor",
+            "value": 100000.0,
+            "unit": "Ohm",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          }
+        ],
+        "nets": [
+          {
+            "id": "2141820e-c2b1-4aaf-950b-8d63e723b974",
+            "name": "VIN",
+            "connections": [
+              {
+                "component_id": "63e7c0d9-9ce7-4673-97c6-4243ab724269",
+                "pin_id": "p"
+              },
+              {
+                "component_id": "cbf392a4-8c72-49c6-9a2a-e2664535a616",
+                "pin_id": "d"
+              },
+              {
+                "component_id": "7594657c-9c34-4652-8ba2-db4ce4da12ee",
+                "pin_id": "d"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "bb4296d5-1570-459c-be74-5158a28fb7f8",
+            "name": "PRI_GND",
+            "connections": [
+              {
+                "component_id": "63e7c0d9-9ce7-4673-97c6-4243ab724269",
+                "pin_id": "n"
+              },
+              {
+                "component_id": "e1c6559e-1efb-41fe-bdc8-83a2b0bbb301",
+                "pin_id": "s"
+              },
+              {
+                "component_id": "0861231c-e498-4f36-ba82-5cebdb50eaad",
+                "pin_id": "s"
+              },
+              {
+                "component_id": "64730532-c8e9-4f4f-9ec9-7f43a8dfe474",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "7e37d631-5370-4f31-a9a8-6be26e07c50e",
+                "pin_id": "2"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "7dab0ee2-dd55-4f56-a97b-b75d9378f809",
+            "name": "HB_LEG_A",
+            "connections": [
+              {
+                "component_id": "cbf392a4-8c72-49c6-9a2a-e2664535a616",
+                "pin_id": "s"
+              },
+              {
+                "component_id": "e1c6559e-1efb-41fe-bdc8-83a2b0bbb301",
+                "pin_id": "d"
+              },
+              {
+                "component_id": "9c2e2a7d-7972-469e-b9a2-d0a3c3eb327c",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "a42556d2-e7fe-42ad-b892-58cf17c9ffd4",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "c440cb06-c5b4-4c51-92eb-661851e59e58",
+            "name": "GATE_A_HI",
+            "connections": [
+              {
+                "component_id": "cbf392a4-8c72-49c6-9a2a-e2664535a616",
+                "pin_id": "g"
+              },
+              {
+                "component_id": "9c2e2a7d-7972-469e-b9a2-d0a3c3eb327c",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "3bee2423-b680-45da-9d4a-1513534fdf88",
+            "name": "GATE_A_LO",
+            "connections": [
+              {
+                "component_id": "e1c6559e-1efb-41fe-bdc8-83a2b0bbb301",
+                "pin_id": "g"
+              },
+              {
+                "component_id": "64730532-c8e9-4f4f-9ec9-7f43a8dfe474",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "66653033-26c8-43c1-8f1b-ba7bc82d6198",
+            "name": "HB_LEG_B",
+            "connections": [
+              {
+                "component_id": "7594657c-9c34-4652-8ba2-db4ce4da12ee",
+                "pin_id": "s"
+              },
+              {
+                "component_id": "0861231c-e498-4f36-ba82-5cebdb50eaad",
+                "pin_id": "d"
+              },
+              {
+                "component_id": "2124b337-edb6-4e72-a3d8-b5ee715cf5d6",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "d577cdb4-5f10-4bc4-ac7e-72ec30675362",
+                "pin_id": "pri_undot"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "7830438f-b4ee-47b5-a00a-2c0c8ddfb0e3",
+            "name": "GATE_B_HI",
+            "connections": [
+              {
+                "component_id": "7594657c-9c34-4652-8ba2-db4ce4da12ee",
+                "pin_id": "g"
+              },
+              {
+                "component_id": "2124b337-edb6-4e72-a3d8-b5ee715cf5d6",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "d9f0004b-f7d4-4594-b0ac-fb58090b2e6e",
+            "name": "GATE_B_LO",
+            "connections": [
+              {
+                "component_id": "0861231c-e498-4f36-ba82-5cebdb50eaad",
+                "pin_id": "g"
+              },
+              {
+                "component_id": "7e37d631-5370-4f31-a9a8-6be26e07c50e",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "598a166d-b8a6-4109-995a-08334e4b7e10",
+            "name": "TX_PRI_DOT",
+            "connections": [
+              {
+                "component_id": "a42556d2-e7fe-42ad-b892-58cf17c9ffd4",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "d577cdb4-5f10-4bc4-ac7e-72ec30675362",
+                "pin_id": "pri_dot"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "e7a57343-49a3-4ae0-9e22-c2fa976ce513",
+            "name": "SEC_RECT1",
+            "connections": [
+              {
+                "component_id": "d577cdb4-5f10-4bc4-ac7e-72ec30675362",
+                "pin_id": "sec1_dot"
+              },
+              {
+                "component_id": "c8c96922-3fb4-41ab-a9d0-9b449370775f",
+                "pin_id": "a"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "d217313a-6a26-4d2e-867f-f4658e34419d",
+            "name": "SEC_RECT2",
+            "connections": [
+              {
+                "component_id": "d577cdb4-5f10-4bc4-ac7e-72ec30675362",
+                "pin_id": "sec2_undot"
+              },
+              {
+                "component_id": "d875975c-e643-492d-8d19-7596d4a4244b",
+                "pin_id": "a"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "be5849f8-3163-411e-82d7-5e801a944eca",
+            "name": "SEC_SW",
+            "connections": [
+              {
+                "component_id": "c8c96922-3fb4-41ab-a9d0-9b449370775f",
+                "pin_id": "k"
+              },
+              {
+                "component_id": "d875975c-e643-492d-8d19-7596d4a4244b",
+                "pin_id": "k"
+              },
+              {
+                "component_id": "f629eda8-ef24-40f0-9b76-73ef1a6241d2",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "c5722e1c-c56c-478e-983a-202646f23a63",
+            "name": "VOUT",
+            "connections": [
+              {
+                "component_id": "f629eda8-ef24-40f0-9b76-73ef1a6241d2",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "05c849df-13bc-403f-9555-5e5f654290fa",
+                "pin_id": "1"
+              },
+              {
+                "component_id": "9491e09d-8ac1-475f-a4cf-4797cb41f6c3",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "4ac5981c-773a-4932-b71b-1a3eee9d875e",
+            "name": "SEC_GND",
+            "connections": [
+              {
+                "component_id": "d577cdb4-5f10-4bc4-ac7e-72ec30675362",
+                "pin_id": "sec1_undot"
+              },
+              {
+                "component_id": "d577cdb4-5f10-4bc4-ac7e-72ec30675362",
+                "pin_id": "sec2_dot"
+              },
+              {
+                "component_id": "05c849df-13bc-403f-9555-5e5f654290fa",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "9491e09d-8ac1-475f-a4cf-4797cb41f6c3",
+                "pin_id": "2"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          }
+        ],
+        "ports": [
+          {
+            "id": "089513f4-038d-41c2-965c-9fa40af9eace",
+            "name": "VIN_PORT",
+            "direction": "input",
+            "net_name": "VIN",
+            "nominal_voltage": 24.0
+          },
+          {
+            "id": "c4777e72-d05c-4fc3-ad76-d4974ee0b83c",
+            "name": "VOUT_PORT",
+            "direction": "output",
+            "net_name": "VOUT",
+            "nominal_voltage": 1000.0
+          },
+          {
+            "id": "f29dca45-1833-4830-8cad-96a56a398cf9",
+            "name": "PRI_GND_PORT",
+            "direction": "ground",
+            "net_name": "PRI_GND",
+            "nominal_voltage": 0.0
+          },
+          {
+            "id": "4eae6746-57fc-40e6-b06c-557dc49acb9b",
+            "name": "SEC_GND_PORT",
+            "direction": "ground",
+            "net_name": "SEC_GND",
+            "nominal_voltage": 0.0
+          }
+        ],
+        "magnetic_geometry": null,
+        "metadata": {}
+      },
+      "readiness_status": "EXPERIMENTAL",
+      "qualification_notes": [
+        "Unqualified experimental topology."
+      ]
+    },
+    {
+      "id": "bfc06429-2dd3-4b9e-a222-5bcae5b6a83f",
+      "topology": "LLC Resonant Half-Bridge Converter",
+      "name": "Isolated LLC Resonant Half-Bridge",
+      "description": "High-frequency zero-voltage switching (ZVS) resonant converter with integrated leakage inductance.",
+      "parameters": {
+        "turns_ratio_np_ns": 0.012,
+        "lr_uh": 8.359597725085308,
+        "cr_nf": 303.00855069346005,
+        "lm_uh": 41.79798862542654,
+        "fr_khz": 100.0
+      },
+      "calculated_metrics": {
+        "estimated_efficiency": 0.96,
+        "switch_voltage_stress_v": 28.0,
+        "peak_primary_current_a": 0.16999960246698018,
+        "component_count": 12.0
+      },
+      "rationale": "Zero-voltage switching (ZVS) across wide load range with minimum electromagnetic emissions.",
+      "constraints_satisfied": true,
+      "feasibility_score": 0.82,
+      "status": "PROPOSED",
+      "reviewer_notes": null,
+      "ir_snapshot": {
+        "schema_version": "1.9.0",
+        "id": "33db48f5-b4a3-43f2-8251-4bb7d375284f",
+        "title": "LLC Resonant Half-Bridge DC-DC Converter",
+        "topology": "LLC Resonant Half-Bridge",
+        "category": "power_electronics",
+        "parameters": {},
+        "components": [
+          {
+            "id": "e80c84b6-dbca-44d0-90f8-5b7f3432953c",
+            "designator": "V1",
+            "name": "Input DC Power Source",
+            "type": "voltage_source",
+            "value": 24.0,
+            "unit": "V",
+            "pins": [
+              {
+                "pin_id": "p",
+                "name": "+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "n",
+                "name": "-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "b20c42ee-3292-4bb4-80e4-294e46e897c0",
+            "designator": "Q1",
+            "name": "High-Side Half-Bridge MOSFET",
+            "type": "mosfet",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "d",
+                "name": "D",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "g",
+                "name": "G",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "s",
+                "name": "S",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "v_ds_max": 36.0,
+              "r_ds_on": 0.045
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "5db086d5-428e-4c84-8159-ad423a8dd2df",
+            "designator": "Q2",
+            "name": "Low-Side Half-Bridge MOSFET",
+            "type": "mosfet",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "d",
+                "name": "D",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "g",
+                "name": "G",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "s",
+                "name": "S",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "v_ds_max": 36.0,
+              "r_ds_on": 0.045
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "1084b47d-3efd-46d4-8d6f-ad5a64f9d370",
+            "designator": "J_GATE_HI",
+            "name": "High-Side Gate Drive Header",
+            "type": "connector",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "GATE",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "SOURCE",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "6962d9a5-f479-4006-ac6d-5dd0c7fc103d",
+            "designator": "J_GATE_LO",
+            "name": "Low-Side Gate Drive Header",
+            "type": "connector",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "GATE",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "SOURCE",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "4d8d9017-0f32-4b7b-890a-2acf99506fa9",
+            "designator": "CR1",
+            "name": "Resonant Tank Capacitor",
+            "type": "capacitor",
+            "value": 3.0300855069346004e-7,
+            "unit": "F",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "c3a0fa9a-493a-4928-9d32-f340ce798641",
+            "designator": "LR1",
+            "name": "Resonant Tank Inductor",
+            "type": "inductor",
+            "value": 8.359597725085308e-6,
+            "unit": "H",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "636ee9ef-d225-4c4a-a938-278b5f3034a3",
+            "designator": "T1",
+            "name": "LLC Resonant Isolation Transformer",
+            "type": "transformer",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "pri_dot",
+                "name": "PRI_DOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "pri_undot",
+                "name": "PRI_UNDOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec1_dot",
+                "name": "SEC1_DOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec1_undot",
+                "name": "SEC1_UNDOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec2_dot",
+                "name": "SEC2_DOT",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec2_undot",
+                "name": "SEC2_UNDOT",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "turns_ratio": 0.012,
+              "lm_h": 0.00004179798862542654
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "d9a26d00-ec45-440e-a93f-48c16e21828d",
+            "designator": "D1",
+            "name": "Secondary Rectifier Diode 1",
+            "type": "diode",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "a",
+                "name": "A",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "k",
+                "name": "K",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "vf": 0.45,
+              "vr_max": 2500.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "016dada2-64eb-4d74-9dc7-bef3407dcfdd",
+            "designator": "D2",
+            "name": "Secondary Rectifier Diode 2",
+            "type": "diode",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "a",
+                "name": "A",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "k",
+                "name": "K",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "vf": 0.45,
+              "vr_max": 2500.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "f511409f-feb7-4cf8-aa71-32de22e3debc",
+            "designator": "C1",
+            "name": "Secondary Output Filter Capacitor",
+            "type": "capacitor",
+            "value": 0.00022,
+            "unit": "F",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "533fec19-8d3d-48c8-8ad4-99ddc40aca55",
+            "designator": "R_LOAD",
+            "name": "Output Load Resistor",
+            "type": "resistor",
+            "value": 100000.0,
+            "unit": "Ohm",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          }
+        ],
+        "nets": [
+          {
+            "id": "8cf75a51-ab0d-4d16-b874-815eda0a8832",
+            "name": "VIN",
+            "connections": [
+              {
+                "component_id": "e80c84b6-dbca-44d0-90f8-5b7f3432953c",
+                "pin_id": "p"
+              },
+              {
+                "component_id": "b20c42ee-3292-4bb4-80e4-294e46e897c0",
+                "pin_id": "d"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "b3733e03-b823-4966-acfc-4a7ffb519117",
+            "name": "HB_MID",
+            "connections": [
+              {
+                "component_id": "b20c42ee-3292-4bb4-80e4-294e46e897c0",
+                "pin_id": "s"
+              },
+              {
+                "component_id": "5db086d5-428e-4c84-8159-ad423a8dd2df",
+                "pin_id": "d"
+              },
+              {
+                "component_id": "1084b47d-3efd-46d4-8d6f-ad5a64f9d370",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "4d8d9017-0f32-4b7b-890a-2acf99506fa9",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "d62ed682-7483-455d-a4f2-98ca07cbbe90",
+            "name": "PRI_GND",
+            "connections": [
+              {
+                "component_id": "e80c84b6-dbca-44d0-90f8-5b7f3432953c",
+                "pin_id": "n"
+              },
+              {
+                "component_id": "5db086d5-428e-4c84-8159-ad423a8dd2df",
+                "pin_id": "s"
+              },
+              {
+                "component_id": "6962d9a5-f479-4006-ac6d-5dd0c7fc103d",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "636ee9ef-d225-4c4a-a938-278b5f3034a3",
+                "pin_id": "pri_undot"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "509241ee-e55a-42d7-9023-7c22c7e9057f",
+            "name": "GATE_HI",
+            "connections": [
+              {
+                "component_id": "b20c42ee-3292-4bb4-80e4-294e46e897c0",
+                "pin_id": "g"
+              },
+              {
+                "component_id": "1084b47d-3efd-46d4-8d6f-ad5a64f9d370",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "e552a826-5cef-4222-abfc-53e58d29bed3",
+            "name": "GATE_LO",
+            "connections": [
+              {
+                "component_id": "5db086d5-428e-4c84-8159-ad423a8dd2df",
+                "pin_id": "g"
+              },
+              {
+                "component_id": "6962d9a5-f479-4006-ac6d-5dd0c7fc103d",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "11894933-981c-4d01-925c-bf4f5941cc28",
+            "name": "RES_NODE",
+            "connections": [
+              {
+                "component_id": "4d8d9017-0f32-4b7b-890a-2acf99506fa9",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "c3a0fa9a-493a-4928-9d32-f340ce798641",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "a1732f9f-e9fd-4905-9dba-9d60a08e36d2",
+            "name": "TX_PRI",
+            "connections": [
+              {
+                "component_id": "c3a0fa9a-493a-4928-9d32-f340ce798641",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "636ee9ef-d225-4c4a-a938-278b5f3034a3",
+                "pin_id": "pri_dot"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "c68d8772-d8d0-4f31-88d8-da0f5c160967",
+            "name": "SEC_RECT1",
+            "connections": [
+              {
+                "component_id": "636ee9ef-d225-4c4a-a938-278b5f3034a3",
+                "pin_id": "sec1_dot"
+              },
+              {
+                "component_id": "d9a26d00-ec45-440e-a93f-48c16e21828d",
+                "pin_id": "a"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "7880bb7f-d05e-49e2-b809-44bfd8f96275",
+            "name": "SEC_RECT2",
+            "connections": [
+              {
+                "component_id": "636ee9ef-d225-4c4a-a938-278b5f3034a3",
+                "pin_id": "sec2_undot"
+              },
+              {
+                "component_id": "016dada2-64eb-4d74-9dc7-bef3407dcfdd",
+                "pin_id": "a"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "10e43c2f-842a-49f9-821a-fc5e55011d23",
+            "name": "VOUT",
+            "connections": [
+              {
+                "component_id": "d9a26d00-ec45-440e-a93f-48c16e21828d",
+                "pin_id": "k"
+              },
+              {
+                "component_id": "016dada2-64eb-4d74-9dc7-bef3407dcfdd",
+                "pin_id": "k"
+              },
+              {
+                "component_id": "f511409f-feb7-4cf8-aa71-32de22e3debc",
+                "pin_id": "1"
+              },
+              {
+                "component_id": "533fec19-8d3d-48c8-8ad4-99ddc40aca55",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "3c59f3e3-b7af-43b3-9cde-2b50a8c9e0e7",
+            "name": "SEC_GND",
+            "connections": [
+              {
+                "component_id": "636ee9ef-d225-4c4a-a938-278b5f3034a3",
+                "pin_id": "sec1_undot"
+              },
+              {
+                "component_id": "636ee9ef-d225-4c4a-a938-278b5f3034a3",
+                "pin_id": "sec2_dot"
+              },
+              {
+                "component_id": "f511409f-feb7-4cf8-aa71-32de22e3debc",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "533fec19-8d3d-48c8-8ad4-99ddc40aca55",
+                "pin_id": "2"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          }
+        ],
+        "ports": [
+          {
+            "id": "50b33a87-04f6-40f6-b8fc-f9062f1ce9db",
+            "name": "VIN_PORT",
+            "direction": "input",
+            "net_name": "VIN",
+            "nominal_voltage": 24.0
+          },
+          {
+            "id": "c35a73ef-02f6-4ec1-9669-d219b6692a46",
+            "name": "VOUT_PORT",
+            "direction": "output",
+            "net_name": "VOUT",
+            "nominal_voltage": 1000.0
+          },
+          {
+            "id": "f7e11299-3185-4413-8306-59c4ed7370e7",
+            "name": "PRI_GND_PORT",
+            "direction": "ground",
+            "net_name": "PRI_GND",
+            "nominal_voltage": 0.0
+          },
+          {
+            "id": "041dffee-60be-4804-8b2c-8eeb5a1941af",
+            "name": "SEC_GND_PORT",
+            "direction": "ground",
+            "net_name": "SEC_GND",
+            "nominal_voltage": 0.0
+          }
+        ],
+        "magnetic_geometry": null,
+        "metadata": {}
+      },
+      "readiness_status": "EXPERIMENTAL",
+      "qualification_notes": [
+        "First-harmonic approximation model only; resonant tank physical tolerances NOT_EVALUATED."
+      ]
+    },
+    {
+      "id": "c4a698d0-6555-49a3-bbe6-c0e1322b4490",
+      "topology": "Push-Pull Isolated Converter",
+      "name": "Push-Pull Multi-Output Converter",
+      "description": "Center-tapped secondary transformer converter with dual-rectifier output filter.",
+      "parameters": {
+        "d_nom": 0.4,
+        "turns_ratio_np_ns": 0.018886779254521837,
+        "fsw_khz": 100.0
+      },
+      "calculated_metrics": {
+        "estimated_efficiency": 0.91,
+        "switch_voltage_stress_v": 61.60000000000001,
+        "peak_primary_current_a": 0.05411255411255412,
+        "component_count": 14.0
+      },
+      "rationale": "Lower switch current stress and symmetrical core excitation.",
+      "constraints_satisfied": true,
+      "feasibility_score": 0.75,
+      "status": "PROPOSED",
+      "reviewer_notes": null,
+      "ir_snapshot": {
+        "schema_version": "1.9.0",
+        "id": "1ba84645-352f-46d6-803f-97ed116a317d",
+        "title": "Push-Pull Dual-Secondary Converter",
+        "topology": "Push-Pull",
+        "category": "isolated_dcdc",
+        "parameters": {
+          "Vin": {
+            "name": "Vin",
+            "expression": null,
+            "value": 24.0,
+            "unit": "V",
+            "tolerance_pct": 0.0,
+            "description": "Input Voltage"
+          },
+          "Vout": {
+            "name": "Vout",
+            "expression": null,
+            "value": 1000.0,
+            "unit": "V",
+            "tolerance_pct": 0.0,
+            "description": "Output Voltage"
+          },
+          "Iout": {
+            "name": "Iout",
+            "expression": null,
+            "value": 0.001,
+            "unit": "A",
+            "tolerance_pct": 0.0,
+            "description": "Load Current"
+          },
+          "Fsw": {
+            "name": "Fsw",
+            "expression": null,
+            "value": 100000.0,
+            "unit": "Hz",
+            "tolerance_pct": 0.0,
+            "description": "Switching Frequency"
+          },
+          "Lm": {
+            "name": "Lm",
+            "expression": null,
+            "value": 0.00039293100000000006,
+            "unit": "H",
+            "tolerance_pct": 0.0,
+            "description": "Primary Magnetizing Inductance"
+          },
+          "Lout": {
+            "name": "Lout",
+            "expression": null,
+            "value": 0.06,
+            "unit": "H",
+            "tolerance_pct": 0.0,
+            "description": "Secondary Output Inductor"
+          },
+          "N_ratio": {
+            "name": "N_ratio",
+            "expression": null,
+            "value": 52.94708994708994,
+            "unit": "ratio",
+            "tolerance_pct": 0.0,
+            "description": "Turns Ratio Ns/Np"
+          },
+          "d_nom": {
+            "name": "d_nom",
+            "expression": null,
+            "value": 0.4,
+            "unit": "ratio",
+            "tolerance_pct": 0.0,
+            "description": "Nominal Duty Cycle"
+          }
+        },
+        "components": [
+          {
+            "id": "641da553-6b32-470a-b260-66b6c7368664",
+            "designator": "V1",
+            "name": "Input DC Supply",
+            "type": "voltage_source",
+            "value": 24.0,
+            "unit": "V",
+            "pins": [
+              {
+                "pin_id": "p",
+                "name": "+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "n",
+                "name": "-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "3aa3cfe0-7b1a-44b2-b66a-19cb975671a0",
+            "designator": "T1",
+            "name": "Push-Pull Dual-Secondary Transformer",
+            "type": "transformer",
+            "value": 0.00039293100000000006,
+            "unit": "H",
+            "pins": [
+              {
+                "pin_id": "pri_dot",
+                "name": "AA",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "pri_undot",
+                "name": "AB",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec1_dot",
+                "name": "SA",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec1_undot",
+                "name": "SB",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec2_dot",
+                "name": "SC",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "sec2_undot",
+                "name": "SD",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "primary_inductance": 0.00039293100000000006,
+              "turns_ratio": 52.94708994708994
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "36b8d5f8-ae05-4ef7-acb1-dc71224e44ef",
+            "designator": "Q1",
+            "name": "Primary Switching MOSFET",
+            "type": "mosfet",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "d",
+                "name": "D",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "g",
+                "name": "G",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "s",
+                "name": "S",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "v_ds_max": 200.0,
+              "rds_on": 0.04
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "b0ff0f9f-9b4a-429d-877d-fc5c41e9aa8f",
+            "designator": "J_GATE",
+            "name": "Gate Control Header",
+            "type": "connector",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "GATE",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "GND",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "b4a65746-88c0-45a2-abf5-464a6b2e83b4",
+            "designator": "D1",
+            "name": "Secondary Rectifier Diode 1",
+            "type": "diode",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "a",
+                "name": "A",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "k",
+                "name": "K",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "vf": 0.45,
+              "vr_max": 100.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "e2d1e29c-8ea0-4003-9dd4-185edb8480eb",
+            "designator": "D2",
+            "name": "Secondary Rectifier Diode 2",
+            "type": "diode",
+            "value": 0.0,
+            "unit": "",
+            "pins": [
+              {
+                "pin_id": "a",
+                "name": "A",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "k",
+                "name": "K",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "vf": 0.45,
+              "vr_max": 100.0
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "8b53bde4-df79-416d-a21c-e0f410066ec9",
+            "designator": "L1",
+            "name": "Secondary Output Filter Inductor",
+            "type": "inductor",
+            "value": 0.06,
+            "unit": "H",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {
+              "dcr": 0.012
+            },
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "476d55c3-6a14-41eb-9590-3d9b1627801f",
+            "designator": "C1",
+            "name": "Secondary Output Filter Capacitor",
+            "type": "capacitor",
+            "value": 0.0001,
+            "unit": "F",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "+",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "-",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          },
+          {
+            "id": "f8b6b8ee-6006-476a-b293-c16d5354c9c7",
+            "designator": "R_LOAD",
+            "name": "Output Load Resistor",
+            "type": "resistor",
+            "value": 100000.0,
+            "unit": "Ohm",
+            "pins": [
+              {
+                "pin_id": "1",
+                "name": "1",
+                "direction": "bidirectional"
+              },
+              {
+                "pin_id": "2",
+                "name": "2",
+                "direction": "bidirectional"
+              }
+            ],
+            "parameters": {},
+            "footprint": null,
+            "spice_model": null,
+            "mpn": null,
+            "manufacturer": null
+          }
+        ],
+        "nets": [
+          {
+            "id": "be2b3367-6110-4bd5-9c45-4900bbd7938b",
+            "name": "VIN",
+            "connections": [
+              {
+                "component_id": "641da553-6b32-470a-b260-66b6c7368664",
+                "pin_id": "p"
+              },
+              {
+                "component_id": "3aa3cfe0-7b1a-44b2-b66a-19cb975671a0",
+                "pin_id": "pri_dot"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "3d13a8ee-60ff-474d-a656-76d0065c5213",
+            "name": "DRAIN",
+            "connections": [
+              {
+                "component_id": "3aa3cfe0-7b1a-44b2-b66a-19cb975671a0",
+                "pin_id": "pri_undot"
+              },
+              {
+                "component_id": "36b8d5f8-ae05-4ef7-acb1-dc71224e44ef",
+                "pin_id": "d"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "67a6379d-696d-4b9f-a257-dd67568c2559",
+            "name": "PRI_GND",
+            "connections": [
+              {
+                "component_id": "641da553-6b32-470a-b260-66b6c7368664",
+                "pin_id": "n"
+              },
+              {
+                "component_id": "36b8d5f8-ae05-4ef7-acb1-dc71224e44ef",
+                "pin_id": "s"
+              },
+              {
+                "component_id": "b0ff0f9f-9b4a-429d-877d-fc5c41e9aa8f",
+                "pin_id": "2"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "877e8a08-47b3-4424-9e88-4ff5440b8437",
+            "name": "GATE",
+            "connections": [
+              {
+                "component_id": "36b8d5f8-ae05-4ef7-acb1-dc71224e44ef",
+                "pin_id": "g"
+              },
+              {
+                "component_id": "b0ff0f9f-9b4a-429d-877d-fc5c41e9aa8f",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "a2efdf94-cc48-4f19-b4b7-dac833606ca9",
+            "name": "SEC_RECT1",
+            "connections": [
+              {
+                "component_id": "3aa3cfe0-7b1a-44b2-b66a-19cb975671a0",
+                "pin_id": "sec1_dot"
+              },
+              {
+                "component_id": "b4a65746-88c0-45a2-abf5-464a6b2e83b4",
+                "pin_id": "a"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "b62e9ce1-953f-44a4-9d51-241c97f9f609",
+            "name": "SEC_RECT2",
+            "connections": [
+              {
+                "component_id": "3aa3cfe0-7b1a-44b2-b66a-19cb975671a0",
+                "pin_id": "sec2_undot"
+              },
+              {
+                "component_id": "e2d1e29c-8ea0-4003-9dd4-185edb8480eb",
+                "pin_id": "a"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "34c1facc-e2be-462a-8357-f9b986338c3c",
+            "name": "SW_SEC",
+            "connections": [
+              {
+                "component_id": "b4a65746-88c0-45a2-abf5-464a6b2e83b4",
+                "pin_id": "k"
+              },
+              {
+                "component_id": "e2d1e29c-8ea0-4003-9dd4-185edb8480eb",
+                "pin_id": "k"
+              },
+              {
+                "component_id": "8b53bde4-df79-416d-a21c-e0f410066ec9",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "c96d27ec-f635-4db3-be0e-780008fd089c",
+            "name": "VOUT",
+            "connections": [
+              {
+                "component_id": "8b53bde4-df79-416d-a21c-e0f410066ec9",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "476d55c3-6a14-41eb-9590-3d9b1627801f",
+                "pin_id": "1"
+              },
+              {
+                "component_id": "f8b6b8ee-6006-476a-b293-c16d5354c9c7",
+                "pin_id": "1"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          },
+          {
+            "id": "aa17c760-5afc-4014-bf43-76020bfebb0e",
+            "name": "SEC_GND",
+            "connections": [
+              {
+                "component_id": "3aa3cfe0-7b1a-44b2-b66a-19cb975671a0",
+                "pin_id": "sec1_undot"
+              },
+              {
+                "component_id": "3aa3cfe0-7b1a-44b2-b66a-19cb975671a0",
+                "pin_id": "sec2_dot"
+              },
+              {
+                "component_id": "476d55c3-6a14-41eb-9590-3d9b1627801f",
+                "pin_id": "2"
+              },
+              {
+                "component_id": "f8b6b8ee-6006-476a-b293-c16d5354c9c7",
+                "pin_id": "2"
+              }
+            ],
+            "is_power": false,
+            "is_ground": false
+          }
+        ],
+        "ports": [
+          {
+            "id": "3f148063-2c9d-4cae-8054-daaa4189e753",
+            "name": "VIN_PORT",
+            "direction": "input",
+            "net_name": "VIN",
+            "nominal_voltage": 24.0
+          },
+          {
+            "id": "881f629d-2243-4647-b4e4-daf905f1ca92",
+            "name": "VOUT_PORT",
+            "direction": "output",
+            "net_name": "VOUT",
+            "nominal_voltage": 1000.0
+          },
+          {
+            "id": "c8476bf8-8920-4a02-b5b8-797e9c07ed0a",
+            "name": "PRI_GND_PORT",
+            "direction": "ground",
+            "net_name": "PRI_GND",
+            "nominal_voltage": 0.0
+          },
+          {
+            "id": "71193a8b-be4d-4c06-af6b-75a157c6d872",
+            "name": "SEC_GND_PORT",
+            "direction": "ground",
+            "net_name": "SEC_GND",
+            "nominal_voltage": 0.0
+          }
+        ],
+        "magnetic_geometry": {
+          "core_type": "ETD39",
+          "core_material": "N87",
+          "effective_area_ae_mm2": 97.1,
+          "effective_length_le_mm": 78.6,
+          "effective_volume_ve_mm3": 7630.0,
+          "air_gap_mm": 0.0,
+          "al_nh": 210.0,
+          "primary_turns": 529,
+          "secondary_turns": 10,
+          "bobbin_height_mm": 21.0,
+          "flange_od_mm": 34.0,
+          "barrel_od_mm": 18.0,
+          "core_id_mm": 16.0,
+          "peak_current_a": 0.0
+        },
+        "metadata": {}
+      },
+      "readiness_status": "EXPERIMENTAL",
+      "qualification_notes": [
+        "Preliminary sizing model only; flux-imbalance protection NOT_EVALUATED."
+      ]
+    }
+  ],
+  "revisions": [],
+  "created_at": "2026-11-14T21:59:19.770568+00:00",
+  "updated_at": "2026-11-14T21:59:19.770590+00:00"
+}
