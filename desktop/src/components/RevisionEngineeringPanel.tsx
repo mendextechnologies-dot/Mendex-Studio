@@ -1,4 +1,5 @@
 import { SpecificationDetailCard } from './SpecificationDetailCard';
+import { RequirementsTraceabilityMatrixCard } from './RequirementsTraceabilityMatrixCard';
 import { ThermalSizingCalculatorCard } from './ThermalSizingCalculatorCard';
 import { TopologySynthesizerCard } from './TopologySynthesizerCard';
 import { CADPreviewCanvas } from './CADPreviewCanvas';
@@ -163,7 +164,7 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile, onRefresh 
   }, [cadFiles, cadCategory, cadFilter]);
 
   return <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-    {section !== 'specifications' && (
+    {section !== 'specifications' && section !== 'requirements' && (
       <div><h3 style={{ fontSize: 18 }}>{titles[section]}</h3>
         <p style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 6 }}>Stored records for {data.product.code} / {data.revision.revision_label}. Execution, evidence integrity and engineering acceptance are separate.</p>
       </div>
@@ -171,26 +172,12 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile, onRefresh 
     {section === 'specifications' && (
       <SpecificationDetailCard data={data} />
     )}
-    {section === 'requirements' && <>
-      {requirements.map((record, i) => <div key={record.record_id || i} className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}><strong>Requirements snapshot {i + 1}</strong><span className="badge badge-blue">Recorded</span></div>
-        <div style={{ overflowX: 'auto', marginTop: 12 }}><table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse', textAlign: 'left' }}>
-          <thead><tr>{['ID / discipline', 'Description', 'Target / acceptance criterion', 'Source'].map(text => <th key={text} style={{ padding: 10 }}>{text}</th>)}</tr></thead>
-          <tbody>{(record.requirements || []).map((r: any) => <tr key={r.id}>
-            <td style={{ padding: 10, borderTop: '1px solid var(--border)' }}>{r.id}<div>{r.discipline}</div></td>
-            <td style={{ padding: 10, borderTop: '1px solid var(--border)' }}>{r.description}</td>
-            <td style={{ padding: 10, borderTop: '1px solid var(--border)' }}>{r.target_value == null ? 'Target not specified' : `${r.target_value} ${r.unit || ''}`}<div>{r.acceptance_criterion || 'Acceptance criterion missing'}</div></td>
-            <td style={{ padding: 10, borderTop: '1px solid var(--border)' }}>{r.source}</td>
-          </tr>)}</tbody>
-        </table></div>
-        <details style={{ marginTop: 12 }}>
-          <summary style={{ cursor: 'pointer', fontWeight: 600, color: 'var(--primary)' }}>
-            Snapshot metadata
-          </summary>
-          <RecordFormView record={record} onOpenFile={onOpenFile} defaultMode="form" />
-        </details>
-      </div>)}
-    </>}
+    {section === 'requirements' && (
+      <RequirementsTraceabilityMatrixCard
+        data={data}
+        onOpenFile={onOpenFile}
+      />
+    )}
     {section === 'calculations' && <>
       {/* Interactive Semiconductor & Magnetic Thermal Sizing Calculator */}
       <ThermalSizingCalculatorCard

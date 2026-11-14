@@ -2,6 +2,18 @@
 
 ## Audit Remediation — Mendex Engineering Studio Quality & Integrity Hardening — 14 November 2026
 
+### Milestone: Publication-Grade Requirements Traceability Matrix (RTM) Card (Option 1) — 15 November 2026 — VERIFIED FIXED
+- [x] **Publication-Grade Requirements Traceability Matrix (RTM) Card (`desktop/src/components/RequirementsTraceabilityMatrixCard.tsx`)**:
+  - Implemented aerospace/automotive-grade Requirements Verification & Traceability Matrix mounted in `RevisionEngineeringPanel.tsx`.
+  - **Executive Compliance HUD**: Total tracked requirements, verified/compliant ratio, pending checks, mandatory gates, and visual compliance progress bar.
+  - **Multidisciplinary Filtering**: Category filter across Electrical, Safety & Isolation, Performance, Mechanical, Thermal; status filters (`✓ PASSED`, `⏳ NOT_EVALUATED`, `⚠️ FAILED`); and mandatory-only toggle.
+  - **Traceable Matrix Table**: Colored discipline badges (`⚡ ELECTRICAL`, `🛡️ SAFETY & ISOLATION`, `🎯 PERFORMANCE`), requirement ID with copy icon, target values with units, mapped specification fields, exact acceptance criteria, standards verification methods (`TEST`, `SIMULATION`, `ANALYSIS`, `INSPECTION`), and verification status pills.
+  - **Interactive Drill-Down Drawer**: Expanding row reveals linked specification value matching status (`✓ Specification Matched` vs `⚠️ ERS Variant`) and complete verbatim source citation.
+  - **Export & Governance Actions**: 1-click CSV export (`[code]_requirements_traceability_matrix.csv`) and Markdown table clipboard copy.
+- [x] **Core Test Suite & Production Build**:
+  - Added unit and desktop RPC integration suite in `tests/core/test_requirements_traceability_matrix.py`: **2/2 PASSED**.
+  - Production frontend build (`npm --prefix desktop run build`): **PASSED with 0 TypeScript/Vite errors (1,594 modules transformed in 2.82s)**.
+
 ### Milestone: Publication-Grade Specification Telemetry Card & Complete 9-Stage End-to-End Lifecycle Qualification — 15 November 2026 — VERIFIED FIXED
 - [x] **Publication-Grade Specification Telemetry Card (`desktop/src/components/SpecificationDetailCard.tsx`, `RevisionEngineeringPanel.tsx`)**:
   - Replaced the unformatted 24-box monospace dump with an aerospace/automotive-grade engineering telemetry command center.
