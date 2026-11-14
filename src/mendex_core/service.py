@@ -890,3 +890,35 @@ class StudioService:
         # If not yet generated, auto-run with nominal parameters
         return self.run_wcca_analysis(revision_id)
 
+    def calculate_pcb_thermal_field(self, revision_id, ambient_c=25.0, copper_weight_oz=2.0):
+        from .design.thermal_engine import PCBThermalEngine
+        from .desktop.service import DesktopService
+        from .desktop.models import CADPreviewQuery
+        revision = self.get_revision(revision_id)
+        spec = revision.specification.model_dump()
+        spec["product_id"] = str(revision.product_id)
+
+        # Retrieve PCB footprints and bounding box from CAD preview
+        desktop = DesktopService(self)
+        pcb_cad = desktop.cad_preview(CADPreviewQuery(revision_id=revision_id, kind="pcb"))
+        footprints = pcb_cad.get("footprints", [])
+        bbox = pcb_cad.get("bbox", {"min_x": 0, "min_y": 0, "max_x": 100, "max_y": 80})
+
+        engine = PCBThermalEngine(self.root)
+        return engine.calculate_thermal_field(
+            revision_id=revision_id,
+            specification=spec,
+            footprints=footprints,
+            board_bbox=bbox,
+            ambient_c=ambient_c,
+            copper_weight_oz=copper_weight_oz,
+        )
+
+    def get_pcb_thermal_field(self, revision_id):
+        from .design.thermal_engine import PCBThermalEngine
+        engine = PCBThermalEngine(self.root)
+        cached = engine.get_thermal_field(revision_id)
+        if cached:
+            return cached
+        return self.calculate_pcb_thermal_field(revision_id)
+

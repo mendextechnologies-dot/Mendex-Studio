@@ -2313,3 +2313,24 @@ pm --prefix desktop run build): **0 ERRORS**, built in 1.64s.
   - Automated test suite (`tests/core/test_wcca_engine.py`): **3/3 PASSED in 0.80s**.
   - Multi-option regression test suite: **15/15 PASSED in 3.57s**.
   - Production TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 2.86s.
+
+
+### Milestone: 2D PCB Thermal Heatmap Overlay & Loss Diffusion Engine (Option 4) — 15 November 2026 — VERIFIED FIXED
+- [x] **2D PCB Thermal Heatmap & Electro-Thermal Loss Diffusion Engine (`src/mendex_core/design/thermal_engine.py`)**:
+  - Coupled discrete component losses (MOSFET switching & conduction losses $P_{Q1}$, diode losses $P_{D1}$, transformer core/winding loss $P_{T1}$, snubber dissipation $P_{Rsn}$, shunt loss $P_{Rsense}$) to actual 2D KiCad footprint coordinates.
+  - Developed thermal spreading resistance model governed by copper pour thickness ($1.0\text{ oz}$ vs $2.0\text{ oz}$ spreading factor $\propto \sqrt{t_{cu}}$) and natural convection ($h \approx 10\text{ W}/(\text{m}^2\cdot\text{K})$).
+  - Evaluates junction temperatures $T_j$ and case temperatures $T_{case}$ against IPC-9592B / NAVMAT P-4855-1 derating guidelines (derated limits: semiconductors $120^\circ\text{C}$, magnetics $105^\circ\text{C}$, passives $95^\circ\text{C}$).
+  - Synthesizes 2D radial temperature gradients and isothermal contours ($70^\circ\text{C}$, $55^\circ\text{C}$, $40^\circ\text{C}$, $30^\circ\text{C}$) for SVG vector rendering.
+- [x] **Single Core Service & Desktop RPC Dispatch (`src/mendex_core/service.py`, `src/mendex_core/desktop/service.py`, `models.py`)**:
+  - Implemented `calculate_pcb_thermal_field` and `get_pcb_thermal_field` on `StudioService`.
+  - Added typed route query `PCBThermalQuery` to `ROUTES` and `dispatch`.
+- [x] **2D PCB Canvas Thermal Heatmap Overlay (`desktop/src/components/CADPreviewCanvas.tsx`)**:
+  - Integrated 1-click `🔥 Thermal Heatmap` overlay toggle button in the PCB CAD inspector toolbar.
+  - Dynamically injects SVG `<radialGradient>` nodes for each component hotspot onto the PCB canvas, smoothly diffusing heat through soldermask and copper layers via screen blending.
+  - Renders hotspot markers with temperature readouts directly over power components ($Q_1: 144^\circ\text{C}$, $T_1: 53^\circ\text{C}$, $R_{SNUB}: 50^\circ\text{C}$).
+  - Executive Thermal Telemetry HUD: displays peak PCB hotspot ($T_{j,max}$), total board heat dissipation ($9.93\text{ W}$), copper pour spreading weight, and a multi-color gradient legend bar ($25^\circ\text{C} \to 120^\circ\text{C}+$).
+  - Interactive component hover card displaying RefDes, component value, package, loss breakdown, thermal resistance $R_{\theta JA}$, junction temperature, and derated margin.
+- [x] **Verification**:
+  - Automated test suite (`tests/core/test_pcb_thermal_engine.py`): **2/2 PASSED in 1.20s**.
+  - Multi-option regression test suite: **17/17 PASSED in 3.54s**.
+  - Production TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 2.42s.

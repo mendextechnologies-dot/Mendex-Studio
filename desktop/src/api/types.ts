@@ -422,3 +422,51 @@ export interface WccaAnalysisReport {
   monte_carlo_runs: WccaMonteCarloRun[];
   report_sha256?: string;
 }
+
+// ============================================================================
+// 2D PCB THERMAL HEATMAP & LOSS DIFFUSION (OPTION 4)
+// ============================================================================
+
+export interface ThermalHotspot {
+  ref: string;
+  name: string;
+  package: string;
+  x: number;
+  y: number;
+  loss_w: number;
+  loss_breakdown?: string;
+  r_th_ja_c_w: number;
+  t_junction_c: number;
+  t_case_c: number;
+  derated_limit_c: number;
+  thermal_margin_c: number;
+  spreading_radius_mm: number;
+  status: 'PASS' | 'WARNING';
+}
+
+export interface ThermalIsotherm {
+  temp_c: number;
+  color: string;
+  label: string;
+}
+
+export interface PCBThermalFieldReport {
+  success: boolean;
+  revision_id: string;
+  ambient_c: number;
+  copper_weight_oz: number;
+  total_board_loss_w: number;
+  max_temperature_c: number;
+  max_component: string;
+  min_thermal_margin_c: number;
+  overall_status: 'PASS' | 'WARNING';
+  board_bbox: { min_x: number; min_y: number; max_x: number; max_y: number; width?: number; height?: number };
+  hotspots: ThermalHotspot[];
+  isotherms: ThermalIsotherm[];
+  standards_compliance: {
+    ipc_9592b_derated: boolean;
+    navmat_derating: boolean;
+    max_allowable_junction_c: number;
+  };
+  report_sha256?: string;
+}

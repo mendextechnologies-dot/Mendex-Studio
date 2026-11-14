@@ -33,6 +33,30 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
   const [exportingGerbers, setExportingGerbers] = useState<boolean>(false);
   const [routeStatus, setRouteStatus] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
+  // 2D PCB Thermal Heatmap Overlay State (Option 4)
+  const [showThermalOverlay, setShowThermalOverlay] = useState<boolean>(false);
+  const [thermalData, setThermalData] = useState<any>(null);
+  const [loadingThermal, setLoadingThermal] = useState<boolean>(false);
+  const [thermalHoverSpot, setThermalHoverSpot] = useState<any>(null);
+
+  const toggleThermalHeatmap = async () => {
+    const next = !showThermalOverlay;
+    setShowThermalOverlay(next);
+    if (next && !thermalData) {
+      setLoadingThermal(true);
+      try {
+        const data = await api.getPcbThermalField(revisionId);
+        if (data && data.success) {
+          setThermalData(data);
+        }
+      } catch (err) {
+        console.warn('Could not load PCB thermal field:', err);
+      } finally {
+        setLoadingThermal(false);
+      }
+    }
+  };
+
   const [gerberInfo, setGerberInfo] = useState<{
     available: boolean;
     filename?: string;
@@ -626,6 +650,29 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
 
           {viewMode === 'pcb' && (
             <>
+              {/* Thermal Heatmap Toggle (Option 4) */}
+              <button
+                type="button"
+                onClick={toggleThermalHeatmap}
+                style={{
+                  background: showThermalOverlay ? '#dc2626' : '#1e293b',
+                  border: `1px solid ${showThermalOverlay ? '#ef4444' : '#334155'}`,
+                  color: '#fff',
+                  padding: '5px 12px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: showThermalOverlay ? '0 0 12px rgba(239, 68, 68, 0.45)' : 'none',
+                }}
+                title="Toggle 2D PCB Thermal Loss & Heatmap Diffusion Overlay"
+              >
+                <span>🔥</span> Thermal Heatmap
+              </button>
+
               {/* Copper Weight Toggle */}
               <div style={{ display: 'inline-flex', background: '#0f172a', borderRadius: 6, border: '1px solid #334155', padding: 2 }}>
                 <button
@@ -1142,8 +1189,19 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
               </g>
             )}
 
-            {/* Fine Grid Background */}
+            {/* Fine Grid Background & Thermal Hotspot Gradients */}
             <defs>
+              {showThermalOverlay && viewMode === 'pcb' && (thermalData?.hotspots || []).map((h: any) => {
+                const isWarning = h.status === 'WARNING';
+                return (
+                  <radialGradient key={`t-grad-${h.ref}`} id={`t-grad-${h.ref}`} cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor={isWarning ? "#ef4444" : "#f97316"} stopOpacity="0.80" />
+                    <stop offset="35%" stopColor={isWarning ? "#f97316" : "#eab308"} stopOpacity="0.60" />
+                    <stop offset="70%" stopColor="#06b6d4" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#0f172a" stopOpacity="0.0" />
+                  </radialGradient>
+                );
+              })}
               <pattern id="cadGrid" width="10" height="10" patternUnits="userSpaceOnUse">
                 <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#ffffff" strokeWidth="0.08" opacity={0.12} />
               </pattern>
@@ -1352,6 +1410,60 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                     </g>
                   );
                 })}
+
+                {/* 2D PCB Thermal Heatmap Overlay (Option 4) */}
+                {showThermalOverlay && viewMode === 'pcb' && thermalData?.hotspots && (
+                  <g className="thermal-overlay-layer">
+                    {/* 1. Thermal Radial Heat Spreading Circles */}
+                    {thermalData.hotspots.map((h: any) => {
+                      const r = h.spreading_radius_mm || 14;
+                      return (
+                        <circle
+                          key={`t-circ-${h.ref}`}
+                          cx={h.x}
+                          cy={h.y}
+                          r={r}
+                          fill={`url(#t-grad-${h.ref})`}
+                          style={{ mixBlendMode: 'screen', pointerEvents: 'none' }}
+                        />
+                      );
+                    })}
+
+                    {/* 2. Interactive Hotspot Markers and Labels */}
+                    {thermalData.hotspots.map((h: any) => (
+                      <g
+                        key={`t-lbl-${h.ref}`}
+                        transform={`translate(${h.x}, ${h.y})`}
+                        onMouseEnter={() => setThermalHoverSpot(h)}
+                        onMouseLeave={() => setThermalHoverSpot(null)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <circle cx="0" cy="0" r="2.2" fill="#ffffff" stroke={h.status === 'WARNING' ? "#ef4444" : "#22c55e"} strokeWidth="1" />
+                        <rect
+                          x="-16"
+                          y="-15"
+                          width="32"
+                          height="10"
+                          rx="2.5"
+                          fill="rgba(15, 23, 42, 0.90)"
+                          stroke={h.status === 'WARNING' ? "#ef4444" : "#22c55e"}
+                          strokeWidth="0.8"
+                        />
+                        <text
+                          x="0"
+                          y="-8"
+                          fontSize="6.5"
+                          fontWeight="bold"
+                          fill="#ffffff"
+                          textAnchor="middle"
+                          fontFamily="monospace"
+                        >
+                          {h.ref}: {Math.round(h.t_junction_c)}°C
+                        </text>
+                      </g>
+                    ))}
+                  </g>
+                )}
               </g>
             )}
 
@@ -1473,6 +1585,104 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Thermal Heatmap HUD Telemetry Banner (Option 4) */}
+      {showThermalOverlay && viewMode === 'pcb' && thermalData && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: '12px 16px',
+            background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+            border: '1px solid #334155',
+            borderRadius: 8,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 12,
+            color: '#f8fafc',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 16 }}>🔥</span>
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
+                  Peak PCB Hotspot (Tj,max)
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: thermalData.overall_status === 'PASS' ? '#22c55e' : '#f59e0b' }}>
+                  {thermalData.max_temperature_c.toFixed(1)}°C on {thermalData.max_component}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ borderLeft: '1px solid #334155', paddingLeft: 14 }}>
+              <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
+                Total Board Dissipation
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#f8fafc' }}>
+                {thermalData.total_board_loss_w.toFixed(2)} W
+              </div>
+            </div>
+
+            <div style={{ borderLeft: '1px solid #334155', paddingLeft: 14 }}>
+              <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
+                Copper Spreading
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#38bdf8' }}>
+                {thermalData.copper_weight_oz.toFixed(1)} oz Top/Bottom Pour
+              </div>
+            </div>
+          </div>
+
+          {/* Color Gradient Legend Bar */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10.5, color: '#94a3b8' }}>
+            <span>25°C</span>
+            <div
+              style={{
+                width: 140,
+                height: 10,
+                borderRadius: 5,
+                background: 'linear-gradient(90deg, #06b6d4 0%, #84cc16 35%, #f97316 70%, #ef4444 100%)',
+              }}
+            />
+            <span>120°C+</span>
+          </div>
+        </div>
+      )}
+
+      {/* Thermal Component Hover Tooltip Card */}
+      {thermalHoverSpot && (
+        <div
+          style={{
+            marginTop: 8,
+            padding: '10px 14px',
+            background: '#070b14',
+            border: `1px solid ${thermalHoverSpot.status === 'WARNING' ? '#ef4444' : '#22c55e'}`,
+            borderRadius: 6,
+            fontSize: 11.5,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            color: '#f8fafc',
+          }}
+        >
+          <div>
+            <strong style={{ color: '#38bdf8' }}>{thermalHoverSpot.ref}</strong> ({thermalHoverSpot.name}) — {thermalHoverSpot.package}
+            <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 2 }}>
+              Loss: <strong>{thermalHoverSpot.loss_w.toFixed(2)} W</strong> ({thermalHoverSpot.loss_breakdown}) • RθJA: {thermalHoverSpot.r_th_ja_c_w}°C/W
+            </div>
+          </div>
+          <div style={{ textAlign: 'right', fontFamily: 'monospace' }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: thermalHoverSpot.status === 'WARNING' ? '#ef4444' : '#22c55e' }}>
+              Tj = {thermalHoverSpot.t_junction_c.toFixed(1)}°C
+            </div>
+            <div style={{ fontSize: 10, color: '#94a3b8' }}>
+              Derated Margin: {thermalHoverSpot.thermal_margin_c > 0 ? `+${thermalHoverSpot.thermal_margin_c.toFixed(1)}` : thermalHoverSpot.thermal_margin_c.toFixed(1)}°C
+            </div>
+          </div>
         </div>
       )}
 

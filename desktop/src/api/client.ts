@@ -571,4 +571,18 @@ export const api = {
       temp_min_c: params.tempMinC ?? -40.0,
       temp_max_c: params.tempMaxC ?? 85.0,
     }),
+  getPcbThermalField: (revisionId: string) =>
+    rpcCall<import('./types').PCBThermalFieldReport>('get_pcb_thermal_field', {
+      revision_id: revisionId,
+    }),
+  calculatePcbThermalField: (params: {
+    revisionId: string;
+    ambientC?: number;
+    copperWeightOz?: number;
+  }) =>
+    rpcCall<import('./types').PCBThermalFieldReport>('calculate_pcb_thermal_field', {
+      revision_id: params.revisionId,
+      ambient_c: params.ambientC ?? 25.0,
+      copper_weight_oz: params.copperWeightOz ?? 2.0,
+    }),
 };

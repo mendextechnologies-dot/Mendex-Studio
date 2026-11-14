@@ -2816,6 +2816,14 @@ class DesktopService:
             )
         if method == "get_wcca_analysis":
             return self.studio.get_wcca_analysis(request.revision_id)
+        if method == "calculate_pcb_thermal_field":
+            return self.studio.calculate_pcb_thermal_field(
+                revision_id=request.revision_id,
+                ambient_c=getattr(request, "ambient_c", 25.0),
+                copper_weight_oz=getattr(request, "copper_weight_oz", 2.0),
+            )
+        if method == "get_pcb_thermal_field":
+            return self.studio.get_pcb_thermal_field(request.revision_id)
         if method == "backup":
             dest = getattr(request, "destination", None) if request else None
             backup_path = self.studio.backup_database(dest)
@@ -2937,4 +2945,6 @@ ROUTES.update(
     correlate_oscilloscope_waveform=models.ScopeCorrelateQuery,
     run_wcca_analysis=models.WccaRunQuery,
     get_wcca_analysis=models.WccaGetQuery,
+    calculate_pcb_thermal_field=models.PCBThermalQuery,
+    get_pcb_thermal_field=models.PCBThermalQuery,
 )

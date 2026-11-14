@@ -313,3 +313,10 @@ class WccaRunQuery(Model):
 
 class WccaGetQuery(Model):
     revision_id: UUID
+
+
+class PCBThermalQuery(Model):
+    idempotency_key: Optional[str] = None
+    revision_id: UUID
+    ambient_c: float = 25.0
+    copper_weight_oz: float = 2.0
