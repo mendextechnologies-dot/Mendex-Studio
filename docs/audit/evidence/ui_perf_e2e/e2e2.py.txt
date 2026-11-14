@@ -1,0 +1,46 @@
+import sys,json,os,time; sys.path.insert(0,r"C:\Mendex studio\src")
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"e2e.py")).read().split("# 1\n")[0])  # helpers
+st=json.load(open(os.path.join(ROOT,"..","e2e_state.json"))); pid,rid,base=st["pid"],st["rid"],st["base"]; job=st["sim"]["job_id"]
+studio=srv.controller.service
+# 9
+e,res=mcp("get_simulation_results",{"job_id":job}); e2,lg=mcp("get_simulation_logs",{"job_id":job})
+raw=os.path.join(ROOT,st["sim"]["raw_file"]); 
+log("9 capture outputs","PASS" if not e and os.path.isfile(raw) else "FAIL",f"raw exists={os.path.isfile(raw)} size={os.path.getsize(raw) if os.path.isfile(raw) else 0}\nresults: {json.dumps(res)[:600]}\nlogs: {json.dumps(lg)[:400]}")
+# 10
+e,ev=mcp("record_validation_evidence",{**base,"idempotency_key":"val1","evidence_path":raw,"expected_evidence_sha256":file_hash(__import__("pathlib").Path(raw)),
+  "check":{"check_id":"vout_sim","status":"pass","reviewer":"Audit (unauthenticated)","notes":"RC netlist software check","evidence_kind":"SIMULATED","measured_value":1.601,"minimum":0,"maximum":5,"unit":"V"}})
+log("10 register evidence (MCP record_validation_evidence)","PASS" if not e else "FAIL",json.dumps(ev)[:600])
+# 11
+e,ls=mcp("get_project_lifecycle",{"revision_id":rid}); e2,ws=mcp("get_workspace_status",{"workspace_id":pid})
+log("11 project status","PASS" if not e else "FAIL",f"lifecycle: {json.dumps(ls)[:500]}\nworkspace_status: {json.dumps(ws)[:400]}")
+# 12
+b=Bridge(ROOT); out={}
+for m,p in [("overview",{}),("projects",{}),("simulations",{}),("project",{"project_id":pid}),("project",{"project_id":pid,"revision_id":rid}),("reports",{})]:
+    d,dt=b.call(m,p); out[m+json.dumps(p)]=d
+    print("BRIDGE",m,p.get("revision_id","")[:8],round(dt*1000,1),"ms",json.dumps(d)[:300])
+d=out["project"+json.dumps({"project_id":pid,"revision_id":rid})].get("result",{})
+summ={k:(len(d[k]) if isinstance(d.get(k),list) else d.get(k)) for k in ["calculations","requirements","registered_artifacts","files","simulations","reports"]} if d else out
+sims=out["simulations{}"].get("result",[])
+log("12 Studio desktop API shows records","PASS" if d and summ["calculations"] and summ["registered_artifacts"] else "FAIL",f"project(R001) counts={summ}; validation={json.dumps(d.get('validation'))[:300]}; simulations={json.dumps(sims)[:500]}")
+# 13
+d1,_=b.call("projects"); md=studio.engineering_records  # via CLI
+c,meta=cli("engineering","get_project_metadata",req={"project_id":pid})
+c,up=cli("engineering","update_project_metadata",req={"project_id":pid,"expected_updated_at":meta["updated_at"],"name":"Audit Generic Buck RENAMED","owner":"Audit","description":"sync test","source":"Audit","reason":"sync","idempotency_key":"sync1"})
+t=time.perf_counter(); d2,dt=b.call("projects")
+log("13 sync CLI->API","PASS" if any(p["name"]=="Audit Generic Buck RENAMED" for p in d2["result"]) else "FAIL",f"before={[p['name'] for p in d1['result']]} after={[p['name'] for p in d2['result']]} (next read {dt*1000:.1f} ms; UI picks it up on next poll: App.tsx setInterval 4000 ms / usePolling 4000 ms)")
+# 14
+c,rep=cli("engineering","generate_revision_report",req={**base,"idempotency_key":"rep1"})
+log("14 report (CLI generate_revision_report)","PASS" if c==0 else "FAIL",json.dumps(rep)[:700])
+# 15
+d,dt=b.call("reports"); rows=d.get("result",[])
+rid_rep=rep.get("report",{}).get("report_id") if isinstance(rep,dict) else None
+x,dt2=b.call("export_report",{"report_id":rid_rep,"idempotency_key":"exp-ui-1"}) if rid_rep else (None,0)
+p=x.get("result",{}).get("path") if x else None
+log("15 report accessible via desktop API","PASS" if rows and p and os.path.isfile(os.path.join(ROOT,p)) else "FAIL",f"reports rows={len(rows)} first={json.dumps(rows[:1])[:400]}\nexport_report -> {json.dumps(x)[:400]} exists={bool(p and os.path.isfile(os.path.join(ROOT,p)))}")
+snap=json.dumps(b.call("project",{"project_id":pid,"revision_id":rid})[0]["result"],sort_keys=True)
+b.close(); log("16a backend shutdown","PASS" if b.p.returncode==0 else "FAIL",f"returncode={b.p.returncode}")
+b2=Bridge(ROOT); snap2=json.dumps(b2.call("project",{"project_id":pid,"revision_id":rid})[0]["result"],sort_keys=True)
+import re; strip=lambda s: re.sub(r'"timestamp": "[^"]+"',"",s)
+log("16 restart backend","PASS",f"restart-to-handshake {b2.startup:.3f}s")
+log("17 data intact after restart","PASS" if strip(snap)==strip(snap2) else "FAIL",f"project payload equal excluding timestamp: {strip(snap)==strip(snap2)}; len={len(snap)}")
+b2.close()

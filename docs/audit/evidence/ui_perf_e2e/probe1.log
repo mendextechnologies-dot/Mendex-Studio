@@ -1,0 +1,18 @@
+startup 0.795 rss 4.3
+handshake 30.9 ms 404 B {"protocol_version": "3.1.0", "id": "a-1ee764f8-71cb-4d8a-899d-ef4c7485e99f", "result": {"protocol_version": "3.1.0", "status": "READY", "data_root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-audit3\\ui\\e2e", "python_version": "3.13.7", "application": "Mendex Engineering Studio", "desktop_ver
+overview 27.3 ms 895 B {"protocol_version": "3.1.0", "id": "a-30780451-ec38-4097-8d0f-1f7cb56d54a5", "result": {"projects": [{"product_id": "0b8d3c7d-b763-4d4f-9b1b-ebb2534d6138", "code": "AUD-001", "name": "Audit Buck Converter", "category": "dc_dc_converter", "owner": "Auditor", "description": "", "active_revision_id": 
+projects 1.4 ms 514 B {"protocol_version": "3.1.0", "id": "a-971f2f54-9e54-4438-9f72-05ae9c9b2188", "result": [{"product_id": "0b8d3c7d-b763-4d4f-9b1b-ebb2534d6138", "code": "AUD-001", "name": "Audit Buck Converter", "category": "dc_dc_converter", "owner": "Auditor", "description": "", "active_revision_id": "45d0d6ed-2f0
+simulations 0.6 ms 91 B {"protocol_version": "3.1.0", "id": "a-b22a3205-a3b6-447b-813e-4964f420adfc", "result": []}
+components 0.4 ms 24939 B {"protocol_version": "3.1.0", "id": "a-eed910c0-6a50-47ee-b2d7-45c4d7496c99", "result": {"categories": [{"id": "mosfet", "label": "Silicon / SiC MOSFETs"}, {"id": "igbt", "label": "IGBTs"}, {"id": "gan", "label": "GaN power stages"}, {"id": "diode", "label": "Diodes & rectifiers"}, {"id": "thyristor
+tools 160.6 ms 12372 B {"protocol_version": "3.1.0", "id": "a-33a51b0f-47c9-4f5e-9a57-e4d53fbcf12b", "result": [{"descriptor": {"schema_version": "1.5.0", "tool_id": "switchlossdb", "name": "SwitchLossDB", "category": "dataset", "supported_os": [], "version": null, "license_status": "REVIEW_REQUIRED", "license_notes": "Ca
+reports 3.1 ms 91 B {"protocol_version": "3.1.0", "id": "a-e2c94ebd-0a44-4831-a50b-c5e24b1137bd", "result": []}
+settings 50.9 ms 3514 B {"protocol_version": "3.1.0", "id": "a-99dabc55-93af-4015-b415-aea243428938", "result": {"protocol_version": "3.1.0", "status": "READY", "data_root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-audit3\\ui\\e2e", "python_version": "3.13.7", "application": "Mendex Engineering Studio", "desktop_ver
+list_reviewers 35.5 ms 91 B {"protocol_version": "3.1.0", "id": "a-cd982f1c-0302-4509-b0e8-e7f11fa0e454", "result": []}
+project 3.6 ms 169 B {"protocol_version": "3.1.0", "id": "a-87479238-cb85-4ec6-9826-a1b871c1f4ac", "error": {"code": "NOT_FOUND", "message": "Revision has not been enrolled in a lifecycle"}}
+waveform 2.0 ms 174 B {"protocol_version": "3.1.0", "id": "a-ea201e56-cb11-4ae6-9e80-3e07510589e4", "error": {"code": "UNSUPPORTED", "message": "Choose an available ASCII .raw file up to 50 MiB"}}
+job 0.8 ms 149 B {"protocol_version": "3.1.0", "id": "a-e40c30cf-7dff-417f-ae2c-4f92d0805251", "error": {"code": "NOT_FOUND", "message": "Integration job not found"}}
+generate_bom 2.6 ms 204 B {"protocol_version": "3.1.0", "id": "a-04c3c666-0027-4f99-a64e-3e36f6c8efa0", "error": {"code": "INVALID_INPUT", "message": "Supply an explicit valid revision bom/bom.json; no example parts are assumed"}}
+review_package 3.5 ms 169 B {"protocol_version": "3.1.0", "id": "a-54e5a7a1-1e59-4abb-9815-ee057db938ed", "error": {"code": "NOT_FOUND", "message": "Revision has not been enrolled in a lifecycle"}}
+bogus 0.3 ms 162 B {"protocol_version": "3.1.0", "id": "a-73b7dd52-cd35-4060-9b42-570b7ece7366", "error": {"code": "METHOD_NOT_ALLOWED", "message": "Desktop method is not allowed"}}
+rss 4.3
+exit 0

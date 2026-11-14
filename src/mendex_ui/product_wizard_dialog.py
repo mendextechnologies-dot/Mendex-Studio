@@ -229,17 +229,8 @@ class ProductDesignWizardDialog(QDialog):
             lp_uh = lp_h * 1e6
             ip_peak = (2.0 * p_in) / (vin_min * d_max)
 
-            # Safety clearance
-            sec_iec = self.calc_service.calculate_iec_creepage_clearance(
-                working_voltage_rms=vout,
-                peak_voltage_v=vout,
-                pollution_degree=2,
-                material_group="IIIa",
-                insulation_type="reinforced",
-                slot_width_mm=5.0,
-            )
-
-            req_cl = sec_iec.outputs["required_clearance_mm"]
+            # No qualified ruleset or insulation context is supplied by this wizard.
+            sec_iec = self.calc_service.calculate_iec_creepage_clearance()
 
             prev = (
                 f"=== DETERMINISTIC SIZING SYNTHESIS PREVIEW ===\n\n"
@@ -253,9 +244,7 @@ class ProductDesignWizardDialog(QDialog):
                 f" - Magnetizing Lp:     {lp_uh:.2f} µH\n"
                 f" - Core Selection:     {self.combo_core.currentText().split('(')[0].strip()} ({self.combo_material.currentText().split('(')[0].strip()})\n\n"
                 f"HIGH-VOLTAGE SAFETY & ISOLATION (IEC 60664-1 & IEC 61010-1):\n"
-                f" - Required Clearance: {req_cl:.2f} mm (Air Gap, Reinforced)\n"
-                f" - Required Creepage:  {sec_iec.outputs['required_creepage_mm']:.2f} mm (Surface Tracking)\n"
-                f" - PCB Milling Slot:   5.00 mm on Edge.Cuts -> Verdict: PASS\n"
+                f" - Insulation assessment: {sec_iec.evaluation_status}; qualified ruleset and complete context required.\n"
             )
             self.txt_preview.setText(prev)
         except Exception as e:

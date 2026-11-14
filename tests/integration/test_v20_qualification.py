@@ -211,19 +211,22 @@ def test_tool_launch_and_routing(temp_design_env):
     step_file = root / "test_cad.step"
     step_file.write_text("ISO-10303-21; HEADER; ENDSEC; DATA; ENDSEC; END-ISO-10303-21;", encoding="utf-8")
     info = launch_tool("freecad", step_file)
-    assert info["tool"] == "freecad"
+    assert info["target"] == str(step_file)
+    assert info["status"] == "launched"
     assert "freecad" in info["executable"].lower()
 
     # 2. LTspice netlist
     net_file = root / "test_sim.net"
     net_file.write_text("V1 1 0 12\nR1 1 0 10\n.op\n.end\n", encoding="utf-8")
     info_lt = launch_tool("ltspice", net_file)
-    assert info_lt["tool"] == "ltspice"
+    assert info_lt["target"] == str(net_file)
+    assert info_lt["status"] == "launched"
     assert "ltspice" in info_lt["executable"].lower()
 
     # 3. KiCad schematic
     sch_file = root / "test.kicad_sch"
     sch_file.write_text("(kicad_sch (version 20240108))", encoding="utf-8")
     info_sch = launch_tool("kicad_sch", sch_file)
-    assert info_sch["tool"] == "kicad_sch"
+    assert info_sch["target"] == str(sch_file)
+    assert info_sch["status"] == "launched"
     assert "eeschema" in info_sch["executable"].lower()

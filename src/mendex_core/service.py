@@ -44,6 +44,8 @@ class StudioService:
         with self.connection() as db:
             # Hold the writer lock before inspecting the version. Another process
             # may be starting against this same new data root.
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("PRAGMA synchronous=NORMAL")
             db.execute("BEGIN IMMEDIATE")
             version = db.execute("PRAGMA user_version").fetchone()[0]
             if version > 4:
@@ -77,9 +79,10 @@ class StudioService:
             if version < 4:
                 from .integration_store import migrate
                 migrate(db)
-            if version < 5:
-                from .integration_store import migrate_v5
-                migrate_v5(db)
+            from .integration_store import migrate_v5
+            migrate_v5(db)
+            db.execute("CREATE TRIGGER IF NOT EXISTS reports_no_update BEFORE UPDATE ON reports BEGIN SELECT RAISE(ABORT,'Report records are append-only'); END;")
+            db.execute("CREATE TRIGGER IF NOT EXISTS reports_no_delete BEFORE DELETE ON reports BEGIN SELECT RAISE(ABORT,'Report records are append-only'); END;")
         from .integration_service import IntegrationService
         self.integrations = IntegrationService(self)
         from .workflows import WorkflowStorageService, migrate_workflows_table, WorkflowExecutionEngine
@@ -112,13 +115,19 @@ class StudioService:
         if active is not None:
             yield active
             return
-        db = sqlite3.connect(self.database, timeout=10)
+        db = sqlite3.connect(self.database, timeout=30)
         db.execute("PRAGMA foreign_keys=ON")
+        db.execute("PRAGMA synchronous=NORMAL")
         try:
             with db:
                 yield db
         except sqlite3.IntegrityError as exc:
-            raise StudioError("CONFLICT", "Product code or revision label already exists") from exc
+            msg = str(exc)
+            if "UNIQUE" in msg.upper():
+                raise StudioError("CONFLICT", "Product code or revision label already exists") from exc
+            if "FOREIGN KEY" in msg.upper():
+                raise StudioError("NOT_FOUND", f"Referenced entity does not exist: {exc}") from exc
+            raise StudioError("CONFLICT", f"Database integrity error: {exc}") from exc
         except sqlite3.Error as exc:
             raise StudioError("STORAGE_ERROR", str(exc)) from exc
         finally:
@@ -130,6 +139,8 @@ class StudioService:
         if self._active_transaction.get() is not None:
             raise StudioError("CONFLICT", "An atomic operation is already active")
         with self.connection() as db:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("PRAGMA synchronous=NORMAL")
             db.execute("BEGIN IMMEDIATE")
             token = self._active_transaction.set(db)
             try:
@@ -187,6 +198,8 @@ class StudioService:
         with destination.open("x", encoding="utf-8") as handle:
             json.dump({"revision": revision.model_dump(mode="json"), "input_hash": specification_hash(revision.specification), "notice": "Read-only export; SQLite is canonical. This export does not approve the design."}, handle, indent=2)
         return destination
+
+
 
     def create_workspace(self, revision_id):
         return self._workspace(self.get_revision(revision_id))
@@ -251,6 +264,20 @@ class StudioService:
             json.dump(data, handle, indent=2)
         return destination
 
+
+
+    def backup_database(self, destination=None):
+        """Safely snapshot the SQLite engineering database using the online backup API."""
+        if destination is None:
+            ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+            destination = self.root / ".mendex" / "backups" / f"studio_backup_{ts}.sqlite3"
+        dest_path = Path(destination).resolve()
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.connection() as source:
+            with sqlite3.connect(str(dest_path)) as target:
+                source.backup(target)
+        return dest_path
+
     def open_report(self, report_id):
         from .launch import open_native
         report = self._get("reports", report_id, Report)
@@ -300,6 +327,8 @@ class StudioService:
 
         pid_str = str(product_uuid)
         with self.connection() as db:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("PRAGMA synchronous=NORMAL")
             db.execute("BEGIN IMMEDIATE")
             rev_rows = db.execute("SELECT id, payload FROM revisions WHERE product_id=?", (pid_str,)).fetchall()
             rev_ids = [row[0] for row in rev_rows]
@@ -316,6 +345,9 @@ class StudioService:
                 ("lifecycle approvals", "SELECT COUNT(*) FROM lifecycle_approvals WHERE revision_id=?"),
                 ("measurements", "SELECT COUNT(*) FROM measurements WHERE revision_id=?"),
                 ("change requests", "SELECT COUNT(*) FROM engineering_change_requests WHERE revision_id=?"),
+                ("engineering records", "SELECT COUNT(*) FROM engineering_records_entries WHERE revision_id=?"),
+                ("lifecycle events", "SELECT COUNT(*) FROM engineering_lifecycle_events WHERE revision_id=?"),
+                ("stage reviews", "SELECT COUNT(*) FROM engineering_stage_reviews WHERE revision_id=?"),
             ]
             for rid in rev_ids:
                 for label, query in evidence_queries:
@@ -382,6 +414,8 @@ class StudioService:
     def save_product_revision(self, product_id, revision_id, name, owner, description, specification):
         spec = Specification.model_validate(specification)
         with self.connection() as db:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("PRAGMA synchronous=NORMAL")
             db.execute("BEGIN IMMEDIATE")
             product_row = db.execute("SELECT payload FROM products WHERE id=?", (str(product_id),)).fetchone()
             revision_row = db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision_id),)).fetchone()
@@ -401,6 +435,8 @@ class StudioService:
 
     def rename_revision(self, revision_id, label):
         with self.connection() as db:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("PRAGMA synchronous=NORMAL")
             db.execute("BEGIN IMMEDIATE")
             row = db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision_id),)).fetchone()
             if not row:
@@ -415,6 +451,8 @@ class StudioService:
     def update_specification(self, revision_id, specification):
         spec = Specification.model_validate(specification)
         with self.connection() as db:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("PRAGMA synchronous=NORMAL")
             db.execute("BEGIN IMMEDIATE")
             row = db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision_id),)).fetchone()
             if not row:
@@ -477,6 +515,8 @@ class StudioService:
         if status not in (Lifecycle.DRAFT, Lifecycle.IN_REVIEW):
             raise StudioError("INVALID_INPUT", "Approval is not implemented. Archive a baseline by creating its next revision.")
         with self.connection() as db:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("PRAGMA synchronous=NORMAL")
             db.execute("BEGIN IMMEDIATE")
             row = db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision_id),)).fetchone()
             if not row:
@@ -507,6 +547,8 @@ class StudioService:
         try:
             with self.connection() as db:
                 if not db.in_transaction:
+                    db.execute("PRAGMA journal_mode=WAL")
+                    db.execute("PRAGMA synchronous=NORMAL")
                     db.execute("BEGIN IMMEDIATE")
                 fresh = Revision.model_validate_json(db.execute("SELECT payload FROM revisions WHERE id=?", (str(revision.revision_id),)).fetchone()[0])
                 if fresh != revision:
@@ -788,6 +830,8 @@ class StudioService:
         path = self.workspace_path(revision)
         try:
             with self.connection() as db:
+                db.execute("PRAGMA journal_mode=WAL")
+                db.execute("PRAGMA synchronous=NORMAL")
                 db.execute("BEGIN IMMEDIATE")
                 current = Product.model_validate_json(db.execute("SELECT payload FROM products WHERE id=?", (str(product_id),)).fetchone()[0])
                 if current.active_revision_id != previous.revision_id:

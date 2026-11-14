@@ -47,6 +47,9 @@ def calculate_semiconductor_losses(
     if frequency_hz <= 0.0:
         raise ValueError("Frequency must be greater than zero")
 
+    # Conduction loss: P_cond = I_on_rms^2 * R_ds_on * D
+    # where i_rms_a is the conduction-interval RMS current during t_on.
+    # (For full-period switch RMS current I_sw_rms = I_on_rms * sqrt(D), set duty_cycle=1.0).
     p_cond = (i_rms_a ** 2) * r_ds_on_ohm * duty_cycle
     p_sw = (e_on_j + e_off_j) * frequency_hz
     p_total = p_cond + p_sw

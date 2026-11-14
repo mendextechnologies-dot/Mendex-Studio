@@ -14,7 +14,7 @@ export const SimulationCenter: React.FC<SimulationCenterProps> = ({ jobs }) => {
           Simulation Center & Batch Solver Jobs
         </h2>
         <p style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
-          Real open-source solver executions (LTspice transient, FEMM 4.2 magnetics, KiCad ERC/DRC).
+          Recorded solver jobs. Execution status does not establish engineering validation; unattributed jobs are not revision evidence.
         </p>
       </div>
 
@@ -32,6 +32,22 @@ export const SimulationCenter: React.FC<SimulationCenterProps> = ({ jobs }) => {
             </tr>
           </thead>
           <tbody>
+            {jobs.length === 0 && (
+              <tr>
+                <td colSpan={7} style={{ textAlign: 'center', padding: '48px 24px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '36px', marginBottom: '12px' }}>⚙️</div>
+                  <div style={{ fontSize: '15px', fontWeight: 700, color: '#172033', marginBottom: '6px' }}>
+                    No Headless Batch Solver Jobs Queued
+                  </div>
+                  <p style={{ fontSize: '12px', color: '#64748b', maxWidth: '480px', margin: '0 auto', lineHeight: '1.5' }}>
+                    Simulation design files (such as <code>etd34_core.fem</code> for FEMM and <code>flyback_circuit.net</code> for LTspice) are currently edited and verified directly in their native engineering tools.
+                  </p>
+                  <p style={{ fontSize: '11px', color: '#94a3b8', maxWidth: '480px', margin: '8px auto 0' }}>
+                    When headless background solver workflows or parametric sweeps are dispatched through the integration runner, their execution status, progress, stdout logs, and SHA-256 evidence digests will be tracked in this table.
+                  </p>
+                </td>
+              </tr>
+            )}
             {jobs.map((job) => (
               <tr key={job.job_id} style={{ borderBottom: '1px solid #f3f6fb' }}>
                 <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: '#1d4ed8' }}>
@@ -44,7 +60,7 @@ export const SimulationCenter: React.FC<SimulationCenterProps> = ({ jobs }) => {
                   {job.operation}
                 </td>
                 <td style={{ padding: '10px 12px', color: 'var(--text-muted)' }}>
-                  {job.project_name || 'Generic Workspace'}
+                  {job.project_name || 'Unattributed workspace'}
                 </td>
                 <td style={{ padding: '10px 12px' }}>
                   <span className={`badge ${job.status === 'SUCCEEDED' ? 'badge-green' : job.status === 'FAILED' ? 'badge-red' : 'badge-yellow'}`}>

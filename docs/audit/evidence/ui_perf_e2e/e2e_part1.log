@@ -1,0 +1,27 @@
+## 1 create project (MCP create_project): PASS
+{"status": "CREATED", "project_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "workspace_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "code": "AUDE2E", "name": "Audit Generic Buck 12V-5V", "category": "dc_dc_converter", "revision_id": "989533c1-d1c4-496e-92a7-2d057d3f13d2", "revision_label": "R001"}
+
+## 3a specs via MCP save_project_specification: PASS
+{"status": "UPDATED", "revision_id": "989533c1-d1c4-496e-92a7-2d057d3f13d2", "specification_hash": "fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4f853c4a80879104f6", "specification": {"schema_version": "1.0", "vin_min_v": 10.0, "vin_nom_v": 12.0, "vin_max_v": 14.0, "vout_v": 5.0, "iout_a": 2.0, "switching_frequency_hz": 200000.0, "ambient_temperature_k": null, "topology": "buck", "isolation_requirement": "", "standards_profile": "UNASSIGNED", "source": "Audit", "assumptions": []}, "project_id":
+
+## 2 init lifecycle (core enroll+start; CLI lifecycle show): PASS
+{"schema_version": "3.1.0", "assignment_id": "dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd", "project_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "revision_id": "989533c1-d1c4-496e-92a7-2d057d3f13d2", "definition_id": "engineering", "definition_version": "3.1.0", "definition_digest": "cd31bc48d989fee42639819caa55322678d4188bb79bc902d329dec8c9456b7a", "input_hash": "fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4f853c4a80879104f6", "sequence": 2, "engineering_status": "NOT_EVALUATED", "approval_status":
+
+## 3b requirements via CLI record_requirements: PASS
+{"sequence": 1, "schema_version": "3.1.0", "record_id": "6b814e2f-8be1-4b42-9e1b-0b19eba31922", "kind": "requirements", "project_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "revision_id": "989533c1-d1c4-496e-92a7-2d057d3f13d2", "stage_id": "project_initialization", "assignment_id": "dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd", "attempt": 1, "input_hash": "fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4
+
+## 4 calculation via MCP record_calculation_run: PASS
+{"sequence": 2, "schema_version": "3.1.0", "record_id": "826513ed-bafb-438a-a2f1-1abf28b8f0a7", "kind": "calculation", "project_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "revision_id": "989533c1-d1c4-496e-92a7-2d057d3f13d2", "stage_id": "project_initialization", "assignment_id": "dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd", "attempt": 1, "input_hash": "fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4f853c4a80879104f6", "specification": {"schema_version": "1.0", "vin_min_v": 10.0, "vin_nom_v": 12.0, "vin_max_v": 14.0, "vout_v": 5.0, "iout_a": 2.0, "switching_frequency_hz": 200000.0, "ambient_temperature_k": null, "topology": "buck", "isolation_requirement": "", "standards_profile": "UNASSIGNED", 
+
+## 5 persisted (read back from a separate CLI process): PASS
+{"schema_version": "3.1.0", "records": [{"assignment_id": "dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd", "assumptions": ["Audit synthetic MOSFET values"], "attempt": 1, "calculation": "losses", "engineering_status": "NOT_EVALUATED", "error": null, "formula_reference": "I_rms^2 * R_ds * duty + (E_on + E_off
+
+## 6 register design artifact (CLI): PASS
+{"sequence": 3, "schema_version": "3.1.0", "record_id": "dcb38323-5d29-42cf-9c41-3b6e1efe3c4b", "kind": "artifact", "project_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "revision_id": "989533c1-d1c4-496e-92a7-2d057d3f13d2", "stage_id": "project_initialization", "assignment_id": "dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd", "attempt": 1, "input_hash": "fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4f853c4a80879104f6", "specification": {"schema_version": "1.0", "vin_min_v": 10.0, "vin_nom_v": 12.0, "vi
+
+## 8 REAL LTspice via CLI simulation run (1.2s): PASS
+{"status": "COMPLETED", "job_id": "836b28de-5f97-4d8e-b065-8a071c198ac6", "tool": "ltspice", "netlist": "input.net", "exit_code": 0, "execution_time_s": 0.0, "raw_file": ".mendex\\ij\\836b28de5f974d8eb0658a071c198ac6\\input.raw", "log_file": ".mendex\\ij\\836b28de5f974d8eb0658a071c198ac6\\input.log", "steady_state_metrics": {"vout_mean_v": 1.601, "vout_ripple_pk_pk_v": 0.9685, "vout_min_v": 1.1651, "vout_max_v": 2.1337, "i_peak_a": 0.0021}, "convergence_status": "COMPLETED", "summary_verdict": "NOT_EVALUATED", "requirements_evaluated": {}, "log_errors": [], "log_warnings": [], "netlist_sha256": "0621bd3f19ea419d100251358b3906ea5b3270739a44877509ec02f98a82d8e3", "duration_note": "Requested duration is not applied; the netlist .tran directive governs the run.", "error": null}
+
+## 7 revision (MCP create_revision): PASS
+{"status": "CREATED", "revision_id": "14b71dd2-9590-4ff0-a610-81c5b80eb431", "label": "R002", "lifecycle_status": "draft", "created_at": "2026-11-14T05:57:14.345268+00:00"}
+

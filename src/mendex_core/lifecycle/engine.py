@@ -84,8 +84,31 @@ class ProductLifecycleEngine:
                         reviewer TEXT NOT NULL,
                         passed INTEGER NOT NULL,
                         notes TEXT,
-                        created_at TEXT NOT NULL
+                        created_at TEXT NOT NULL,
+                        specification_hash TEXT NOT NULL DEFAULT ''
                     )
+                    """
+                )
+                cols = [r[1] for r in db.execute("PRAGMA table_info(lifecycle_approvals)").fetchall()]
+                if "specification_hash" not in cols:
+                    db.execute("ALTER TABLE lifecycle_approvals ADD COLUMN specification_hash TEXT NOT NULL DEFAULT ''")
+
+                db.execute(
+                    """
+                    CREATE TRIGGER IF NOT EXISTS lifecycle_approvals_no_update
+                    BEFORE UPDATE ON lifecycle_approvals
+                    BEGIN
+                        SELECT RAISE(ABORT, 'Lifecycle approval records are append-only and cannot be updated');
+                    END;
+                    """
+                )
+                db.execute(
+                    """
+                    CREATE TRIGGER IF NOT EXISTS lifecycle_approvals_no_delete
+                    BEFORE DELETE ON lifecycle_approvals
+                    BEGIN
+                        SELECT RAISE(ABORT, 'Lifecycle approval records are append-only and cannot be deleted');
+                    END;
                     """
                 )
         except Exception:
@@ -100,35 +123,44 @@ class ProductLifecycleEngine:
         notes: str = "",
     ) -> None:
         """Records an explicit, persistent engineering reviewer sign-off for a lifecycle stage."""
+        if not reviewer or not str(reviewer).strip():
+            raise ValueError("Reviewer identity is required and cannot be empty.")
+        revision = self.service.get_revision(revision_id)
+        current_spec_hash = specification_hash(revision.specification)
         with self.service.connection() as db:
             db.execute(
                 """
-                INSERT INTO lifecycle_approvals (id, revision_id, stage_id, reviewer, passed, notes, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO lifecycle_approvals (id, revision_id, stage_id, reviewer, passed, notes, created_at, specification_hash)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (str(uuid4()), str(revision_id), stage_id.value, reviewer, 1 if passed else 0, notes, now().isoformat()),
+                (str(uuid4()), str(revision_id), stage_id.value, reviewer.strip(), 1 if passed else 0, notes, now().isoformat(), current_spec_hash),
             )
 
     def get_stage_approvals(self, revision_id: UUID) -> Dict[str, Dict[str, Any]]:
         """Retrieves latest reviewer approval for each stage."""
         approvals = {}
         try:
+            revision = self.service.get_revision(revision_id)
+            current_spec_hash = specification_hash(revision.specification)
             with self.service.connection() as db:
                 rows = db.execute(
                     """
-                    SELECT stage_id, reviewer, passed, notes, created_at
+                    SELECT stage_id, reviewer, passed, notes, created_at, specification_hash
                     FROM lifecycle_approvals
                     WHERE revision_id = ?
                     ORDER BY created_at ASC
                     """,
                     (str(revision_id),),
                 ).fetchall()
-                for stage_id, reviewer, passed, notes, created_at in rows:
+                for stage_id, reviewer, passed, notes, created_at, spec_h in rows:
+                    is_stale = bool(spec_h and spec_h != current_spec_hash)
                     approvals[stage_id] = {
                         "reviewer": reviewer,
-                        "passed": bool(passed),
+                        "passed": bool(passed) and not is_stale,
                         "notes": notes,
                         "created_at": datetime.fromisoformat(created_at),
+                        "specification_hash": spec_h,
+                        "stale": is_stale,
                     }
         except Exception:
             pass

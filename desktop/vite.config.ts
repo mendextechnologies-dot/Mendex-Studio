@@ -80,9 +80,9 @@ function pythonDesktopBridgePlugin() {
         const allowedHosts = new Set(['127.0.0.1:5173', 'localhost:5173', '[::1]:5173']);
         const host = req.headers.host;
         const origin = req.headers.origin ? String(req.headers.origin).replace(/^https?:\/\//, '') : null;
-        if ((host && !allowedHosts.has(host)) || (origin && !allowedHosts.has(origin))) {
+        if (!host || !allowedHosts.has(host) || (origin && !allowedHosts.has(origin))) {
           res.statusCode = 403;
-          res.end(JSON.stringify({ error: 'Local same-origin requests required' }));
+          res.end(JSON.stringify({ error: 'Local loopback same-origin requests required' }));
           return;
         }
         if (req.method !== 'POST') {
@@ -152,7 +152,7 @@ function pythonDesktopBridgePlugin() {
 export default defineConfig({
   plugins: [react(), pythonDesktopBridgePlugin()],
   server: {
-    host: '::',
+    host: '127.0.0.1',
     port: 5173,
     strictPort: true,
   },

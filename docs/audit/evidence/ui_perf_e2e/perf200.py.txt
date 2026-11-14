@@ -1,0 +1,6 @@
+import sys,json,statistics,time; from bridge import Bridge
+b=Bridge(sys.argv[1]); print(f"startup {b.startup:.3f}s",flush=True)
+for m in ["overview","projects","reports","tools"]:
+    xs=sorted(b.call(m)[1]*1000 for _ in range(8)); print(m,f"median {statistics.median(xs):.0f} ms max {xs[-1]:.0f} ms",flush=True)
+import cProfile
+b.close()

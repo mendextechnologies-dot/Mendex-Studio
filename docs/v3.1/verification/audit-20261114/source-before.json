@@ -1,0 +1,9 @@
+{
+  "desktop/src/pages/ProjectDetail.tsx": "fd8b5e8844e5ab4b61183ed08beb22700e90ce23dde0915ca3a6a233bf1baf40",
+  "desktop/src/api/client.ts": "460d399443aad1f6caab9c012df750f5322fc66b455056a0e05900626f77a3a7",
+  "desktop/src-tauri/src/main.rs": "ad7bf96adeca817b848bf3b3534d2071fe69c1e85b1b3ee70b842d1efdfcc5f0",
+  "src/mendex_core/controller.py": "594cbee08133b604a8511c58871d1306cf6461e309955a38d650d5f5f16ec3e9",
+  "src/mendex_core/design/service.py": "ab7381ac0b39c678513ef9c48aeca817f87d609de8a24a81c34201b665ecfe85",
+  "src/mendex_core/desktop/service.py": "003e16f9d4769319b9dde377cc10ebb06c2ff24d8ab584a81b5ee80e339a0647",
+  "src/mendex_core/service.py": "eb52c388d480595b30188269d14125ca080acef9a9d6014e06b89654b0a6e03e"
+}

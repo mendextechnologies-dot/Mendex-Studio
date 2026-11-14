@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.077" timestamp="2026-11-14T10:34:12.091889+05:30" hostname="LAPTOP-00P5DJUV"><testcase classname="tests.core.test_native_launch_preservation" name="test_gui_launch_preserves_recovery_and_lock_files[freecad]" time="0.008"><failure message="AssertionError: Opening a file must not bypass another editor lock&#10;assert False&#10; +  where False = exists()&#10; +    where exists = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-426/test_gui_launch_preserves_reco0/workspace/active.lck').exists">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-426/test_gui_launch_preserves_reco0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000201CA49F6F0&gt;
+tool = 'freecad'
+
+    @pytest.mark.parametrize('tool', ['freecad', 'eeschema'])
+    def test_gui_launch_preserves_recovery_and_lock_files(tmp_path, monkeypatch, tool):
+        monkeypatch.setenv('TEMP', str(tmp_path / 'temp'))
+        recovery = tmp_path / 'temp/FreeCAD/v1-1/Cache/FreeCAD_recovery/session.fcstd'
+        recovery.parent.mkdir(parents=True)
+        recovery.write_bytes(b'unsaved recovery bytes')
+        target = tmp_path / 'workspace/model.step'
+        target.parent.mkdir()
+        target.write_bytes(b'fixture; never opened by a real tool')
+        lock = target.parent / 'active.lck'
+        lock.write_bytes(b'active editor lock; no proof of staleness')
+        calls = []
+        def spawn(command, cwd, **kwargs):
+            calls.append((command, cwd, kwargs))
+            return 1234
+        monkeypatch.setattr(launch, '_spawn_on_desktop', spawn)
+        result = launch._spawn_gui(tmp_path / f'{tool}.exe', target)
+        assert result['pid'] == 1234 and len(calls) == 1
+&gt;       assert lock.exists(), 'Opening a file must not bypass another editor lock'
+E       AssertionError: Opening a file must not bypass another editor lock
+E       assert False
+E        +  where False = exists()
+E        +    where exists = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-426/test_gui_launch_preserves_reco0/workspace/active.lck').exists
+
+tests\core\test_native_launch_preservation.py:27: AssertionError</failure></testcase><testcase classname="tests.core.test_native_launch_preservation" name="test_gui_launch_preserves_recovery_and_lock_files[eeschema]" time="0.004"><failure message="AssertionError: Opening a file must not bypass another editor lock&#10;assert False&#10; +  where False = exists()&#10; +    where exists = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-426/test_gui_launch_preserves_reco1/workspace/active.lck').exists">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-426/test_gui_launch_preserves_reco1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000201CA49F5C0&gt;
+tool = 'eeschema'
+
+    @pytest.mark.parametrize('tool', ['freecad', 'eeschema'])
+    def test_gui_launch_preserves_recovery_and_lock_files(tmp_path, monkeypatch, tool):
+        monkeypatch.setenv('TEMP', str(tmp_path / 'temp'))
+        recovery = tmp_path / 'temp/FreeCAD/v1-1/Cache/FreeCAD_recovery/session.fcstd'
+        recovery.parent.mkdir(parents=True)
+        recovery.write_bytes(b'unsaved recovery bytes')
+        target = tmp_path / 'workspace/model.step'
+        target.parent.mkdir()
+        target.write_bytes(b'fixture; never opened by a real tool')
+        lock = target.parent / 'active.lck'
+        lock.write_bytes(b'active editor lock; no proof of staleness')
+        calls = []
+        def spawn(command, cwd, **kwargs):
+            calls.append((command, cwd, kwargs))
+            return 1234
+        monkeypatch.setattr(launch, '_spawn_on_desktop', spawn)
+        result = launch._spawn_gui(tmp_path / f'{tool}.exe', target)
+        assert result['pid'] == 1234 and len(calls) == 1
+&gt;       assert lock.exists(), 'Opening a file must not bypass another editor lock'
+E       AssertionError: Opening a file must not bypass another editor lock
+E       assert False
+E        +  where False = exists()
+E        +    where exists = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-426/test_gui_launch_preserves_reco1/workspace/active.lck').exists
+
+tests\core\test_native_launch_preservation.py:27: AssertionError</failure></testcase></testsuite></testsuites>

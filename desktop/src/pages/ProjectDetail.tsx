@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { api } from '../api/client';
 import { usePolling } from '../usePolling';
+import type { ProjectDetailData } from '../api/types';
+import { RevisionEngineeringPanel, effectiveStageStatus, validationStatus } from '../components/RevisionEngineeringPanel';
 import {
   ArrowLeft,
   LayoutDashboard,
@@ -87,9 +89,21 @@ function formatBytes(bytes: number): string {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 }
 
-export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack: () => void }) => {
-  const load = useCallback(() => api.project(projectId), [projectId]);
-  const { data, error } = usePolling(load);
+export const ProjectDetailView = ({
+  projectId,
+  onBack,
+  data,
+  error = '',
+  selectedRevisionId,
+  onSelectRevision,
+}: {
+  projectId: string;
+  onBack: () => void;
+  data: ProjectDetailData | null;
+  error?: string;
+  selectedRevisionId?: string | null;
+  onSelectRevision?: (revId: string) => void;
+}) => {
   const [tab, setTab] = useState<TabId>(() => {
     const param = new URLSearchParams(location.search).get('tab') as TabId;
     return TAB_DEFS.some((t) => t.id === param) ? param : 'overview';
@@ -98,7 +112,6 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
   const [message, setMessage] = useState('');
   const [fileFilter, setFileFilter] = useState('all');
   const [fileSearch, setFileSearch] = useState('');
-  const [specCategory, setSpecCategory] = useState('all');
 
   // Human Engineering Review Modal State
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -150,7 +163,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                           ext === 'docx' || ext === 'doc' ? 'Microsoft Word' :
                           ext === 'xlsx' || ext === 'xls' ? 'Microsoft Excel' :
                           ext === 'csv' || ext === 'json' ? 'Data Viewer' : 'native application';
-          msg = `Opened ${fname} in ${appName}. Window brought to foreground.`;
+          msg = `Launch requested for ${fname} in ${appName}.`;
         } else if (obj.revealed) {
           const fname = String(obj.revealed).replace(/\\/g, '/').split('/').pop();
           msg = `Revealed ${fname} in Windows File Explorer.`;
@@ -288,14 +301,32 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
 
         {data && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <span className={`badge ${data.product.revision_status === 'PASSED' ? 'badge-green' : 'badge-blue'}`}>
-              Revision: {data.revision.revision_label}
-            </span>
+            {data.revisions && data.revisions.length > 1 ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Revision:</span>
+                <select
+                  value={data.revision.revision_id}
+                  onChange={(e) => onSelectRevision && onSelectRevision(e.target.value)}
+                  className="input"
+                  style={{ padding: '4px 8px', fontSize: '12px', fontWeight: 700, borderRadius: '4px', borderColor: '#1d4ed8', background: '#eff6ff', color: '#1e40af' }}
+                >
+                  {data.revisions.map((rev) => (
+                    <option key={rev.revision_id} value={rev.revision_id}>
+                      {rev.revision_label} ({rev.lifecycle_status.toUpperCase()})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <span className={`badge ${data.product.revision_status === 'PASSED' ? 'badge-green' : 'badge-blue'}`}>
+                Revision: {data.revision.revision_label}
+              </span>
+            )}
             <span className="badge badge-yellow">
-              Engineering: {data.lifecycle.engineering_status}
+              Engineering: {data.lifecycle?.engineering_status || 'DRAFT'}
             </span>
             <span className="badge badge-muted">
-              Approval: {data.lifecycle.approval_status}
+              Approval: {data.lifecycle?.approval_status || 'PENDING'}
             </span>
           </div>
         )}
@@ -535,7 +566,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                       Executive Project Summary
                     </h3>
                     <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
-                      Recorded project baseline, high-voltage converter specifications, verification gates, and lifecycle integrity.
+                      Recorded project baseline, specifications, evidence and lifecycle integrity.
                     </p>
                   </div>
 
@@ -566,7 +597,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                       Enrolled Stages
                     </div>
                     <div style={{ fontSize: '22px', fontWeight: 800, color: '#172033', marginTop: '6px' }}>
-                      {data.lifecycle.stages.filter((s: any) => s.status === 'COMPLETED' || s.effective_status === 'COMPLETED').length} / {data.lifecycle.stages.length}
+                      {data.lifecycle.stages.filter((s: any) => effectiveStageStatus(s) === 'COMPLETED').length} / {data.lifecycle.stages.length}
                     </div>
                     <div style={{ fontSize: '11px', color: '#1d4ed8', marginTop: '4px' }}>
                       Stages 1–5 Completed
@@ -593,7 +624,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                       {calcRecords.length}
                     </div>
                     <div style={{ fontSize: '11px', color: '#0369a1', marginTop: '4px' }}>
-                      Transformer, Dowell & Steinmetz
+                      Recorded inputs and results for this revision
                     </div>
                   </div>
 
@@ -602,10 +633,10 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                       Next Execution Stage
                     </div>
                     <div style={{ fontSize: '16px', fontWeight: 800, color: '#92400e', marginTop: '10px' }}>
-                      Stage 6: Simulation
+                      {data.lifecycle.stages.find((stage: any) => !['COMPLETED', 'NOT_APPLICABLE'].includes(effectiveStageStatus(stage)))?.definition.name || 'No incomplete stage'}
                     </div>
                     <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '4px' }}>
-                      LTspice & FEMM Solvers Ready
+                      See lifecycle criteria and current blockers
                     </div>
                   </div>
                 </div>
@@ -622,8 +653,8 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.max(1, data.lifecycle.stages.length)}, 1fr)`, gap: '8px', overflowX: 'auto' }}>
                     {data.lifecycle.stages.map((st: any, idx: number) => {
-                      const isDone = st.status === 'COMPLETED' || st.effective_status === 'COMPLETED';
-                      const isCurrent = st.status === 'IN_PROGRESS' || st.status === 'AWAITING_REVIEW';
+                      const isDone = effectiveStageStatus(st) === 'COMPLETED';
+                      const isCurrent = ['IN_PROGRESS', 'AWAITING_REVIEW'].includes(effectiveStageStatus(st));
                       return (
                         <div
                           key={st.definition.id}
@@ -710,7 +741,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <span style={{ color: 'var(--text-dim)' }}>Artifact Storage:</span>
                         <span style={{ color: '#334155' }}>
-                          SQLite Immutable Repository ({artifactRecords.length} registered artifacts)
+                          Hash-checked artifact records ({artifactRecords.length} returned)
                         </span>
                       </div>
                     </div>
@@ -750,9 +781,9 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                     {data.lifecycle.stages.map((s: any, idx: number) => {
-                      const isCompleted = s.status === 'COMPLETED' || s.effective_status === 'COMPLETED';
-                      const isInProgress = s.status === 'IN_PROGRESS' || s.effective_status === 'IN_PROGRESS';
-                      const isBlocked = s.status === 'BLOCKED' || s.effective_status === 'BLOCKED';
+                      const isCompleted = effectiveStageStatus(s) === 'COMPLETED';
+                      const isInProgress = effectiveStageStatus(s) === 'IN_PROGRESS';
+                      const isBlocked = effectiveStageStatus(s) === 'BLOCKED';
                       const badgeClass = isCompleted ? 'badge-green' : isInProgress ? 'badge-blue' : isBlocked ? 'badge-red' : 'badge-muted';
                       const review = s.review;
 
@@ -921,820 +952,26 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
 
             {/* TAB 3: SPECIFICATIONS */}
             {tab === 'specifications' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
-                      Authoritative Engineering Specifications & Requirements
-                    </h3>
-                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
-                      Frozen baseline parameters and traceable Engineering Requirements Specification (ERS) derived from Handbook v3.0.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Parameter Envelope Grid */}
-                <div style={{ padding: '16px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Sliders size={14} color="#1d4ed8" /> Electrical Operating Envelope
-                  </h4>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-                    <div style={{ padding: '12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #dce3ed' }}>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Input Voltage (Nominal)</div>
-                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#172033', marginTop: '2px' }}>
-                        {data.revision.specification?.vin_nom_v != null ? `${data.revision.specification.vin_nom_v} V` : '24.0 V'}
-                      </div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>Range: 21.0 V – 28.0 V</div>
-                    </div>
-
-                    <div style={{ padding: '12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #dce3ed' }}>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Output Voltage (Target)</div>
-                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#1d4ed8', marginTop: '2px' }}>
-                        {data.revision.specification?.vout_v != null ? `${data.revision.specification.vout_v} V` : '1000.0 V'}
-                      </div>
-                      <div style={{ fontSize: '11px', color: '#047857', marginTop: '2px' }}>SV-1000P (+) / SV-1000N (-)</div>
-                    </div>
-
-                    <div style={{ padding: '12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #dce3ed' }}>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Output Power & Current</div>
-                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#047857', marginTop: '2px' }}>
-                        1.0 W / 1.0 mA
-                      </div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>Continuous Full Scale</div>
-                    </div>
-
-                    <div style={{ padding: '12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #dce3ed' }}>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Switching Frequency</div>
-                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#172033', marginTop: '2px' }}>
-                        100.0 kHz
-                      </div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>DCM / Boundary Mode</div>
-                    </div>
-
-                    <div style={{ padding: '12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #dce3ed' }}>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>Isolation Rating</div>
-                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#92400e', marginTop: '2px' }}>
-                        3000 V RMS
-                      </div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>5.0 mm Edge.Cuts Cutout</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ERS Requirements Table */}
-                <div style={{ padding: '16px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
-                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <FileCheck size={14} color="#047857" /> Traceable Requirements Specification Register (ERS)
-                    </h4>
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      {['all', 'electrical', 'topology', 'magnetics', 'safety'].map((cat) => (
-                        <button
-                          key={cat}
-                          onClick={() => setSpecCategory(cat)}
-                          style={{
-                            fontSize: '11px',
-                            padding: '3px 8px',
-                            borderRadius: '4px',
-                            background: specCategory === cat ? '#2563eb' : '#f3f6fb',
-                            color: specCategory === cat ? '#ffffff' : '#52627a',
-                            border: `1px solid ${specCategory === cat ? '#3b82f6' : '#dce3ed'}`,
-                            cursor: 'pointer',
-                          }}
-                        >
-                          {cat.toUpperCase()}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '1px solid #dce3ed', color: 'var(--text-dim)' }}>
-                          <th style={{ padding: '8px 10px' }}>Req ID</th>
-                          <th style={{ padding: '8px 10px' }}>Category</th>
-                          <th style={{ padding: '8px 10px' }}>Requirement Name & Description</th>
-                          <th style={{ padding: '8px 10px' }}>Target Value</th>
-                          <th style={{ padding: '8px 10px' }}>Priority</th>
-                          <th style={{ padding: '8px 10px' }}>Stage</th>
-                          <th style={{ padding: '8px 10px' }}>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {[
-                          { id: 'SV1000-ELEC-001', cat: 'electrical', name: 'Input Voltage Envelope', desc: 'DC input supply from 21V to 28V, 24V nominal', target: '24.0 V (21–28V)', priority: 'HIGH', stage: 'Stage 2', status: 'VERIFIED' },
-                          { id: 'SV1000-ELEC-002', cat: 'electrical', name: 'Output Voltage Regulation', desc: 'Regulated precision DC output voltage', target: '1000.0 V ±0.5%', priority: 'CRITICAL', stage: 'Stage 2', status: 'VERIFIED' },
-                          { id: 'SV1000-ELEC-003', cat: 'electrical', name: 'Continuous Power Budget', desc: 'Continuous rated power and full-scale current', target: '1.0 W (1.0 mA)', priority: 'HIGH', stage: 'Stage 2', status: 'VERIFIED' },
-                          { id: 'SV1000-ELEC-004', cat: 'electrical', name: 'Output Ripple & Noise', desc: 'High-voltage output ripple voltage pk-pk', target: '< 1.0% (< 10V pk-pk)', priority: 'HIGH', stage: 'Stage 6', status: 'SIMULATED' },
-                          { id: 'SV1000-TOPO-001', cat: 'topology', name: 'Power Stage Topology', desc: 'High-voltage isolated flyback converter with DCM boundary mode', target: 'Isolated Flyback', priority: 'CRITICAL', stage: 'Stage 3', status: 'SELECTED' },
-                          { id: 'SV1000-MAGN-001', cat: 'magnetics', name: 'Flyback Transformer Design', desc: 'TDK N87 ETD34 core, 4T:233T turns ratio, Lp = 474.4 µH', target: '474.4 µH / ETD34', priority: 'CRITICAL', stage: 'Stage 4', status: 'SIZED' },
-                          { id: 'SV1000-MAGN-002', cat: 'magnetics', name: 'High-Frequency Winding Loss', desc: '40-strand triple-insulated Litz wire to minimize Dowell Fr', target: 'Fr = 1.006 (< 1.01)', priority: 'MEDIUM', stage: 'Stage 4', status: 'VERIFIED' },
-                          { id: 'SV1000-ISOL-001', cat: 'safety', name: 'Galvanic Reinforced Isolation', desc: 'IEC 61010-1 dielectric withstand & 5.0 mm PCB milling cutout slot', target: '3000 V RMS / 5mm slot', priority: 'SAFETY', stage: 'Stage 5', status: 'DESIGNED' },
-                          { id: 'SV1000-SAFE-001', cat: 'safety', name: 'Bleeder & Energy Discharge', desc: 'Automated bleeder discharge circuit to reduce HV capacitor energy', target: '< 50V in < 1.0s', priority: 'SAFETY', stage: 'Stage 5', status: 'DESIGNED' },
-                        ]
-                          .filter((r) => specCategory === 'all' || r.cat === specCategory)
-                          .map((r) => (
-                            <tr key={r.id} style={{ borderBottom: '1px solid #f3f6fb' }}>
-                              <td style={{ padding: '10px', fontFamily: 'monospace', fontWeight: 700, color: '#1d4ed8' }}>{r.id}</td>
-                              <td style={{ padding: '10px', textTransform: 'capitalize', color: 'var(--text-dim)' }}>{r.cat}</td>
-                              <td style={{ padding: '10px' }}>
-                                <div style={{ fontWeight: 600, color: '#172033' }}>{r.name}</div>
-                                <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>{r.desc}</div>
-                              </td>
-                              <td style={{ padding: '10px', fontWeight: 600, color: '#047857' }}>{r.target}</td>
-                              <td style={{ padding: '10px' }}>
-                                <span className={`badge ${r.priority === 'SAFETY' || r.priority === 'CRITICAL' ? 'badge-red' : 'badge-blue'}`}>
-                                  {r.priority}
-                                </span>
-                              </td>
-                              <td style={{ padding: '10px', color: 'var(--text-dim)' }}>{r.stage}</td>
-                              <td style={{ padding: '10px' }}>
-                                <span className="badge badge-green">{r.status}</span>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <RevisionEngineeringPanel section="specifications" data={data}
+                onOpenFile={(path) => action(() => api.openFile(data.revision.revision_id, path))} />
             )}
 
             {/* TAB 4: CALCULATIONS */}
             {tab === 'calculations' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
-                      Analytical Engineering Calculations
-                    </h3>
-                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
-                      Deterministic first-principles calculations executed via Mendex Core with full mathematical traceability.
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="badge badge-green">4 Calculations Recorded</span>
-                    <span className="badge badge-blue">Hash Traceable</span>
-                  </div>
-                </div>
-
-                {/* 4 Calculation Cards Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '16px' }}>
-                  {/* Calc 1: Flyback Sizing */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Zap size={16} color="#1d4ed8" />
-                        <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>
-                          Flyback Transformer Sizing
-                        </h4>
-                      </div>
-                      <span className="badge badge-green">SUCCEEDED</span>
-                    </div>
-                    <p style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                      DCM / Boundary conduction sizing for 100 kHz at 24V input → 1000V 1mA output (Dmax = 0.45).
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginTop: '4px' }}>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Primary Inductance (Lp)</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#1d4ed8', marginTop: '2px' }}>474.42 µH</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Turns Ratio (Np : Ns)</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#172033', marginTop: '2px' }}>4 : 233 (1:58.25)</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Primary Peak Current</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857', marginTop: '2px' }}>224 mA</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Effective Air Gap</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#92400e', marginTop: '2px' }}>4.1 µm</div>
-                      </div>
-                    </div>
-
-                    <div style={{ fontSize: '10px', color: 'var(--text-dim)', paddingTop: '6px', borderTop: '1px solid #f1f5fb' }}>
-                      Receipt ID: <code>41d6e6f0-c4dc-434e-b50e-bda5adb77606</code>
-                    </div>
-                  </div>
-
-                  {/* Calc 2: Dowell Winding Loss */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Calculator size={16} color="#047857" />
-                        <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>
-                          Dowell AC Winding Loss Analysis
-                        </h4>
-                      </div>
-                      <span className="badge badge-green">SUCCEEDED</span>
-                    </div>
-                    <p style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                      High-frequency skin and proximity effect modeling using 40-strand triple-insulated Litz wire at 100 kHz.
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginTop: '4px' }}>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Copper Skin Depth (δ)</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#1d4ed8', marginTop: '2px' }}>0.2365 mm</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Dowell AC Factor (Fr)</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857', marginTop: '2px' }}>1.006</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Conductor Spec</div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#172033', marginTop: '2px' }}>40 × 0.05 mm Litz</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>High-Frequency Penalty</div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#047857', marginTop: '2px' }}>&lt; 0.6% increase</div>
-                      </div>
-                    </div>
-
-                    <div style={{ fontSize: '10px', color: 'var(--text-dim)', paddingTop: '6px', borderTop: '1px solid #f1f5fb' }}>
-                      Receipt ID: <code>b7afc0bd-0271-4652-9e93-ee5a2a06a951</code>
-                    </div>
-                  </div>
-
-                  {/* Calc 3: Steinmetz Core Loss */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Box size={16} color="#92400e" />
-                        <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>
-                          Steinmetz Core Dissipation
-                        </h4>
-                      </div>
-                      <span className="badge badge-green">SUCCEEDED</span>
-                    </div>
-                    <p style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                      Volumetric magnetic hysteresis and eddy dissipation for TDK N87 ferrite at ETD34 geometry.
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginTop: '4px' }}>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Volumetric Loss (Pv)</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#1d4ed8', marginTop: '2px' }}>40.33 kW/m³</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Total Core Loss (Pcore)</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857', marginTop: '2px' }}>0.3081 W</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Core Geometry</div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#172033', marginTop: '2px' }}>ETD34 (7,640 mm³)</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Thermal Rise</div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#047857', marginTop: '2px' }}>&lt; 15 °C rise</div>
-                      </div>
-                    </div>
-
-                    <div style={{ fontSize: '10px', color: 'var(--text-dim)', paddingTop: '6px', borderTop: '1px solid #f1f5fb' }}>
-                      Receipt ID: <code>6ad88c40-56b3-4150-9393-c88694ee995c</code>
-                    </div>
-                  </div>
-
-                  {/* Calc 4: Semiconductor Loss */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Cpu size={16} color="#f43f5e" />
-                        <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>
-                          Semiconductor Switch & Diode Loss
-                        </h4>
-                      </div>
-                      <span className="badge badge-green">SUCCEEDED</span>
-                    </div>
-                    <p style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                      Conduction and dynamic switching losses for BSC030N10NS5 OptiMOS / C3M0065090J SiC MOSFET and GC05MPS33-252 diode.
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginTop: '4px' }}>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Conduction Loss</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#1d4ed8', marginTop: '2px' }}>0.040 W</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Switching Loss</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#92400e', marginTop: '2px' }}>0.760 W</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Total Switch Loss</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#172033', marginTop: '2px' }}>0.800 W</div>
-                      </div>
-                      <div style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Target Efficiency</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857', marginTop: '2px' }}>~85.0%</div>
-                      </div>
-                    </div>
-
-                    <div style={{ fontSize: '10px', color: 'var(--text-dim)', paddingTop: '6px', borderTop: '1px solid #f1f5fb' }}>
-                      Receipt ID: <code>328c93fe-9f6a-4c24-8819-fb11eb88016a</code>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <RevisionEngineeringPanel section="calculations" data={data}
+                onOpenFile={(path) => action(() => api.openFile(data.revision.revision_id, path))} />
             )}
 
             {/* TAB 5: SIMULATIONS */}
             {tab === 'simulations' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
-                      Simulation Center & Solver Verifications
-                    </h3>
-                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
-                      Headless execution of local scientific solvers (LTspice XVII / 24, FEMM 4.2 FEA Magnetics).
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <span className="badge badge-green">Solvers Configured & Qualified</span>
-                  </div>
-                </div>
-
-                {/* Qualified Solvers Health Strip */}
-                <div style={{ padding: '16px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Cpu size={14} color="#1d4ed8" /> Local Scientific Simulation Solvers
-                  </h4>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px' }}>
-                    <div style={{ padding: '12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #dce3ed', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#172033' }}>LTspice XVII / 24</div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>C:\Program Files\ADI\LTspice\LTspice.exe</div>
-                      </div>
-                      <span className="badge badge-green">READY</span>
-                    </div>
-
-                    <div style={{ padding: '12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #dce3ed', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#172033' }}>FEMM 4.2 FEA Magnetics</div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>C:\femm42\bin\femm.exe</div>
-                      </div>
-                      <span className="badge badge-green">READY</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Simulation Execution & Models Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '16px' }}>
-                  {/* LTspice Model Card */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Play size={16} color="#0369a1" />
-                        <div>
-                          <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>LTspice Transient Circuit Simulation</h4>
-                          <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>simulations/flyback_circuit.net</span>
-                        </div>
-                      </div>
-                      <span className="badge badge-green">VERIFIED</span>
-                    </div>
-
-                    <p style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                      24V input → 1000V output isolated flyback converter with 45% PWM drive (ton = 4.08 µs at 100 kHz), RCD primary clamp, 3300V SiC diode, and 1M load.
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                      <div style={{ padding: '8px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Average Vout</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857', marginTop: '2px' }}>1000.31 V</div>
-                      </div>
-                      <div style={{ padding: '8px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Output Ripple</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#0369a1', marginTop: '2px' }}>0.00957%</div>
-                      </div>
-                      <div style={{ padding: '8px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Peak Switch Vds</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#172033', marginTop: '2px' }}>41.50 V</div>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.openFile(data.revision.revision_id, 'simulations/flyback_circuit.net'))}
-                      >
-                        <ExternalLink size={12} /> Open Netlist
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.revealFile(data.revision.revision_id, 'simulations/flyback_circuit.net'))}
-                      >
-                        <Folder size={12} /> Reveal in Explorer
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* FEMM FEA Magnetics Card */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Box size={16} color="#92400e" />
-                        <div>
-                          <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>FEMM 4.2 2D Axisymmetric FEA</h4>
-                          <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>simulations/etd34_magnetics.lua</span>
-                        </div>
-                      </div>
-                      <span className="badge badge-green">VERIFIED</span>
-                    </div>
-
-                    <p style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                      2D Magnetic Finite Element simulation of TDK N87 ETD34 core and 0.1mm air gap under 224 mA peak current excitation.
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                      <div style={{ padding: '8px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Peak Flux Density</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#047857', marginTop: '2px' }}>0.231 T</div>
-                      </div>
-                      <div style={{ padding: '8px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Saturation Limit</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#172033', marginTop: '2px' }}>0.350 T</div>
-                      </div>
-                      <div style={{ padding: '8px', background: '#ffffff', borderRadius: '4px' }}>
-                        <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>Headroom Margin</div>
-                        <div style={{ fontSize: '15px', fontWeight: 800, color: '#0369a1', marginTop: '2px' }}>+41.2%</div>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.openFile(data.revision.revision_id, 'simulations/etd34_magnetics.lua'))}
-                      >
-                        <ExternalLink size={12} /> Open Lua Script
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.revealFile(data.revision.revision_id, 'simulations/etd34_magnetics.lua'))}
-                      >
-                        <Folder size={12} /> Reveal in Explorer
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <RevisionEngineeringPanel section="simulations" data={data}
+                onOpenFile={(path) => action(() => api.openFile(data.revision.revision_id, path))} />
             )}
 
             {/* TAB 6: DESIGNS */}
             {tab === 'designs' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
-                      Hardware CAD Deliverables & Physical Design
-                    </h3>
-                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
-                      Native KiCad 10 schematics, 2-layer PCB layout with physical 5.0 mm isolation cutout slot, and FreeCAD 3D bobbin model.
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <span className="badge badge-green">3 CAD Models Verified</span>
-                    <span className="badge badge-blue">{artifactRecords.length} Artifacts Registered</span>
-                  </div>
-                </div>
-
-                {/* 3 CAD Deliverables Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '16px' }}>
-                  {/* Schematic Card */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Layers size={16} color="#1d4ed8" />
-                        <div>
-                          <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>KiCad 10 Schematic</h4>
-                          <span style={{ fontSize: '11px', color: 'var(--text-dim)', fontFamily: 'monospace' }}>pcb/sv1000.kicad_sch</span>
-                        </div>
-                      </div>
-                      <span className="badge badge-green">4.1 KB</span>
-                    </div>
-
-                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                      Complete electrical schematic featuring primary TO-252 SiC switch Q1, ETD34 4T:233T transformer T1, GC05MPS33-252 3300V SiC diode D1, and ACPL-C87B 5kV optical feedback amplifier.
-                    </p>
-
-                    <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', flexWrap: 'wrap' }}>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.openFile(data.revision.revision_id, 'pcb/sv1000.kicad_sch'))}
-                      >
-                        <ExternalLink size={12} /> Open in KiCad
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.revealFile(data.revision.revision_id, 'pcb/sv1000.kicad_sch'))}
-                      >
-                        <Folder size={12} /> Reveal in Explorer
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* PCB Layout Card */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Cpu size={16} color="#047857" />
-                        <div>
-                          <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>KiCad 10 2-Layer PCB</h4>
-                          <span style={{ fontSize: '11px', color: 'var(--text-dim)', fontFamily: 'monospace' }}>pcb/sv1000.kicad_pcb</span>
-                        </div>
-                      </div>
-                      <span className="badge badge-green">8.2 KB</span>
-                    </div>
-
-                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                      85 mm × 65 mm outline with a <strong>physical 5.0 mm unplated isolation slot on Edge.Cuts</strong> separating primary and secondary to satisfy IEC 61010-1 reinforced isolation (3000 V RMS).
-                    </p>
-
-                    <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', flexWrap: 'wrap' }}>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.openFile(data.revision.revision_id, 'pcb/sv1000.kicad_pcb'))}
-                      >
-                        <ExternalLink size={12} /> Open in KiCad PCB
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.revealFile(data.revision.revision_id, 'pcb/sv1000.kicad_pcb'))}
-                      >
-                        <Folder size={12} /> Reveal in Explorer
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* 3D Bobbin Card */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Box size={16} color="#92400e" />
-                        <div>
-                          <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>FreeCAD 3D Bobbin Model</h4>
-                          <span style={{ fontSize: '11px', color: 'var(--text-dim)', fontFamily: 'monospace' }}>mechanical/etd34_bobbin.step</span>
-                        </div>
-                      </div>
-                      <span className="badge badge-green">12.1 KB</span>
-                    </div>
-
-                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                      ISO-10303-21 STEP parametric solid bobbin model with OD 32 mm, ID 16 mm, barrel 19 mm, height 25 mm, and 1.5 mm flange thickness for ETD34 core former.
-                    </p>
-
-                    <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', flexWrap: 'wrap' }}>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.openFile(data.revision.revision_id, 'mechanical/etd34_bobbin.step'))}
-                      >
-                        <ExternalLink size={12} /> Open in CAD Viewer
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.revealFile(data.revision.revision_id, 'mechanical/etd34_bobbin.step'))}
-                      >
-                        <Folder size={12} /> Reveal in Explorer
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* KiCad Project Card */}
-                  <div style={{ padding: '18px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Layers size={16} color="#0369a1" />
-                        <div>
-                          <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#172033' }}>KiCad Project Manager</h4>
-                          <span style={{ fontSize: '11px', color: 'var(--text-dim)', fontFamily: 'monospace' }}>pcb/sv1000.kicad_pro</span>
-                        </div>
-                      </div>
-                      <span className="badge badge-green">0.4 KB</span>
-                    </div>
-
-                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                      Unified project manager workspace integrating schematic hierarchy, board layout, netlist rules, and active clearance profiles.
-                    </p>
-
-                    <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', flexWrap: 'wrap' }}>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.openFile(data.revision.revision_id, 'pcb/sv1000.kicad_pro'))}
-                      >
-                        <ExternalLink size={12} /> Open Project
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={() => action(() => api.revealFile(data.revision.revision_id, 'pcb/sv1000.kicad_pro'))}
-                      >
-                        <Folder size={12} /> Reveal in Explorer
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Production Bill of Materials (BOM) Section */}
-                <div style={{ padding: '20px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #cbd5e1', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div style={{ width: '36px', height: '36px', borderRadius: '6px', background: '#eff6ff', border: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <FileCheck size={20} color="#1d4ed8" />
-                      </div>
-                      <div>
-                        <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>
-                          Production Bill of Materials (BOM) — PDF & Word
-                        </h4>
-                        <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                          10 Qualified Sourcing Line Items • Derated per IPC-9592B • IEC 61010-1 Reinforced Isolation
-                        </span>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span className="badge badge-green">PDF & Word Ready</span>
-                      <span className="badge badge-blue">10 Sourced Items</span>
-                      <span className="badge badge-purple">1.0 W (1000V @ 1mA)</span>
-                    </div>
-                  </div>
-
-                  <p style={{ fontSize: '12px', color: '#475569', lineHeight: 1.5, margin: 0 }}>
-                    Official hardware procurement specification and assembly schedule. Features primary SiC switch Q1, custom ETD34 transformer T1, 3300V SiC rectifier D1, 1500V film capacitor C_OUT, and 5000V RMS reinforced optocoupler U1 with 5.0 mm PCB milling cutout.
-                  </p>
-
-                  {/* 1-Click Action Buttons */}
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', paddingTop: '4px' }}>
-                    <button
-                      className="btn btn-primary"
-                      style={{ fontSize: '12px', padding: '7px 16px', display: 'flex', alignItems: 'center', gap: '6px', background: '#1d4ed8', color: '#ffffff' }}
-                      onClick={() => action(() => api.openFile(data.revision.revision_id, 'bom/SV1000_Bill_of_Materials.pdf'))}
-                    >
-                      <ExternalLink size={13} /> Open PDF BOM
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ fontSize: '12px', padding: '7px 16px', display: 'flex', alignItems: 'center', gap: '6px', borderColor: '#2563eb', color: '#1e40af' }}
-                      onClick={() => action(() => api.openFile(data.revision.revision_id, 'bom/SV1000_Bill_of_Materials.docx'))}
-                    >
-                      <FileText size={13} /> Open Word BOM
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ fontSize: '12px', padding: '7px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
-                      onClick={handleGenerateBom}
-                      disabled={isGeneratingBom}
-                    >
-                      <RefreshCw size={13} className={isGeneratingBom ? 'spin' : ''} />
-                      {isGeneratingBom ? 'Generating PDF & Word…' : 'Generate / Rebuild BOM'}
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ fontSize: '12px', padding: '7px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
-                      onClick={() => action(() => api.revealFile(data.revision.revision_id, 'bom'))}
-                    >
-                      <Folder size={13} /> Reveal in Explorer
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ fontSize: '12px', padding: '7px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
-                      onClick={() => action(() => api.openFile(data.revision.revision_id, 'bom/bom.csv'))}
-                    >
-                      <Download size={13} /> View CSV
-                    </button>
-                  </div>
-
-                  {/* Interactive Component Sourcing Table */}
-                  <div style={{ marginTop: '8px', background: '#ffffff', borderRadius: '6px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-                    <div style={{ padding: '10px 14px', background: '#f1f5f9', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
-                        Qualified Component Bill of Materials (10 Sourced Items)
-                      </span>
-                      <span style={{ fontSize: '11px', fontFamily: 'monospace', color: '#64748b' }}>
-                        Format: PDF (Vector) & DOCX (Word 2016)
-                      </span>
-                    </div>
-
-                    <div style={{ overflowX: 'auto', maxHeight: '280px' }}>
-                      <table style={{ width: '100%', fontSize: '11px', borderCollapse: 'collapse', textAlign: 'left' }}>
-                        <thead>
-                          <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', color: '#475569' }}>
-                            <th style={{ padding: '7px 10px' }}>Item</th>
-                            <th style={{ padding: '7px 10px' }}>Ref Des</th>
-                            <th style={{ padding: '7px 10px' }}>Qty</th>
-                            <th style={{ padding: '7px 10px' }}>Description</th>
-                            <th style={{ padding: '7px 10px' }}>Manufacturer</th>
-                            <th style={{ padding: '7px 10px' }}>Manufacturer Part #</th>
-                            <th style={{ padding: '7px 10px' }}>Package</th>
-                            <th style={{ padding: '7px 10px' }}>Rating</th>
-                            <th style={{ padding: '7px 10px' }}>Domain</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {[
-                            { item: 1, des: 'Q1', qty: 1, desc: 'SiC Power MOSFET 1200V 35A 65mΩ', mfr: 'Wolfspeed / Cree', mpn: 'C3M0065090J', pkg: 'TO-252-2', rating: '1200V / 35A', domain: 'Primary (24V)' },
-                            { item: 2, des: 'T1', qty: 1, desc: 'HV Isolated Flyback Transformer ETD34 4T:233T, 0.48mm gap', mfr: 'TDK / Custom', mpn: 'B66367G0000X187', pkg: 'ETD34-Vertical', rating: '3000V RMS isolation', domain: 'Barrier (5mm slot)' },
-                            { item: 3, des: 'D1', qty: 1, desc: 'HV SiC Schottky Rectifier Diode 3300V 5A', mfr: 'GeneSiC Semi', mpn: 'GC05MPS33-252', pkg: 'TO-252-2', rating: '3300V / 5A', domain: 'Secondary (1000V)' },
-                            { item: 4, des: 'C_OUT', qty: 1, desc: 'HV DC Output Filter Polypropylene Film Cap 100nF 1500V', mfr: 'WIMA / KEMET', mpn: 'MKP1T031005F00KSSD', pkg: 'Box Radial', rating: '1500V DC / 100nF', domain: 'Secondary (1000V)' },
-                            { item: 5, des: 'C_IN', qty: 1, desc: 'Input Bulk Decoupling Ceramic Cap 47µF 50V X7R', mfr: 'TDK / Murata', mpn: 'C3225X7R1H476M250AC', pkg: '1210 SMD', rating: '50V DC / 47µF', domain: 'Primary (24V)' },
-                            { item: 6, des: 'U1', qty: 1, desc: 'Optically Isolated Feedback Amplifier 5000V RMS', mfr: 'Broadcom', mpn: 'ACPL-C87B-000E', pkg: 'SOIC-8', rating: '5000V RMS', domain: 'Barrier (Optical)' },
-                            { item: 7, des: 'D_SNUB', qty: 1, desc: 'Fast Recovery Clamp Snubber Diode 600V 1A 35ns', mfr: 'Vishay Semi', mpn: 'ES1J-E3/61T', pkg: 'DO-214AC (SMA)', rating: '600V / 1A', domain: 'Primary (24V)' },
-                            { item: 8, des: 'C_SNUB', qty: 1, desc: 'RCD Clamp Snubber Ceramic Cap 10nF 100V X7R', mfr: 'KEMET', mpn: 'C0805C103K1RACTU', pkg: '0805 SMD', rating: '100V DC / 10nF', domain: 'Primary (24V)' },
-                            { item: 9, des: 'R_SNUB', qty: 1, desc: 'RCD Clamp Bleeder Resistor 47kΩ 1W 5%', mfr: 'Vishay Dale', mpn: 'CRCW120647K0JNEAHP', pkg: '1206 SMD', rating: '200V / 1W / 47kΩ', domain: 'Primary (24V)' },
-                            { item: 10, des: 'R_FB', qty: 1, desc: 'HV Precision Feedback Resistor 10MΩ 1500V 1%', mfr: 'Ohmite / TE', mpn: 'HVC2512-10MJT18', pkg: '2512 SMD', rating: '1500V DC / 10MΩ', domain: 'Secondary (1000V)' },
-                          ].map((row, idx) => (
-                            <tr key={row.des} style={{ borderBottom: '1px solid #f1f5f9', background: idx % 2 === 1 ? '#f8fafc' : '#ffffff' }}>
-                              <td style={{ padding: '6px 10px', color: '#64748b' }}>{row.item}</td>
-                              <td style={{ padding: '6px 10px', fontWeight: 700, color: '#1e3a8a', fontFamily: 'monospace' }}>{row.des}</td>
-                              <td style={{ padding: '6px 10px', color: '#334155' }}>{row.qty}</td>
-                              <td style={{ padding: '6px 10px', color: '#1e293b' }}>{row.desc}</td>
-                              <td style={{ padding: '6px 10px', color: '#475569' }}>{row.mfr}</td>
-                              <td style={{ padding: '6px 10px', fontWeight: 600, color: '#0f172a', fontFamily: 'monospace' }}>{row.mpn}</td>
-                              <td style={{ padding: '6px 10px', color: '#64748b' }}>{row.pkg}</td>
-                              <td style={{ padding: '6px 10px', color: '#047857', fontWeight: 600 }}>{row.rating}</td>
-                              <td style={{ padding: '6px 10px' }}>
-                                <span className={`badge ${row.domain.includes('Barrier') ? 'badge-purple' : row.domain.includes('Secondary') ? 'badge-yellow' : 'badge-blue'}`} style={{ fontSize: '10px' }}>
-                                  {row.domain}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Registered Artifacts Table */}
-                <div style={{ padding: '16px', background: '#f3f6fb', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <FileText size={14} color="#1d4ed8" /> Immutable Registered Engineering Artifacts ({artifactRecords.length} records)
-                  </h4>
-
-                  <div style={{ overflowX: 'auto', maxHeight: '300px' }}>
-                    <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '1px solid #dce3ed', color: 'var(--text-dim)' }}>
-                          <th style={{ padding: '8px 10px' }}>Artifact Path</th>
-                          <th style={{ padding: '8px 10px' }}>Classification</th>
-                          <th style={{ padding: '8px 10px' }}>Size</th>
-                          <th style={{ padding: '8px 10px' }}>SHA-256 Digest</th>
-                          <th style={{ padding: '8px 10px' }}>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {artifactRecords.map((art: any) => (
-                          <tr key={art.record_id} style={{ borderBottom: '1px solid #f3f6fb' }}>
-                            <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#172033' }}>
-                              {art.relative_path}
-                            </td>
-                            <td style={{ padding: '8px 10px' }}>
-                              <span className="badge badge-blue">{art.classification}</span>
-                            </td>
-                            <td style={{ padding: '8px 10px', color: 'var(--text-dim)' }}>
-                              {formatBytes(art.size_bytes || 0)}
-                            </td>
-                            <td style={{ padding: '8px 10px', fontFamily: 'monospace', fontSize: '11px', color: '#52627a' }}>
-                              {art.sha256 ? `${art.sha256.substring(0, 16)}…` : '—'}
-                            </td>
-                            <td style={{ padding: '8px 10px' }}>
-                              <div style={{ display: 'flex', gap: '6px' }}>
-                                <button
-                                  className="btn btn-secondary"
-                                  style={{ fontSize: '11px', padding: '3px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}
-                                  onClick={() => action(() => api.openFile(data.revision.revision_id, art.relative_path))}
-                                >
-                                  <ExternalLink size={10} /> Open
-                                </button>
-                                <button
-                                  className="btn btn-secondary"
-                                  style={{ fontSize: '11px', padding: '3px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}
-                                  onClick={() => action(() => api.revealFile(data.revision.revision_id, art.relative_path))}
-                                >
-                                  <Folder size={10} /> Reveal
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <RevisionEngineeringPanel section="designs" data={data}
+                onOpenFile={(path) => action(() => api.openFile(data.revision.revision_id, path))} />
             )}
 
             {/* TAB 7: FILES */}
@@ -1870,7 +1107,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                       Authorized verification decisions, rule versions, and cryptographic evidence hashes.
                     </p>
                   </div>
-                  <span className="badge badge-green">{valRecords.length} Gates Verified</span>
+                  <span className="badge badge-green">{valRecords.length} Validation Records</span>
                 </div>
 
                 {valRecords.length === 0 ? (
@@ -1883,7 +1120,8 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                     {valRecords.map((vr: any, idx: number) => {
                       const rec = vr.record || vr;
                       const chk = rec.check || {};
-                      const isPass = (vr.effective_status || chk.status) === 'pass';
+                      const effective = validationStatus(vr);
+                      const isPass = effective === 'PASS';
 
                       return (
                         <div
@@ -1904,7 +1142,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                               <span style={{ fontSize: '14px', fontWeight: 700, color: '#172033', fontFamily: 'monospace' }}>
                                 {chk.check_id}
                               </span>
-                              <span className="badge badge-green">PASS</span>
+                              <span className={`badge ${isPass ? 'badge-green' : 'badge-yellow'}`}>{effective}</span>
                               <span className="badge badge-blue">{chk.evidence_kind || 'CALCULATED'}</span>
                             </div>
 
@@ -1929,17 +1167,12 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                               <button
                                 className="btn btn-secondary"
                                 style={{ fontSize: '11px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                                onClick={() => action(() => api.openFile(data.revision.revision_id, rec.evidence_filename || `reports/${rec.evidence_filename}`))}
+                                disabled={!rec.record_id}
+                                onClick={() => action(() => api.openEvidence(rec.record_id))}
                               >
                                 <ExternalLink size={12} /> Open Evidence Dossier
                               </button>
-                              <button
-                                className="btn btn-secondary"
-                                style={{ fontSize: '11px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                                onClick={() => action(() => api.revealFile(data.revision.revision_id, rec.evidence_filename || `reports/${rec.evidence_filename}`))}
-                              >
-                                <Folder size={12} /> Reveal in Explorer
-                              </button>
+
                             </div>
                           </div>
                         </div>
@@ -2004,9 +1237,25 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                           </div>
                         </div>
 
-                        <span className={`badge ${r.lifecycle_status === 'passed' ? 'badge-green' : 'badge-blue'}`}>
-                          {r.lifecycle_status}
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span className={`badge ${r.lifecycle_status === 'passed' ? 'badge-green' : 'badge-blue'}`}>
+                            {r.lifecycle_status}
+                          </span>
+                          {!isActive && onSelectRevision && (
+                            <button
+                              onClick={() => onSelectRevision(r.revision_id)}
+                              className="btn btn-secondary"
+                              style={{ fontSize: '11px', padding: '4px 10px' }}
+                            >
+                              Switch to this revision
+                            </button>
+                          )}
+                          {isActive && (
+                            <span className="badge badge-green" style={{ fontSize: '10px' }}>
+                              CURRENT VIEW
+                            </span>
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -2032,7 +1281,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                     <FileCheck size={20} color="#1d4ed8" />
                     <div>
                       <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a' }}>
-                        Production Bill of Materials (BOM) • Sourcing Schedule
+                        Draft Bill of Materials (BOM) • Sourcing Schedule
                       </h4>
                       <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
                         Vector PDF & Editable Word formats • 10 Sourced Items derated per IPC-9592B
@@ -2043,14 +1292,16 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                     <button
                       className="btn btn-primary"
                       style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                      onClick={() => action(() => api.openFile(data.revision.revision_id, 'bom/SV1000_Bill_of_Materials.pdf'))}
+                      disabled={!data.files.some(f => f.relative_path.startsWith('bom/') && f.extension === '.pdf')}
+                      onClick={() => { const file = data.files.filter(f => f.relative_path.startsWith('bom/') && f.extension === '.pdf').sort((a, b) => b.modified_ns - a.modified_ns)[0]; if (file) action(() => api.openFile(data.revision.revision_id, file.relative_path)); }}
                     >
                       <ExternalLink size={12} /> Open PDF BOM
                     </button>
                     <button
                       className="btn btn-secondary"
                       style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                      onClick={() => action(() => api.openFile(data.revision.revision_id, 'bom/SV1000_Bill_of_Materials.docx'))}
+                      disabled={!data.files.some(f => f.relative_path.startsWith('bom/') && f.extension === '.docx')}
+                      onClick={() => { const file = data.files.filter(f => f.relative_path.startsWith('bom/') && f.extension === '.docx').sort((a, b) => b.modified_ns - a.modified_ns)[0]; if (file) action(() => api.openFile(data.revision.revision_id, file.relative_path)); }}
                     >
                       <FileText size={12} /> Open Word BOM
                     </button>
@@ -2058,7 +1309,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                       className="btn btn-secondary"
                       style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
                       onClick={handleGenerateBom}
-                      disabled={isGeneratingBom}
+                      disabled={isGeneratingBom || data.revision.lifecycle_status !== 'draft'}
                     >
                       <RefreshCw size={12} className={isGeneratingBom ? 'spin' : ''} />
                       {isGeneratingBom ? 'Generating…' : 'Re-Generate BOM'}
@@ -2091,7 +1342,7 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
                             Report generated: {new Date(r.report.generated_at).toLocaleString()}
                           </span>
                           <div style={{ display: 'flex', gap: '6px' }}>
-                            <span className={`badge ${r.integrity === 'VERIFIED' ? 'badge-green' : 'badge-yellow'}`}>
+                            <span className={`badge ${r.integrity === 'INTACT' ? 'badge-green' : 'badge-yellow'}`}>
                               Integrity: {r.integrity}
                             </span>
                             {r.stale && <span className="badge badge-yellow">Stale</span>}
@@ -2443,5 +1694,22 @@ export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack
         </>
       )}
     </div>
+  );
+};
+
+export const ProjectDetail = ({ projectId, onBack }: { projectId: string; onBack: () => void }) => {
+  const [selectedRevisionId, setSelectedRevisionId] = useState<string | null>(null);
+  const load = useCallback(() => api.project(projectId, selectedRevisionId || undefined), [projectId, selectedRevisionId]);
+  const { data, error } = usePolling(load);
+  return (
+    <ProjectDetailView
+      key={`${projectId}-${selectedRevisionId || 'active'}`}
+      projectId={projectId}
+      onBack={onBack}
+      data={data}
+      error={error}
+      selectedRevisionId={selectedRevisionId}
+      onSelectRevision={setSelectedRevisionId}
+    />
   );
 };

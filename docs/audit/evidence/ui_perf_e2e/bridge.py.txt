@@ -1,0 +1,35 @@
+import json, subprocess, time, os, uuid, sys, threading, psutil
+REPO=r"C:\Mendex studio"; PY=REPO+r"\.venv\Scripts\python.exe"
+class Bridge:
+    def __init__(self, root):
+        env=dict(os.environ, PYTHONPATH=REPO+r"\src", MENDEX_DATA_ROOT=root)
+        t=time.perf_counter()
+        self.p=subprocess.Popen([PY,"-u","-m","mendex_core.desktop","--root",root],cwd=REPO,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding="utf-8",bufsize=1)
+        self.lock=threading.Lock(); self.resp={}; self.cv=threading.Condition()
+        threading.Thread(target=self._rd,daemon=True).start()
+        threading.Thread(target=lambda:[None for _ in self.p.stderr],daemon=True).start()
+        r,dt=self.call("handshake"); self.startup=time.perf_counter()-t; self.hs=r
+    def _rd(self):
+        for line in self.p.stdout:
+            try: d=json.loads(line)
+            except Exception: continue
+            with self.cv: self.resp[d.get("id")]=(d,time.perf_counter()); self.cv.notify_all()
+    def send(self,method,params=None):
+        i=f"a-{uuid.uuid4()}"; t=time.perf_counter()
+        self.p.stdin.write(json.dumps({"protocol_version":"3.1.0","id":i,"method":method,"params":params or {}})+"\n"); self.p.stdin.flush()
+        return i,t
+    def wait(self,i,t,timeout=120):
+        with self.cv:
+            ok=self.cv.wait_for(lambda:i in self.resp,timeout)
+            if not ok: return None,None
+            d,te=self.resp.pop(i)
+        return d,te-t
+    def call(self,method,params=None,timeout=120):
+        return self.wait(*self.send(method,params),timeout=timeout)
+    def rss(self):
+        p=psutil.Process(self.p.pid); return sum(x.memory_info().rss for x in [p]+p.children(recursive=True))/1e6
+    def close(self):
+        try: self.call("shutdown",timeout=10)
+        except Exception: pass
+        try: self.p.wait(10)
+        except Exception: self.p.kill()

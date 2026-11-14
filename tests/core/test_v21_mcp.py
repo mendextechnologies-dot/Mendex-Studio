@@ -110,6 +110,8 @@ def test_mcp_workflow_call(mcp_server, tmp_path):
             "arguments": {
                 "workspace_id": ws_id,
                 "title": "MCP Buck 24V-5V",
+                "fsw_hz": 100000.0,
+                "ripple_v": 0.05,
                 "vin_nom": 24.0,
                 "vout": 5.0,
                 "iout": 4.0,

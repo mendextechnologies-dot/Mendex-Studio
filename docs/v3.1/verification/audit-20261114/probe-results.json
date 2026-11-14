@@ -1,0 +1,26 @@
+{
+  "overwritten_registered_artifacts": [],
+  "saved_spec_conflict_rejected": true,
+  "missing_mcp_inputs_rejected": true,
+  "desktop_project_A_includes_project_B_job": true,
+  "created_designs": 2,
+  "desktop_visible_designs": 0,
+  "concurrent_initialization": [
+    {
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "exit_code": 0,
+      "stderr": ""
+    }
+  ]
+}

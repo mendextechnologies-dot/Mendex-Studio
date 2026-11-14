@@ -1,0 +1,128 @@
+{
+  "description": "Unqualified safety intake; numerical comparison is not compliance.",
+  "properties": {
+    "calculation_id": {
+      "title": "Calculation Id",
+      "type": "string"
+    },
+    "formula_id": {
+      "title": "Formula Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "inputs": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Inputs",
+      "type": "object"
+    },
+    "input_units": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Input Units",
+      "type": "object"
+    },
+    "outputs": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Outputs",
+      "type": "object"
+    },
+    "output_units": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Output Units",
+      "type": "object"
+    },
+    "origin": {
+      "default": "calculated",
+      "title": "Origin",
+      "type": "string"
+    },
+    "verified": {
+      "const": false,
+      "default": false,
+      "title": "Verified",
+      "type": "boolean"
+    },
+    "executed_at": {
+      "title": "Executed At",
+      "type": "string"
+    },
+    "provenance": {
+      "title": "Provenance",
+      "type": "string"
+    },
+    "reference_source": {
+      "title": "Reference Source",
+      "type": "string"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "evaluation_status": {
+      "const": "NOT_EVALUATED",
+      "default": "NOT_EVALUATED",
+      "title": "Evaluation Status",
+      "type": "string"
+    },
+    "ruleset_status": {
+      "const": "UNAVAILABLE",
+      "default": "UNAVAILABLE",
+      "title": "Ruleset Status",
+      "type": "string"
+    },
+    "comparison_status": {
+      "default": "NOT_EVALUATED",
+      "enum": [
+        "NOT_EVALUATED",
+        "WITHIN_SUPPLIED_LIMIT",
+        "EXCEEDS_SUPPLIED_LIMIT"
+      ],
+      "title": "Comparison Status",
+      "type": "string"
+    },
+    "context": {
+      "additionalProperties": true,
+      "title": "Context",
+      "type": "object"
+    },
+    "missing_inputs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing Inputs",
+      "type": "array"
+    },
+    "blockers": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Blockers",
+      "type": "array"
+    }
+  },
+  "required": [
+    "formula_id",
+    "name",
+    "inputs",
+    "input_units",
+    "outputs",
+    "output_units",
+    "provenance",
+    "reference_source"
+  ],
+  "title": "SafetyAssessment",
+  "type": "object"
+}

@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 class ComponentType(str, Enum):
     RESISTOR = "resistor"
     CAPACITOR = "capacitor"
+    CAPACITOR_POLARIZED = "capacitor_polarized"
     INDUCTOR = "inductor"
     TRANSFORMER = "transformer"
     SWITCH_MOSFET = "mosfet"
@@ -21,10 +22,16 @@ class ComponentType(str, Enum):
     SWITCH_GAN = "gan"
     SWITCH_SIC = "sic"
     DIODE = "diode"
+    BRIDGE_RECTIFIER = "bridge_rectifier"
     VOLTAGE_SOURCE = "voltage_source"
     CURRENT_SOURCE = "current_source"
     GROUND = "ground"
     IC_CONTROLLER = "controller"
+    IC_LOGIC = "logic"
+    GATE_DRIVER = "gate_driver"
+    REGULATOR_LINEAR = "regulator_linear"
+    OPTOCOUPLER = "optocoupler"
+    SWITCH_PUSH = "push_button"
     CONNECTOR = "connector"
     GENERIC = "generic"
 
@@ -109,6 +116,7 @@ class IRMagneticGeometry(BaseModel):
     flange_od_mm: float = 34.0
     barrel_od_mm: float = 18.0
     core_id_mm: float = 16.0
+    peak_current_a: float = 0.0
 
 
 class DesignIntermediateRepresentation(BaseModel):

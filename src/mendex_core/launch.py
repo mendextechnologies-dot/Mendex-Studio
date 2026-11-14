@@ -330,28 +330,8 @@ def _spawn_gui(exe: Path, target: Path | None = None, work_dir: Path | None = No
     Uses Win32 CreateProcessW targeting WinSta0\\Default to guarantee that the application
     appears with a visible, interactive top-level window on the user's active screen.
     """
-    # 1. Clean stale lock files in target directory if KiCad
-    if target and target.is_file():
-        parent = target.parent
-        for lck in list(parent.glob("*.lck")) + list(parent.glob("~*.lck")):
-            try:
-                lck.unlink()
-            except OSError:
-                pass
-
-    # 2. Clean stale FreeCAD crash recovery caches if FreeCAD
-    if "freecad" in exe.stem.lower():
-        temp_fc = Path(os.environ.get("TEMP", "")) / "FreeCAD" / "v1-1" / "Cache"
-        if temp_fc.exists():
-            for item in temp_fc.glob("FreeCAD_*"):
-                try:
-                    if item.is_dir():
-                        shutil.rmtree(item, ignore_errors=True)
-                    else:
-                        item.unlink(missing_ok=True)
-                except OSError:
-                    pass
-
+    # Native applications own editing locks and crash recovery. Launching must
+    # never delete potentially active locks or recoverable unsaved documents.
     cwd = str(work_dir or (target.parent if target else exe.parent))
     cmd_line = f'"{exe}" "{target}"' if target else f'"{exe}"'
 

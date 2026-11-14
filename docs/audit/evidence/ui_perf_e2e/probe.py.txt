@@ -1,0 +1,11 @@
+import sys,json; from bridge import Bridge
+b=Bridge(sys.argv[1]); print("startup",round(b.startup,3),"rss",round(b.rss(),1))
+pid=None
+for m in ["handshake","overview","projects","simulations","components","tools","reports","settings","list_reviewers"]:
+    d,dt=b.call(m); s=json.dumps(d)
+    print(m, round(dt*1000,1),"ms", len(s),"B", s[:300])
+    if m=="projects" and d.get("result"): pid=d["result"][0]["product_id"]; rid=d["result"][0]["active_revision_id"]
+if pid:
+    for m,p in [("project",{"project_id":pid}),("waveform",{"revision_id":rid,"relative_path":"x.raw"}),("job",{"job_id":"00000000-0000-0000-0000-000000000000"}),("generate_bom",{"revision_id":rid}),("review_package",{"revision_id":rid,"stage_id":"requirements"}),("bogus",{})]:
+        d,dt=b.call(m,p); s=json.dumps(d); print(m,round(dt*1000,1),"ms",len(s),"B",s[:600])
+print("rss",round(b.rss(),1)); b.close(); print("exit",b.p.returncode)

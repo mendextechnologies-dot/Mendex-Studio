@@ -547,6 +547,12 @@ class MendexMCPServer:
         }
 
     def _dispatch_tool(self, name: str, args: Dict[str, Any]) -> Any:
+        try:
+            return self._dispatch_tool_impl(name, args)
+        except KeyError as exc:
+            raise ValueError(f"Missing required parameter: {exc}") from exc
+
+    def _dispatch_tool_impl(self, name: str, args: Dict[str, Any]) -> Any:
         ctrl = self.controller
 
         from ..engineering_lifecycle.api import OPERATIONS, dispatch
@@ -559,7 +565,7 @@ class MendexMCPServer:
 
         from ..engineering_reviews.api import OPERATIONS as REVIEW_OPERATIONS, dispatch as review_dispatch
         if name in REVIEW_OPERATIONS:
-            return review_dispatch(ctrl.service, name, args)
+            return review_dispatch(ctrl.service, name, args, caller_is_mcp=True)
 
         if name == "list_workspaces":
             return ctrl.list_workspaces()

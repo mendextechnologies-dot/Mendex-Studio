@@ -46,6 +46,8 @@ class MeasurementService:
                     )
                     """
                 )
+                db.execute("CREATE TRIGGER IF NOT EXISTS measurements_no_update BEFORE UPDATE ON measurements BEGIN SELECT RAISE(ABORT, 'Measurement records are append-only'); END;")
+                db.execute("CREATE TRIGGER IF NOT EXISTS measurements_no_delete BEFORE DELETE ON measurements BEGIN SELECT RAISE(ABORT, 'Measurement records are append-only'); END;")
         except Exception:
             pass
 

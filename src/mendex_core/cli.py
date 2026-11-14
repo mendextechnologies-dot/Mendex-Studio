@@ -55,6 +55,10 @@ def main(argv=None):
     export = commands.add_parser("export-specification")
     export.add_argument("--revision", required=True)
 
+    backup_cmd = commands.add_parser("backup", help="Safely snapshot and archive the SQLite engineering database")
+    backup_cmd.add_argument("--output", type=Path, default=None, help="Destination sqlite3 file path")
+    backup_cmd.add_argument("--json", action="store_true", help="Ensure JSON output")
+
     doctor = commands.add_parser("doctor")
     doctor.add_argument("--root", type=Path, dest="doctor_root")
     doctor.add_argument("--export", action="store_true")
@@ -519,6 +523,14 @@ def execute(args):
         print(json.dumps(service.open_in_vscode(args.revision), indent=2))
     elif args.command == "open-file":
         print(json.dumps({"opened": service.open_project_file(args.revision, args.path)}))
+    elif args.command == "backup":
+        dest = service.backup_database(args.output)
+        res = {"status": "SUCCESS", "backup_path": str(dest)}
+        if args.json:
+            print(json.dumps(res, indent=2))
+        else:
+            print(f"Database successfully backed up to: {dest}")
+        return 0
     else:
         print(service.create_product(args.code, args.name, args.category, args.owner).model_dump_json(indent=2))
 

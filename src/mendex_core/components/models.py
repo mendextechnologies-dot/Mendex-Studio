@@ -32,6 +32,7 @@ class ComponentRecord(ReferenceRecord):
     esr_ohm: Optional[float] = Field(default=None, gt=0)
     kicad_footprint: Optional[str] = None
     kicad_symbol: Optional[str] = None
+    kicad_3d_model: Optional[str] = None
     spice_model_name: Optional[str] = None
 
 

@@ -1,0 +1,54 @@
+{
+  "protocol": "3.1.0",
+  "data_root": "C:\\Mendex studio",
+  "project_count": 1,
+  "job_count": 0,
+  "projects": [
+    {
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "code": "SV-1000",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "jobs": 0,
+      "files": 56,
+      "designs": 0,
+      "stages": [
+        [
+          "project_initialization",
+          "COMPLETED"
+        ],
+        [
+          "requirements",
+          "COMPLETED"
+        ],
+        [
+          "feasibility",
+          "COMPLETED"
+        ],
+        [
+          "calculations",
+          "COMPLETED"
+        ],
+        [
+          "design_development",
+          "COMPLETED"
+        ],
+        [
+          "simulation",
+          "COMPLETED"
+        ],
+        [
+          "verification",
+          "COMPLETED"
+        ],
+        [
+          "prototype_testing",
+          "NOT_STARTED"
+        ],
+        [
+          "documentation",
+          "BLOCKED"
+        ]
+      ]
+    }
+  ]
+}

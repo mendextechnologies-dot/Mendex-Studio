@@ -20,14 +20,14 @@ def test_end_to_end_with_shell_free_editor_handoff(tmp_path, monkeypatch, capsys
     editor.write_bytes(b"mock executable; never executed")
     monkeypatch.setattr(launch, "find_vscode", lambda: editor)
     requests = []
-    def spawn(argv, **kwargs):
-        requests.append((argv, kwargs))
-        return SimpleNamespace(pid=1234)
-    monkeypatch.setattr(launch.subprocess, "Popen", spawn)
+    def spawn(command, cwd, **kwargs):
+        requests.append((command, cwd, kwargs))
+        return 1234
+    monkeypatch.setattr(launch, "_spawn_on_desktop", spawn)
     result = service.open_in_vscode(revision.revision_id)
     assert result["pid"] == 1234
-    assert requests[0][1]["shell"] is False
-    assert requests[0][0] == [str(editor), "--new-window", str(service.workspace_path(revision))]
+    assert requests[0][0] == f'"{editor}" --new-window "{service.workspace_path(revision)}"'
+    assert requests[0][1] == str(service.workspace_path(revision))
     assert service.list_tools()
     evidence = tmp_path / "fixture.txt"
     evidence.write_text("Automated regression fixture only. Not an engineering measurement.")

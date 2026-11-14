@@ -1,0 +1,1146 @@
+{
+  "empty": {
+    "product": {
+      "product_id": "cd678416-54a7-4935-9b48-fa86b40dd495",
+      "code": "EMPTY-PCB",
+      "name": "Independent empty PCB",
+      "category": "pcb",
+      "owner": "Engineer",
+      "description": "",
+      "created_at": "2026-11-14T05:10:36.179586+00:00",
+      "updated_at": "2026-11-14T05:10:36.179593+00:00",
+      "active_revision_id": "8016fecc-2db9-4209-b8f4-af18e3792b0f",
+      "revision_status": "draft"
+    },
+    "revision": {
+      "revision_id": "8016fecc-2db9-4209-b8f4-af18e3792b0f",
+      "product_id": "cd678416-54a7-4935-9b48-fa86b40dd495",
+      "revision_label": "R001",
+      "lifecycle_status": "draft",
+      "specification": {
+        "schema_version": "1.0",
+        "vin_min_v": null,
+        "vin_nom_v": null,
+        "vin_max_v": null,
+        "vout_v": null,
+        "iout_a": null,
+        "switching_frequency_hz": null,
+        "ambient_temperature_k": null,
+        "topology": "",
+        "isolation_requirement": "",
+        "standards_profile": "UNASSIGNED",
+        "source": "",
+        "assumptions": []
+      },
+      "created_at": "2026-11-14T05:10:36.179619+00:00"
+    },
+    "revisions": [
+      {
+        "revision_id": "8016fecc-2db9-4209-b8f4-af18e3792b0f",
+        "product_id": "cd678416-54a7-4935-9b48-fa86b40dd495",
+        "revision_label": "R001",
+        "lifecycle_status": "draft",
+        "specification": {
+          "schema_version": "1.0",
+          "vin_min_v": null,
+          "vin_nom_v": null,
+          "vin_max_v": null,
+          "vout_v": null,
+          "iout_a": null,
+          "switching_frequency_hz": null,
+          "ambient_temperature_k": null,
+          "topology": "",
+          "isolation_requirement": "",
+          "standards_profile": "UNASSIGNED",
+          "source": "",
+          "assumptions": []
+        },
+        "created_at": "2026-11-14T05:10:36.179619+00:00"
+      }
+    ],
+    "input_hash": "b731250c1e22ead6dbe605667584249bbde288d99605868e770cc576bda7d074",
+    "lifecycle": {
+      "schema_version": "3.1.0",
+      "assignment_id": "93ecf992-598b-49bb-a19c-dd33e39043cf",
+      "project_id": "cd678416-54a7-4935-9b48-fa86b40dd495",
+      "revision_id": "8016fecc-2db9-4209-b8f4-af18e3792b0f",
+      "definition_id": "engineering",
+      "definition_version": "3.1.0",
+      "definition_digest": "cd31bc48d989fee42639819caa55322678d4188bb79bc902d329dec8c9456b7a",
+      "input_hash": "b731250c1e22ead6dbe605667584249bbde288d99605868e770cc576bda7d074",
+      "sequence": 1,
+      "engineering_status": "NOT_EVALUATED",
+      "approval_status": "UNAVAILABLE",
+      "stages": [
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "project_initialization",
+            "name": "Project Initialization",
+            "purpose": "Establish the existing project and revision context.",
+            "required_inputs": [
+              "Existing project and draft revision"
+            ],
+            "expected_outputs": [
+              "Lifecycle enrollment and initialization history"
+            ],
+            "dependencies": [],
+            "optional": false,
+            "review_required": false,
+            "criteria": [
+              {
+                "id": "project_identity",
+                "description": "Existing project metadata and revision identity are recorded.",
+                "kind": "project_context",
+                "fields": [],
+                "check_id": null,
+                "evidence_kind": null
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "project_identity",
+              "status": "PASS",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [],
+          "review": null,
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "requirements",
+            "name": "Requirements and Specifications",
+            "purpose": "Record sourced requirements and explicit acceptance criteria.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "project_initialization"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "requirements_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "requirements_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "requirements_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion requirements_acceptance: NOT_EVALUATED",
+            "Dependency project_initialization: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "feasibility",
+            "name": "Feasibility and Architecture",
+            "purpose": "Record alternatives, assumptions, risks and architecture decisions.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "feasibility_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "feasibility_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "feasibility_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion feasibility_acceptance: NOT_EVALUATED",
+            "Dependency requirements: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "calculations",
+            "name": "Engineering Calculations",
+            "purpose": "Retain traceable supported calculations and evaluate stated criteria.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "calculations_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "calculations_acceptance",
+                "evidence_kind": "CALCULATED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "calculations_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion calculations_acceptance: NOT_EVALUATED",
+            "Dependency requirements: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "design_development",
+            "name": "Engineering Design Development",
+            "purpose": "Register native artifacts with their revision and validation evidence.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "design_development_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "design_development_acceptance",
+                "evidence_kind": "CALCULATED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "design_development_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion design_development_acceptance: NOT_EVALUATED",
+            "Dependency requirements: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "simulation",
+            "name": "Simulation and Analysis",
+            "purpose": "Inspect real solver evidence and applicable acceptance checks.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "design_development"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "simulation_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "simulation_acceptance",
+                "evidence_kind": "SIMULATED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "simulation_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion simulation_acceptance: NOT_EVALUATED",
+            "Dependency design_development: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "verification",
+            "name": "Engineering Verification",
+            "purpose": "Evaluate requirement coverage and record unresolved findings.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "calculations",
+              "simulation"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "verification_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "verification_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "verification_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion verification_acceptance: NOT_EVALUATED",
+            "Dependency calculations: NOT_STARTED",
+            "Dependency simulation: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "prototype_testing",
+            "name": "Prototype and Physical Testing",
+            "purpose": "Record actual prototype test plans and measured laboratory evidence.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "verification"
+            ],
+            "optional": true,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "prototype_testing_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "prototype_testing_acceptance",
+                "evidence_kind": "MEASURED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "prototype_testing_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion prototype_testing_acceptance: NOT_EVALUATED",
+            "Dependency verification: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "documentation",
+            "name": "Final Engineering Documentation",
+            "purpose": "Compile traceable reports, revision history and review status.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "verification"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "documentation_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "documentation_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "documentation_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion documentation_acceptance: NOT_EVALUATED",
+            "Dependency verification: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        }
+      ]
+    },
+    "designs": [],
+    "calculations": {
+      "schema_version": "3.1.0",
+      "records": [],
+      "next_after_sequence": 0
+    },
+    "requirements": {
+      "schema_version": "3.1.0",
+      "records": [],
+      "next_after_sequence": 0
+    },
+    "registered_artifacts": {
+      "schema_version": "3.1.0",
+      "records": [],
+      "next_after_sequence": 0
+    },
+    "files": [
+      {
+        "relative_path": "revision.json",
+        "name": "revision.json",
+        "extension": ".json",
+        "size_bytes": 609,
+        "modified_ns": 1794633036184865900
+      }
+    ],
+    "simulations": [],
+    "unattributed_simulation_count": 0,
+    "availability_requests": [],
+    "validation": {
+      "schema_version": "3.1.0",
+      "engineering_status": "NOT_EVALUATED",
+      "results": []
+    },
+    "pcb_checks": [],
+    "reports": [],
+    "measurements": [],
+    "timestamp": "2026-11-14T05:10:36.419323+00:00",
+    "limits": {
+      "files": 1000,
+      "records_per_kind": 500
+    }
+  },
+  "different": {
+    "product": {
+      "product_id": "43f7194a-d5e8-493d-a924-b33552ded81d",
+      "code": "LOW-V",
+      "name": "Independent low-voltage project",
+      "category": "dc_dc_converter",
+      "owner": "Engineer",
+      "description": "",
+      "created_at": "2026-11-14T05:10:36.260743+00:00",
+      "updated_at": "2026-11-14T05:10:36.260746+00:00",
+      "active_revision_id": "fe0d5858-5a95-4ebf-9a7d-60ff1d89d143",
+      "revision_status": "draft"
+    },
+    "revision": {
+      "revision_id": "fe0d5858-5a95-4ebf-9a7d-60ff1d89d143",
+      "product_id": "43f7194a-d5e8-493d-a924-b33552ded81d",
+      "revision_label": "R001",
+      "lifecycle_status": "draft",
+      "specification": {
+        "schema_version": "1.0",
+        "vin_min_v": null,
+        "vin_nom_v": 7.25,
+        "vin_max_v": null,
+        "vout_v": 3.3,
+        "iout_a": 0.2,
+        "switching_frequency_hz": null,
+        "ambient_temperature_k": null,
+        "topology": "",
+        "isolation_requirement": "",
+        "standards_profile": "UNASSIGNED",
+        "source": "Software rendering fixture; not a product specification",
+        "assumptions": []
+      },
+      "created_at": "2026-11-14T05:10:36.260763+00:00"
+    },
+    "revisions": [
+      {
+        "revision_id": "fe0d5858-5a95-4ebf-9a7d-60ff1d89d143",
+        "product_id": "43f7194a-d5e8-493d-a924-b33552ded81d",
+        "revision_label": "R001",
+        "lifecycle_status": "draft",
+        "specification": {
+          "schema_version": "1.0",
+          "vin_min_v": null,
+          "vin_nom_v": 7.25,
+          "vin_max_v": null,
+          "vout_v": 3.3,
+          "iout_a": 0.2,
+          "switching_frequency_hz": null,
+          "ambient_temperature_k": null,
+          "topology": "",
+          "isolation_requirement": "",
+          "standards_profile": "UNASSIGNED",
+          "source": "Software rendering fixture; not a product specification",
+          "assumptions": []
+        },
+        "created_at": "2026-11-14T05:10:36.260763+00:00"
+      }
+    ],
+    "input_hash": "21ff5dd440e6721e36467d7156c24b6c8b4328908cad046a5b72b4549b5fd23c",
+    "lifecycle": {
+      "schema_version": "3.1.0",
+      "assignment_id": "a58c104d-ff4e-450e-90be-7cad24735f6d",
+      "project_id": "43f7194a-d5e8-493d-a924-b33552ded81d",
+      "revision_id": "fe0d5858-5a95-4ebf-9a7d-60ff1d89d143",
+      "definition_id": "engineering",
+      "definition_version": "3.1.0",
+      "definition_digest": "cd31bc48d989fee42639819caa55322678d4188bb79bc902d329dec8c9456b7a",
+      "input_hash": "21ff5dd440e6721e36467d7156c24b6c8b4328908cad046a5b72b4549b5fd23c",
+      "sequence": 2,
+      "engineering_status": "NOT_EVALUATED",
+      "approval_status": "UNAVAILABLE",
+      "stages": [
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "project_initialization",
+            "name": "Project Initialization",
+            "purpose": "Establish the existing project and revision context.",
+            "required_inputs": [
+              "Existing project and draft revision"
+            ],
+            "expected_outputs": [
+              "Lifecycle enrollment and initialization history"
+            ],
+            "dependencies": [],
+            "optional": false,
+            "review_required": false,
+            "criteria": [
+              {
+                "id": "project_identity",
+                "description": "Existing project metadata and revision identity are recorded.",
+                "kind": "project_context",
+                "fields": [],
+                "check_id": null,
+                "evidence_kind": null
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "project_identity",
+              "status": "PASS",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [],
+          "review": null,
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "requirements",
+            "name": "Requirements and Specifications",
+            "purpose": "Record sourced requirements and explicit acceptance criteria.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "project_initialization"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "requirements_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "requirements_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "requirements_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion requirements_acceptance: NOT_EVALUATED",
+            "Dependency project_initialization: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "feasibility",
+            "name": "Feasibility and Architecture",
+            "purpose": "Record alternatives, assumptions, risks and architecture decisions.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "feasibility_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "feasibility_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "feasibility_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion feasibility_acceptance: NOT_EVALUATED",
+            "Dependency requirements: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "calculations",
+            "name": "Engineering Calculations",
+            "purpose": "Retain traceable supported calculations and evaluate stated criteria.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "calculations_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "calculations_acceptance",
+                "evidence_kind": "CALCULATED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "calculations_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion calculations_acceptance: NOT_EVALUATED",
+            "Dependency requirements: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "design_development",
+            "name": "Engineering Design Development",
+            "purpose": "Register native artifacts with their revision and validation evidence.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "design_development_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "design_development_acceptance",
+                "evidence_kind": "CALCULATED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "design_development_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion design_development_acceptance: NOT_EVALUATED",
+            "Dependency requirements: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "simulation",
+            "name": "Simulation and Analysis",
+            "purpose": "Inspect real solver evidence and applicable acceptance checks.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "design_development"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "simulation_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "simulation_acceptance",
+                "evidence_kind": "SIMULATED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "simulation_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion simulation_acceptance: NOT_EVALUATED",
+            "Dependency design_development: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "verification",
+            "name": "Engineering Verification",
+            "purpose": "Evaluate requirement coverage and record unresolved findings.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "calculations",
+              "simulation"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "verification_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "verification_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "verification_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion verification_acceptance: NOT_EVALUATED",
+            "Dependency calculations: NOT_STARTED",
+            "Dependency simulation: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "prototype_testing",
+            "name": "Prototype and Physical Testing",
+            "purpose": "Record actual prototype test plans and measured laboratory evidence.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "verification"
+            ],
+            "optional": true,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "prototype_testing_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "prototype_testing_acceptance",
+                "evidence_kind": "MEASURED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "prototype_testing_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion prototype_testing_acceptance: NOT_EVALUATED",
+            "Dependency verification: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "documentation",
+            "name": "Final Engineering Documentation",
+            "purpose": "Compile traceable reports, revision history and review status.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "verification"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "documentation_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "documentation_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "documentation_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion documentation_acceptance: NOT_EVALUATED",
+            "Dependency verification: NOT_STARTED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        }
+      ]
+    },
+    "designs": [],
+    "calculations": {
+      "schema_version": "3.1.0",
+      "records": [],
+      "next_after_sequence": 0
+    },
+    "requirements": {
+      "schema_version": "3.1.0",
+      "records": [],
+      "next_after_sequence": 0
+    },
+    "registered_artifacts": {
+      "schema_version": "3.1.0",
+      "records": [],
+      "next_after_sequence": 0
+    },
+    "files": [
+      {
+        "relative_path": "revision.json",
+        "name": "revision.json",
+        "extension": ".json",
+        "size_bytes": 609,
+        "modified_ns": 1794633036265436600
+      }
+    ],
+    "simulations": [],
+    "unattributed_simulation_count": 0,
+    "availability_requests": [],
+    "validation": {
+      "schema_version": "3.1.0",
+      "engineering_status": "NOT_EVALUATED",
+      "results": []
+    },
+    "pcb_checks": [],
+    "reports": [],
+    "measurements": [],
+    "timestamp": "2026-11-14T05:10:36.431603+00:00",
+    "limits": {
+      "files": 1000,
+      "records_per_kind": 500
+    }
+  }
+}

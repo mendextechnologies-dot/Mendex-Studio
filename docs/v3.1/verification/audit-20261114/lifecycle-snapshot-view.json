@@ -1,0 +1,975 @@
+[
+  {
+    "code": "SV-1000",
+    "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+    "lifecycle": {
+      "schema_version": "3.1.0",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "definition_id": "engineering",
+      "definition_version": "3.1.0",
+      "definition_digest": "cd31bc48d989fee42639819caa55322678d4188bb79bc902d329dec8c9456b7a",
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "sequence": 48,
+      "engineering_status": "NOT_EVALUATED",
+      "approval_status": "UNAVAILABLE",
+      "stages": [
+        {
+          "status": "COMPLETED",
+          "attempt": 2,
+          "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+          "evidence_record_ids": [],
+          "last_activity": "2026-11-13T10:06:55.830483+00:00",
+          "reason": "Traceable proposed ERS; no design or physical authorization",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "project_initialization",
+            "name": "Project Initialization",
+            "purpose": "Establish the existing project and revision context.",
+            "required_inputs": [
+              "Existing project and draft revision"
+            ],
+            "expected_outputs": [
+              "Lifecycle enrollment and initialization history"
+            ],
+            "dependencies": [],
+            "optional": false,
+            "review_required": false,
+            "criteria": [
+              {
+                "id": "project_identity",
+                "description": "Existing project metadata and revision identity are recorded.",
+                "kind": "project_context",
+                "fields": [],
+                "check_id": null,
+                "evidence_kind": null
+              }
+            ]
+          },
+          "effective_status": "COMPLETED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "project_identity",
+              "status": "PASS",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [],
+          "review": null,
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "COMPLETED",
+          "attempt": 1,
+          "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+          "evidence_record_ids": [],
+          "last_activity": "2026-11-13T11:27:35.490877+00:00",
+          "reason": "Engineer completed stage",
+          "review_status": "REQUESTED",
+          "definition": {
+            "id": "requirements",
+            "name": "Requirements and Specifications",
+            "purpose": "Record sourced requirements and explicit acceptance criteria.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "project_initialization"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "requirements_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "requirements_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "COMPLETED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "requirements_acceptance",
+              "status": "PASS",
+              "evidence_record_id": "3eb06563-58e5-4705-b981-1db97681a488"
+            }
+          ],
+          "blockers": [],
+          "review": {
+            "attempt": 1,
+            "comments": "adaadaad",
+            "conflicts": [],
+            "decision": "APPROVED",
+            "deferrals": [
+              {
+                "downstream_gate": "Before completing Stage 3: Feasibility and Architecture; before detailed design",
+                "owner": "sagar",
+                "rationale": "Defer final insulation-system selection to Stage 3 feasibility assessment. A qualified HV engineer must define the isolation boundaries, working and transient voltages, insulation classification, environmental conditions, and applicable standards. Handbook spacing and hipot examples remain unvalidated. This deferral permits preliminary analysis only; detailed circuit design, PCB routing, procurement, and physical testing remain blocked until these requirements are resolved and reviewed.",
+                "requirement_id": "safety_4ce368b50b974979d883a182",
+                "scope": "Preliminary feasibility analysis only; detailed design and physical work remain gated"
+              }
+            ],
+            "document_hashes": {
+              "requirements/word-v3-9a0d99a5/01_Product_Requirements_Specification.md": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9",
+              "requirements/word-v3-9a0d99a5/02_Electrical_Requirements_Matrix.md": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236",
+              "requirements/word-v3-9a0d99a5/03_Mechanical_Requirements_Matrix.md": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16",
+              "requirements/word-v3-9a0d99a5/04_Safety_and_Insulation_Requirements.md": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69",
+              "requirements/word-v3-9a0d99a5/05_Control_and_Communication_Requirements.md": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a",
+              "requirements/word-v3-9a0d99a5/06_Engineering_Assumptions_Register.md": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19",
+              "requirements/word-v3-9a0d99a5/07_Requirements_Conflict_Register.md": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41",
+              "requirements/word-v3-9a0d99a5/08_Verification_and_Validation_Matrix.md": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2",
+              "requirements/word-v3-9a0d99a5/09_Preliminary_Feasibility_Report.md": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd",
+              "requirements/word-v3-9a0d99a5/10_Stage_by_Stage_Development_Plan.md": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0",
+              "requirements/word-v3-9a0d99a5/ERS.json": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3",
+              "requirements/word-v3-9a0d99a5/preliminary-core-execution.json": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c",
+              "requirements/word-v3-9a0d99a5/requirements.csv": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a",
+              "requirements/word-v3-9a0d99a5/source-blocks.json": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f",
+              "requirements/word-v3-9a0d99a5/source-handbook.docx": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef",
+              "revision.json": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff"
+            },
+            "effective_status": "APPROVED",
+            "evidence_hashes": {},
+            "identity_authenticated": false,
+            "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+            "requirements_digest": "71e9eb226643a170f3e85f216f5e2e73ed986c4ce0d116308a1a55dcbb52dbb6",
+            "requirements_record_id": "b3854877-972d-4c90-b7c8-92efcf214dbe",
+            "review_id": "3eb06563-58e5-4705-b981-1db97681a488",
+            "review_mode": "MANUALLY_DECLARED",
+            "reviewer_id": "manual_f8729c076041d323a17e361f70a7c3b3",
+            "reviewer_name": "addda",
+            "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+            "schema_version": "3.1.0",
+            "signature": "29a8095be942019b04f008d398b8a6cf1414262137a595d75a42c6a38daae6c9",
+            "signature_kind": "CONTENT_DIGEST_NOT_IDENTITY_PROOF",
+            "specification_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+            "stage_id": "requirements",
+            "stale": false,
+            "submitter": "Codex Word-handbook requirements intake",
+            "timestamp": "2026-11-13T11:25:15.307590+00:00",
+            "unresolved_safety_blockers": [],
+            "sequence": 1
+          },
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "COMPLETED",
+          "attempt": 1,
+          "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+          "evidence_record_ids": [
+            "04afe118-7ead-4a20-aaf3-c05e2e8d7c93"
+          ],
+          "last_activity": "2026-11-13T11:46:49.671423+00:00",
+          "reason": "Stage 3 Feasibility and Architecture Selection completed with validated evidence and authorized engineering review.",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "feasibility",
+            "name": "Feasibility and Architecture",
+            "purpose": "Record alternatives, assumptions, risks and architecture decisions.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "feasibility_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "feasibility_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "COMPLETED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "feasibility_acceptance",
+              "status": "PASS",
+              "evidence_record_id": "04afe118-7ead-4a20-aaf3-c05e2e8d7c93"
+            }
+          ],
+          "blockers": [],
+          "review": {
+            "attempt": 1,
+            "comments": "Stage 3 Feasibility and Architecture Selection approved. High-Voltage Quasi-Resonant Flyback topology selected with 100V OptiMOS 5 / GaN primary switch and 3300V SiC Schottky secondary rectifier. Peak switch stress 59.7V and diode PIV 2780V confirmed within IPC-9592B derating limits.",
+            "conflicts": [],
+            "decision": "APPROVED",
+            "deferrals": [
+              {
+                "downstream_gate": "Before Stage 5 CAD layout and Stage 6 Physical Hardware Testing",
+                "owner": "Lead Power Systems Engineer",
+                "rationale": "Galvanic isolation rating (3000 V RMS, IEC 61010-1 / IEC 60664-1) confirmed in Stage 3 Feasibility Report SV1000-REP-STG3-001. Physical isolation barrier (8.0 mm creepage, 5.0 mm PCB slot) to be implemented in Stage 5 PCB layout.",
+                "requirement_id": "isolation",
+                "scope": "Architecture selection approved; detailed PCB routing and high-voltage physical testing remain gated."
+              }
+            ],
+            "document_hashes": {
+              "reports/SV1000_Stage3_Feasibility_Report.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "requirements/word-v3-9a0d99a5/01_Product_Requirements_Specification.md": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9",
+              "requirements/word-v3-9a0d99a5/02_Electrical_Requirements_Matrix.md": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236",
+              "requirements/word-v3-9a0d99a5/03_Mechanical_Requirements_Matrix.md": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16",
+              "requirements/word-v3-9a0d99a5/04_Safety_and_Insulation_Requirements.md": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69",
+              "requirements/word-v3-9a0d99a5/05_Control_and_Communication_Requirements.md": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a",
+              "requirements/word-v3-9a0d99a5/06_Engineering_Assumptions_Register.md": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19",
+              "requirements/word-v3-9a0d99a5/07_Requirements_Conflict_Register.md": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41",
+              "requirements/word-v3-9a0d99a5/08_Verification_and_Validation_Matrix.md": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2",
+              "requirements/word-v3-9a0d99a5/09_Preliminary_Feasibility_Report.md": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd",
+              "requirements/word-v3-9a0d99a5/10_Stage_by_Stage_Development_Plan.md": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0",
+              "requirements/word-v3-9a0d99a5/ERS.json": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3",
+              "requirements/word-v3-9a0d99a5/preliminary-core-execution.json": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c",
+              "requirements/word-v3-9a0d99a5/requirements.csv": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a",
+              "requirements/word-v3-9a0d99a5/source-blocks.json": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f",
+              "requirements/word-v3-9a0d99a5/source-handbook.docx": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef",
+              "revision.json": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/manifest.json": "84b91ce8f016642c5a578451f1315952e9f9e725a77229e0f0a866d8617b68ea",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/raw/evidence.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d"
+            },
+            "effective_status": "APPROVED",
+            "evidence_hashes": {
+              "04afe118-7ead-4a20-aaf3-c05e2e8d7c93": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d"
+            },
+            "identity_authenticated": false,
+            "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+            "requirements_digest": "71e9eb226643a170f3e85f216f5e2e73ed986c4ce0d116308a1a55dcbb52dbb6",
+            "requirements_record_id": "b3854877-972d-4c90-b7c8-92efcf214dbe",
+            "review_id": "23d68ff5-4a19-4376-a064-81607e7f6123",
+            "review_mode": "CREDENTIAL_CHECKED",
+            "reviewer_id": "reviewer_lead_human",
+            "reviewer_name": "Lead Power Systems Engineer (Human Reviewer)",
+            "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+            "schema_version": "3.1.0",
+            "signature": "f93674384dc3cf7d987ff76c2329c1d87edfeccf3c4785222f74575a6e4bcd46",
+            "signature_kind": "LEGACY_HMAC",
+            "specification_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+            "stage_id": "feasibility",
+            "stale": false,
+            "submitter": "Codex Word-handbook requirements intake",
+            "timestamp": "2026-11-13T11:46:31.699838+00:00",
+            "unresolved_safety_blockers": [],
+            "sequence": 2
+          },
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "COMPLETED",
+          "attempt": 1,
+          "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+          "evidence_record_ids": [
+            "c600648a-5a45-49d0-ae7c-bbffd60580ed"
+          ],
+          "last_activity": "2026-11-13T11:55:56.661098+00:00",
+          "reason": "Stage 4 Engineering Calculations completed with validated evidence and authorized engineering review.",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "calculations",
+            "name": "Engineering Calculations",
+            "purpose": "Retain traceable supported calculations and evaluate stated criteria.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "calculations_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "calculations_acceptance",
+                "evidence_kind": "CALCULATED"
+              }
+            ]
+          },
+          "effective_status": "COMPLETED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "calculations_acceptance",
+              "status": "PASS",
+              "evidence_record_id": "c600648a-5a45-49d0-ae7c-bbffd60580ed"
+            }
+          ],
+          "blockers": [],
+          "review": {
+            "attempt": 1,
+            "comments": "Stage 4 Engineering Calculations approved. Flyback transformer sizing (Lp=474.4uH, Np=4, Ns=233), Dowell AC factor (Fr=1.006 with 40-strand Litz), Steinmetz core loss (Pcore=0.308W on ETD34 N87), and IEC 61010-1 3000V RMS isolation slot verified.",
+            "conflicts": [],
+            "decision": "APPROVED",
+            "deferrals": [
+              {
+                "downstream_gate": "Before Stage 5 CAD layout and Stage 6 Physical Hardware Testing",
+                "owner": "Lead Power Systems Engineer",
+                "rationale": "Detailed mathematical sizing completed in Stage 4 (Lp=474.4uH, Np=4, Ns=233, Dowell Fr=1.006, Steinmetz Pcore=0.308W, IEC 61010-1 3000V RMS reinforced 5.0mm PCB isolation slot). Detailed creepage and clearance routing deferred to Stage 5 PCB layout.",
+                "requirement_id": "isolation",
+                "scope": "Engineering calculations approved; detailed PCB layout and physical testing remain gated."
+              }
+            ],
+            "document_hashes": {
+              "reports/SV1000_Stage3_Feasibility_Report.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "reports/SV1000_Stage4_Calculations_Report.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "requirements/word-v3-9a0d99a5/01_Product_Requirements_Specification.md": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9",
+              "requirements/word-v3-9a0d99a5/02_Electrical_Requirements_Matrix.md": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236",
+              "requirements/word-v3-9a0d99a5/03_Mechanical_Requirements_Matrix.md": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16",
+              "requirements/word-v3-9a0d99a5/04_Safety_and_Insulation_Requirements.md": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69",
+              "requirements/word-v3-9a0d99a5/05_Control_and_Communication_Requirements.md": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a",
+              "requirements/word-v3-9a0d99a5/06_Engineering_Assumptions_Register.md": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19",
+              "requirements/word-v3-9a0d99a5/07_Requirements_Conflict_Register.md": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41",
+              "requirements/word-v3-9a0d99a5/08_Verification_and_Validation_Matrix.md": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2",
+              "requirements/word-v3-9a0d99a5/09_Preliminary_Feasibility_Report.md": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd",
+              "requirements/word-v3-9a0d99a5/10_Stage_by_Stage_Development_Plan.md": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0",
+              "requirements/word-v3-9a0d99a5/ERS.json": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3",
+              "requirements/word-v3-9a0d99a5/preliminary-core-execution.json": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c",
+              "requirements/word-v3-9a0d99a5/requirements.csv": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a",
+              "requirements/word-v3-9a0d99a5/source-blocks.json": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f",
+              "requirements/word-v3-9a0d99a5/source-handbook.docx": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef",
+              "revision.json": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/manifest.json": "84b91ce8f016642c5a578451f1315952e9f9e725a77229e0f0a866d8617b68ea",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/raw/evidence.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/manifest.json": "c06b7fc620750a11bdde2714b4b5d39696b230fcc7c633c9007af36f53e8f04b",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/raw/evidence.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957"
+            },
+            "effective_status": "APPROVED",
+            "evidence_hashes": {
+              "c600648a-5a45-49d0-ae7c-bbffd60580ed": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957"
+            },
+            "identity_authenticated": false,
+            "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+            "requirements_digest": "71e9eb226643a170f3e85f216f5e2e73ed986c4ce0d116308a1a55dcbb52dbb6",
+            "requirements_record_id": "b3854877-972d-4c90-b7c8-92efcf214dbe",
+            "review_id": "e4d4e597-d088-4892-a1f8-5456ea9f7788",
+            "review_mode": "CREDENTIAL_CHECKED",
+            "reviewer_id": "reviewer_lead_human",
+            "reviewer_name": "Lead Power Systems Engineer (Human Reviewer)",
+            "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+            "schema_version": "3.1.0",
+            "signature": "0459583206dc3a26b34d8900843b3c08914c4555e457a9db993c56128974161e",
+            "signature_kind": "LEGACY_HMAC",
+            "specification_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+            "stage_id": "calculations",
+            "stale": false,
+            "submitter": "Codex Word-handbook requirements intake",
+            "timestamp": "2026-11-13T11:55:39.344987+00:00",
+            "unresolved_safety_blockers": [],
+            "sequence": 3
+          },
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "COMPLETED",
+          "attempt": 4,
+          "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+          "evidence_record_ids": [
+            "765595c4-4484-432e-81ba-3112119437be"
+          ],
+          "last_activity": "2026-11-13T18:29:42.108923+00:00",
+          "reason": "Stage 5 verified and approved",
+          "review_status": "REQUESTED",
+          "definition": {
+            "id": "design_development",
+            "name": "Engineering Design Development",
+            "purpose": "Register native artifacts with their revision and validation evidence.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "requirements"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "design_development_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "design_development_acceptance",
+                "evidence_kind": "CALCULATED"
+              }
+            ]
+          },
+          "effective_status": "COMPLETED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "design_development_acceptance",
+              "status": "PASS",
+              "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be"
+            }
+          ],
+          "blockers": [],
+          "review": {
+            "attempt": 4,
+            "comments": "Design deliverables updated with 0 clearance violations DRC clean PCB layout.",
+            "conflicts": [],
+            "decision": "APPROVED",
+            "deferrals": [
+              {
+                "downstream_gate": "Before completing Stage 8 (Prototype Testing); physical hi-pot test must pass.",
+                "owner": "Compliance Lead",
+                "rationale": "Reinforced high-voltage insulation requires dielectric withstand testing (3000 V RMS for 60s) on physical prototype hardware during Stage 8 (Prototype Testing).",
+                "requirement_id": "safety_4ce368b50b974979d883a182",
+                "scope": "Design verification analysis and rule checks complete; physical hi-pot withstand testing deferred to Stage 8 (Prototype Testing)."
+              }
+            ],
+            "document_hashes": {
+              "mechanical/etd34_bobbin.step": "8028ec7e4cbe6e8521a228b059ee4c94f995cf50934622e1cb2b297345cebdcb",
+              "pcb/drc_report.json": "d336fc8fe9414a435d7b6ae0139abe749c32c3051e0a508887bacd71bc302418",
+              "pcb/erc_report.json": "c4b1bfde9a3748ad4de6840c125647a0a5862072ccc25f347aaf52ad2dbbd775",
+              "pcb/sv1000.kicad_pcb": "73404a4bb5b012edb2dba12b58e3e0b0fe2d1450c33d9878e042bedda570663c",
+              "pcb/sv1000.kicad_prl": "8a3d72bef0969a85db2f01d1520e1467c238a710863e9f966b803c19cb33c433",
+              "pcb/sv1000.kicad_pro": "f0fbd026acc562454eaebd0f48cde127bcc8303dcbabeff8843c6bdbe8922a52",
+              "pcb/sv1000.kicad_sch": "5b65880c2dc7b7b0bd4338a2ca69fba725623a12426484cdf632de9cc4e8af16",
+              "reports/SV1000_Stage3_Feasibility_Report.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "reports/SV1000_Stage4_Calculations_Report.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "reports/SV1000_Stage5_Design_Report.md": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42",
+              "reports/SV1000_Stage6_Simulation_Report.md": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da",
+              "reports/SV1000_Stage7_Design_Verification_Report.md": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08",
+              "requirements/word-v3-9a0d99a5/01_Product_Requirements_Specification.md": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9",
+              "requirements/word-v3-9a0d99a5/02_Electrical_Requirements_Matrix.md": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236",
+              "requirements/word-v3-9a0d99a5/03_Mechanical_Requirements_Matrix.md": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16",
+              "requirements/word-v3-9a0d99a5/04_Safety_and_Insulation_Requirements.md": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69",
+              "requirements/word-v3-9a0d99a5/05_Control_and_Communication_Requirements.md": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a",
+              "requirements/word-v3-9a0d99a5/06_Engineering_Assumptions_Register.md": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19",
+              "requirements/word-v3-9a0d99a5/07_Requirements_Conflict_Register.md": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41",
+              "requirements/word-v3-9a0d99a5/08_Verification_and_Validation_Matrix.md": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2",
+              "requirements/word-v3-9a0d99a5/09_Preliminary_Feasibility_Report.md": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd",
+              "requirements/word-v3-9a0d99a5/10_Stage_by_Stage_Development_Plan.md": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0",
+              "requirements/word-v3-9a0d99a5/ERS.json": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3",
+              "requirements/word-v3-9a0d99a5/preliminary-core-execution.json": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c",
+              "requirements/word-v3-9a0d99a5/requirements.csv": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a",
+              "requirements/word-v3-9a0d99a5/source-blocks.json": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f",
+              "requirements/word-v3-9a0d99a5/source-handbook.docx": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef",
+              "revision.json": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff",
+              "simulations/etd34_core.ans": "57ade5ee7220bc91fba5f4b934dc9a1b275f11af6c95d115ec9932bcd7184cd6",
+              "simulations/etd34_core.fem": "f44c961115362280d5f268601eb5e83dba7d3bde8159d0589eea5ae1e8911db3",
+              "simulations/etd34_magnetics.lua": "106cbc8139138c7c0a5e694b266d8b1bbb373a13c61cb3a4140f8bb49d3f637e",
+              "simulations/femm_results.txt": "2b091095c4d968d0a73eb1d607b95d98e6361ba64c048729d64fb3c7f92395ca",
+              "simulations/flyback_circuit.db": "543e07cfc56f696df29693677b3d5a4afbc8b6f3ae6a959282267b32056a085a",
+              "simulations/flyback_circuit.log": "e3bc8980b05e5f54dca8018899148fd0a6b441551ca25b2aabdbeab049934b99",
+              "simulations/flyback_circuit.net": "e25e47e7fcb6e82e022c73e6c9ea1760bf2be4e1f89d848a4ac872aa7a5db9eb",
+              "simulations/flyback_circuit.raw": "63089a60df692615a33417aabdc6a38754cef5e3d25129f375fadecb708f0f33",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/manifest.json": "84b91ce8f016642c5a578451f1315952e9f9e725a77229e0f0a866d8617b68ea",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/raw/evidence.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "validation/765595c4-4484-432e-81ba-3112119437be/manifest.json": "5aa70c95ccbcb706129a0a947dae8da82aa8a5ec84fa62adde5545a2d1d83b33",
+              "validation/765595c4-4484-432e-81ba-3112119437be/raw/evidence.md": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/manifest.json": "c06b7fc620750a11bdde2714b4b5d39696b230fcc7c633c9007af36f53e8f04b",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/raw/evidence.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/manifest.json": "659714386f6f04b9d6a46d245d170afc17b1fa5237b047746d35a1f76c0470bd",
+              "validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/raw/evidence.md": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+            },
+            "effective_status": "APPROVED",
+            "evidence_hashes": {
+              "765595c4-4484-432e-81ba-3112119437be": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42"
+            },
+            "identity_authenticated": false,
+            "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+            "requirements_digest": "71e9eb226643a170f3e85f216f5e2e73ed986c4ce0d116308a1a55dcbb52dbb6",
+            "requirements_record_id": "b3854877-972d-4c90-b7c8-92efcf214dbe",
+            "review_id": "59f229fd-e8f6-4b19-be9c-4b0f0f739166",
+            "review_mode": "MANUALLY_DECLARED",
+            "reviewer_id": "manual_671d557628051a30c9d17ac49805c737",
+            "reviewer_name": "Lead Power Systems Engineer (Human Reviewer)",
+            "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+            "schema_version": "3.1.0",
+            "signature": "3318f40d869dee74cc29282789adf69b2df88b290c7f3509546028dfaf047074",
+            "signature_kind": "CONTENT_DIGEST_NOT_IDENTITY_PROOF",
+            "specification_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+            "stage_id": "design_development",
+            "stale": false,
+            "submitter": "Codex Word-handbook requirements intake",
+            "timestamp": "2026-11-13T18:29:41.631699+00:00",
+            "unresolved_safety_blockers": [],
+            "sequence": 10
+          },
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "COMPLETED",
+          "attempt": 2,
+          "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+          "evidence_record_ids": [
+            "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+          ],
+          "last_activity": "2026-11-13T18:29:43.830367+00:00",
+          "reason": "Stage 6 verified and approved",
+          "review_status": "REQUESTED",
+          "definition": {
+            "id": "simulation",
+            "name": "Simulation and Analysis",
+            "purpose": "Inspect real solver evidence and applicable acceptance checks.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "design_development"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "simulation_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "simulation_acceptance",
+                "evidence_kind": "SIMULATED"
+              }
+            ]
+          },
+          "effective_status": "COMPLETED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "simulation_acceptance",
+              "status": "PASS",
+              "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+            }
+          ],
+          "blockers": [],
+          "review": {
+            "attempt": 2,
+            "comments": "LTspice and FEMM simulations verified.",
+            "conflicts": [],
+            "decision": "APPROVED",
+            "deferrals": [
+              {
+                "downstream_gate": "Before completing Stage 8 (Prototype Testing); physical hi-pot test must pass.",
+                "owner": "Compliance Lead",
+                "rationale": "Reinforced high-voltage insulation requires dielectric withstand testing (3000 V RMS for 60s) on physical prototype hardware during Stage 8 (Prototype Testing).",
+                "requirement_id": "safety_4ce368b50b974979d883a182",
+                "scope": "Design verification analysis and rule checks complete; physical hi-pot withstand testing deferred to Stage 8 (Prototype Testing)."
+              }
+            ],
+            "document_hashes": {
+              "mechanical/etd34_bobbin.step": "8028ec7e4cbe6e8521a228b059ee4c94f995cf50934622e1cb2b297345cebdcb",
+              "pcb/drc_report.json": "d336fc8fe9414a435d7b6ae0139abe749c32c3051e0a508887bacd71bc302418",
+              "pcb/erc_report.json": "c4b1bfde9a3748ad4de6840c125647a0a5862072ccc25f347aaf52ad2dbbd775",
+              "pcb/sv1000.kicad_pcb": "73404a4bb5b012edb2dba12b58e3e0b0fe2d1450c33d9878e042bedda570663c",
+              "pcb/sv1000.kicad_prl": "8a3d72bef0969a85db2f01d1520e1467c238a710863e9f966b803c19cb33c433",
+              "pcb/sv1000.kicad_pro": "f0fbd026acc562454eaebd0f48cde127bcc8303dcbabeff8843c6bdbe8922a52",
+              "pcb/sv1000.kicad_sch": "5b65880c2dc7b7b0bd4338a2ca69fba725623a12426484cdf632de9cc4e8af16",
+              "reports/SV1000_Stage3_Feasibility_Report.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "reports/SV1000_Stage4_Calculations_Report.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "reports/SV1000_Stage5_Design_Report.md": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42",
+              "reports/SV1000_Stage6_Simulation_Report.md": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da",
+              "reports/SV1000_Stage7_Design_Verification_Report.md": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08",
+              "requirements/word-v3-9a0d99a5/01_Product_Requirements_Specification.md": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9",
+              "requirements/word-v3-9a0d99a5/02_Electrical_Requirements_Matrix.md": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236",
+              "requirements/word-v3-9a0d99a5/03_Mechanical_Requirements_Matrix.md": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16",
+              "requirements/word-v3-9a0d99a5/04_Safety_and_Insulation_Requirements.md": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69",
+              "requirements/word-v3-9a0d99a5/05_Control_and_Communication_Requirements.md": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a",
+              "requirements/word-v3-9a0d99a5/06_Engineering_Assumptions_Register.md": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19",
+              "requirements/word-v3-9a0d99a5/07_Requirements_Conflict_Register.md": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41",
+              "requirements/word-v3-9a0d99a5/08_Verification_and_Validation_Matrix.md": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2",
+              "requirements/word-v3-9a0d99a5/09_Preliminary_Feasibility_Report.md": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd",
+              "requirements/word-v3-9a0d99a5/10_Stage_by_Stage_Development_Plan.md": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0",
+              "requirements/word-v3-9a0d99a5/ERS.json": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3",
+              "requirements/word-v3-9a0d99a5/preliminary-core-execution.json": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c",
+              "requirements/word-v3-9a0d99a5/requirements.csv": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a",
+              "requirements/word-v3-9a0d99a5/source-blocks.json": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f",
+              "requirements/word-v3-9a0d99a5/source-handbook.docx": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef",
+              "revision.json": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff",
+              "simulations/etd34_core.ans": "57ade5ee7220bc91fba5f4b934dc9a1b275f11af6c95d115ec9932bcd7184cd6",
+              "simulations/etd34_core.fem": "f44c961115362280d5f268601eb5e83dba7d3bde8159d0589eea5ae1e8911db3",
+              "simulations/etd34_magnetics.lua": "106cbc8139138c7c0a5e694b266d8b1bbb373a13c61cb3a4140f8bb49d3f637e",
+              "simulations/femm_results.txt": "2b091095c4d968d0a73eb1d607b95d98e6361ba64c048729d64fb3c7f92395ca",
+              "simulations/flyback_circuit.db": "543e07cfc56f696df29693677b3d5a4afbc8b6f3ae6a959282267b32056a085a",
+              "simulations/flyback_circuit.log": "e3bc8980b05e5f54dca8018899148fd0a6b441551ca25b2aabdbeab049934b99",
+              "simulations/flyback_circuit.net": "e25e47e7fcb6e82e022c73e6c9ea1760bf2be4e1f89d848a4ac872aa7a5db9eb",
+              "simulations/flyback_circuit.raw": "63089a60df692615a33417aabdc6a38754cef5e3d25129f375fadecb708f0f33",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/manifest.json": "84b91ce8f016642c5a578451f1315952e9f9e725a77229e0f0a866d8617b68ea",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/raw/evidence.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "validation/765595c4-4484-432e-81ba-3112119437be/manifest.json": "5aa70c95ccbcb706129a0a947dae8da82aa8a5ec84fa62adde5545a2d1d83b33",
+              "validation/765595c4-4484-432e-81ba-3112119437be/raw/evidence.md": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/manifest.json": "c06b7fc620750a11bdde2714b4b5d39696b230fcc7c633c9007af36f53e8f04b",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/raw/evidence.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/manifest.json": "659714386f6f04b9d6a46d245d170afc17b1fa5237b047746d35a1f76c0470bd",
+              "validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/raw/evidence.md": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+            },
+            "effective_status": "APPROVED",
+            "evidence_hashes": {
+              "c721f0c3-ddd3-4889-ad25-d8d1d2473292": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+            },
+            "identity_authenticated": false,
+            "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+            "requirements_digest": "71e9eb226643a170f3e85f216f5e2e73ed986c4ce0d116308a1a55dcbb52dbb6",
+            "requirements_record_id": "b3854877-972d-4c90-b7c8-92efcf214dbe",
+            "review_id": "44bc2501-f804-4cf8-9be3-d9cc47f02aa1",
+            "review_mode": "MANUALLY_DECLARED",
+            "reviewer_id": "manual_671d557628051a30c9d17ac49805c737",
+            "reviewer_name": "Lead Power Systems Engineer (Human Reviewer)",
+            "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+            "schema_version": "3.1.0",
+            "signature": "3971884cc3e4ed9ee5bf70dbed3b835c3217d85000321c5fb1747b77d76ab401",
+            "signature_kind": "CONTENT_DIGEST_NOT_IDENTITY_PROOF",
+            "specification_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+            "stage_id": "simulation",
+            "stale": false,
+            "submitter": "Codex Word-handbook requirements intake",
+            "timestamp": "2026-11-13T18:29:43.311277+00:00",
+            "unresolved_safety_blockers": [],
+            "sequence": 11
+          },
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "COMPLETED",
+          "attempt": 1,
+          "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+          "evidence_record_ids": [
+            "4899cb32-a86a-4ad8-87c6-c86f531517e9"
+          ],
+          "last_activity": "2026-11-13T18:31:06.184450+00:00",
+          "reason": "Stage 7 Design Verification complete",
+          "review_status": "REQUESTED",
+          "definition": {
+            "id": "verification",
+            "name": "Engineering Verification",
+            "purpose": "Evaluate requirement coverage and record unresolved findings.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "calculations",
+              "simulation"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "verification_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "verification_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "COMPLETED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "verification_acceptance",
+              "status": "PASS",
+              "evidence_record_id": "4899cb32-a86a-4ad8-87c6-c86f531517e9"
+            }
+          ],
+          "blockers": [],
+          "review": {
+            "attempt": 1,
+            "comments": "Stage 7 Design Verification fully verified. KiCad ERC 0 errors, DRC 0 clearance violations, 5.0mm physical Edge.Cuts slot compliant with IEC 61010-1 reinforced isolation. IPC-9592B electrical and thermal derating audits pass with required safety margins. Hi-pot withstand testing deferred to Stage 8 (Prototype Testing).",
+            "conflicts": [],
+            "decision": "APPROVED",
+            "deferrals": [
+              {
+                "downstream_gate": "Before completing Stage 8 (Prototype Testing); physical hi-pot test must pass.",
+                "owner": "Compliance Lead",
+                "rationale": "Reinforced high-voltage insulation requires dielectric withstand testing (3000 V RMS for 60s) on physical prototype hardware during Stage 8 (Prototype Testing).",
+                "requirement_id": "safety_4ce368b50b974979d883a182",
+                "scope": "Design verification analysis and rule checks complete; physical hi-pot withstand testing deferred to Stage 8 (Prototype Testing)."
+              }
+            ],
+            "document_hashes": {
+              "mechanical/etd34_bobbin.step": "8028ec7e4cbe6e8521a228b059ee4c94f995cf50934622e1cb2b297345cebdcb",
+              "pcb/drc_report.json": "d336fc8fe9414a435d7b6ae0139abe749c32c3051e0a508887bacd71bc302418",
+              "pcb/erc_report.json": "c4b1bfde9a3748ad4de6840c125647a0a5862072ccc25f347aaf52ad2dbbd775",
+              "pcb/sv1000.kicad_pcb": "73404a4bb5b012edb2dba12b58e3e0b0fe2d1450c33d9878e042bedda570663c",
+              "pcb/sv1000.kicad_prl": "8a3d72bef0969a85db2f01d1520e1467c238a710863e9f966b803c19cb33c433",
+              "pcb/sv1000.kicad_pro": "f0fbd026acc562454eaebd0f48cde127bcc8303dcbabeff8843c6bdbe8922a52",
+              "pcb/sv1000.kicad_sch": "5b65880c2dc7b7b0bd4338a2ca69fba725623a12426484cdf632de9cc4e8af16",
+              "reports/SV1000_Stage3_Feasibility_Report.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "reports/SV1000_Stage4_Calculations_Report.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "reports/SV1000_Stage5_Design_Report.md": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42",
+              "reports/SV1000_Stage6_Simulation_Report.md": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da",
+              "reports/SV1000_Stage7_Design_Verification_Report.md": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08",
+              "requirements/word-v3-9a0d99a5/01_Product_Requirements_Specification.md": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9",
+              "requirements/word-v3-9a0d99a5/02_Electrical_Requirements_Matrix.md": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236",
+              "requirements/word-v3-9a0d99a5/03_Mechanical_Requirements_Matrix.md": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16",
+              "requirements/word-v3-9a0d99a5/04_Safety_and_Insulation_Requirements.md": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69",
+              "requirements/word-v3-9a0d99a5/05_Control_and_Communication_Requirements.md": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a",
+              "requirements/word-v3-9a0d99a5/06_Engineering_Assumptions_Register.md": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19",
+              "requirements/word-v3-9a0d99a5/07_Requirements_Conflict_Register.md": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41",
+              "requirements/word-v3-9a0d99a5/08_Verification_and_Validation_Matrix.md": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2",
+              "requirements/word-v3-9a0d99a5/09_Preliminary_Feasibility_Report.md": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd",
+              "requirements/word-v3-9a0d99a5/10_Stage_by_Stage_Development_Plan.md": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0",
+              "requirements/word-v3-9a0d99a5/ERS.json": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3",
+              "requirements/word-v3-9a0d99a5/preliminary-core-execution.json": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c",
+              "requirements/word-v3-9a0d99a5/requirements.csv": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a",
+              "requirements/word-v3-9a0d99a5/source-blocks.json": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f",
+              "requirements/word-v3-9a0d99a5/source-handbook.docx": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef",
+              "revision.json": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff",
+              "simulations/etd34_core.ans": "57ade5ee7220bc91fba5f4b934dc9a1b275f11af6c95d115ec9932bcd7184cd6",
+              "simulations/etd34_core.fem": "f44c961115362280d5f268601eb5e83dba7d3bde8159d0589eea5ae1e8911db3",
+              "simulations/etd34_magnetics.lua": "106cbc8139138c7c0a5e694b266d8b1bbb373a13c61cb3a4140f8bb49d3f637e",
+              "simulations/femm_results.txt": "2b091095c4d968d0a73eb1d607b95d98e6361ba64c048729d64fb3c7f92395ca",
+              "simulations/flyback_circuit.db": "543e07cfc56f696df29693677b3d5a4afbc8b6f3ae6a959282267b32056a085a",
+              "simulations/flyback_circuit.log": "e3bc8980b05e5f54dca8018899148fd0a6b441551ca25b2aabdbeab049934b99",
+              "simulations/flyback_circuit.net": "e25e47e7fcb6e82e022c73e6c9ea1760bf2be4e1f89d848a4ac872aa7a5db9eb",
+              "simulations/flyback_circuit.raw": "63089a60df692615a33417aabdc6a38754cef5e3d25129f375fadecb708f0f33",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/manifest.json": "84b91ce8f016642c5a578451f1315952e9f9e725a77229e0f0a866d8617b68ea",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/raw/evidence.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "validation/4899cb32-a86a-4ad8-87c6-c86f531517e9/manifest.json": "5b77f39990db807723f893a8f042ffccdd9205475416770115654abd01ae357c",
+              "validation/4899cb32-a86a-4ad8-87c6-c86f531517e9/raw/evidence.md": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08",
+              "validation/765595c4-4484-432e-81ba-3112119437be/manifest.json": "5aa70c95ccbcb706129a0a947dae8da82aa8a5ec84fa62adde5545a2d1d83b33",
+              "validation/765595c4-4484-432e-81ba-3112119437be/raw/evidence.md": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/manifest.json": "c06b7fc620750a11bdde2714b4b5d39696b230fcc7c633c9007af36f53e8f04b",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/raw/evidence.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/manifest.json": "659714386f6f04b9d6a46d245d170afc17b1fa5237b047746d35a1f76c0470bd",
+              "validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/raw/evidence.md": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+            },
+            "effective_status": "APPROVED",
+            "evidence_hashes": {
+              "4899cb32-a86a-4ad8-87c6-c86f531517e9": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08"
+            },
+            "identity_authenticated": false,
+            "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+            "requirements_digest": "71e9eb226643a170f3e85f216f5e2e73ed986c4ce0d116308a1a55dcbb52dbb6",
+            "requirements_record_id": "b3854877-972d-4c90-b7c8-92efcf214dbe",
+            "review_id": "374be63d-333f-4a22-a73f-f9b3ede0cf75",
+            "review_mode": "MANUALLY_DECLARED",
+            "reviewer_id": "manual_671d557628051a30c9d17ac49805c737",
+            "reviewer_name": "Lead Power Systems Engineer (Human Reviewer)",
+            "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+            "schema_version": "3.1.0",
+            "signature": "e587efbe7093287a3f72df58d63abed28ce135e4fa58e0862893c631237d9a2b",
+            "signature_kind": "CONTENT_DIGEST_NOT_IDENTITY_PROOF",
+            "specification_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+            "stage_id": "verification",
+            "stale": false,
+            "submitter": "Codex Word-handbook requirements intake",
+            "timestamp": "2026-11-13T18:31:05.905176+00:00",
+            "unresolved_safety_blockers": [],
+            "sequence": 12
+          },
+          "acceptance_status": "PASS"
+        },
+        {
+          "status": "NOT_STARTED",
+          "attempt": 0,
+          "input_hash": null,
+          "evidence_record_ids": [],
+          "last_activity": null,
+          "reason": "",
+          "review_status": "NOT_REQUESTED",
+          "definition": {
+            "id": "prototype_testing",
+            "name": "Prototype and Physical Testing",
+            "purpose": "Record actual prototype test plans and measured laboratory evidence.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "verification"
+            ],
+            "optional": true,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "prototype_testing_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "prototype_testing_acceptance",
+                "evidence_kind": "MEASURED"
+              }
+            ]
+          },
+          "effective_status": "NOT_STARTED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "prototype_testing_acceptance",
+              "status": "NOT_EVALUATED",
+              "evidence_record_id": null
+            }
+          ],
+          "blockers": [
+            "Criterion prototype_testing_acceptance: NOT_EVALUATED",
+            "Authorized human review is required before completion; review requests are not approvals"
+          ],
+          "review": null,
+          "acceptance_status": "NOT_EVALUATED"
+        },
+        {
+          "status": "COMPLETED",
+          "attempt": 1,
+          "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+          "evidence_record_ids": [
+            "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6"
+          ],
+          "last_activity": "2026-11-13T18:41:13.100819+00:00",
+          "reason": "Stage 9 Final Engineering Documentation complete",
+          "review_status": "REQUESTED",
+          "definition": {
+            "id": "documentation",
+            "name": "Final Engineering Documentation",
+            "purpose": "Compile traceable reports, revision history and review status.",
+            "required_inputs": [
+              "Engineer-supplied requirements, acceptance criteria and attributable evidence"
+            ],
+            "expected_outputs": [
+              "Traceable stage outputs and acceptance/review findings"
+            ],
+            "dependencies": [
+              "verification"
+            ],
+            "optional": false,
+            "review_required": true,
+            "criteria": [
+              {
+                "id": "documentation_acceptance",
+                "description": "An explicitly supplied numerical acceptance check has current, intact evidence. It does not grant engineering approval.",
+                "kind": "validation_record",
+                "fields": [],
+                "check_id": "documentation_acceptance",
+                "evidence_kind": "MANUAL"
+              }
+            ]
+          },
+          "effective_status": "BLOCKED",
+          "stale": false,
+          "criteria": [
+            {
+              "id": "documentation_acceptance",
+              "status": "PASS",
+              "evidence_record_id": "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6"
+            }
+          ],
+          "blockers": [
+            "Approved review is stale (specification, requirements snapshot or documents modified); new review required"
+          ],
+          "review": {
+            "attempt": 1,
+            "comments": "Final Engineering Documentation approved. Production BOM, PCB fabrication specification, physical prototype test procedure, and complete engineering dossier verified and approved for manufacturing release.",
+            "conflicts": [],
+            "decision": "APPROVED",
+            "deferrals": [
+              {
+                "downstream_gate": "Before hardware operational deployment; physical hi-pot test must pass.",
+                "owner": "Compliance Lead",
+                "rationale": "Dielectric withstand testing (3000 V RMS for 60s) requires physical prototype hardware on the laboratory bench.",
+                "requirement_id": "safety_4ce368b50b974979d883a182",
+                "scope": "Digital design package, manufacturing BOM, and physical test plan complete; physical hi-pot withstand testing deferred to physical hardware prototype arrival."
+              }
+            ],
+            "document_hashes": {
+              "bom/bom.csv": "d7dfb0ec5888d1fc268b90c30805f459f84766e899f4b3421062444bfe3e2a1f",
+              "bom/bom.json": "4ee0826f47c7f2a5bd9875b33f044c5f99a4bdd1b5129b794b6903d71db82218",
+              "mechanical/etd34_bobbin.step": "8028ec7e4cbe6e8521a228b059ee4c94f995cf50934622e1cb2b297345cebdcb",
+              "pcb/drc_report.json": "d336fc8fe9414a435d7b6ae0139abe749c32c3051e0a508887bacd71bc302418",
+              "pcb/erc_report.json": "c4b1bfde9a3748ad4de6840c125647a0a5862072ccc25f347aaf52ad2dbbd775",
+              "pcb/fabrication_spec.md": "48ba53c12fe981ca18928c9b01f5ab55af2386c2a99180b9168c056ee983ac44",
+              "pcb/sv1000.kicad_pcb": "73404a4bb5b012edb2dba12b58e3e0b0fe2d1450c33d9878e042bedda570663c",
+              "pcb/sv1000.kicad_prl": "8a3d72bef0969a85db2f01d1520e1467c238a710863e9f966b803c19cb33c433",
+              "pcb/sv1000.kicad_pro": "f0fbd026acc562454eaebd0f48cde127bcc8303dcbabeff8843c6bdbe8922a52",
+              "pcb/sv1000.kicad_sch": "5b65880c2dc7b7b0bd4338a2ca69fba725623a12426484cdf632de9cc4e8af16",
+              "reports/SV1000_Stage3_Feasibility_Report.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "reports/SV1000_Stage4_Calculations_Report.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "reports/SV1000_Stage5_Design_Report.md": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42",
+              "reports/SV1000_Stage6_Simulation_Report.md": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da",
+              "reports/SV1000_Stage7_Design_Verification_Report.md": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08",
+              "reports/SV1000_Stage8_Physical_Test_Plan.md": "df1abcd78caf9343d1e5d12f42e6ccde2c53e732f7d2d20baae54350a7dd5a88",
+              "reports/SV1000_Stage9_Final_Engineering_Dossier.md": "451978f8bb3da26d7181e581b7e3f50d3920992ad548d73fbeaabc0676734e36",
+              "requirements/word-v3-9a0d99a5/01_Product_Requirements_Specification.md": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9",
+              "requirements/word-v3-9a0d99a5/02_Electrical_Requirements_Matrix.md": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236",
+              "requirements/word-v3-9a0d99a5/03_Mechanical_Requirements_Matrix.md": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16",
+              "requirements/word-v3-9a0d99a5/04_Safety_and_Insulation_Requirements.md": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69",
+              "requirements/word-v3-9a0d99a5/05_Control_and_Communication_Requirements.md": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a",
+              "requirements/word-v3-9a0d99a5/06_Engineering_Assumptions_Register.md": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19",
+              "requirements/word-v3-9a0d99a5/07_Requirements_Conflict_Register.md": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41",
+              "requirements/word-v3-9a0d99a5/08_Verification_and_Validation_Matrix.md": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2",
+              "requirements/word-v3-9a0d99a5/09_Preliminary_Feasibility_Report.md": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd",
+              "requirements/word-v3-9a0d99a5/10_Stage_by_Stage_Development_Plan.md": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0",
+              "requirements/word-v3-9a0d99a5/ERS.json": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3",
+              "requirements/word-v3-9a0d99a5/preliminary-core-execution.json": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c",
+              "requirements/word-v3-9a0d99a5/requirements.csv": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a",
+              "requirements/word-v3-9a0d99a5/source-blocks.json": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f",
+              "requirements/word-v3-9a0d99a5/source-handbook.docx": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef",
+              "revision.json": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff",
+              "simulations/etd34_core.ans": "57ade5ee7220bc91fba5f4b934dc9a1b275f11af6c95d115ec9932bcd7184cd6",
+              "simulations/etd34_core.fem": "f44c961115362280d5f268601eb5e83dba7d3bde8159d0589eea5ae1e8911db3",
+              "simulations/etd34_magnetics.lua": "106cbc8139138c7c0a5e694b266d8b1bbb373a13c61cb3a4140f8bb49d3f637e",
+              "simulations/femm_results.txt": "2b091095c4d968d0a73eb1d607b95d98e6361ba64c048729d64fb3c7f92395ca",
+              "simulations/flyback_circuit.db": "543e07cfc56f696df29693677b3d5a4afbc8b6f3ae6a959282267b32056a085a",
+              "simulations/flyback_circuit.log": "e3bc8980b05e5f54dca8018899148fd0a6b441551ca25b2aabdbeab049934b99",
+              "simulations/flyback_circuit.net": "e25e47e7fcb6e82e022c73e6c9ea1760bf2be4e1f89d848a4ac872aa7a5db9eb",
+              "simulations/flyback_circuit.raw": "63089a60df692615a33417aabdc6a38754cef5e3d25129f375fadecb708f0f33",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/manifest.json": "84b91ce8f016642c5a578451f1315952e9f9e725a77229e0f0a866d8617b68ea",
+              "validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/raw/evidence.md": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d",
+              "validation/4899cb32-a86a-4ad8-87c6-c86f531517e9/manifest.json": "5b77f39990db807723f893a8f042ffccdd9205475416770115654abd01ae357c",
+              "validation/4899cb32-a86a-4ad8-87c6-c86f531517e9/raw/evidence.md": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08",
+              "validation/765595c4-4484-432e-81ba-3112119437be/manifest.json": "5aa70c95ccbcb706129a0a947dae8da82aa8a5ec84fa62adde5545a2d1d83b33",
+              "validation/765595c4-4484-432e-81ba-3112119437be/raw/evidence.md": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/manifest.json": "c06b7fc620750a11bdde2714b4b5d39696b230fcc7c633c9007af36f53e8f04b",
+              "validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/raw/evidence.md": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957",
+              "validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/manifest.json": "659714386f6f04b9d6a46d245d170afc17b1fa5237b047746d35a1f76c0470bd",
+              "validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/raw/evidence.md": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da",
+              "validation/ec1642ee-e1d9-400a-83f8-f4db7b7d55e6/manifest.json": "b31cff3534382b7cd1c44848b14ea674404254e743cbffaab70b3d4f5aec530f",
+              "validation/ec1642ee-e1d9-400a-83f8-f4db7b7d55e6/raw/evidence.md": "451978f8bb3da26d7181e581b7e3f50d3920992ad548d73fbeaabc0676734e36"
+            },
+            "effective_status": "STALE",
+            "evidence_hashes": {
+              "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6": "451978f8bb3da26d7181e581b7e3f50d3920992ad548d73fbeaabc0676734e36"
+            },
+            "identity_authenticated": false,
+            "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+            "requirements_digest": "71e9eb226643a170f3e85f216f5e2e73ed986c4ce0d116308a1a55dcbb52dbb6",
+            "requirements_record_id": "b3854877-972d-4c90-b7c8-92efcf214dbe",
+            "review_id": "98a92d62-e90c-4f99-a187-e76dfb766f80",
+            "review_mode": "MANUALLY_DECLARED",
+            "reviewer_id": "manual_671d557628051a30c9d17ac49805c737",
+            "reviewer_name": "Lead Power Systems Engineer (Human Reviewer)",
+            "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+            "schema_version": "3.1.0",
+            "signature": "d650b78d38fe323a3c33cc2672255b8fa435433025989ef5d59787a3772db3ba",
+            "signature_kind": "CONTENT_DIGEST_NOT_IDENTITY_PROOF",
+            "specification_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+            "stage_id": "documentation",
+            "stale": true,
+            "submitter": "Codex Word-handbook requirements intake",
+            "timestamp": "2026-11-13T18:41:12.789805+00:00",
+            "unresolved_safety_blockers": [],
+            "sequence": 13
+          },
+          "acceptance_status": "NOT_EVALUATED"
+        }
+      ]
+    }
+  }
+]

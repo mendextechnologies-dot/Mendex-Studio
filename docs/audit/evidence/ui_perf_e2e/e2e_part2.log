@@ -1,0 +1,65 @@
+## 9 capture outputs: PASS
+raw exists=True size=303363
+results: {"schema_version": "3.1.0", "job": {"request": {"schema_version": "1.5.0", "job_id": "836b28de-5f97-4d8e-b065-8a071c198ac6", "workspace_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "tool_id": "ltspice", "operation": "transient", "input_paths": ["input.net"], "parameters": {"source_path": "products\\112f57b6-1cef-4ba1-b6cd-4f1386c0fa12\\revisions\\989533c1-d1c4-496e-92a7-2d057d3f13d2\\sim\\buck_rc.net", "source_sha256": "0621bd3f19ea419d100251358b3906ea5b3270739a44877509ec02f98a82d8e3", "project_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "revision_id": "989533c1-d1c4-496e-92a7-2d057d3f13d2", 
+logs: {"schema_version": "3.1.0", "job_id": "836b28de-5f97-4d8e-b065-8a071c198ac6", "text": "2026-11-14T05:57:14.242655+00:00 LTspice 26.1.1 for Windows\r\nCircuit: C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-audit3\\ui\\e2e2\\.mendex\\ij\\836b28de5f974d8eb0658a071c198ac6\\input.net\r\nStart Time: Sat Nov 14 11:27:13 2026\r\nsolver = Normal\r\nMaximum thread count: 16\r\ntnom = 27\r\ntemp = 27\r\nmet
+
+Error executing MCP tool 'record_validation_evidence'
+Traceback (most recent call last):
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 504, in handle_request
+    res_data = self._dispatch_tool(tool_name, tool_args)
+  File "C:\Mendex studio\src\mendex_core\mcp\server.py", line 558, in _dispatch_tool
+    return record_dispatch(ctrl.service, name, args)
+  File "C:\Mendex studio\src\mendex_core\engineering_records\api.py", line 47, in dispatch
+    return actions[name](request)
+           ~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\engineering_records\service.py", line 270, in record_validation
+    return self._write(request, "record_validation", perform)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\engineering_records\service.py", line 66, in _write
+    return self._mutate(request, operation, "revision:" + str(request.revision_id),
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        lambda db, cleanup: perform(db, cleanup, *self._context(request)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\engineering_records\service.py", line 51, in _mutate
+    result = perform(db, cleanup)
+  File "C:\Mendex studio\src\mendex_core\engineering_records\service.py", line 67, in <lambda>
+    lambda db, cleanup: perform(db, cleanup, *self._context(request)))
+                                              ~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Mendex studio\src\mendex_core\engineering_records\service.py", line 27, in _context
+    raise StudioError("IMMUTABLE", "Engineering writes require a draft revision")
+mendex_core.service.StudioError: Engineering writes require a draft revision
+## 10 register evidence (MCP record_validation_evidence): FAIL
+{"schema_version": "3.1.0", "error": "IMMUTABLE", "message": "Engineering writes require a draft revision"}
+
+## 11 project status: PASS
+lifecycle: {"schema_version": "3.1.0", "assignment_id": "dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd", "project_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "revision_id": "989533c1-d1c4-496e-92a7-2d057d3f13d2", "definition_id": "engineering", "definition_version": "3.1.0", "definition_digest": "cd31bc48d989fee42639819caa55322678d4188bb79bc902d329dec8c9456b7a", "input_hash": "fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4f853c4a80879104f6", "sequence": 2, "engineering_status": "NOT_EVALUATED", "approval_status":
+workspace_status: {"workspace_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "directory_exists": true, "path": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-audit3\\ui\\e2e2\\products\\112f57b6-1cef-4ba1-b6cd-4f1386c0fa12\\revisions\\14b71dd2-9590-4ff0-a610-81c5b80eb431", "design_count": 0, "designs": [], "total_simulations": 0, "simulation_jobs": [], "artifact_summary": {"schematics": 0, "pcb_layouts": 0, "spice_n
+
+BRIDGE overview  55.7 ms {"protocol_version": "3.1.0", "id": "a-6d3aa88b-66b7-4f61-9b79-b151f8dddeae", "result": {"projects": [{"product_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "code": "AUDE2E", "name": "Audit Generic Buck 12V-5V", "category": "dc_dc_converter", "owner": "Audit", "description": "", "active_revision_id"
+BRIDGE projects  2.7 ms {"protocol_version": "3.1.0", "id": "a-e3888145-d661-4c88-bf5b-f8381bf47c21", "result": [{"product_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "code": "AUDE2E", "name": "Audit Generic Buck 12V-5V", "category": "dc_dc_converter", "owner": "Audit", "description": "", "active_revision_id": "14b71dd2-9
+BRIDGE simulations  6.0 ms {"protocol_version": "3.1.0", "id": "a-fe70c81f-1e2a-43aa-a262-9e0b2ff6ad67", "result": [{"request": {"schema_version": "1.5.0", "job_id": "836b28de-5f97-4d8e-b065-8a071c198ac6", "workspace_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "tool_id": "ltspice", "operation": "transient", "input_paths": ["
+BRIDGE project  3.8 ms {"protocol_version": "3.1.0", "id": "a-56bbcc74-66a0-4794-beb6-afb7c941df4f", "error": {"code": "NOT_FOUND", "message": "Revision has not been enrolled in a lifecycle"}}
+BRIDGE project 989533c1 46.9 ms {"protocol_version": "3.1.0", "id": "a-83cc5f3b-d4e3-4f37-8efd-010e4ce0bee2", "result": {"product": {"product_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "code": "AUDE2E", "name": "Audit Generic Buck 12V-5V", "category": "dc_dc_converter", "owner": "Audit", "description": "", "created_at": "2026-11
+BRIDGE reports  5.3 ms {"protocol_version": "3.1.0", "id": "a-2c25d96d-646b-475a-a032-ffa04d579a17", "result": []}
+## 12 Studio desktop API shows records: PASS
+project(R001) counts={'calculations': {'schema_version': '3.1.0', 'records': [{'assignment_id': 'dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd', 'assumptions': ['Audit synthetic MOSFET values'], 'attempt': 1, 'calculation': 'losses', 'engineering_status': 'NOT_EVALUATED', 'error': None, 'formula_reference': 'I_rms^2 * R_ds * duty + (E_on + E_off) * f', 'implementation': 'integrations.calculations.power_losses.calculate_semiconductor_losses', 'implementation_sha256': '425540ae889051ff8eac2ff8302330e8d60e438654a45ba9d8400d3d95c9dbe9', 'input_hash': 'fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4f853c4a80879104f6', 'kind': 'calculation', 'parameters': {'duty_cycle': 0.42, 'e_off_j': 2e-06, 'e_on_j': 1e-06, 'frequency_hz': 200000.0, 'i_rms_a': 2.0, 'part_number': 'AUDIT-FET', 'r_ds_on_ohm': 0.02}, 'project_id': '112f57b6-1cef-4ba1-b6cd-4f1386c0fa12', 'python_version': '3.13.7', 'reason': 'E2E', 'record_id': '826513ed-bafb-438a-a2f1-1abf28b8f0a7', 'result': {'calculation': 'semiconductor_losses', 'duty_cycle': 0.42, 'frequency_hz': 200000.0, 'inputs': {'duty_cycle': 0.42, 'e_off_j': 2e-06, 'e_on_j': 1e-06, 'frequency_hz': 200000.0, 'i_rms_a': 2.0, 'r_ds_on_ohm': 0.02}, 'p_conduction_w': 0.0336, 'p_switching_w': 0.6, 'p_total_w': 0.6336, 'part_number': 'AUDIT-FET', 'unit': 'Watts (W)'}, 'revision_id': '989533c1-d1c4-496e-92a7-2d057d3f13d2', 'schema_version': '3.1.0', 'source': 'Audit', 'specification': {'ambient_temperature_k': None, 'assumptions': [], 'iout_a': 2.0, 'isolation_requirement': '', 'schema_version': '1.0', 'source': 'Audit', 'standards_profile': 'UNASSIGNED', 'switching_frequency_hz': 200000.0, 'topology': 'buck', 'vin_max_v': 14.0, 'vin_min_v': 10.0, 'vin_nom_v': 12.0, 'vout_v': 5.0}, 'stage_id': 'project_initialization', 'status': 'SUCCEEDED', 'timestamp': '2026-11-14T05:57:12.020955+00:00', 'unit_conventions': 'Input/output suffixes preserve existing core units; no implicit unit conversion.', 'warnings': ['Switching energies and resistance are caller-supplied; test-condition applicability is not independently verified.'], 'sequence': 2, 'stale': False, 'effective_status': 'RECORDED'}], 'next_after_sequence': 2}, 'requirements': {'schema_version': '3.1.0', 'records': [{'assignment_id': 'dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd', 'attempt': 1, 'engineering_status': 'NOT_EVALUATED', 'input_hash': 'fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4f853c4a80879104f6', 'kind': 'requirements', 'project_id': '112f57b6-1cef-4ba1-b6cd-4f1386c0fa12', 'reason': 'E2E', 'record_id': '6b814e2f-8be1-4b42-9e1b-0b19eba31922', 'requirements': [{'acceptance_criterion': '', 'assumptions': [], 'description': 'Vout 5 V +/-2% at 2 A', 'discipline': 'electrical', 'id': 'vout', 'mandatory': True, 'source': 'Audit', 'specification_field': None, 'target_value': None, 'unit': ''}], 'requirements_version': 1, 'revision_id': '989533c1-d1c4-496e-92a7-2d057d3f13d2', 'schema_version': '3.1.0', 'source': 'Audit', 'specification': {'ambient_temperature_k': None, 'assumptions': [], 'iout_a': 2.0, 'isolation_requirement': '', 'schema_version': '1.0', 'source': 'Audit', 'standards_profile': 'UNASSIGNED', 'switching_frequency_hz': 200000.0, 'topology': 'buck', 'vin_max_v': 14.0, 'vin_min_v': 10.0, 'vin_nom_v': 12.0, 'vout_v': 5.0}, 'stage_id': 'project_initialization', 'supersedes_record_id': None, 'timestamp': '2026-11-14T05:57:11.958407+00:00', 'sequence': 1, 'stale': False, 'effective_status': 'RECORDED'}], 'next_after_sequence': 1}, 'registered_artifacts': {'schema_version': '3.1.0', 'records': [{'assignment_id': 'dbb6e6d6-10ec-46dd-a841-efd5f5c93cfd', 'attempt': 1, 'classification': 'documentation', 'design_id': None, 'design_revision_id': None, 'engineering_status': 'NOT_EVALUATED', 'input_hash': 'fcef3cdcd60ace1b0e46660f7df266d8b413eaee617bbd4f853c4a80879104f6', 'kind': 'artifact', 'project_id': '112f57b6-1cef-4ba1-b6cd-4f1386c0fa12', 'reason': 'E2E', 'record_id': 'dcb38323-5d29-42cf-9c41-3b6e1efe3c4b', 'relative_path': 'sim/buck_rc.net', 'review_status': 'NOT_REVIEWED', 'revision_id': '989533c1-d1c4-496e-92a7-2d057d3f13d2', 'schema_version': '3.1.0', 'sha256': '0621bd3f19ea419d100251358b3906ea5b3270739a44877509ec02f98a82d8e3', 'size_bytes': 109, 'snapshot_path': '.mendex/engineering-records/artifacts/88a7699e-5c82-4e11-aeda-6e914fc88581/artifact.net', 'source': 'Audit', 'specification': {'ambient_temperature_k': None, 'assumptions': [], 'iout_a': 2.0, 'isolation_requirement': '', 'schema_version': '1.0', 'source': 'Audit', 'standards_profile': 'UNASSIGNED', 'switching_frequency_hz': 200000.0, 'topology': 'buck', 'vin_max_v': 14.0, 'vin_min_v': 10.0, 'vin_nom_v': 12.0, 'vout_v': 5.0}, 'stage_id': 'project_initialization', 'timestamp': '2026-11-14T05:57:13.071945+00:00', 'sequence': 3, 'stale': False, 'snapshot_integrity': True, 'original_integrity': True, 'effective_status': 'RECORDED'}], 'next_after_sequence': 3}, 'files': 2, 'simulations': 1, 'reports': 0}; validation={"schema_version": "3.1.0", "engineering_status": "NOT_EVALUATED", "results": []}; simulations=[{"request": {"schema_version": "1.5.0", "job_id": "836b28de-5f97-4d8e-b065-8a071c198ac6", "workspace_id": "112f57b6-1cef-4ba1-b6cd-4f1386c0fa12", "tool_id": "ltspice", "operation": "transient", "input_paths": ["input.net"], "parameters": {"source_path": "products\\112f57b6-1cef-4ba1-b6cd-4f1386c0fa12\\revisions\\989533c1-d1c4-496e-92a7-2d057d3f13d2\\sim\\buck_rc.net", "source_sha256": "0621bd3f19ea419d100251358b3906ea5b3270739a44877509ec02f98a82d8e3", "project_id": "112f57b6-1cef-4ba1-b6cd-4f13
+
+## 13 sync CLI->API: PASS
+before=['Audit Generic Buck 12V-5V'] after=['Audit Generic Buck RENAMED'] (next read 4.0 ms; UI picks it up on next poll: App.tsx setInterval 4000 ms / usePolling 4000 ms)
+
+## 14 report (CLI generate_revision_report): FAIL
+{"error": "IMMUTABLE", "message": "Engineering writes require a draft revision"}
+
+## 15 report accessible via desktop API: FAIL
+reports rows=0 first=[]
+export_report -> null exists=False
+
+## 16a backend shutdown: PASS
+returncode=0
+
+## 16 restart backend: PASS
+restart-to-handshake 0.865s
+
+## 17 data intact after restart: PASS
+project payload equal excluding timestamp: True; len=21757
+

@@ -1,0 +1,87 @@
+{
+  "desktop_exit": 0,
+  "desktop_replies": [
+    {
+      "protocol_version": "3.1.0",
+      "id": "handshake",
+      "result": {
+        "protocol_version": "3.1.0",
+        "status": "READY",
+        "data_root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-protocol-audit-gxldimj_",
+        "python_version": "3.13.7",
+        "application": "Mendex Engineering Studio",
+        "desktop_version": "3.1.0",
+        "engineering_status": "NOT_EVALUATED",
+        "timestamp": "2026-11-14T05:02:35.088177+00:00"
+      }
+    },
+    {
+      "protocol_version": "3.1.0",
+      "id": "projects",
+      "result": [
+        {
+          "product_id": "82cdf509-e6e1-4cfc-8f24-32b95799a582",
+          "code": "RPC-AUDIT",
+          "name": "Disposable protocol fixture",
+          "category": "pcb",
+          "owner": "Software audit",
+          "description": "",
+          "active_revision_id": "6010d9df-48a0-4061-8185-b56371c7ef9c",
+          "revision_label": "R001",
+          "revision_status": "draft",
+          "input_hash": "b731250c1e22ead6dbe605667584249bbde288d99605868e770cc576bda7d074",
+          "created_at": "2026-11-14T05:02:33.863588+00:00"
+        }
+      ]
+    },
+    {
+      "protocol_version": "3.1.0",
+      "id": "shutdown",
+      "result": {
+        "protocol_version": "3.1.0",
+        "status": "READY",
+        "data_root": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-protocol-audit-gxldimj_",
+        "python_version": "3.13.7",
+        "application": "Mendex Engineering Studio",
+        "desktop_version": "3.1.0",
+        "engineering_status": "NOT_EVALUATED",
+        "timestamp": "2026-11-14T05:02:35.144000+00:00"
+      }
+    }
+  ],
+  "desktop_stderr": "",
+  "cli_exit": 0,
+  "cli_projects": [
+    {
+      "project_id": "82cdf509-e6e1-4cfc-8f24-32b95799a582",
+      "workspace_id": "82cdf509-e6e1-4cfc-8f24-32b95799a582",
+      "code": "RPC-AUDIT",
+      "name": "Disposable protocol fixture",
+      "category": "pcb",
+      "owner": "Software audit",
+      "description": "",
+      "active_revision_id": "6010d9df-48a0-4061-8185-b56371c7ef9c",
+      "status": "ACTIVE",
+      "specifications": {
+        "schema_version": "1.0",
+        "vin_min_v": null,
+        "vin_nom_v": null,
+        "vin_max_v": null,
+        "vout_v": null,
+        "iout_a": null,
+        "switching_frequency_hz": null,
+        "ambient_temperature_k": null,
+        "topology": "",
+        "isolation_requirement": "",
+        "standards_profile": "UNASSIGNED",
+        "source": "",
+        "assumptions": []
+      },
+      "created_at": "2026-11-14T05:02:33.863588+00:00",
+      "directory": "C:\\Users\\Sagar\\AppData\\Local\\Temp\\mendex-protocol-audit-gxldimj_\\products\\82cdf509-e6e1-4cfc-8f24-32b95799a582\\revisions\\6010d9df-48a0-4061-8185-b56371c7ef9c"
+    }
+  ],
+  "mcp_exit": 0,
+  "mcp_protocol": "2024-11-05",
+  "mcp_tool_count": 64
+}

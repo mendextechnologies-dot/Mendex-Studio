@@ -75,6 +75,22 @@ mi_saveas("temp_transformer.fem")
 mi_analyze(1)
 mi_loadsolution()
 
+-- Sample peak flux density across the core center leg
+b_max = 0
+for z_sample = 5, 25, 5 do
+    vals = mo_getpointvalues(5, z_sample)
+    if type(vals) == "table" then
+        b1 = vals[2]
+        b2 = vals[3]
+    else
+        a, b1, b2 = mo_getpointvalues(5, z_sample)
+    end
+    b_mag = sqrt(b1^2 + b2^2)
+    if b_mag > b_max then
+        b_max = b_mag
+    end
+end
+
 -- Extract circuit properties & metrics to text file
 i_pri, v_pri, flx_pri = mo_getcircuitproperties("Primary")
 res_fp = openfile("{results_txt_path}", "w")
@@ -84,6 +100,8 @@ if i_pri ~= 0 then
     ind_pri = flx_pri / i_pri
     write(res_fp, "primary_inductance_h=" .. tostring(ind_pri) .. "\\n")
 end
+write(res_fp, "peak_b_pk_tesla=" .. tostring(b_max) .. "\\n")
+write(res_fp, "saturation_margin_pct=" .. tostring(((0.39 - b_max) / 0.39) * 100) .. "\\n")
 closefile(res_fp)
 
 quit()

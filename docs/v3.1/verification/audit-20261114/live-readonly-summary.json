@@ -1,0 +1,907 @@
+{
+  "commit": "d555d97efe6386b92c7bffefff167944072e0d99",
+  "integrity_check": [
+    [
+      "ok"
+    ]
+  ],
+  "foreign_key_check": [],
+  "counts": {
+    "activities": 0,
+    "engineering_change_requests": 0,
+    "engineering_lifecycle_assignments": 1,
+    "engineering_lifecycle_definitions": 1,
+    "engineering_lifecycle_events": 48,
+    "engineering_lifecycle_schema": 1,
+    "engineering_records_entries": 33,
+    "engineering_records_receipts": 34,
+    "engineering_records_schema": 1,
+    "engineering_review_receipts": 13,
+    "engineering_reviewers": 4,
+    "engineering_reviews": 13,
+    "engineering_reviews_schema": 1,
+    "integration_datasets": 0,
+    "integration_health": 13,
+    "integration_jobs": 0,
+    "integration_settings": 0,
+    "integration_workspaces": 1,
+    "lifecycle_approvals": 0,
+    "measurements": 0,
+    "products": 1,
+    "reports": 0,
+    "revisions": 1,
+    "runs": 0,
+    "tool_settings": 0,
+    "validations": 6,
+    "workflow_runs": 1,
+    "workflows": 1
+  },
+  "projects": [
+    {
+      "product_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "code": "SV-1000",
+      "name": "SpectraVolt SV-1000",
+      "category": "dc_dc_converter",
+      "owner": "Lead Power Electronics Engineer",
+      "description": "Precision high-voltage isolated DC-DC converter; Word v3.0 proposed 24 V input, 0\u20131000 V, 1 W / 1 mA continuous; SV-1000P and SV-1000N. Optional 5 W unresolved. Draft requirements only.",
+      "created_at": "2026-11-13T09:43:57.030276Z",
+      "updated_at": "2026-11-13T10:06:55.802464Z",
+      "active_revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103"
+    }
+  ],
+  "revisions": [
+    {
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "product_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "revision_label": "R001",
+      "lifecycle_status": "draft",
+      "specification": {
+        "schema_version": "1.0",
+        "vin_min_v": 21.0,
+        "vin_nom_v": 24.0,
+        "vin_max_v": 28.0,
+        "vout_v": 1000.0,
+        "iout_a": 0.001,
+        "switching_frequency_hz": 100000.0,
+        "ambient_temperature_k": null,
+        "topology": "",
+        "isolation_requirement": "",
+        "standards_profile": "UNASSIGNED",
+        "source": "Word handbook v3.0; M3 SV-1000 row; SHA256 65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef",
+        "assumptions": [
+          "DRAFT: Word targets, not approved requirements or tested performance.",
+          "vout_v=1000 is positive variant full-scale magnitude; signed negative variant retained separately in ERS.",
+          "1 W / 1 mA continuous per Word supersedes earlier 100 W brief by explicit user instruction; 5 W optional not selected.",
+          "Topology, insulation system and operating conditions unresolved; no hardware authorization."
+        ]
+      },
+      "created_at": "2026-11-13T09:43:57.030307Z"
+    }
+  ],
+  "recent_lifecycle_events": [
+    {
+      "action": "complete",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6",
+          "id": "documentation_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "b3b76926-23cf-43ce-b3a9-48d748ee41ad",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:41:13.100819+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 9 Final Engineering Documentation complete",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "documentation",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-13T18:41:13.100876+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6",
+          "id": "documentation_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "a9334302-2b21-4abe-93a8-f5a8bc6ca8da",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:41:12.435325+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 9 documentation ready for engineering release signoff",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "documentation",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T18:41:12.435361+00:00"
+    },
+    {
+      "action": "attach_evidence",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "documentation_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "7e88437c-ce65-47c0-9e0e-0a2c100057a4",
+      "evidence_record_id": "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6",
+      "evidence_record_ids": [
+        "ec1642ee-e1d9-400a-83f8-f4db7b7d55e6"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:41:12.294076+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Attach final engineering documentation dossier",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "documentation",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T18:41:12.294130+00:00"
+    },
+    {
+      "action": "start",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "documentation_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "12718a1d-86b0-4d28-985a-152d04eecbe4",
+      "evidence_record_id": null,
+      "evidence_record_ids": [],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:40:49.188433+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Initiate Stage 9 Final Engineering Documentation",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "documentation",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T18:40:49.188518+00:00"
+    },
+    {
+      "action": "complete",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "4899cb32-a86a-4ad8-87c6-c86f531517e9",
+          "id": "verification_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "4a4fefc3-9321-4451-b288-51c5464c8e72",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "4899cb32-a86a-4ad8-87c6-c86f531517e9"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:31:06.184450+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 7 Design Verification complete",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "verification",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-13T18:31:06.184490+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "4899cb32-a86a-4ad8-87c6-c86f531517e9",
+          "id": "verification_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "4a283f5a-aa39-4dd1-8ebf-5f51e9a37c86",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "4899cb32-a86a-4ad8-87c6-c86f531517e9"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:31:05.588830+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 7 ready for engineering signoff",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "verification",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T18:31:05.588873+00:00"
+    },
+    {
+      "action": "attach_evidence",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "verification_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "552fd42a-5212-4fab-840d-0012cfac4140",
+      "evidence_record_id": "4899cb32-a86a-4ad8-87c6-c86f531517e9",
+      "evidence_record_ids": [
+        "4899cb32-a86a-4ad8-87c6-c86f531517e9"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:31:05.476458+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Attach design verification report evidence",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "verification",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T18:31:05.476516+00:00"
+    },
+    {
+      "action": "start",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "verification_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "0a54ad57-7f3c-4f01-9a1c-8956dee46bd3",
+      "evidence_record_id": null,
+      "evidence_record_ids": [],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:30:39.572014+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Initiate Stage 7 Design Verification",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "verification",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T18:30:39.572069+00:00"
+    },
+    {
+      "action": "complete",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 2,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292",
+          "id": "simulation_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "b55adb09-b7f2-4541-90f4-24bd18ce31ee",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:29:43.830367+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 6 verified and approved",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "simulation",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-13T18:29:43.830427+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 2,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292",
+          "id": "simulation_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "fd300469-5ca5-4365-b84b-254c7fe8250f",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:29:42.688147+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Simulation ready for review",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "simulation",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T18:29:42.688212+00:00"
+    },
+    {
+      "action": "attach_evidence",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 2,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "simulation_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "dccd2e7f-e87f-4656-8a61-1a62245cf897",
+      "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292",
+      "evidence_record_ids": [
+        "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:29:42.503060+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Re-attach simulation evidence",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "simulation",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T18:29:42.503140+00:00"
+    },
+    {
+      "action": "reopen",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 2,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292",
+          "id": "simulation_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "50fb0eb6-f6ce-4e56-b741-d377d5b8f2b5",
+      "evidence_record_id": null,
+      "evidence_record_ids": [],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:29:42.313462+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Refresh after Stage 5 update",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "simulation",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T18:29:42.313522+00:00"
+    },
+    {
+      "action": "complete",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 4,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+          "id": "design_development_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "ffe5338f-7179-4b2f-9008-2f5ea434594f",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:29:42.108923+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 5 verified and approved",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "design_development",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-13T18:29:42.108985+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 4,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+          "id": "design_development_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "8747b80d-91da-49c1-a68b-9e87e3c8611b",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:29:41.097655+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "DRC clean layout ready for review",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "design_development",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T18:29:41.097721+00:00"
+    },
+    {
+      "action": "attach_evidence",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 4,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "design_development_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "0a2ec6ae-1253-45a4-ae84-d2997a1a649b",
+      "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:29:40.905188+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Re-attach design deliverables",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "design_development",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T18:29:40.905264+00:00"
+    },
+    {
+      "action": "reopen",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 4,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+          "id": "design_development_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "eaf08db9-e0fd-47fe-ace7-45c2780a2f08",
+      "evidence_record_id": null,
+      "evidence_record_ids": [],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T18:29:40.716163+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Refresh after DRC cleanup",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "cli",
+      "stage_id": "design_development",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T18:29:40.716254+00:00"
+    },
+    {
+      "action": "complete",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292",
+          "id": "simulation_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "937c9227-f5c2-480f-b93f-0f95851940b1",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:48:13.285520+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "All simulation and analysis solver verifications completed and approved.",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Mendex Studio",
+      "stage_id": "simulation",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-13T17:48:13.285541+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292",
+          "id": "simulation_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "c7d62c20-2b75-4b2a-8cd8-adcfc2ac3508",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:48:13.018637+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 6 solvers executed and documented. Formal simulation approval requested.",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Lead Power Electronics Engineer",
+      "stage_id": "simulation",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T17:48:13.018661+00:00"
+    },
+    {
+      "action": "complete",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 3,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+          "id": "design_development_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "e89436c6-fd77-422f-a546-307eeda622c7",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:48:12.893563+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Design development completed and approved with clean review package",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Mendex Studio",
+      "stage_id": "design_development",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-13T17:48:12.893587+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 3,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+          "id": "design_development_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "6cce2a42-73ae-4141-aa5f-5b4bdd621936",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:48:12.620606+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Re-submitting design development review with current file hashes",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Lead Power Electronics Engineer",
+      "stage_id": "design_development",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T17:48:12.620631+00:00"
+    },
+    {
+      "action": "attach_evidence",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 3,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "design_development_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "2551cfa1-f57d-4194-a84d-1aa5933bf1aa",
+      "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:48:12.564145+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Re-attach design development acceptance evidence",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Mendex Studio",
+      "stage_id": "design_development",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T17:48:12.564182+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 3,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "design_development_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "f2e64dbd-5c81-460e-9b96-9a657fd511ff",
+      "evidence_record_id": null,
+      "evidence_record_ids": [],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:47:45.951753+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Re-submitting design development review with current file hashes",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Lead Power Electronics Engineer",
+      "stage_id": "design_development",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T17:47:45.951776+00:00"
+    },
+    {
+      "action": "reopen",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 3,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+          "id": "design_development_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "83d11547-58c3-4ab3-afaf-21f1f065724a",
+      "evidence_record_id": null,
+      "evidence_record_ids": [],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:47:45.894677+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Re-affirming design development stage review with current workspace digests",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Mendex Studio",
+      "stage_id": "design_development",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T17:47:45.894711+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292",
+          "id": "simulation_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "63282517-1f41-4abe-9e88-2c391908bef3",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:46:27.606604+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 6 solvers executed and documented. Formal simulation approval requested.",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Lead Power Electronics Engineer",
+      "stage_id": "simulation",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T17:46:27.606631+00:00"
+    },
+    {
+      "action": "attach_evidence",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "simulation_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "bfcc1567-bd32-4b8b-856b-4ddbc09e019f",
+      "evidence_record_id": "c721f0c3-ddd3-4889-ad25-d8d1d2473292",
+      "evidence_record_ids": [
+        "c721f0c3-ddd3-4889-ad25-d8d1d2473292"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:46:27.503958+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Attach LTspice and FEMM solver verification records",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Mendex Studio",
+      "stage_id": "simulation",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T17:46:27.503990+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "simulation_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "464a829e-dcd0-4d5b-ad21-eded5905a555",
+      "evidence_record_id": null,
+      "evidence_record_ids": [],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:44:43.272857+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 6 solvers executed and documented. Formal simulation approval requested.",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Lead Power Electronics Engineer",
+      "stage_id": "simulation",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T17:44:43.272885+00:00"
+    },
+    {
+      "action": "start",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 1,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "simulation_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "203bd8c6-90c9-42fc-a684-8d13059616b8",
+      "evidence_record_id": null,
+      "evidence_record_ids": [],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:44:27.965683+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Commencing Stage 6: Simulation and Analysis",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Mendex Studio",
+      "stage_id": "simulation",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T17:44:27.965711+00:00"
+    },
+    {
+      "action": "complete",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 2,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+          "id": "design_development_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "a5e4f576-f063-4ff6-9d91-d3de6cb16d6d",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:07:45.103889+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Stage 5 Engineering Design Development verified and completed.",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Lead Power Systems Engineer",
+      "stage_id": "design_development",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-13T17:07:45.103922+00:00"
+    },
+    {
+      "action": "request_review",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 2,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+          "id": "design_development_acceptance",
+          "status": "PASS"
+        }
+      ],
+      "event_id": "c9413d03-e69c-40be-b517-85c71785032d",
+      "evidence_record_id": null,
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:07:06.917164+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Request human review for Stage 5 CAD deliverables with current document hashes.",
+      "review_status": "REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Lead Power Systems Engineer",
+      "stage_id": "design_development",
+      "status": "AWAITING_REVIEW",
+      "timestamp": "2026-11-13T17:07:06.917195+00:00"
+    },
+    {
+      "action": "attach_evidence",
+      "assignment_id": "72d70a39-5439-4b80-ba2a-fa1d19569401",
+      "attempt": 2,
+      "criteria_snapshot": [
+        {
+          "evidence_record_id": null,
+          "id": "design_development_acceptance",
+          "status": "NOT_EVALUATED"
+        }
+      ],
+      "event_id": "822f58d2-2f1b-48aa-950c-77cb86ea2b6e",
+      "evidence_record_id": "765595c4-4484-432e-81ba-3112119437be",
+      "evidence_record_ids": [
+        "765595c4-4484-432e-81ba-3112119437be"
+      ],
+      "input_hash": "a3f483d85539dd56cb47aedb92b187a2824b0a15c7fb9c8390b83b56ec4e2975",
+      "last_activity": "2026-11-13T17:07:06.856260+00:00",
+      "project_id": "8f697275-3a8d-456c-ae20-138a7698df61",
+      "reason": "Re-attach validated Stage 5 design evidence.",
+      "review_status": "NOT_REQUESTED",
+      "revision_id": "9b7c1396-64da-41f8-8649-77dc0f24e103",
+      "schema_version": "3.1.0",
+      "source": "Lead Power Systems Engineer",
+      "stage_id": "design_development",
+      "status": "IN_PROGRESS",
+      "timestamp": "2026-11-13T17:07:06.856304+00:00"
+    }
+  ]
+}

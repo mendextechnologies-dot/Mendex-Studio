@@ -163,13 +163,47 @@ class KiCadLifecycleService:
             "passed": bool(structure.get("populated")) and res.returncode == 0 and parsed.get("total_issues", 1) == 0,
         }
 
-    def export_gerbers(self, pcb_path: Path, output_dir: Optional[Path] = None) -> Path:
-        """Exports manufacturing Gerbers for a KiCad PCB layout."""
-        if not self.is_available():
-            raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
+    def export_gerbers(
+        self,
+        pcb_path: Path,
+        output_dir: Optional[Path] = None,
+        require_routed: bool = True,
+        check_drc: bool = True,
+        force: bool = False,
+    ) -> Path:
+        """Exports manufacturing Gerbers for a KiCad PCB layout.
+
+        Gated by routing completion and DRC verification. Unrouted boards (placement-only)
+        or boards with DRC violations cannot produce fabrication outputs unless explicitly forced.
+        """
         board = pcb_path.resolve()
         if not board.exists():
             raise FileNotFoundError(f"PCB file not found: {board}")
+
+        structure = _structure(board)
+        routed_tracks = structure.get("segment", 0) + structure.get("arc", 0)
+
+        if not force:
+            if require_routed and routed_tracks == 0:
+                raise ValueError(
+                    f"Refusing to export manufacturing Gerbers for {board.name}: "
+                    f"board has 0 routed copper tracks (placement-only, {structure.get('footprint', 0)} footprints placed). "
+                    "Complete PCB routing and pass DRC before generating manufacturing outputs."
+                )
+            if check_drc:
+                if not self.is_available():
+                    raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
+                drc_res = self.run_drc(board)
+                if not drc_res.get("passed"):
+                    total_issues = drc_res.get("parsed", {}).get("total_issues", "unknown")
+                    raise ValueError(
+                        f"Refusing to export manufacturing Gerbers for {board.name}: "
+                        f"DRC failed with {total_issues} issues. "
+                        "Resolve all DRC violations before exporting manufacturing Gerbers."
+                    )
+
+        if not self.is_available():
+            raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
 
         out_dir = output_dir.resolve() if output_dir else (board.parent / "gerbers").resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -178,6 +212,45 @@ class KiCadLifecycleService:
             "pcb",
             "export",
             "gerbers",
+            "--output",
+            str(out_dir),
+            str(board),
+        ]
+        subprocess.run(cmd, capture_output=True, text=True, timeout=90, check=True)
+        return out_dir
+
+    def export_drill(
+        self,
+        pcb_path: Path,
+        output_dir: Optional[Path] = None,
+        require_routed: bool = True,
+        force: bool = False,
+    ) -> Path:
+        """Exports Excellon drill files for a KiCad PCB layout."""
+        board = pcb_path.resolve()
+        if not board.exists():
+            raise FileNotFoundError(f"PCB file not found: {board}")
+
+        structure = _structure(board)
+        routed_tracks = structure.get("segment", 0) + structure.get("arc", 0)
+
+        if not force and require_routed and routed_tracks == 0:
+            raise ValueError(
+                f"Refusing to export drill files for {board.name}: "
+                f"board has 0 routed copper tracks (placement-only, {structure.get('footprint', 0)} footprints placed). "
+                "Complete PCB routing before generating manufacturing outputs."
+            )
+
+        if not self.is_available():
+            raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
+
+        out_dir = output_dir.resolve() if output_dir else (board.parent / "gerbers").resolve()
+        out_dir.mkdir(parents=True, exist_ok=True)
+        cmd = [
+            str(self.kicad_cli),
+            "pcb",
+            "export",
+            "drill",
             "--output",
             str(out_dir),
             str(board),
@@ -226,3 +299,47 @@ class KiCadLifecycleService:
         ]
         subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
         return out_csv
+
+    def render_3d(
+        self,
+        pcb_path: Path,
+        output_png: Optional[Path] = None,
+        view: str = "iso",
+        width: int = 1200,
+        height: int = 900,
+    ) -> Path:
+        """Renders raytraced 3D image of the PCB layout using internal KiCad 10 raytracer."""
+        from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+
+        adapter = CopperKiCadAdapter(kicad_cli_path=str(self.kicad_cli) if self.kicad_cli else None)
+        return adapter.render_3d(
+            pcb_path=pcb_path,
+            output_png=output_png,
+            view=view,
+            width=width,
+            height=height,
+        )
+
+    def auto_route(
+        self,
+        pcb_path: Path,
+        pour_ground: bool = True,
+        ground_net: str = "GND",
+        ripup: str = "all",
+        default_track: float = 0.4,
+        power_track: float = 1.2,
+        power_patterns: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
+        """Routes unrouted PCB tracks and pours ground planes using internal Copper router."""
+        from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+
+        adapter = CopperKiCadAdapter(kicad_cli_path=str(self.kicad_cli) if self.kicad_cli else None)
+        return adapter.route_pcb(
+            pcb_path=pcb_path,
+            pour_ground=pour_ground,
+            ground_net=ground_net,
+            ripup=ripup,
+            default_track=default_track,
+            power_track=power_track,
+            power_patterns=power_patterns,
+        )

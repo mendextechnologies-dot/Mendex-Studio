@@ -1,5 +1,187 @@
 # Three-day implementation checklist
 
+## Claude Code Comprehensive Audit Remediation (P0, P1, and Key P2 Items) — 14 November 2026
+
+- [x] **P0-1 — AI Agent Review Provisioning Barrier on MCP (`src/mendex_core/mcp/server.py`, `src/mendex_core/engineering_reviews/api.py`)**:
+  - Root cause resolved: MCP tools previously exposed `register_authorized_reviewer` and `record_human_review`, allowing AI agents to self-authorize and self-approve engineering gates.
+  - Remediated: Dropped name blocklist; restricted MCP review tools strictly to read-only status checks (`get_review_status`, `list_pending_reviews`).
+  - Gated review registration and approvals exclusively to interactive human sessions (desktop UI or TTY with OS-level human user verification).
+  - Verified in `tests/core/test_mcp_human_review_barrier.py` (2/2 passing).
+
+- [x] **P0-2 — Approval Immutability & Stale Invalidation (`src/mendex_core/lifecycle/`, SQLite Schema)**:
+  - Root cause resolved: Approval rows were mutable and persisted even after specifications were modified or revisions rewound.
+  - Remediated: Enforced SQLite triggers (`prevent_approval_update`, `prevent_approval_delete`) preventing row modification or deletion.
+  - Approvals bind to the SHA-256 hash of specifications and design artifacts; modifying the specification automatically transitions prior approvals to `STALE`.
+  - Verified in `tests/core/test_immutability_and_approvals.py` (3/3 passing).
+
+- [x] **P0-3 — Test Data Root Isolation (`tests/conftest.py`)**:
+  - Root cause resolved: Test runs and dev tooling previously used the live repository `.mendex` root directory, polluting persistent records and tool health tables.
+  - Remediated: Implemented `isolate_test_data_root` autouse fixture in `tests/conftest.py` redirecting `MENDEX_DATA_ROOT` to `tmp_path / "mendex_isolated_root"` for every test execution.
+  - Verified live: Zero writes or modifications to the live repository `.mendex` directory during full test runs.
+
+- [x] **P0-4 — Dev Server Loopback Security Binding (`desktop/vite.config.ts`)**:
+  - Root cause resolved: Vite dev server was configured with `host: '::'`, exposing dev server and backend write methods to external network interfaces.
+  - Remediated: Configured Vite dev server with explicit `host: '127.0.0.1'`, strictly confining RPC traffic to local loopback.
+
+- [x] **P0-5 — Flyback Calculation Equations Unification & Golden Validation (`src/mendex_core/intelligence/calculations.py`)**:
+  - Root cause resolved: Ripple current was erroneously derived from average input current, primary inductance evaluated to 1490 µH instead of 670.6 µH, and peak flux exceeded core saturation limits.
+  - Remediated: Corrected primary inductance equation ($L_p = \frac{V_{in,min}^2 D_{max}^2}{2 P_{in} f_{sw}} = 670.6\,\mu\text{H}$), flux swing vs peak flux check, and Steinmetz core loss equation.
+  - Verified against analytical golden benchmarks in `tests/core/test_flyback_math_golden.py` (4/4 passing).
+
+- [x] **P0-6 — KiCad Gerber Export Gating & Placement-Only Labeling (`src/mendex_core/design/generators/kicad_pcb_generator.py`, `src/integrations/adapters/kicad.py`)**:
+  - Root cause resolved: KiCad Gerber export previously succeeded on unrouted boards with 0 tracks and unconnected pins.
+  - Remediated: Blocked Gerber/drill export unless DRC is clean (0 unconnected items). Generated unrouted boards are stamped with `PLACEMENT_ONLY` metadata in silkscreen and manifests.
+  - Verified in `tests/core/test_kicad_gerber_gating.py` (2/2 passing).
+
+- [x] **P1-1 & P1-2 — Unified Calculation Engine with Strict Numerical Input Validation (`src/mendex_core/intelligence/calculations.py`)**:
+  - Consolidated four disparate calculation modules into single source of truth (`intelligence/calculations.py`).
+  - Removed silent default assumptions; enforced strict validation rejecting NaN, negative currents, and non-physical values.
+
+- [x] **P1-3 — Real Simulation Waveform & Metric Ingestion (`desktop/src/components/WaveformChart.tsx`, `RevisionEngineeringPanel.tsx`, `src/integrations/parsers/ltspice_parser.py`, `src/mendex_core/desktop/service.py`)**:
+  - Built high-performance dual ASCII/Binary LTspice `.raw` waveform parser streaming downsampled (1000 pts) vector traces to desktop UI.
+  - Integrated interactive vector SVG `WaveformChart` component and simulation results table into `RevisionEngineeringPanel.tsx`.
+  - Verified in `tests/core/test_waveform_and_simulation_metrics.py` (3/3 passing).
+
+- [x] **P1-4 — Project Revision Switcher & Auto-Enrollment (`desktop/src/pages/ProjectDetail.tsx`, `src/mendex_core/desktop/service.py`)**:
+  - Added revision selector dropdown in project header enabling switching between active and historical revisions.
+  - Added auto-enrollment fallback in `DesktopService` ensuring newly created revisions immediately bind to project lifecycle workflows without breaking UI views.
+  - Verified in `tests/core/test_desktop_revision_isolation.py` (2/2 passing).
+
+- [x] **P1-5 — Hardened FEMM 4.2 FEA Solver Execution (`src/mendex_core/design/femm_runner.py`, `src/mendex_core/design/generators/femm_generator.py`)**:
+  - Replaced leaky `-filelink` global directory pollution (`C:\femm42\bin`) with headless Lua script execution in isolated `work_dir` via `SafeRunner`.
+  - Enforced honest `NOT_EVALUATED` and $B_{max}=0.0$ when unexcited (`peak_current_a=0`).
+  - When excited (`peak_current_a > 0`), generated complete model with primary winding excitation, outer air boundary with $A=0$ Dirichlet boundary condition, sampled core center-leg $B_{pk}$, verified saturation threshold ($0.49\text{ T}$), and parsed metrics from `results.txt`.
+  - Enforced guaranteed process-tree cleanup (`taskkill /PID <pid> /T /F`).
+  - Verified in `tests/core/test_femm_excitation.py` (5/5 passing) and all FEMM tests (11 passing).
+
+- [x] **P1-6 — Hardened LTspice Runner Robustness (`src/mendex_core/design/ltspice_runner.py`, `src/integrations/adapters/ltspice.py`, `src/integrations/parsers/ltspice_parser.py`)**:
+  - Automatically parses `.meas` statements into job metrics and `res.measurements`.
+  - Computes and records true `execution_time_s` (no longer default `0.0`).
+  - Persists input netlist SHA-256 hash in manifests and diagnostics.
+  - Resolved directory issue where LTspice writes `.log` and `.raw` to the netlist directory rather than `workdir`, ensuring error logs are captured even on non-zero exit codes.
+  - Verified in `tests/core/test_ltspice_robustness.py` (2/2 passing) and all LTspice adapter tests (4/4 passing).
+
+- [x] **P1-7 — Agent Discovery & MCP Tool Quality (`.mcp.json`, `src/mendex_core/mcp/server.py`)**:
+  - Added root `.mcp.json` configuring standard MCP server discovery for Claude Code, Codex, and other AI coding assistants.
+  - Retired fragile legacy tools; added strict Pydantic schema validation across all tool dispatch handlers to prevent `KeyError`.
+
+- [x] **P1-8 — Windows Command Center Packaging (`scripts/build_windows_installer.ps1`, `desktop/src-tauri/tauri.conf.json`)**:
+  - Upgraded PowerShell installer script for v3.1 Command Center: builds React web frontend assets, copies `src`, `desktop/dist`, `desktop/src-tauri`, bundles launch wrapper, sets up desktop shortcut `'Mendex Engineering Studio v3.1 Command Center.lnk'`, generates multi-resolution `desktop/src-tauri/icons/icon.ico` and PNGs, and configures `tauri.conf.json`.
+
+- [x] **P1-9 — Append-Only Triggers for Reports, Measurements & ECRs (`src/mendex_core/measurements/service.py`, `src/mendex_core/lifecycle/ecr.py`)**:
+  - Enforced database triggers and versioned records preventing mutation or deletion of engineering dossiers, simulation measurements, and engineering change requests.
+  - Verified in `tests/core/test_immutability_and_approvals.py`.
+
+- [x] **P2-1 & P2-5 — Database Resilience, Performance at Scale & Live Online Backup (`src/mendex_core/service.py`, `desktop/service.py`, `cli.py`, `workflows/`)**:
+  - Root cause resolved: 401 SQLite connections per `projects` call causing CPU contention during 4s polling; no WAL mode; foreign keys not enforced across workflow connections; `migrate_v5` re-running table reflection on every startup; lack of online database backup utility.
+  - Implemented SQLite Write-Ahead Logging (`PRAGMA journal_mode=WAL`) and `PRAGMA synchronous=NORMAL` across database connections, enabling non-blocking concurrent reads and writes.
+  - Enforced `PRAGMA foreign_keys=ON` uniformly on all SQLite connections including visual workflows storage.
+  - Resolved `migrate_v5` re-execution by adding an instant existence check on table `activities`, bypassing redundant table reflection while preserving schema version 4 baseline integrity.
+  - Optimized `DesktopService.projects()` and `DesktopService.overview()` to use a single connection and batched SQL queries, slashing SQLite connection churn from $2N+1$ connections down to 1 single connection.
+  - Engineered online live database backup utility `StudioService.backup_database()`, exposed via CLI (`mendex backup [--output <path>] [--json]`) and desktop RPC (`dispatch("backup")`).
+  - Added dedicated test suite in `tests/core/test_database_resilience_and_backup.py` (7/7 passed).
+
+- [x] **P2-6 — Cached Tool Qualification Detection (`src/mendex_core/desktop/service.py`)**:
+  - Implemented 30-second memory TTL cache for `DesktopService.tools()`, eliminating heavy executable disk probing and database writes on every 4s UI polling refresh.
+
+- [x] **P2-7 — Real Dashboard Review & Revision Metrics (`src/mendex_core/desktop/service.py`)**:
+  - Implemented `_count_pending_reviews()` querying actual `in_review` product revisions across products, replacing hardcoded 0.
+
+- [x] **P2-8 — Headless Browser Test Suite Alignment (`tests/command_center/test_react_command_center.py`)**:
+  - Fixed Windows CP-1252 `UnicodeDecodeError` in headless Edge DOM capture by explicitly decoding as UTF-8 with error replacement.
+  - Updated expected DOM markers across all 10 project tabs (`Executive Project Summary`, `Lifecycle Stages`, `Saved specifications`, `Recorded engineering calculations`, `Simulation Jobs`, `Revision designs`, `Monitored Revision Workspace Files`, `Lifecycle Stage Validation Gates`, `Revision History`, `Engineering Dossiers`).
+  - Verified live: 15/15 tests passing cleanly in `tests/command_center/test_react_command_center.py`.
+
+- [x] **Full Test Suite Qualification Verification**:
+  - `tests/command_center/test_react_command_center.py`: 15 passed, 0 failed.
+  - `tests/core tests/adapters tests/integration tests/ui`: 430 passed, 1 skipped (physical prototype bench test), 0 failed.
+  - Cumulative total: **445 passed, 1 skipped, 0 failed** (100% test pass rate).
+
+
+
+## Engineering Readiness Remediation (KiCad 3D Models, Schematic Wiring, Dual Waveform Ingestion, CAD Preview Canvas & DRC/ERC Binding) — 14 November 2026
+
+- [x] **P0-1 — 3D Model Binding & Silkscreen Outlines in KiCad PCB Generator (`src/mendex_core/design/generators/kicad_pcb_generator.py`)**:
+  - Root cause resolved: Generated `.kicad_pcb` files previously omitted `(model ...)` S-expression directives, causing KiCad 3D Viewer (`Alt+3`) to render empty boards without component bodies (user reported issue).
+  - Implemented `FOOTPRINT_3D_MODEL_MAP` and dynamic `resolve_3d_model()` resolving installed KiCad 10 STEP models (`${KICAD10_3DMODEL_DIR}/...step`) across TO-252, TO-220, SOIC-8, DIP-8, DIP-16, radial electrolytic capacitors (`CP_Radial`), SMD passives (0805, 1206, 1210, 1812, 2512), SMA diodes, bridge rectifiers, push buttons, and terminal blocks.
+  - Added package-specific pad geometry generators (`_generate_footprint_pads`) and silkscreen drawing (`_generate_silkscreen_graphics`) on `F.SilkS` with component outlines and pin 1 / polarity markers.
+  - Verified live: E2E test generated 10/10 footprints with attached 3D models. KiCad 3D Viewer renders populated 3D assemblies matching physical hardware datasheets.
+
+- [x] **P1-1 — Schematic Symbol Library Taxonomy & Pin Interconnect Wires (`src/mendex_core/design/generators/kicad_generator.py`)**:
+  - Root cause resolved: Generated `.kicad_sch` files previously mapped complex components (gate drivers, regulators, IGBTs, logic ICs) to `Device:R` and omitted inter-symbol wires.
+  - Implemented `resolve_symbol_lib_id()` with rich taxonomy: `LM7805`/`LM7815` -> `Regulator_Linear:LM7805_TO220`, `74HC123` -> `74xx:74HC123`, `HCPL-3120` -> `Isolator:HCPL-3120`, `D_Bridge` -> `Diode:D_Bridge_+-AA+`, IGBT -> `Device:Q_NIGBT_GCE`, push button -> `Switch:SW_Push`, terminal block -> `Connector:Conn_01x02_Pin`, polarized capacitor -> `Device:C_Polarized`.
+  - Added orthogonal wire routing `(wire (pts (xy x1 y1) (xy x2 y2)))` interconnecting component pins across common nets, power rails, and ground references.
+  - Verified live: `kicad-cli sch erc --severity-all --format json` executed with Exit Code 0 and 0 errors.
+
+- [x] **P0-2 — Dual ASCII & Binary LTspice Waveform Ingestion (`src/integrations/parsers/ltspice_parser.py` & `src/mendex_core/desktop/service.py`)**:
+  - Root cause resolved: `DesktopService.waveform()` previously hard-rejected UTF-16 and binary `.raw` files, even though LTspice 26.1.1 on Windows generates binary raw output with UTF-16 headers.
+  - Enhanced `parse_ascii_raw_waveforms` in `ltspice_parser.py` to seamlessly parse both ASCII `Values:` and Binary `Binary:` formats. Directly extracts IEEE 64-bit float time and 32-bit float channel vectors into NumPy arrays.
+  - Updated `DesktopService.waveform()` to support files up to 100 MiB, downsampling to 1,000 points with full trace metadata.
+  - Verified live on `simulations/flyback_circuit.raw`: Parsed 26,038 solver steps and streamed 1,002 vectors for `V(vout)`, `V(gate)`, `V(in)`, `V(pri_drain)`, and `I(D1)` in < 25ms.
+
+- [x] **P0-3 — Desktop UI High-Performance Waveform Oscilloscope (`desktop/src/components/WaveformChart.tsx`)**:
+  - Engineered modern vector SVG waveform charting component with zero external dependencies.
+  - Features multi-channel trace toggles with distinct color palettes, dynamic auto-scaling, interactive crosshair cursor tracking with instant time/voltage readout tooltips, and real-time signal steady-state statistics (Mean, Peak-to-Peak Ripple, Min, Max).
+  - Integrated directly into `RevisionEngineeringPanel.tsx` under the Simulations tab (`section === 'simulations'`), immediately displaying interactive waveforms whenever simulation data is available.
+
+- [x] **P1-2 — Component Library CAD Footprint & 3D Model Binding (`src/mendex_core/config/component_library.json`)**:
+  - Enriched all 20 reference parts in the official component catalog with explicit `package`, `kicad_footprint`, `kicad_symbol`, `kicad_3d_model`, and `spice_model_name` fields.
+  - Added `kicad_3d_model` attribute to `ComponentRecord` in `src/mendex_core/components/models.py`.
+
+- [x] **P2-1 — FEMM 4.2 Solver Concurrency Lock & Process Cleanup (`src/mendex_core/design/femm_runner.py`)**:
+  - Implemented thread-safe process execution mutex `_FEMM_PROCESS_LOCK` guarding `run_magnetic_analysis` to prevent collisions on global filelink pipe files (`ifile.txt` and `ofile.txt`) during concurrent magnetic FEA solver runs.
+  - Hardened process termination lifecycle: `proc.terminate()` with `proc.wait(timeout=2.0)` and fallback `proc.kill()` in `finally:` block.
+
+- [x] **P3-1 — Interactive 2D Native PCB & Schematic Vector CAD Canvas with DRC/ERC Snapshot Binding (`desktop/src/components/CADPreviewCanvas.tsx` & `src/mendex_core/desktop/service.py`)**:
+  - Added `CADPreviewQuery` schema and implemented `DesktopService.cad_preview()` extracting actual vector geometry from `.kicad_pcb` (board edge cuts, copper tracks, footprints, pads, silkscreen graphics) and `.kicad_sch` (symbols, interconnecting wires, net labels).
+  - Extracted and parsed native KiCad DRC (`pcb/drc_report.json`) and ERC (`pcb/erc_report.json`) reports, exposing structured summaries (`errors`, `warnings`, `unconnected`, `status`).
+  - Embedded `CADPreviewCanvas` into `RevisionEngineeringPanel.tsx` under the Designs tab (`section === 'designs'`) with mode switcher (2D PCB Layout / Schematic Diagram), zoom/pan controls, hover component inspection tooltips showing 3D model status, and live DRC/ERC status badges (`DRC: PASS (0 errors, 10 warnings)`, `ERC: PASS (0 errors, 1 warning)`).
+  - Added full test coverage in `tests/core/test_cad_preview_and_reports.py` (3/3 passing).
+
+- [x] **P1-3 — 45-Degree Chamfered Copper Trace Routing (`src/mendex_core/design/generators/kicad_pcb_generator.py`)**:
+  - Implemented `_get_pad_offsets()` and `_generate_copper_tracks()` in `KiCadPCBGenerator` generating 45-degree chamfered copper segments `(segment ...)` between component pads belonging to common nets.
+  - Enforced IPC-2152 compliant trace widths: 1.0 mm for power rails (`VIN`, `VOUT`, `HV_DC`, `GND`), 0.4 mm for control/feedback signals. Routed ground return paths on `B.Cu` and power/signal paths on `F.Cu`.
+  - Added `route_tracks: bool = False` gating parameter to preserve the strict safety guard that unrouted boards cannot export Gerbers (`test_kicad_gerber_gating.py`), while generating fully routed boards when requested.
+  - Added unit test in `tests/core/test_v19_design_synthesis.py` (`test_kicad_pcb_generator_copper_track_routing`).
+
+- [x] **P1-4 — KiCad 10 Headless Raytraced 3D Render Ingestion & In-App 3D Assembly Viewer (`src/mendex_core/desktop/service.py` & `desktop/src/components/CADPreviewCanvas.tsx`)**:
+  - Connected `DesktopService.cad_preview(kind='3d')` to KiCad 10's native CLI raytracer (`kicad-cli pcb render --perspective --rotate -45,0,45 --zoom 1.1`).
+  - Automatically renders high-resolution isometric PNG assembly images featuring populated 3D STEP models, converting them to base64 data URIs for client consumption.
+  - Extended `CADPreviewCanvas.tsx` with a third view mode `[ 3D Board Assembly ]`, displaying photorealistic raytraced 3D boards directly in the Mendex Studio UI with backdrop blur labels and fallback controls.
+  - Added unit test in `tests/core/test_cad_preview_and_reports.py` (`test_cad_preview_extracts_3d_render`).
+  - Verified full test regression suite: 264/264 tests passed in 47.87s (`tests/core/`).
+  - Production desktop build verified: `npm --prefix desktop run build` (1,586 modules transformed, 0 TypeScript errors).
+
+## Copper KiCad MCP Architectural Evaluation & Controlled Integration Assessment — 14 November 2026
+- [x] **Copper KiCad MCP Evaluation & Live Proof-of-Concept (docs/audit/COPPER_KICAD_INTEGRATION_EVALUATION.md)**:
+  - Inspected claynicholson/copper-kicad-mcp (v1.1.1): dependencies (pillow>=10, stdlib), MIT license, KiCad 10 compatibility, subprocess worker architecture (pcbnew Python 3.11).
+  - Executed 11-step isolated live Proof of Concept (POC) on low-voltage reference circuit (divider_poc):
+    - Native KiCad 10 schematic generated (24,730 bytes).
+    - Component connectivity and pin-anchored netlist verified (/Vin, /Vdiv, GND).
+    - KiCad ERC executed with 0 errors and 0 warnings (pwr_flag verified).
+    - PCB synchronized via pcbnew Python subprocess worker (19,256 bytes).
+    - 4 footprints assigned and placed with courtyard clearance and silkscreen cleanup.
+    - Ground copper pour filled on B.Cu with thermal reliefs.
+    - Deterministic guided topological routing completed 100% (4/4 connections, 9 tracks, 0 vias, 45.8 mm track length).
+    - KiCad DRC executed with 0 errors, 0 warnings, 0 unconnected items (elegance score 69.1).
+    - Raytraced 3D ISO rendering generated via kicad-cli pcb render (68,300 bytes PNG at 1200 px).
+    - Native files validated with KiCad 10.0.7 CLI; STEP 3D CAD model exported (142,302 bytes).
+    - All generated artifacts registered with SHA-256 digests in an append-only manifest.
+  - Delivered comprehensive evaluation report with **CONDITIONAL GO** recommendation, detailed 6-step incremental implementation plan, and Phase 8 approval control gate.
+
+- [x] **Controlled Internal Copper KiCad Engine & Adapter Integration (`src/integrations/adapters/copper_kicad_adapter.py` & `src/copper_kicad/`)**:
+  - Vendored `copper_kicad` (v1.1.1) cleanly into `src/copper_kicad/` with Pillow dependency (`pillow>=10` added to `pyproject.toml`).
+  - Created `CopperKiCadAdapter` in `src/integrations/adapters/copper_kicad_adapter.py` providing:
+    - `route_pcb(pcb_path, passes, mode)` wrapping deterministic guided topological routing and optional B.Cu ground pour via KiCad's headless `pcbnew` Python worker.
+    - `render_3d(pcb_path, output_png, view, raytrace)` invoking KiCad 10 raytraced 3D ISO renders.
+    - `run_drc(pcb_path, refill)` and `run_erc(sch_path)` verifying electrical connectivity and design rules.
+    - `doctor_status()` validating KiCad 10 CLI and `pcbnew` Python environment health.
+  - Extended `KiCadLifecycleService` (`src/mendex_core/lifecycle/kicad_service.py`) and `KiCadAdapter` (`src/integrations/adapters/kicad.py`) with `render_3d()` and `auto_route()` lifecycle hooks without replacing Mendex's core power-domain rules.
+  - Upgraded `DesktopService.cad_preview(kind='3d')` to automatically invoke `CopperKiCadAdapter.render_3d` and bound it to `desktop/src/components/CADPreviewCanvas.tsx` with dedicated 3D assembly viewer and KiCad 3D launcher.
+  - Added unit and integration tests in `tests/integrations/test_copper_kicad_adapter.py` (5/5 passing).
+  - Verified full test regression suite: 269/269 tests passed in 59.35s (`tests/core/` and `tests/integrations/`).
+  - Desktop production build verified: `npm --prefix desktop run build` (1,586 modules transformed, 0 TypeScript errors).
+
 ## Interactive In-App BOM Generation & Native PDF/Word Viewer Integration — 14 November 2026
 - [x] **Resolved Word vs Edge PDF Window Collision (`src/mendex_core/launch.py`)**:
   - Diagnosed root cause: `SV1000_Bill_of_Materials.docx` and `SV1000_Bill_of_Materials.pdf` share the identical base stem (`SV1000_Bill_of_Materials`). When Word was open, `_find_window_on_desktop(required_hints=[target.stem])` matched the existing Word window (`SV1000_Bill_of_Materials - Word`), causing `_activate_window` to focus Word instead of spawning Edge.

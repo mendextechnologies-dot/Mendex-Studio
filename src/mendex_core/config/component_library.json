@@ -134,7 +134,11 @@
       "package": "PG-TDSON-8",
       "voltage_rating_v": 80,
       "rds_on_ohm": 0.0026,
-      "conditions": "RDS(on) maximum; review gate voltage, junction temperature and SOA in datasheet. Current rating not transcribed pending thermal-condition review."
+      "conditions": "RDS(on) maximum; review gate voltage, junction temperature and SOA in datasheet. Current rating not transcribed pending thermal-condition review.",
+      "kicad_footprint": "Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.81mm",
+      "kicad_symbol": "Device:Q_NMOS_DGS",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.81mm.step",
+      "spice_model_name": "BSC026N08NS5"
     },
     {
       "mpn": "C3M0065090D",
@@ -148,7 +152,11 @@
       "voltage_rating_v": 900,
       "rds_on_ohm": 0.065,
       "lifecycle_status": "NRND",
-      "conditions": "Manufacturer lists 65 milliohms at 25 degrees C. Current requires case-temperature and gate-drive review."
+      "conditions": "Manufacturer lists 65 milliohms at 25 degrees C. Current requires case-temperature and gate-drive review.",
+      "kicad_footprint": "Package_TO_SOT_THT:TO-247-3_Vertical",
+      "kicad_symbol": "Device:Q_NMOS_DGS",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_TO_SOT_THT.3dshapes/TO-247-3_Vertical.step",
+      "spice_model_name": "C3M0065090D"
     },
     {
       "mpn": "MBR20100CT",
@@ -158,10 +166,14 @@
       "description": "Dual Schottky rectifier; source ordering table lists MBR20100CTG",
       "record_kind": "PART",
       "source_checked_on": "2026-11-13",
-      "package": "TO-220",
+      "package": "TO-220-3",
       "voltage_rating_v": 100,
       "current_rating_a": 10,
-      "conditions": "Average forward current PER LEG at case temperature 133 degrees C; 20 A total device, not 20 A per leg. Confirm exact ordering suffix."
+      "conditions": "Average forward current PER LEG at case temperature 133 degrees C; 20 A total device, not 20 A per leg. Confirm exact ordering suffix.",
+      "kicad_footprint": "Package_TO_SOT_THT:TO-220-3_Vertical",
+      "kicad_symbol": "Device:D_Schottky_AKA",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_TO_SOT_THT.3dshapes/TO-220-3_Vertical.step",
+      "spice_model_name": "MBR20100CT"
     },
     {
       "mpn": "IKW40N65H5",
@@ -173,7 +185,11 @@
       "source_checked_on": "2026-11-13",
       "package": "TO-247-3",
       "voltage_rating_v": 650,
-      "conditions": "Current and loss ratings depend on temperature and switching conditions; exact order code requires selection."
+      "conditions": "Current and loss ratings depend on temperature and switching conditions; exact order code requires selection.",
+      "kicad_footprint": "Package_TO_SOT_THT:TO-247-3_Vertical",
+      "kicad_symbol": "Device:Q_NIGBT_GCE",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_TO_SOT_THT.3dshapes/TO-247-3_Vertical.step",
+      "spice_model_name": "IKW40N65H5"
     },
     {
       "mpn": "LMG3410R070",
@@ -185,7 +201,11 @@
       "source_checked_on": "2026-11-13",
       "package": "VQFN-32",
       "voltage_rating_v": 600,
-      "conditions": "Datasheet family contains multiple devices; review thermal pad, gate supply and layout requirements."
+      "conditions": "Datasheet family contains multiple devices; review thermal pad, gate supply and layout requirements.",
+      "kicad_footprint": "Package_DFN_QFN:QFN-32-1EP_8x8mm_P0.8mm_EP6.5x6.5mm",
+      "kicad_symbol": "Power_Management:LMG3410R070",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-32-1EP_8x8mm_P0.8mm_EP6.5x6.5mm.step",
+      "spice_model_name": "LMG3410"
     },
     {
       "mpn": "UCC21520",
@@ -195,7 +215,12 @@
       "description": "Dual-channel isolated gate driver",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model.",
+      "package": "SOIC-16W",
+      "kicad_footprint": "Package_SO:SOIC-16W_7.5x10.3mm_P1.27mm",
+      "kicad_symbol": "Driver_FET:UCC21520",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-16W_7.5x10.3mm_P1.27mm.step",
+      "spice_model_name": "UCC21520"
     },
     {
       "mpn": "UCC28C43",
@@ -205,7 +230,12 @@
       "description": "Current-mode PWM controller",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model.",
+      "package": "SOIC-8",
+      "kicad_footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+      "kicad_symbol": "Regulator_Controller:UC3843",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.step",
+      "spice_model_name": "UCC28C43"
     },
     {
       "mpn": "TL431",
@@ -215,7 +245,12 @@
       "description": "Adjustable shunt reference",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model.",
+      "package": "SOT-23",
+      "kicad_footprint": "Package_TO_SOT_SMD:SOT-23",
+      "kicad_symbol": "Reference_Voltage:TL431DBZ",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-23.step",
+      "spice_model_name": "TL431"
     },
     {
       "mpn": "INA240",
@@ -225,7 +260,12 @@
       "description": "Current-sense amplifier with PWM rejection",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model.",
+      "package": "TSSOP-8",
+      "kicad_footprint": "Package_SO:TSSOP-8_4.4x3mm_P0.65mm",
+      "kicad_symbol": "Amplifier_Current:INA240",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/TSSOP-8_4.4x3mm_P0.65mm.step",
+      "spice_model_name": "INA240"
     },
     {
       "mpn": "ISO7721",
@@ -235,7 +275,12 @@
       "description": "Two-channel digital isolator",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model."
+      "conditions": "Select package, temperature grade and ordering suffix; ratings vary by variant. Source link is a manufacturer product family, not an installed model.",
+      "package": "SOIC-8",
+      "kicad_footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+      "kicad_symbol": "Isolator:ISO7721",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.step",
+      "spice_model_name": "ISO7721"
     },
     {
       "mpn": "VO617A",
@@ -245,7 +290,12 @@
       "description": "Phototransistor-output optocoupler",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Choose CTR bin, isolation option and exact order code."
+      "conditions": "Choose CTR bin, isolation option and exact order code.",
+      "package": "DIP-4",
+      "kicad_footprint": "Package_DIP:DIP-4_W7.62mm",
+      "kicad_symbol": "Isolator:VO617A",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-4_W7.62mm.step",
+      "spice_model_name": "VO617A"
     },
     {
       "mpn": "B32774X0205K000",
@@ -255,7 +305,12 @@
       "description": "DC-link film capacitor",
       "record_kind": "PART",
       "source_checked_on": "2026-11-13",
-      "conditions": "Capacitance, voltage, ripple and derating not transcribed; consult exact-part manufacturer record."
+      "conditions": "Capacitance, voltage, ripple and derating not transcribed; consult exact-part manufacturer record.",
+      "package": "Radial Box P=27.5mm",
+      "kicad_footprint": "Capacitor_THT:C_Rect_L29.0mm_W11.0mm_P27.50mm_MKT",
+      "kicad_symbol": "Device:C",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Capacitor_THT.3dshapes/C_Rect_L29.0mm_W11.0mm_P27.50mm_MKT.step",
+      "spice_model_name": "B32774"
     },
     {
       "mpn": "WSLS2512",
@@ -265,7 +320,12 @@
       "description": "Metal-strip current-sense resistor series",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Resistance, tolerance, temperature coefficient and power depend on order code and mounting."
+      "conditions": "Resistance, tolerance, temperature coefficient and power depend on order code and mounting.",
+      "package": "2512",
+      "kicad_footprint": "Resistor_SMD:R_2512_6332Metric",
+      "kicad_symbol": "Device:R_Shunt",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.step",
+      "spice_model_name": "WSLS2512"
     },
     {
       "mpn": "XAL7030",
@@ -275,7 +335,12 @@
       "description": "Shielded power inductor series",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select inductance suffix; saturation and RMS current have different test criteria."
+      "conditions": "Select inductance suffix; saturation and RMS current have different test criteria.",
+      "package": "SMD 7.5x7.5mm",
+      "kicad_footprint": "Inductor_SMD:L_Bourns_SRN6045TA",
+      "kicad_symbol": "Device:L",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Inductor_SMD.3dshapes/L_Bourns_SRN6045TA.step",
+      "spice_model_name": "XAL7030"
     },
     {
       "mpn": "218",
@@ -285,7 +350,12 @@
       "description": "Time-lag glass cartridge fuse series",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select current and breaking capacity; AC rating must not be treated as a DC rating."
+      "conditions": "Select current and breaking capacity; AC rating must not be treated as a DC rating.",
+      "package": "5x20mm cartridge",
+      "kicad_footprint": "Fuse:Fuseholder_Cylinder-5x20mm_Schurter_0031_8201_Horizontal_Open",
+      "kicad_symbol": "Device:Fuse",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Fuse.3dshapes/Fuseholder_Cylinder-5x20mm_Schurter_0031_8201_Horizontal_Open.step",
+      "spice_model_name": "FUSE_5x20"
     },
     {
       "mpn": "SMBJ",
@@ -295,7 +365,12 @@
       "description": "Transient-voltage suppressor series",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select standoff voltage and polarity; pulse-power rating is waveform-dependent, not continuous power."
+      "conditions": "Select standoff voltage and polarity; pulse-power rating is waveform-dependent, not continuous power.",
+      "package": "DO-214AA (SMB)",
+      "kicad_footprint": "Diode_SMD:D_SMB",
+      "kicad_symbol": "Device:D_TVS",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMB.step",
+      "spice_model_name": "SMBJ"
     },
     {
       "mpn": "S14 compact AdvanceD-MP",
@@ -305,7 +380,12 @@
       "description": "Leaded metal-oxide varistor series",
       "record_kind": "FAMILY",
       "source_checked_on": "2026-11-13",
-      "conditions": "Select voltage and surge-energy variant before use."
+      "conditions": "Select voltage and surge-energy variant before use.",
+      "package": "Disc 14mm P=7.5mm",
+      "kicad_footprint": "Varistor:RV_Disc_D12mm_W4.3mm_P7.5mm",
+      "kicad_symbol": "Device:Varistor",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Varistor.3dshapes/RV_Disc_D12mm_W4.3mm_P7.5mm.step",
+      "spice_model_name": "S14K"
     },
     {
       "mpn": "FN2090-20-06",
@@ -315,7 +395,12 @@
       "description": "Single-phase mains EMI filter",
       "record_kind": "PART",
       "source_checked_on": "2026-11-13",
-      "conditions": "Review rated voltage, leakage current, ambient derating and earthing requirements."
+      "conditions": "Review rated voltage, leakage current, ambient derating and earthing requirements.",
+      "package": "Chassis Mount Metal Can",
+      "kicad_footprint": "TerminalBlock:TerminalBlock_bornier-2_P5.08mm",
+      "kicad_symbol": "Filter:EMI_Filter_LL",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/TerminalBlock_Phoenix.3dshapes/TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal.step",
+      "spice_model_name": "FN2090"
     },
     {
       "mpn": "657-15ABEP",
@@ -325,7 +410,12 @@
       "description": "Pin-mounted heatsink",
       "record_kind": "PART",
       "source_checked_on": "2026-11-13",
-      "conditions": "Thermal resistance depends on airflow, orientation and interface; no fixed value assumed."
+      "conditions": "Thermal resistance depends on airflow, orientation and interface; no fixed value assumed.",
+      "package": "TO-220 Heatsink",
+      "kicad_footprint": "Heatsink:Heatsink_AAVID_Extruded_531002B00000G_34.9x12.7mm_H25.4mm",
+      "kicad_symbol": "Mechanical:Heatsink",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/Heatsink.3dshapes/Heatsink_AAVID_Extruded_531002B00000G_34.9x12.7mm_H25.4mm.step",
+      "spice_model_name": "HEATSINK_657"
     },
     {
       "mpn": "1935161",
@@ -337,7 +427,12 @@
       "source_checked_on": "2026-11-13",
       "voltage_rating_v": 400,
       "current_rating_a": 17.5,
-      "conditions": "400 V at overvoltage category III / pollution degree 2. Current subject to conductor size and temperature derating; not a 1 kV connector qualification."
+      "conditions": "400 V at overvoltage category III / pollution degree 2. Current subject to conductor size and temperature derating; not a 1 kV connector qualification.",
+      "package": "P=5.08mm 2-pos",
+      "kicad_footprint": "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal",
+      "kicad_symbol": "Connector:Conn_01x02_Pin",
+      "kicad_3d_model": "${KICAD10_3DMODEL_DIR}/TerminalBlock_Phoenix.3dshapes/TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal.step",
+      "spice_model_name": "CONN_2"
     }
   ],
   "materials": [

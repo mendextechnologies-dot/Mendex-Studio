@@ -59,17 +59,6 @@ def calculate_flyback_transformer_parameters(
     # Core cross section in m^2
     ae_m2 = core_ae_mm2 * 1e-6
 
-    # Minimum primary turns to avoid core saturation:
-    # Np = (Vin_min * D_max) / (B_max * Ae * f_sw)
-    np_raw = (vin_min_v * d_max) / (b_max_t * ae_m2 * frequency_hz)
-    primary_turns = max(1, math.ceil(np_raw))
-
-    # Secondary turns
-    secondary_turns = max(1, round(primary_turns / n))
-
-    # Actual turns ratio
-    actual_n = primary_turns / secondary_turns
-
     # Primary magnetizing inductance Lm for target duty cycle:
     # Lm = (Vin_min * D_max)^2 / (2 * Pin * f_sw * K_rf)
     # where K_rf is ripple factor (assume 0.8 for continuous/borderline mode)
@@ -80,6 +69,18 @@ def calculate_flyback_transformer_parameters(
     delta_i = (vin_min_v * d_max) / (l_m * frequency_hz)
     i_pk_pri = (i_in_avg / d_max) + (delta_i / 2.0)
     i_rms_pri = math.sqrt(d_max * ((i_in_avg / d_max) ** 2 + (delta_i ** 2) / 12.0))
+
+    # Minimum primary turns to ensure peak flux B_pk does not exceed B_max:
+    # B_pk = (Lm * I_pk_pri) / (Np * Ae) <= B_max  ==>  Np >= (Lm * I_pk_pri) / (B_max * Ae)
+    np_raw_peak = (l_m * i_pk_pri) / (b_max_t * ae_m2)
+    np_raw_swing = (vin_min_v * d_max) / (b_max_t * ae_m2 * frequency_hz)
+    primary_turns = max(1, math.ceil(max(np_raw_peak, np_raw_swing)))
+
+    # Secondary turns
+    secondary_turns = max(1, round(primary_turns / n))
+
+    # Actual turns ratio
+    actual_n = primary_turns / secondary_turns
 
     # Secondary currents
     i_pk_sec = i_pk_pri * actual_n

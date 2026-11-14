@@ -90,6 +90,8 @@ def test_cli_design_synthesis(tmp_path, capsys):
         "design", "generate",
         "--workspace", ws_id,
         "--title", "Buck 24V-5V",
+        "--fsw", "100000",
+        "--ripple", "0.05",
         "--vin-nom", "24.0",
         "--vout", "5.0",
         "--iout", "4.0",

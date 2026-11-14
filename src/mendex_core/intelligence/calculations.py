@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import math
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Literal
 from uuid import uuid4
 from pydantic import BaseModel, Field
 
@@ -28,6 +28,27 @@ class CalculationResult(BaseModel):
     notes: List[str] = Field(default_factory=list)
 
 
+class SafetyAssessment(CalculationResult):
+    """Unqualified safety intake; numerical comparison is not compliance."""
+    verified: Literal[False] = False
+    evaluation_status: Literal["NOT_EVALUATED"] = "NOT_EVALUATED"
+    ruleset_status: Literal["UNAVAILABLE"] = "UNAVAILABLE"
+    comparison_status: Literal["NOT_EVALUATED", "WITHIN_SUPPLIED_LIMIT", "EXCEEDS_SUPPLIED_LIMIT"] = "NOT_EVALUATED"
+    context: Dict[str, Any] = Field(default_factory=dict)
+    missing_inputs: List[str] = Field(default_factory=list)
+    blockers: List[str] = Field(default_factory=list)
+
+
+def _safety_number(name, value, *, positive=False):
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise ValueError(f"{name} must be a finite number")
+    if value < 0 or (positive and value == 0):
+        raise ValueError(f"{name} must be {'positive' if positive else 'non-negative'}")
+    return float(value)
+
+
 class DeterministicCalculationService:
     """Rigorous analytical engineering calculation engine with dimensional and boundary checks."""
 
@@ -42,10 +63,12 @@ class DeterministicCalculationService:
         temperature_c: float = 100.0,
         mu_r: float = 1.0,
     ) -> CalculationResult:
-        if frequency_hz <= 0:
-            raise ValueError("Frequency must be strictly positive.")
-        if mu_r <= 0:
-            raise ValueError("Relative permeability must be strictly positive.")
+        if not math.isfinite(frequency_hz) or frequency_hz <= 0:
+            raise ValueError("Frequency must be strictly positive and finite.")
+        if not math.isfinite(temperature_c) or temperature_c < -273.15:
+            raise ValueError("Temperature must be a finite temperature >= -273.15 C.")
+        if not math.isfinite(mu_r) or mu_r <= 0:
+            raise ValueError("Relative permeability must be strictly positive and finite.")
 
         # Temperature-adjusted resistivity: rho(T) = rho_20 * (1 + 0.00393 * (T - 20))
         rho = self.COPPER_RHO_20C * (1.0 + 0.00393 * (temperature_c - 20.0))
@@ -69,8 +92,12 @@ class DeterministicCalculationService:
         skin_depth_m: float,
         num_layers: int,
     ) -> CalculationResult:
-        if layer_thickness_m <= 0 or skin_depth_m <= 0 or num_layers < 1:
-            raise ValueError("Layer thickness, skin depth must be positive, layers >= 1.")
+        if not math.isfinite(layer_thickness_m) or layer_thickness_m <= 0:
+            raise ValueError("Layer thickness must be strictly positive and finite.")
+        if not math.isfinite(skin_depth_m) or skin_depth_m <= 0:
+            raise ValueError("Skin depth must be strictly positive and finite.")
+        if not isinstance(num_layers, int) or num_layers < 1:
+            raise ValueError(f"num_layers must be an integer >= 1, got {num_layers}")
 
         xi = layer_thickness_m / skin_depth_m
         m = float(num_layers)
@@ -268,8 +295,18 @@ class DeterministicCalculationService:
         ripple_factor_krf: float = 0.4,
         efficiency: float = 0.88,
     ) -> CalculationResult:
-        if vin_min_v <= 0 or vout_v <= 0 or iout_a <= 0 or fsw_hz <= 0:
-            raise ValueError("Voltages, current, and frequency must be positive numbers.")
+        if not math.isfinite(vin_min_v) or vin_min_v <= 0:
+            raise ValueError("vin_min_v must be strictly positive and finite.")
+        if not math.isfinite(vin_nom_v) or vin_nom_v < vin_min_v:
+            raise ValueError("vin_nom_v must be finite and >= vin_min_v.")
+        if not math.isfinite(vout_v) or vout_v <= 0:
+            raise ValueError("vout_v must be strictly positive and finite.")
+        if not math.isfinite(iout_a) or iout_a <= 0:
+            raise ValueError("iout_a must be strictly positive and finite.")
+        if not math.isfinite(fsw_hz) or fsw_hz <= 0:
+            raise ValueError("fsw_hz must be strictly positive and finite.")
+        if not math.isfinite(efficiency) or efficiency <= 0 or efficiency > 1.0:
+            raise ValueError("efficiency must be in range (0.0, 1.0].")
 
         p_out = vout_v * iout_a
         p_in = p_out / efficiency
@@ -281,8 +318,9 @@ class DeterministicCalculationService:
 
         # Primary peak and RMS current in CCM
         i_in_avg = p_in / vin_min_v
-        delta_il = ripple_factor_krf * i_in_avg * 2.0
-        i_pri_peak = (i_in_avg / d_max) + (delta_il / 2.0)
+        i_pri_on_avg = i_in_avg / d_max
+        delta_il = ripple_factor_krf * i_pri_on_avg * 2.0
+        i_pri_peak = i_pri_on_avg + (delta_il / 2.0)
 
         # Primary inductance: L_p = (Vin_min * D_max) / (delta_il * fsw)
         l_p = (vin_min_v * d_max) / (delta_il * fsw_hz)
@@ -326,8 +364,12 @@ class DeterministicCalculationService:
         alpha: float = 1.35,
         beta: float = 2.40,
     ) -> CalculationResult:
-        if frequency_hz <= 0 or b_max_t <= 0 or core_volume_m3 <= 0:
-            raise ValueError("Frequency, peak flux density, and core volume must be positive.")
+        if not math.isfinite(frequency_hz) or frequency_hz <= 0:
+            raise ValueError("frequency_hz must be strictly positive and finite.")
+        if not math.isfinite(b_max_t) or b_max_t <= 0:
+            raise ValueError("b_max_t must be strictly positive and finite.")
+        if not math.isfinite(core_volume_m3) or core_volume_m3 <= 0:
+            raise ValueError("core_volume_m3 must be strictly positive and finite.")
 
         # Modified Steinmetz Equation: P_v (W/m^3) = Cm * f^alpha * B^beta
         p_v = cm * (frequency_hz ** alpha) * (b_max_t ** beta)
@@ -353,8 +395,16 @@ class DeterministicCalculationService:
         e_off_j: float,
         fsw_hz: float,
     ) -> CalculationResult:
-        if i_rms_a < 0 or r_ds_on_ohm < 0 or e_on_j < 0 or e_off_j < 0 or fsw_hz <= 0:
-            raise ValueError("Loss parameters must be non-negative; frequency positive.")
+        if not math.isfinite(i_rms_a) or i_rms_a < 0:
+            raise ValueError("i_rms_a must be non-negative and finite.")
+        if not math.isfinite(r_ds_on_ohm) or r_ds_on_ohm < 0:
+            raise ValueError("r_ds_on_ohm must be non-negative and finite.")
+        if not math.isfinite(e_on_j) or e_on_j < 0:
+            raise ValueError("e_on_j must be non-negative and finite.")
+        if not math.isfinite(e_off_j) or e_off_j < 0:
+            raise ValueError("e_off_j must be non-negative and finite.")
+        if not math.isfinite(fsw_hz) or fsw_hz <= 0:
+            raise ValueError("fsw_hz must be strictly positive and finite.")
 
         p_cond = (i_rms_a ** 2) * r_ds_on_ohm
         p_sw = (e_on_j + e_off_j) * fsw_hz
@@ -377,8 +427,10 @@ class DeterministicCalculationService:
         inductance_h: float,
         capacitance_f: float,
     ) -> CalculationResult:
-        if inductance_h <= 0 or capacitance_f <= 0:
-            raise ValueError("Inductance and capacitance must be strictly positive.")
+        if not math.isfinite(inductance_h) or inductance_h <= 0:
+            raise ValueError("inductance_h must be strictly positive and finite.")
+        if not math.isfinite(capacitance_f) or capacitance_f <= 0:
+            raise ValueError("capacitance_f must be strictly positive and finite.")
 
         f_0 = 1.0 / (2.0 * math.pi * math.sqrt(inductance_h * capacitance_f))
         z_0 = math.sqrt(inductance_h / capacitance_f)
@@ -396,147 +448,80 @@ class DeterministicCalculationService:
         )
 
     def calculate_iec_creepage_clearance(
-        self,
-        working_voltage_rms: float,
-        peak_voltage_v: float,
-        pollution_degree: int = 2,
-        material_group: str = "IIIa",
-        insulation_type: str = "reinforced",
-        slot_width_mm: float = 0.0,
-    ) -> CalculationResult:
-        """Evaluates electrical clearance and creepage per IEC 60664-1:2020 & IEC 61010-1:2010 Section 6.7."""
-        if working_voltage_rms <= 0 or peak_voltage_v <= 0:
-            raise ValueError("Working voltage and peak voltage must be strictly positive.")
-
-        is_reinforced = insulation_type.lower() == "reinforced"
-
-        # IEC 60664-1 Table F.4 / IEC 61010-1 Table 4 Clearance (air gap, mm)
-        if peak_voltage_v <= 330.0:
-            basic_clearance = 0.5
-        elif peak_voltage_v <= 500.0:
-            basic_clearance = 0.8
-        elif peak_voltage_v <= 800.0:
-            basic_clearance = 1.5
-        elif peak_voltage_v <= 1000.0:
-            basic_clearance = 2.0
-        elif peak_voltage_v <= 1500.0:
-            basic_clearance = 3.0
-        elif peak_voltage_v <= 2500.0:
-            basic_clearance = 4.0
-        else:
-            basic_clearance = 4.0 + (peak_voltage_v - 2500.0) * 0.002
-
-        # In IEC 61010-1, 1000V RMS CAT II requires 2.5 mm basic clearance
-        if working_voltage_rms >= 1000.0:
-            basic_clearance = max(basic_clearance, 2.5)
-
-        req_clearance = basic_clearance * (2.0 if is_reinforced else 1.0)
-
-        # IEC 60664-1 Table F.4 Creepage (surface distance, mm) for Material Group IIIa, PD2
-        if working_voltage_rms <= 100.0:
-            basic_creepage = 1.0
-        elif working_voltage_rms <= 250.0:
-            basic_creepage = 2.5
-        elif working_voltage_rms <= 400.0:
-            basic_creepage = 4.0
-        elif working_voltage_rms <= 630.0:
-            basic_creepage = 6.3
-        elif working_voltage_rms <= 800.0:
-            basic_creepage = 8.0
-        elif working_voltage_rms <= 1000.0:
-            basic_creepage = 10.0
-        else:
-            basic_creepage = 10.0 + (working_voltage_rms - 1000.0) * 0.01
-
-        mg_factor = 0.7 if material_group.upper() == "I" else (0.85 if material_group.upper() == "II" else 1.0)
-        basic_creepage *= mg_factor
-        req_creepage = basic_creepage * (2.0 if is_reinforced else 1.0)
-
-        slot_effective = slot_width_mm >= 1.0
-        compliance = (slot_width_mm >= req_clearance) if slot_effective else (slot_width_mm >= req_creepage)
-
-        return CalculationResult(
-            formula_id="EQ-IEC-CREEPAGE-01",
-            name="IEC 60664-1 & IEC 61010-1 High-Voltage Insulation Coordination",
-            inputs={
-                "working_voltage_rms": working_voltage_rms,
-                "peak_voltage_v": peak_voltage_v,
-                "pollution_degree": float(pollution_degree),
-                "slot_width_mm": slot_width_mm,
-            },
-            input_units={
-                "working_voltage_rms": "V RMS",
-                "peak_voltage_v": "V pk",
-                "pollution_degree": "dimensionless",
-                "slot_width_mm": "mm",
-            },
-            outputs={
-                "required_clearance_mm": round(req_clearance, 2),
-                "required_creepage_mm": round(req_creepage, 2),
-                "effective_slot_width_mm": round(slot_width_mm, 2),
-                "compliant": 1.0 if compliance else 0.0,
-            },
-            output_units={
-                "required_clearance_mm": "mm",
-                "required_creepage_mm": "mm",
-                "effective_slot_width_mm": "mm",
-                "compliant": "boolean",
-            },
-            provenance="src/mendex_core/intelligence/calculations.py::calculate_iec_creepage_clearance",
-            reference_source="IEC 60664-1:2020 & IEC 61010-1:2010 Section 6.7 Table 4 & Table F.4",
-            notes=[
-                f"Insulation: {insulation_type.capitalize()}, Pollution Degree: {pollution_degree}, Material Group: {material_group}",
-                f"Air clearance required: {req_clearance:.2f} mm; Surface creepage required: {req_creepage:.2f} mm",
-                f"Milling slot: {slot_width_mm:.2f} mm -> Compliance: {'PASS' if compliance else 'FAIL'}",
-            ],
+        self, working_voltage_rms: Optional[float] = None, peak_voltage_v: Optional[float] = None,
+        pollution_degree: Optional[int] = None, material_group: Optional[str] = None,
+        insulation_type: Optional[str] = None, slot_width_mm: Optional[float] = None,
+        *, altitude_m: Optional[float] = None, rated_impulse_voltage_v: Optional[float] = None,
+        working_frequency_hz: Optional[float] = None, standard_edition: Optional[str] = None,
+    ) -> SafetyAssessment:
+        """Validate supplied context; no installed qualified IEC rule tables exist."""
+        values = {name: _safety_number(name, value, positive=positive) for name, value, positive in (
+            ("working_voltage_rms", working_voltage_rms, True), ("peak_voltage_v", peak_voltage_v, True),
+            ("slot_width_mm", slot_width_mm, False), ("altitude_m", altitude_m, False),
+            ("rated_impulse_voltage_v", rated_impulse_voltage_v, True),
+            ("working_frequency_hz", working_frequency_hz, True))}
+        if pollution_degree is not None and (type(pollution_degree) is not int or pollution_degree not in (1, 2, 3, 4)):
+            raise ValueError("pollution_degree must be an integer from 1 to 4")
+        if material_group is not None and (not isinstance(material_group, str) or material_group.upper() not in ('I', 'II', 'IIIA', 'IIIB')):
+            raise ValueError("Unsupported material_group")
+        if insulation_type is not None and (not isinstance(insulation_type, str) or insulation_type.lower() not in ('functional', 'basic', 'supplementary', 'double', 'reinforced')):
+            raise ValueError("Unsupported insulation_type")
+        if standard_edition is not None and (not isinstance(standard_edition, str) or not standard_edition.strip()):
+            raise ValueError("standard_edition must identify the applicable standard and edition")
+        context = {**values, "pollution_degree": pollution_degree, "material_group": material_group,
+                   "insulation_type": insulation_type, "standard_edition": standard_edition}
+        missing = [name for name, value in context.items() if value is None]
+        missing += ["qualified_ruleset", "measured_clearance_and_creepage_paths"]
+        return SafetyAssessment(
+            formula_id="SAFETY-INSULATION-INTAKE-02", name="Insulation coordination context (not evaluated)",
+            inputs={k: v for k, v in values.items() if v is not None},
+            input_units={k: ('mm' if k.endswith('_mm') else 'm' if k == 'altitude_m' else 'Hz' if k.endswith('_hz') else 'V') for k, v in values.items() if v is not None},
+            outputs={}, output_units={}, context=context, missing_inputs=missing,
+            blockers=["No qualified standard-specific ruleset is installed; no required distances or compliance verdict can be calculated.",
+                      "A slot width or a PCB DRC result alone does not establish insulation safety."],
+            provenance="mendex_core.intelligence.calculations::calculate_iec_creepage_clearance",
+            reference_source="Applicability background only: https://webstore.iec.ch/en/publication/59671 ; https://www.ti.com/video/6146024211001",
+            notes=["NOT_EVALUATED. No qualified rule tables, measurements or engineering approval are supplied.",
+                   "DC output voltage is not implicitly converted into working RMS, peak or impulse voltage."],
         )
 
     def calculate_component_derating(
-        self,
-        component_type: str,
-        operating_val: float,
-        rated_val: float,
-        standard: str = "IPC-9592B / NAVSEA",
-    ) -> CalculationResult:
-        """Evaluates electrical stress derating against standard IPC-9592B / NAVSEA 80% industrial rules."""
-        if rated_val <= 0:
-            raise ValueError("Rated value must be strictly positive.")
-        if operating_val < 0:
-            raise ValueError("Operating value must be non-negative.")
-
-        ctype = component_type.lower()
-        if "resistor" in ctype:
-            max_ratio = 0.60
-        elif "semiconductor" in ctype or "mosfet" in ctype or "diode" in ctype or "igbt" in ctype:
-            max_ratio = 0.80
-        elif "capacitor" in ctype:
-            max_ratio = 0.80
-        else:
-            max_ratio = 0.80
-
-        stress_ratio = operating_val / rated_val
-        margin_pct = (1.0 - stress_ratio) * 100.0
-
-        if stress_ratio <= max_ratio:
-            verdict = "PASS"
-        elif stress_ratio <= 0.90:
-            verdict = "MARGINAL"
-        else:
-            verdict = "FAIL"
-
-        return CalculationResult(
-            formula_id="EQ-DERATING-01",
-            name="Electronic Component Stress & Derating Analysis",
-            inputs={"operating_val": operating_val, "rated_val": rated_val, "max_allowed_ratio": max_ratio},
-            input_units={"operating_val": "SI", "rated_val": "SI", "max_allowed_ratio": "ratio"},
-            outputs={
-                "stress_ratio": round(stress_ratio, 4),
-                "margin_pct": round(margin_pct, 2),
-                "max_allowed_ratio": max_ratio,
-                "compliant": 1.0 if verdict == "PASS" else 0.0,
-            },
-            output_units={"stress_ratio": "ratio", "margin_pct": "%", "max_allowed_ratio": "ratio", "compliant": "boolean"},
-            provenance="src/mendex_core/intelligence/calculations.py::calculate_component_derating",
-            reference_source=f"Standard {standard} (IPC-9592B Class 2/3 Power Conversion)",
-            notes=[f"Component: {component_type}, Stress: {stress_ratio*100:.1f}% (Limit: {max_ratio*100:.0f}%), Verdict: {verdict}"],
+        self, component_type: str, operating_val: float, rated_val: float,
+        standard: Optional[str] = None, *, max_allowed_ratio: Optional[float] = None,
+        limit_source: Optional[str] = None,
+    ) -> SafetyAssessment:
+        """Compute explicit stress arithmetic; never invent a standard-derived limit."""
+        operating = _safety_number("operating_val", operating_val)
+        rated = _safety_number("rated_val", rated_val, positive=True)
+        if operating is None or rated is None:
+            raise ValueError("Operating and rated values must be supplied")
+        if not isinstance(component_type, str) or not component_type.strip():
+            raise ValueError("component_type must be supplied")
+        limit = _safety_number("max_allowed_ratio", max_allowed_ratio, positive=True)
+        if limit is not None and limit > 1:
+            raise ValueError("max_allowed_ratio must not exceed 1")
+        if limit_source is not None and (not isinstance(limit_source, str) or not limit_source.strip()):
+            raise ValueError("limit_source must be nonempty")
+        ratio = operating / rated
+        if not math.isfinite(ratio):
+            raise ValueError("Stress ratio is not finite")
+        outputs = {"stress_ratio": ratio, "rating_headroom_pct": (1 - ratio) * 100}
+        if not math.isfinite(outputs["rating_headroom_pct"]):
+            raise ValueError("Rating headroom is not finite")
+        comparison = "NOT_EVALUATED"
+        if limit is not None and limit_source:
+            outputs["max_allowed_ratio"] = limit
+            comparison = "WITHIN_SUPPLIED_LIMIT" if ratio <= limit else "EXCEEDS_SUPPLIED_LIMIT"
+        return SafetyAssessment(
+            formula_id="ARITHMETIC-DERATING-02", name="Supplied component stress comparison",
+            inputs={"operating_val": operating, "rated_val": rated},
+            input_units={"operating_val": "same supplied unit", "rated_val": "same supplied unit"},
+            outputs=outputs, output_units={k: '%' if k.endswith('_pct') else 'ratio' for k in outputs},
+            comparison_status=comparison,
+            context={"component_type": component_type, "standard": standard, "max_allowed_ratio": limit, "limit_source": limit_source},
+            missing_inputs=[key for key, value in (("max_allowed_ratio", limit), ("limit_source", limit_source)) if value is None],
+            blockers=["No qualified derating standard/profile is installed. A supplied-limit comparison is arithmetic only."],
+            provenance="mendex_core.intelligence.calculations::calculate_component_derating",
+            reference_source=limit_source or "No supplied limit source",
+            notes=["Engineering qualification NOT_EVALUATED; no standards compliance, temperature applicability or operating/rated unit equivalence is independently verified."],
         )

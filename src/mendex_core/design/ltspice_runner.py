@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import math
 import subprocess
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
@@ -40,6 +41,7 @@ class LTspiceSimulationResult(BaseModel):
     log_errors: List[str] = Field(default_factory=list)
     log_warnings: List[str] = Field(default_factory=list)
     requirements_evaluated: Dict[str, str] = Field(default_factory=dict)
+    measurements: Dict[str, float] = Field(default_factory=dict)
     summary_verdict: str = "PENDING"
     error_message: Optional[str] = None
 
@@ -131,21 +133,27 @@ class LTspiceRunner:
 
         work_dir = Path(working_dir).resolve() if working_dir else net_file.parent
         cmd = [str(self.exe_path), "-b", "-ascii", str(net_file)]
+        start_clock = time.perf_counter()
 
         try:
             proc = subprocess.run(cmd, cwd=str(work_dir), capture_output=True, text=True, timeout=timeout_s)
+            elapsed_s = max(0.001, time.perf_counter() - start_clock)
         except subprocess.TimeoutExpired:
+            elapsed_s = time.perf_counter() - start_clock
             return LTspiceSimulationResult(
                 success=False,
                 exit_code=-1,
+                elapsed_time_s=round(elapsed_s, 4),
                 convergence_status="TIMED_OUT",
                 summary_verdict="FAILED",
                 error_message=f"Simulation timed out after {timeout_s} seconds.",
             )
         except Exception as e:
+            elapsed_s = time.perf_counter() - start_clock
             return LTspiceSimulationResult(
                 success=False,
                 exit_code=-1,
+                elapsed_time_s=round(elapsed_s, 4),
                 convergence_status="EXECUTION_ERROR",
                 summary_verdict="FAILED",
                 error_message=str(e),
@@ -164,6 +172,7 @@ class LTspiceRunner:
             return LTspiceSimulationResult(
                 success=False,
                 exit_code=proc.returncode,
+                elapsed_time_s=round(elapsed_s, 4),
                 log_file_path=log_path_str,
                 raw_file_path=raw_path_str,
                 convergence_status="SOLVER_FAILED",
@@ -190,6 +199,20 @@ class LTspiceRunner:
                 error_message="Solver produced no parseable output waveform.",
             )
 
+        # Parse .meas statements from log if present
+        meas_map: Dict[str, float] = {}
+        if log_file.exists():
+            import re
+            log_txt = log_file.read_text(encoding="utf-8", errors="ignore")
+            for line_item in log_txt.splitlines():
+                m_match = re.match(r"^([a-zA-Z0-9_]+):\s+(?:[^=]+=)?([\-\+]?\d+(?:\.\d+)?(?:[eE][\-\+]?\d+)?)(?:\s+from|\s+at|\s*$)", line_item.strip(), re.IGNORECASE)
+                if m_match:
+                    k_name, k_val = m_match.groups()
+                    try:
+                        meas_map[k_name.lower()] = float(k_val)
+                    except ValueError:
+                        pass
+
         # Analyze steady-state metrics (use last 30% of simulation for steady state)
         n_pts = len(vout_vals)
         start_idx = int(n_pts * 0.70)
@@ -199,6 +222,15 @@ class LTspiceRunner:
         v_min = min(ss_vout) if ss_vout else 0.0
         v_max = max(ss_vout) if ss_vout else 0.0
         v_ripple = v_max - v_min
+        # Use .meas if present
+        if "vout_avg" in meas_map:
+            v_mean = meas_map["vout_avg"]
+        if "vout_ripple" in meas_map:
+            v_ripple = meas_map["vout_ripple"]
+        if "vout_min" in meas_map:
+            v_min = meas_map["vout_min"]
+        if "vout_max" in meas_map:
+            v_max = meas_map["vout_max"]
         # Peak current over the same steady-state window (excludes start-up inrush).
         ss_iin = iin_vals[int(len(iin_vals) * 0.70):] if iin_vals else []
         i_pk = max((abs(v) for v in ss_iin), default=0.0)
@@ -240,6 +272,7 @@ class LTspiceRunner:
         return LTspiceSimulationResult(
             success=True,
             exit_code=0,
+            elapsed_time_s=round(elapsed_s, 4),
             raw_file_path=raw_path_str,
             log_file_path=log_path_str,
             time_trace=time_vals[:200],  # sample points for preview
@@ -254,6 +287,7 @@ class LTspiceRunner:
             log_errors=log_errors,
             log_warnings=log_warnings,
             requirements_evaluated=verdicts,
+            measurements=meas_map,
             summary_verdict=overall_verdict,
         )
 

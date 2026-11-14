@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "mendex-engineering": {
+      "command": "python",
+      "args": [
+        "-m",
+        "mendex_core.mcp"
+      ],
+      "env": {
+        "PYTHONPATH": "src"
+      }
+    }
+  }
+}

@@ -119,8 +119,9 @@ def test_simulation_refuses_to_guess_between_netlists(tmp_path):
     ws_dir.mkdir(parents=True, exist_ok=True)
     (ws_dir / "a.net").write_text("* a\n.end\n", encoding="utf-8")
     (ws_dir / "b.net").write_text("* b\n.end\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="specify one explicitly"):
+    with pytest.raises(StudioError, match="specify the registered relative path") as exc:
         controller.run_simulation(ws_id, tool="ltspice")
+    assert exc.value.code == "CONFLICT"
 
 
 # --- Honest solver verdicts --------------------------------------------------------------

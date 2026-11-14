@@ -198,44 +198,68 @@ class DeterministicPhysicsNode(BaseNode):
         calc_service = DeterministicCalculationService()
         formula_id = config.get("formula_id", "skin_depth")
 
-        # Extract parameters either from inputs or config
-        def _get(key: str, default: float) -> float:
-            v = inputs.get(key, config.get(key, default))
+        # Extract parameters either from inputs or config; no defaults are fabricated
+        def _get(key: str, alt_key: Optional[str] = None) -> float:
+            v = inputs.get(key)
+            if v is None and alt_key:
+                v = inputs.get(alt_key)
+            if v is None:
+                v = config.get(key)
+            if v is None and alt_key:
+                v = config.get(alt_key)
+            if v is None:
+                raise ValueError(f"Missing required parameter '{key}' for formula '{formula_id}'. Calculation inputs cannot be fabricated.")
             if isinstance(v, QuantityValue):
-                return v.value
-            return float(v) if v is not None else default
+                v = v.value
+            try:
+                val = float(v)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"Parameter '{key}' must be numeric (got {v!r})") from exc
+            if not math.isfinite(val):
+                raise ValueError(f"Parameter '{key}' must be a finite number (got {val})")
+            return val
 
         if formula_id == "skin_depth":
-            freq = _get("frequency_hz", _get("param1", 100000.0))
-            temp = _get("temperature_c", _get("param2", 20.0))
+            freq = _get("frequency_hz", "param1")
+            has_temp = "temperature_c" in inputs or "temperature_c" in config or "param2" in inputs or "param2" in config
+            temp = _get("temperature_c", "param2") if has_temp else 20.0
             rec = calc_service.calculate_skin_depth(frequency_hz=freq, temperature_c=temp)
             val = rec.outputs.get("skin_depth_m", next(iter(rec.outputs.values())))
             unit = rec.output_units.get("skin_depth_m", "m")
         elif formula_id == "dowell_factor":
-            num_layers = int(_get("num_layers", _get("param1", 2)))
-            h_ratio = _get("h_over_delta", _get("param2", 1.0))
-            # layer_thickness_m = h_ratio * skin_depth
-            rec = calc_service.calculate_dowell_factor(layer_thickness_m=h_ratio * 0.0002, skin_depth_m=0.0002, num_layers=num_layers)
+            num_layers_raw = _get("num_layers", "param1")
+            if not float(num_layers_raw).is_integer() or num_layers_raw < 1:
+                raise ValueError(f"num_layers must be a positive integer, got {num_layers_raw}")
+            num_layers = int(num_layers_raw)
+            layer_thickness_m = _get("layer_thickness_m", "param2")
+            skin_depth_m = _get("skin_depth_m", "param3")
+            rec = calc_service.calculate_dowell_factor(layer_thickness_m=layer_thickness_m, skin_depth_m=skin_depth_m, num_layers=num_layers)
             val = rec.outputs.get("F_R", next(iter(rec.outputs.values())))
             unit = ""
         elif formula_id == "flyback_ccm":
-            vin = _get("vin_min_v", _get("param1", 100.0))
-            vout = _get("vout_v", _get("param2", 24.0))
-            iout = _get("iout_a", _get("param3", 2.0))
-            fsw = _get("fsw_hz", _get("param4", 100000.0))
-            rec = calc_service.calculate_flyback_sizing(vin_min_v=vin, vin_nom_v=vin*1.2, vout_v=vout, iout_a=iout, fsw_hz=fsw)
+            vin = _get("vin_min_v", "param1")
+            has_nom = "vin_nom_v" in inputs or "vin_nom_v" in config or "param2" in inputs or "param2" in config
+            vin_nom = _get("vin_nom_v", "param2") if has_nom else vin
+            vout = _get("vout_v", "param3")
+            iout = _get("iout_a", "param4")
+            fsw = _get("fsw_hz", "param5")
+            rec = calc_service.calculate_flyback_sizing(vin_min_v=vin, vin_nom_v=vin_nom, vout_v=vout, iout_a=iout, fsw_hz=fsw)
             val = rec.outputs.get("primary_inductance_h", next(iter(rec.outputs.values())))
             unit = "H"
         elif formula_id == "steinmetz":
-            f = _get("frequency_hz", _get("param1", 100000.0))
-            b = _get("b_peak_t", _get("param2", 0.1))
-            vol = _get("core_volume_m3", _get("param3", 1e-5))
+            # For workflows where only flux is dynamically wired from material datasets,
+            # allow standard nominal test frequency (100kHz) and volume (10cm3) if omitted in canvas
+            has_f = "frequency_hz" in inputs or "frequency_hz" in config or "param1" in inputs or "param1" in config
+            f = _get("frequency_hz", "param1") if has_f else 100000.0
+            b = _get("b_peak_t", "param2")
+            has_vol = "core_volume_m3" in inputs or "core_volume_m3" in config or "param3" in inputs or "param3" in config
+            vol = _get("core_volume_m3", "param3") if has_vol else 1e-5
             rec = calc_service.calculate_steinmetz_loss(frequency_hz=f, b_max_t=b, core_volume_m3=vol)
             val = rec.outputs.get("total_core_loss_w", next(iter(rec.outputs.values())))
             unit = "W"
         elif formula_id == "lc_resonance":
-            l_val = _get("inductance_h", _get("param1", 15e-6))
-            c_val = _get("capacitance_f", _get("param2", 100e-9))
+            l_val = _get("inductance_h", "param1")
+            c_val = _get("capacitance_f", "param2")
             rec = calc_service.calculate_lc_resonance(inductance_h=l_val, capacitance_f=c_val)
             val = rec.outputs.get("resonant_frequency_hz", next(iter(rec.outputs.values())))
             unit = "Hz"

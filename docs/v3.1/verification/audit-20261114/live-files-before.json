@@ -1,0 +1,330 @@
+{
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/bom/bom.csv": {
+    "size": 1361,
+    "sha256": "a604d7f6dcd392d666640e008281ae3340262dca2dd149e28f38f21ad681b2cf"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/bom/bom.json": {
+    "size": 3178,
+    "sha256": "4ee0826f47c7f2a5bd9875b33f044c5f99a4bdd1b5129b794b6903d71db82218"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/bom/SV1000_Bill_of_Materials.docx": {
+    "size": 40153,
+    "sha256": "7575e599a10051484ccca4cc4626a2fb26eda927e5640bb7b7b5860257fe7245"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/bom/SV1000_Bill_of_Materials.pdf": {
+    "size": 141151,
+    "sha256": "4e0f56e54d219f9643df7bb95a1547d53f3bf63c8d0c23bbbefebc993849fc0d"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/bom/~$1000_Bill_of_Materials.docx": {
+    "size": 162,
+    "sha256": "18307de290369f4757540c39353f787e3ea92602224375d973e0749b0b56c1f9"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/mechanical/etd34_bobbin.step": {
+    "size": 12093,
+    "sha256": "8028ec7e4cbe6e8521a228b059ee4c94f995cf50934622e1cb2b297345cebdcb"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/pcb/drc_report.json": {
+    "size": 6500,
+    "sha256": "d336fc8fe9414a435d7b6ae0139abe749c32c3051e0a508887bacd71bc302418"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/pcb/erc_report.json": {
+    "size": 1723,
+    "sha256": "c4b1bfde9a3748ad4de6840c125647a0a5862072ccc25f347aaf52ad2dbbd775"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/pcb/fabrication_spec.md": {
+    "size": 3094,
+    "sha256": "48ba53c12fe981ca18928c9b01f5ab55af2386c2a99180b9168c056ee983ac44"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/pcb/sv1000.kicad_pcb": {
+    "size": 15979,
+    "sha256": "73404a4bb5b012edb2dba12b58e3e0b0fe2d1450c33d9878e042bedda570663c"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/pcb/sv1000.kicad_prl": {
+    "size": 2632,
+    "sha256": "8a3d72bef0969a85db2f01d1520e1467c238a710863e9f966b803c19cb33c433"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/pcb/sv1000.kicad_pro": {
+    "size": 10028,
+    "sha256": "f0fbd026acc562454eaebd0f48cde127bcc8303dcbabeff8843c6bdbe8922a52"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/pcb/sv1000.kicad_sch": {
+    "size": 11424,
+    "sha256": "5b65880c2dc7b7b0bd4338a2ca69fba725623a12426484cdf632de9cc4e8af16"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/reports/SV1000_Stage3_Feasibility_Report.md": {
+    "size": 14638,
+    "sha256": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/reports/SV1000_Stage4_Calculations_Report.md": {
+    "size": 12040,
+    "sha256": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/reports/SV1000_Stage5_Design_Report.md": {
+    "size": 3333,
+    "sha256": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/reports/SV1000_Stage6_Simulation_Report.md": {
+    "size": 5503,
+    "sha256": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/reports/SV1000_Stage7_Design_Verification_Report.md": {
+    "size": 8740,
+    "sha256": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/reports/SV1000_Stage8_Physical_Test_Plan.md": {
+    "size": 4280,
+    "sha256": "df1abcd78caf9343d1e5d12f42e6ccde2c53e732f7d2d20baae54350a7dd5a88"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/reports/SV1000_Stage9_Final_Engineering_Dossier.md": {
+    "size": 6248,
+    "sha256": "3a8067e4c568b27db40d18c0bbc9b151f75a9d9c14793efd6177f25c331776cc"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/01_Product_Requirements_Specification.md": {
+    "size": 22403,
+    "sha256": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/02_Electrical_Requirements_Matrix.md": {
+    "size": 12952,
+    "sha256": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/03_Mechanical_Requirements_Matrix.md": {
+    "size": 2685,
+    "sha256": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/04_Safety_and_Insulation_Requirements.md": {
+    "size": 5032,
+    "sha256": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/05_Control_and_Communication_Requirements.md": {
+    "size": 3530,
+    "sha256": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/06_Engineering_Assumptions_Register.md": {
+    "size": 9445,
+    "sha256": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/07_Requirements_Conflict_Register.md": {
+    "size": 6932,
+    "sha256": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/08_Verification_and_Validation_Matrix.md": {
+    "size": 60330,
+    "sha256": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/09_Preliminary_Feasibility_Report.md": {
+    "size": 5897,
+    "sha256": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/10_Stage_by_Stage_Development_Plan.md": {
+    "size": 2466,
+    "sha256": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/ERS.json": {
+    "size": 374106,
+    "sha256": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/preliminary-core-execution.json": {
+    "size": 12233,
+    "sha256": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/requirements.csv": {
+    "size": 197606,
+    "sha256": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/source-blocks.json": {
+    "size": 42947,
+    "sha256": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/requirements/word-v3-9a0d99a5/source-handbook.docx": {
+    "size": 739766,
+    "sha256": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/revision.json": {
+    "size": 609,
+    "sha256": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/etd34_core.ans": {
+    "size": 487270,
+    "sha256": "57ade5ee7220bc91fba5f4b934dc9a1b275f11af6c95d115ec9932bcd7184cd6"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/etd34_core.fem": {
+    "size": 2103,
+    "sha256": "f44c961115362280d5f268601eb5e83dba7d3bde8159d0589eea5ae1e8911db3"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/etd34_magnetics.lua": {
+    "size": 1754,
+    "sha256": "106cbc8139138c7c0a5e694b266d8b1bbb373a13c61cb3a4140f8bb49d3f637e"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/femm_results.txt": {
+    "size": 1899,
+    "sha256": "2b091095c4d968d0a73eb1d607b95d98e6361ba64c048729d64fb3c7f92395ca"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/flyback_circuit.db": {
+    "size": 32768,
+    "sha256": "543e07cfc56f696df29693677b3d5a4afbc8b6f3ae6a959282267b32056a085a"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/flyback_circuit.log": {
+    "size": 891,
+    "sha256": "e3bc8980b05e5f54dca8018899148fd0a6b441551ca25b2aabdbeab049934b99"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/flyback_circuit.net": {
+    "size": 849,
+    "sha256": "e25e47e7fcb6e82e022c73e6c9ea1760bf2be4e1f89d848a4ac872aa7a5db9eb"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/flyback_circuit.raw": {
+    "size": 730038,
+    "sha256": "63089a60df692615a33417aabdc6a38754cef5e3d25129f375fadecb708f0f33"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/manifest.json": {
+    "size": 2117,
+    "sha256": "84b91ce8f016642c5a578451f1315952e9f9e725a77229e0f0a866d8617b68ea"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/04afe118-7ead-4a20-aaf3-c05e2e8d7c93/raw/evidence.md": {
+    "size": 14638,
+    "sha256": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/4899cb32-a86a-4ad8-87c6-c86f531517e9/manifest.json": {
+    "size": 2184,
+    "sha256": "5b77f39990db807723f893a8f042ffccdd9205475416770115654abd01ae357c"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/4899cb32-a86a-4ad8-87c6-c86f531517e9/raw/evidence.md": {
+    "size": 8740,
+    "sha256": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/765595c4-4484-432e-81ba-3112119437be/manifest.json": {
+    "size": 2160,
+    "sha256": "5aa70c95ccbcb706129a0a947dae8da82aa8a5ec84fa62adde5545a2d1d83b33"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/765595c4-4484-432e-81ba-3112119437be/raw/evidence.md": {
+    "size": 3333,
+    "sha256": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/manifest.json": {
+    "size": 2164,
+    "sha256": "c06b7fc620750a11bdde2714b4b5d39696b230fcc7c633c9007af36f53e8f04b"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/c600648a-5a45-49d0-ae7c-bbffd60580ed/raw/evidence.md": {
+    "size": 12040,
+    "sha256": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/manifest.json": {
+    "size": 2159,
+    "sha256": "659714386f6f04b9d6a46d245d170afc17b1fa5237b047746d35a1f76c0470bd"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/c721f0c3-ddd3-4889-ad25-d8d1d2473292/raw/evidence.md": {
+    "size": 5503,
+    "sha256": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/ec1642ee-e1d9-400a-83f8-f4db7b7d55e6/manifest.json": {
+    "size": 2268,
+    "sha256": "b31cff3534382b7cd1c44848b14ea674404254e743cbffaab70b3d4f5aec530f"
+  },
+  "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/validation/ec1642ee-e1d9-400a-83f8-f4db7b7d55e6/raw/evidence.md": {
+    "size": 5908,
+    "sha256": "451978f8bb3da26d7181e581b7e3f50d3920992ad548d73fbeaabc0676734e36"
+  },
+  ".mendex/engineering-records/artifacts/0433e16b-2362-4a40-93d5-e25a9b9ab4f2/artifact.fem": {
+    "size": 2103,
+    "sha256": "f44c961115362280d5f268601eb5e83dba7d3bde8159d0589eea5ae1e8911db3"
+  },
+  ".mendex/engineering-records/artifacts/08801f8d-6611-4312-a64a-e58b7259900b/artifact.json": {
+    "size": 42947,
+    "sha256": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f"
+  },
+  ".mendex/engineering-records/artifacts/0a777911-b0ce-4126-8a0d-5c8c2a4ac0d8/artifact.txt": {
+    "size": 1899,
+    "sha256": "2b091095c4d968d0a73eb1d607b95d98e6361ba64c048729d64fb3c7f92395ca"
+  },
+  ".mendex/engineering-records/artifacts/0b9b3a67-b881-4053-8148-af96aace2211/artifact.md": {
+    "size": 2466,
+    "sha256": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0"
+  },
+  ".mendex/engineering-records/artifacts/0d874feb-0e46-4d13-8264-b9f584b43810/artifact.md": {
+    "size": 60330,
+    "sha256": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2"
+  },
+  ".mendex/engineering-records/artifacts/1d24fb0d-1725-4786-967e-72dd116c77fd/artifact.log": {
+    "size": 891,
+    "sha256": "90ebce35678d6e0bfd0738af9de36e9f22f6dc8bebd62c1341df8b9f8d72e587"
+  },
+  ".mendex/engineering-records/artifacts/470ac69d-3d9c-44b7-a3a9-329f26bbe604/artifact.lua": {
+    "size": 1754,
+    "sha256": "106cbc8139138c7c0a5e694b266d8b1bbb373a13c61cb3a4140f8bb49d3f637e"
+  },
+  ".mendex/engineering-records/artifacts/6cd08236-927d-4949-b189-cacd4ccafeb5/artifact.docx": {
+    "size": 739766,
+    "sha256": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef"
+  },
+  ".mendex/engineering-records/artifacts/6f0621ca-26ee-422e-ad3b-a3660140e6a4/artifact.md": {
+    "size": 12952,
+    "sha256": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236"
+  },
+  ".mendex/engineering-records/artifacts/76848049-0190-46b4-9a0a-6d016ae0d166/artifact.kicad_sch": {
+    "size": 4138,
+    "sha256": "f4e71c828bfee923e83723564084800f801de6c308d6424e0bd7de93222cf0d8"
+  },
+  ".mendex/engineering-records/artifacts/8f988e87-3bdc-45aa-9c9e-026cb8cd0394/artifact.md": {
+    "size": 5897,
+    "sha256": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd"
+  },
+  ".mendex/engineering-records/artifacts/903905e2-7dc4-4496-9f12-7239ca1164e8/artifact.md": {
+    "size": 3530,
+    "sha256": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a"
+  },
+  ".mendex/engineering-records/artifacts/99880992-feee-43e2-8d46-4b882dc14b60/artifact.kicad_pcb": {
+    "size": 8288,
+    "sha256": "41e53ffbdffc98415d7489647f5222368d862811961be04eeb80c633fe5d0746"
+  },
+  ".mendex/engineering-records/artifacts/9cefee3c-be76-4b9c-90a4-c2e6ab544ea8/artifact.md": {
+    "size": 22403,
+    "sha256": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9"
+  },
+  ".mendex/engineering-records/artifacts/9fa69fe1-aa9f-4c52-8fc9-8c0fab9e2f82/artifact.md": {
+    "size": 5032,
+    "sha256": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69"
+  },
+  ".mendex/engineering-records/artifacts/a3d7ca27-56a1-43c1-a549-dc9e45351960/artifact.json": {
+    "size": 374106,
+    "sha256": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3"
+  },
+  ".mendex/engineering-records/artifacts/b4f82423-f767-4777-a3fa-f83f0ec49088/artifact.step": {
+    "size": 12093,
+    "sha256": "8028ec7e4cbe6e8521a228b059ee4c94f995cf50934622e1cb2b297345cebdcb"
+  },
+  ".mendex/engineering-records/artifacts/b709461f-007d-47a5-80c2-4c36ac816704/artifact.csv": {
+    "size": 197606,
+    "sha256": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a"
+  },
+  ".mendex/engineering-records/artifacts/bcae86ed-18fe-4b6a-b756-255245757a9f/artifact.md": {
+    "size": 9445,
+    "sha256": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19"
+  },
+  ".mendex/engineering-records/artifacts/cb394432-682d-4da7-b00b-95129fa75f7c/artifact.md": {
+    "size": 6932,
+    "sha256": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41"
+  },
+  ".mendex/engineering-records/artifacts/da4ea892-46d6-44ff-b8ca-0150db9475b7/artifact.raw": {
+    "size": 730038,
+    "sha256": "eccf89b3413dc0a9b10ddc578e0079668a74dd4c6351c0e6d48bcac097b483ca"
+  },
+  ".mendex/engineering-records/artifacts/e02ff22e-6a09-4338-aefb-78b803ed313f/artifact.md": {
+    "size": 2685,
+    "sha256": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16"
+  },
+  ".mendex/engineering-records/artifacts/e85fccaf-1323-4512-bc54-14c11b598d61/artifact.ans": {
+    "size": 487270,
+    "sha256": "57ade5ee7220bc91fba5f4b934dc9a1b275f11af6c95d115ec9932bcd7184cd6"
+  },
+  ".mendex/engineering-records/artifacts/f3329907-2b6d-4d98-9b61-5481165fe591/artifact.net": {
+    "size": 849,
+    "sha256": "e25e47e7fcb6e82e022c73e6c9ea1760bf2be4e1f89d848a4ac872aa7a5db9eb"
+  },
+  ".mendex/engineering-records/artifacts/f7fd542d-3a4e-438e-9c52-a4af795c1d20/artifact.json": {
+    "size": 12233,
+    "sha256": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c"
+  },
+  ".mendex/engineering-records/artifacts/fba9b814-d465-4698-b16f-998b20585717/artifact.md": {
+    "size": 5503,
+    "sha256": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+  }
+}

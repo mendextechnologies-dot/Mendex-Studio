@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -11,9 +12,10 @@ from integrations.contracts import (
     JobRequest,
     JobResult,
     JobState,
+    ArtifactManifest,
 )
 from integrations.parsers.ltspice_parser import parse_ltspice_log, parse_ascii_raw_header
-from integrations.runners.safe_runner import manifest_directory
+from integrations.runners.safe_runner import manifest_directory, compute_sha256
 from .base import BaseToolAdapter
 
 
@@ -96,9 +98,26 @@ class LTspiceAdapter(BaseToolAdapter):
         metrics: dict[str, float] = {}
         diagnostics: list[str] = []
 
-        # Find generated .log and .raw
+        # Find generated .log and .raw (LTspice outputs in netlist folder or workdir)
         ltspice_log = workdir / f"{netlist_file.stem}.log"
+        if not ltspice_log.exists() and netlist_file.with_suffix(".log").exists():
+            ltspice_log = netlist_file.with_suffix(".log")
+            try:
+                dest = workdir / f"{netlist_file.stem}.log"
+                if not dest.exists():
+                    shutil.copy2(ltspice_log, dest)
+            except Exception:
+                pass
+
         ltspice_raw = workdir / f"{netlist_file.stem}.raw"
+        if not ltspice_raw.exists() and netlist_file.with_suffix(".raw").exists():
+            ltspice_raw = netlist_file.with_suffix(".raw")
+            try:
+                dest = workdir / f"{netlist_file.stem}.raw"
+                if not dest.exists():
+                    shutil.copy2(ltspice_raw, dest)
+            except Exception:
+                pass
 
         if ltspice_log.exists():
             try:
@@ -122,10 +141,38 @@ class LTspiceAdapter(BaseToolAdapter):
 
         artifacts = manifest_directory(workdir, job_id=request.job_id)
 
+        # Ensure netlist hash is recorded in artifacts and diagnostics
+        if netlist_file.exists():
+            net_hash = compute_sha256(netlist_file)
+            diagnostics.append(f"netlist_sha256={net_hash}")
+            if not any(a.sha256 == net_hash for a in artifacts):
+                artifacts.append(
+                    ArtifactManifest(
+                        relative_path=netlist_file.name,
+                        file_type="net",
+                        sha256=net_hash,
+                        size_bytes=netlist_file.stat().st_size,
+                        source_job=request.job_id,
+                    )
+                )
+
+        # Compute real execution duration
+        try:
+            t0 = datetime.fromisoformat(exec_out.start_time)
+            t1 = datetime.fromisoformat(exec_out.end_time)
+            metrics["execution_time_s"] = max(0.0, round((t1 - t0).total_seconds(), 4))
+        except Exception:
+            pass
+
         # Status determination: if errors found in log even with returncode 0
         final_status = exec_out.status
         if metrics.get("error_count", 0) > 0 and final_status == JobState.SUCCEEDED:
             final_status = JobState.FAILED
+
+        err_msg = exec_out.stderr if final_status == JobState.FAILED else None
+        if final_status == JobState.FAILED and not err_msg:
+            err_details = [d for d in diagnostics if not d.startswith("netlist_sha256=")]
+            err_msg = "; ".join(err_details) if err_details else f"Solver failed with exit code {exec_out.exit_code}"
 
         return JobResult(
             job_id=request.job_id,
@@ -140,5 +187,5 @@ class LTspiceAdapter(BaseToolAdapter):
             artifacts=artifacts,
             metrics=metrics,
             diagnostics=diagnostics,
-            error_message=exec_out.stderr if final_status == JobState.FAILED else None,
+            error_message=err_msg,
         )

@@ -1,0 +1,61 @@
+import sys,os,json,time,statistics,sqlite3,shutil,psutil; sys.path.insert(0,r"C:\Mendex studio\src")
+from bridge import Bridge
+from mendex_core.service import StudioService
+BASE=sys.argv[1]
+def seed(root,n):
+    s=StudioService(root); t=time.perf_counter(); ids=[]
+    for i in range(n):
+        p=s.create_product(f"P{i:04d}",f"Perf project {i}","pcb","Audit"); rid=str(p.active_revision_id)
+        s.engineering_lifecycle.enroll({"revision_id":rid,"source":"Audit","reason":"perf","idempotency_key":f"e{i}"}); ids.append((str(p.product_id),rid))
+    return ids,time.perf_counter()-t
+def stat(b,m,p={},k=15):
+    xs=[]
+    for _ in range(k):
+        d,dt=b.call(m,p); xs.append(dt*1000); ok="error" not in d
+    xs.sort(); return f"{m}: median {statistics.median(xs):.1f} ms, p95~{xs[int(.95*(k-1))]:.1f} ms, max {xs[-1]:.1f} ms ok={ok} bytes={len(json.dumps(d))}"
+for n in [1,50,200]:
+    root=os.path.join(BASE,f"perf{n}"); shutil.rmtree(root,ignore_errors=True)
+    ids,st=seed(root,n); print(f"\n=== N={n} seeded in {st:.1f}s")
+    b=Bridge(root); print(f"startup->handshake {b.startup:.3f}s RSS {b.rss():.1f} MB")
+    for m in ["overview","projects","simulations","reports","components","tools","settings"]: print(stat(b,m,k=10 if m in("tools","settings") else 15))
+    print(stat(b,"project",{"project_id":ids[-1][0]}))
+    # poll cycle like App.tsx (overview+projects+simulations, sequential via Promise.all -> concurrent)
+    t=time.perf_counter(); [b.wait(*x) for x in [b.send("overview"),b.send("projects"),b.send("simulations")]]; print(f"App poll cycle (3 concurrent) {1000*(time.perf_counter()-t):.1f} ms")
+    proc=psutil.Process(b.p.pid); kids=[proc]+proc.children(recursive=True); c0=sum(sum(k.cpu_times()[:2]) for k in kids)
+    t=time.perf_counter()
+    for _ in range(10): [b.wait(*x) for x in [b.send("overview"),b.send("projects"),b.send("simulations")]]
+    c1=sum(sum(k.cpu_times()[:2]) for k in kids); print(f"CPU per App poll cycle {(c1-c0)/10*1000:.1f} ms -> ~{(c1-c0)/10/4*100:.2f}% of one core at 4 s interval (plus page poll)")
+    print(f"RSS after load {b.rss():.1f} MB")
+    db=os.path.join(root,".mendex","studio.sqlite3"); con=sqlite3.connect(f"file:{db}?mode=ro",uri=True)
+    tabs=[r[0] for r in con.execute("select name from sqlite_master where type='table'")]
+    t=time.perf_counter(); cnt={x:con.execute(f'select count(*) from "{x}"').fetchone()[0] for x in tabs}; print(f"sqlite count(*) over {len(tabs)} tables {1000*(time.perf_counter()-t):.1f} ms; size {os.path.getsize(db)/1e6:.2f} MB; rows {sum(cnt.values())}")
+    con.close()
+    if n==50:
+        # large artifact
+        pid,rid=ids[0]; s=StudioService(root); ws=s.workspace_path(s.get_revision(rid)); os.makedirs(ws/"sim",exist_ok=True)
+        with open(ws/"sim"/"big.raw","wb") as f: f.write(os.urandom(50*1024*1024))
+        with open(ws/"sim"/"ascii.raw","w") as f:
+            f.write("Title: t\nDate: x\nPlotname: Transient Analysis\nFlags: real\nNo. Variables: 2\nNo. Points: 300000\nVariables:\n\t0\ttime\ttime\n\t1\tV(out)\tvoltage\nValues:\n")
+            for i in range(300000): f.write(f"{i}\t{i*1e-7:.9e}\n\t{(i%100)/100:.6e}\n")
+        print("ascii.raw MB",os.path.getsize(ws/"sim"/"ascii.raw")/1e6)
+        for i in range(1200): open(ws/"sim"/f"f{i}.txt","w").write("x")
+        print(stat(b,"project",{"project_id":pid},k=5))
+        d,dt=b.call("waveform",{"revision_id":rid,"relative_path":"sim/big.raw"}); print(f"waveform 50MB binary {dt*1000:.1f} ms -> {json.dumps(d)[:200]}")
+        d,dt=b.call("waveform",{"revision_id":rid,"relative_path":"sim/ascii.raw"}); print(f"waveform ascii {dt*1000:.1f} ms -> {json.dumps(d)[:250]} bytes={len(json.dumps(d))}")
+        # concurrency: slow request + fast one
+        x1=b.send("waveform",{"revision_id":rid,"relative_path":"sim/ascii.raw"}); x2=b.send("projects"); d2,t2=b.wait(*x2); d1,t1=b.wait(*x1)
+        print(f"concurrent: projects {t2*1000:.1f} ms while waveform {t1*1000:.1f} ms in flight")
+        xs=[b.send("project",{"project_id":pid}) for _ in range(20)]; rs=[b.wait(*x) for x in xs]
+        print("20 concurrent project calls -> errors:",[r[0].get("error",{}).get("message") for r in rs if r[0] and "error" in r[0]][:2], "n_err",sum(1 for r in rs if r[0] and "error" in r[0]))
+        print(f"RSS after large artifacts {b.rss():.1f} MB")
+        # kill mid-request
+        x=b.send("project",{"project_id":pid}); kids=[psutil.Process(b.p.pid)]+psutil.Process(b.p.pid).children(recursive=True)
+        for k in kids: k.kill()
+        r=b.wait(*x,timeout=5); print("kill mid-request -> response:",r[0], "| children alive after kill:",[k.pid for k in kids if k.is_running() and k.status()!="zombie"])
+        b2=Bridge(root); d,_=b2.call("projects"); print(f"restart after kill {b2.startup:.3f}s projects={len(d['result'])} (expected {n})"); b2.close()
+        # closing stdin (Tauri exit) -> process exits?
+        b3=Bridge(root); pp=psutil.Process(b3.p.pid); ch=pp.children(recursive=True); b3.p.stdin.close(); t=time.perf_counter()
+        try: b3.p.wait(15); print(f"stdin EOF -> backend exit in {time.perf_counter()-t:.2f}s rc={b3.p.returncode}; child alive={[c.pid for c in ch if c.is_running()]}")
+        except Exception: print("stdin EOF -> backend did NOT exit in 15 s")
+        continue
+    b.close(); print("shutdown rc",b.p.returncode)

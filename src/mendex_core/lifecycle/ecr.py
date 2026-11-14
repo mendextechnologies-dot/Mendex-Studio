@@ -67,6 +67,7 @@ class ECRService:
                     )
                     """
                 )
+                db.execute("CREATE TRIGGER IF NOT EXISTS engineering_change_requests_no_delete BEFORE DELETE ON engineering_change_requests BEGIN SELECT RAISE(ABORT, 'Engineering change requests cannot be deleted'); END;")
         except Exception:
             pass
 

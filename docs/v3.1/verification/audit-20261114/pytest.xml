@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="1" tests="355" time="243.610" timestamp="2026-11-14T10:28:59.563721+05:30" hostname="LAPTOP-00P5DJUV"><testcase classname="tests.adapters.test_calculations" name="test_semiconductor_loss_calculation" time="0.033" /><testcase classname="tests.adapters.test_calculations" name="test_core_loss_steinmetz_calculation" time="0.001" /><testcase classname="tests.adapters.test_calculations" name="test_invalid_parameters_raise_value_error" time="0.002" /><testcase classname="tests.adapters.test_datasets" name="test_switchloss_db_ingestion_and_query" time="0.066" /><testcase classname="tests.adapters.test_datasets" name="test_switchloss_canonical_fixture" time="0.002" /><testcase classname="tests.adapters.test_datasets" name="test_magnet_dataset_ingestion_and_query" time="0.012" /><testcase classname="tests.adapters.test_datasets" name="test_magnet_canonical_fixture" time="0.002" /><testcase classname="tests.adapters.test_datasets" name="test_dataset_checksum_mismatch" time="0.011" /><testcase classname="tests.adapters.test_femm_adapter" name="test_femm_adapter_descriptor_and_capabilities" time="0.028" /><testcase classname="tests.adapters.test_femm_adapter" name="test_femm_adapter_execution_lifecycle" time="0.519" /><testcase classname="tests.adapters.test_generators" name="test_femm_generator_output" time="0.001" /><testcase classname="tests.adapters.test_generators" name="test_freecad_generator_output" time="0.001" /><testcase classname="tests.adapters.test_generators" name="test_modelica_generator_output" time="0.001" /><testcase classname="tests.adapters.test_kicad_adapter" name="test_kicad_adapter_descriptor" time="0.034" /><testcase classname="tests.adapters.test_kicad_adapter" name="test_kicad_adapter_version_execution" time="0.291" /><testcase classname="tests.adapters.test_kicad_adapter" name="test_kicad_drc_json_parser" time="0.010" /><testcase classname="tests.adapters.test_ltspice_adapter" name="test_ltspice_smoke_run" time="0.607" /><testcase classname="tests.adapters.test_ltspice_adapter" name="test_ltspice_missing_input_error" time="0.031" /><testcase classname="tests.adapters.test_ltspice_adapter" name="test_ltspice_parser_with_sample_log" time="0.023" /><testcase classname="tests.adapters.test_ltspice_adapter" name="test_ltspice_numpy_waveforms_parser" time="0.017" /><testcase classname="tests.adapters.test_magnetics" name="test_skin_depth_calculation" time="0.003" /><testcase classname="tests.adapters.test_magnetics" name="test_dowell_ac_resistance_factor" time="0.001" /><testcase classname="tests.adapters.test_magnetics" name="test_flyback_transformer_sizing" time="0.001" /><testcase classname="tests.adapters.test_magnetics" name="test_invalid_parameters_rejected" time="0.005" /><testcase classname="tests.adapters.test_ngspice_adapter" name="test_ngspice_descriptor_and_detection" time="0.165" /><testcase classname="tests.adapters.test_ngspice_adapter" name="test_ngspice_missing_input_error" time="0.058" /><testcase classname="tests.adapters.test_ngspice_adapter" name="test_ngspice_registry_inclusion" time="0.310" /><testcase classname="tests.adapters.test_ngspice_adapter" name="test_ngspice_real_execution" time="0.091" /><testcase classname="tests.adapters.test_openmodelica_adapter" name="test_openmodelica_descriptor_and_capabilities" time="0.028" /><testcase classname="tests.adapters.test_openmodelica_adapter" name="test_openmodelica_version_execution" time="0.074" /><testcase classname="tests.adapters.test_openmodelica_adapter" name="test_openmodelica_check_model_execution" time="0.168" /><testcase classname="tests.adapters.test_safe_runner" name="test_safe_runner_valid_execution" time="0.072" /><testcase classname="tests.adapters.test_safe_runner" name="test_safe_runner_invalid_command" time="0.020" /><testcase classname="tests.adapters.test_safe_runner" name="test_safe_runner_timeout" time="1.498" /><testcase classname="tests.adapters.test_safe_runner" name="test_safe_runner_cancellation" time="0.574" /><testcase classname="tests.adapters.test_safe_runner" name="test_artifact_hashing_and_manifest" time="0.024" /><testcase classname="tests.adapters.test_security_and_limits" name="test_command_validation_rejects_empty" time="0.006" /><testcase classname="tests.adapters.test_security_and_limits" name="test_command_validation_rejects_non_strings" time="0.002" /><testcase classname="tests.adapters.test_security_and_limits" name="test_command_validation_rejects_missing_binary" time="0.022" /><testcase classname="tests.adapters.test_security_and_limits" name="test_runner_preserves_directory_isolation" time="0.090" /><testcase classname="tests.adapters.test_tool_detection" name="test_registry_contains_supported_entries" time="0.331" /><testcase classname="tests.adapters.test_tool_detection" name="test_real_tools_detected_truthfully" time="0.219" /><testcase classname="tests.adapters.test_tool_detection" name="test_missing_tools_never_false_ready" time="0.211" /><testcase classname="tests.adapters.test_v15_connector" name="test_v15_registry_contains_supported_connectors" time="0.281" /><testcase classname="tests.adapters.test_v15_connector" name="test_v15_ltspice_connector_lifecycle" time="0.544" /><testcase classname="tests.adapters.test_v15_connector" name="test_v15_python_connector_lifecycle" time="0.065" /><testcase classname="tests.adapters.test_v15_connector" name="test_v15_git_connector_lifecycle" time="0.061" /><testcase classname="tests.contracts.test_v15_contracts" name="test_fake_adapter_frozen_boundary" time="0.027" /><testcase classname="tests.contracts.test_v15_contracts" name="test_contract_rejects_input_traversal[../secret]" time="0.002" /><testcase classname="tests.contracts.test_v15_contracts" name="test_contract_rejects_input_traversal[C:/secret]" time="0.002" /><testcase classname="tests.contracts.test_v15_contracts" name="test_contract_rejects_input_traversal[C:secret]" time="0.002" /><testcase classname="tests.contracts.test_v15_contracts" name="test_contract_rejects_input_traversal[\\\\server\\share]" time="0.003" /><testcase classname="tests.contracts.test_v15_contracts" name="test_contract_rejects_input_traversal[part/../../secret]" time="0.002" /><testcase classname="tests.contracts.test_v15_contracts" name="test_contract_rejects_input_traversal[/tmp/secret]" time="0.002" /><testcase classname="tests.contracts.test_v15_contracts" name="test_schema_version_and_false_success" time="0.001" /><testcase classname="tests.core.test_archive_reset" name="test_archive_preserves_frozen_revision_evidence_and_settings" time="1.114" /><testcase classname="tests.core.test_archive_reset" name="test_switch_failure_restores_originals" time="0.386" /><testcase classname="tests.core.test_archive_reset" name="test_preview_no_mutation_and_running_job_guard" time="0.177" /><testcase classname="tests.core.test_completion" name="test_rules_and_persisted_unavailable_simulation" time="0.362" /><testcase classname="tests.core.test_completion" name="test_data_plugin_discovery_and_atomic_rejection" time="0.183" /><testcase classname="tests.core.test_completion" name="test_atomic_edit_lifecycle_label_and_snapshot" time="0.248" /><testcase classname="tests.core.test_completion" name="test_v2_migration_preserves_evidence_and_rejects_empty_pass" time="0.274" /><testcase classname="tests.core.test_completion" name="test_adapter_contract_never_produces_metrics" time="0.110" /><testcase classname="tests.core.test_completion" name="test_invalid_model_instance_and_evidence_manifest_name" time="0.200" /><testcase classname="tests.core.test_component_reference_library" name="test_desktop_catalog_uses_canonical_fields_and_distinct_material_properties" time="0.359" /><testcase classname="tests.core.test_component_reference_library" name="test_catalog_expansion_sources_and_stable_identity" time="0.005" /><testcase classname="tests.core.test_component_reference_library" name="test_unknown_ratings_models_and_loss_fits_are_not_invented" time="0.003" /><testcase classname="tests.core.test_component_reference_library" name="test_bad_physical_rating_rejected[nan]" time="0.001" /><testcase classname="tests.core.test_component_reference_library" name="test_bad_physical_rating_rejected[inf]" time="0.001" /><testcase classname="tests.core.test_component_reference_library" name="test_bad_physical_rating_rejected[-1]" time="0.001" /><testcase classname="tests.core.test_component_reference_library" name="test_bad_physical_rating_rejected[0]" time="0.001" /><testcase classname="tests.core.test_day2" name="test_missing_and_configured_tool" time="0.162" /><testcase classname="tests.core.test_day2" name="test_v1_migration_preserves_products" time="0.224" /><testcase classname="tests.core.test_day2" name="test_unevaluated_persists_and_empty_report" time="0.295" /><testcase classname="tests.core.test_day2" name="test_pass_requires_rule_and_actual_evidence" time="0.650" /><testcase classname="tests.core.test_day2" name="test_stale_evidence_archived_baseline_and_no_fake_runs" time="0.335" /><testcase classname="tests.core.test_day2" name="test_deliberate_failure_and_stale_pass_are_never_presented_as_pass" time="0.442" /><testcase classname="tests.core.test_day2" name="test_invalid_evidence_rolls_back_and_html_escapes" time="0.303" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_delete_blocked_once_revision_leaves_draft" time="0.117" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_delete_blocked_when_evidence_recorded" time="0.239" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_mcp_delete_cannot_destroy_evidence" time="0.568" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_empty_draft_project_can_still_be_deleted" time="0.264" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_synthesis_refuses_missing_critical_requirement[vout]" time="0.002" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_synthesis_refuses_missing_critical_requirement[iout]" time="0.002" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_synthesis_refuses_missing_critical_requirement[fsw]" time="0.002" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_synthesis_rejects_non_physical_inputs[vout--5.0]" time="0.005" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_synthesis_rejects_non_physical_inputs[fsw-0.0]" time="0.003" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_synthesis_rejects_non_physical_inputs[iout-0.0]" time="0.002" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_synthesis_rejects_non_physical_inputs[vin_nom-nan]" time="0.002" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_synthesis_honours_input_range_and_ripple" time="0.004" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_input_range_rejected_when_inconsistent" time="0.002" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_calculations_never_use_silent_defaults[dowell]" time="0.170" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_calculations_never_use_silent_defaults[losses]" time="0.152" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_calculations_never_use_silent_defaults[steinmetz]" time="0.138" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_calculations_never_use_silent_defaults[flyback]" time="0.121" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_open_tool_file_confined_to_data_root" time="0.159" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_simulation_refuses_to_guess_between_netlists" time="0.214"><failure message="mendex_core.service.StudioError: Multiple native inputs; specify the registered relative path">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-425/test_simulation_refuses_to_gue0')
+
+    def test_simulation_refuses_to_guess_between_netlists(tmp_path):
+        controller = MendexEngineeringController(tmp_path)
+        ws_id = controller.create_workspace("Ambiguous")["workspace_id"]
+        ws_dir = tmp_path / "workspaces" / ws_id
+        ws_dir.mkdir(parents=True, exist_ok=True)
+        (ws_dir / "a.net").write_text("* a\n.end\n", encoding="utf-8")
+        (ws_dir / "b.net").write_text("* b\n.end\n", encoding="utf-8")
+        with pytest.raises(ValueError, match="specify one explicitly"):
+&gt;           controller.run_simulation(ws_id, tool="ltspice")
+
+tests\core\test_engineering_integrity_guards.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\controller.py:753: in run_simulation
+    netlist_path, ws_dir, context = self._stage_simulation_input(workspace_id, netlist_name, (".net", ".cir"), job_id)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;mendex_core.controller.MendexEngineeringController object at 0x0000029958E699D0&gt;
+workspace_id = 'dcb1226d-5ff3-44e6-a85d-74174dfd83c4', name = None
+suffixes = ('.net', '.cir')
+job_id = UUID('ffc6e27b-653b-481e-b8d1-5209cf1f3cbf')
+
+    def _stage_simulation_input(self, workspace_id, name, suffixes, job_id):
+        workspace = self._resolve_workspace_dir(workspace_id, must_exist=True)
+        revision = self._workspace_revision(workspace_id)
+        if revision and revision.lifecycle_status != "draft":
+            raise StudioError("IMMUTABLE", "Run simulations on a draft revision; historical inputs remain frozen")
+        candidates = [a for a in self.list_design_artifacts(workspace_id) if a["extension"] in suffixes]
+        if name:
+            if Path(name).is_absolute() or Path(name).drive or ".." in Path(name).parts:
+                raise StudioError("INVALID_INPUT", "Simulation input must be a confined relative path")
+            candidates = [a for a in candidates if a["relative_path"] == name or a["name"] == name]
+        if not candidates:
+            raise FileNotFoundError("No matching native simulation input")
+        if len(candidates) != 1:
+&gt;           raise StudioError("CONFLICT", "Multiple native inputs; specify the registered relative path")
+E           mendex_core.service.StudioError: Multiple native inputs; specify the registered relative path
+
+src\mendex_core\controller.py:154: StudioError</failure></testcase><testcase classname="tests.core.test_engineering_integrity_guards" name="test_ltspice_log_parser_flags_floating_nodes_as_errors" time="0.037" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_femm_result_defaults_are_not_evaluated" time="0.002" /><testcase classname="tests.core.test_engineering_integrity_guards" name="test_flyback_netlist_drives_its_gate" time="0.017" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_default_configuration_and_no_startup_migration" time="0.152" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_enrollment_backup_restore_and_identity" time="0.345" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_completion_idempotency_and_new_attempt" time="0.394" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_completion_needs_intact_current_evidence_and_invalidates_dependents" time="0.414" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_wrong_kind_failed_and_stale_validation_cannot_clear_stage" time="0.861" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_review_request_never_grants_approval" time="0.426" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_optional_exemption_and_mandatory_rejection" time="0.343" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_mandatory_and_review_required_exemptions_rejected" time="0.262" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_missing_evidence_and_old_specification_rejected_on_attachment" time="0.443" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_block_fail_restart_and_specification_fields" time="0.414" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_backup_failure_does_not_change_schema_or_evidence" time="0.185" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_revision_isolation_and_frozen_history" time="0.612" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_optimistic_conflict_and_history_pagination" time="0.322" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_parallel_retries_commit_one_event" time="0.264" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_append_only_definition_versions_and_future_schema" time="0.379" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_migration_failure_rolls_back_and_old_data_survives" time="0.267" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_configuration_rejects_code_and_invalid_graphs[&lt;lambda&gt;0]" time="0.002" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_configuration_rejects_code_and_invalid_graphs[&lt;lambda&gt;1]" time="0.002" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_configuration_rejects_code_and_invalid_graphs[&lt;lambda&gt;2]" time="0.003" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_configuration_rejects_code_and_invalid_graphs[&lt;lambda&gt;3]" time="0.002" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_configuration_rejects_code_and_invalid_graphs[&lt;lambda&gt;4]" time="0.002" /><testcase classname="tests.core.test_engineering_lifecycle" name="test_configuration_rejects_code_and_invalid_graphs[&lt;lambda&gt;5]" time="0.002" /><testcase classname="tests.core.test_engineering_prompt_library" name="test_generic_stage_prompts_match_real_lifecycle_and_tool_contracts" time="0.405" /><testcase classname="tests.core.test_engineering_records" name="test_discovery_does_not_install_records_schema" time="0.376" /><testcase classname="tests.core.test_engineering_records" name="test_metadata_concurrency_and_idempotency" time="0.368" /><testcase classname="tests.core.test_engineering_records" name="test_structured_requirements_history_and_coverage" time="0.370" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[dowell]" time="0.311" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[losses]" time="0.355" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[steinmetz]" time="0.319" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[flyback]" time="0.344" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change0]" time="0.507" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change1]" time="0.388" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change2]" time="0.277" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change3]" time="0.309" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change4]" time="0.376" /><testcase classname="tests.core.test_engineering_records" name="test_numerical_execution_failure_is_recorded_as_failed" time="0.352" /><testcase classname="tests.core.test_engineering_records" name="test_artifact_snapshot_integrity_and_paths" time="0.719" /><testcase classname="tests.core.test_engineering_records" name="test_stage_and_specification_guards" time="0.274" /><testcase classname="tests.core.test_engineering_records" name="test_validation_uses_existing_core_integrity" time="0.499" /><testcase classname="tests.core.test_engineering_records" name="test_receipt_failure_rolls_back_core_write_and_cleans_only_new_evidence" time="0.412" /><testcase classname="tests.core.test_engineering_records" name="test_report_generation_export_tamper_and_no_missing_input_fabrication" time="0.814" /><testcase classname="tests.core.test_engineering_records" name="test_live_job_not_recovered_by_observer_and_foreign_cancellation_rejected" time="0.722" /><testcase classname="tests.core.test_engineering_records" name="test_record_migration_rollback_preserves_lifecycle_and_backup" time="0.510" /><testcase classname="tests.core.test_engineering_records" name="test_immutable_record_tables_and_future_component_rejection" time="0.398" /><testcase classname="tests.core.test_engineering_records" name="test_legacy_report_export_is_explicitly_unverified" time="0.623" /><testcase classname="tests.core.test_engineering_records" name="test_record_context_rejects_archived_revision" time="0.434" /><testcase classname="tests.core.test_engineering_reviews" name="test_no_production_profiles_seeded" time="0.201" /><testcase classname="tests.core.test_engineering_reviews" name="test_manual_review_desktop_without_profile_and_explicit_attribution" time="1.409" /><testcase classname="tests.core.test_engineering_reviews" name="test_manual_negative_decisions_preserve_history[REJECTED]" time="0.679" /><testcase classname="tests.core.test_engineering_reviews" name="test_manual_negative_decisions_preserve_history[CHANGES_REQUESTED]" time="0.616" /><testcase classname="tests.core.test_engineering_reviews" name="test_manual_safety_blocker_not_removed_by_no_password" time="0.529" /><testcase classname="tests.core.test_engineering_reviews" name="test_manual_deferral_requires_exact_safety_item_and_explicit_fields" time="0.647" /><testcase classname="tests.core.test_engineering_reviews" name="test_manual_review_rejects_changed_documents_and_stale_attempt" time="0.727" /><testcase classname="tests.core.test_engineering_reviews" name="test_manual_review_requires_name_comments_and_cannot_use_mcp" time="0.455" /><testcase classname="tests.core.test_engineering_reviews" name="test_manual_review_detects_later_tamper_and_refuses_self_review" time="0.875" /><testcase classname="tests.core.test_engineering_reviews" name="test_list_and_register_reviewers" time="0.776" /><testcase classname="tests.core.test_engineering_reviews" name="test_self_approval_rejected" time="1.205" /><testcase classname="tests.core.test_engineering_reviews" name="test_automated_agent_approval_blocked" time="0.841" /><testcase classname="tests.core.test_engineering_reviews" name="test_unauthorized_credentials_and_unknown_reviewer" time="1.048" /><testcase classname="tests.core.test_engineering_reviews" name="test_safety_blocker_requires_authorized_deferral" time="1.367" /><testcase classname="tests.core.test_engineering_reviews" name="test_rejection_and_changes_requested_flow" time="1.325" /><testcase classname="tests.core.test_engineering_reviews" name="test_stale_detection_on_spec_or_file_change" time="1.145" /><testcase classname="tests.core.test_engineering_reviews" name="test_idempotency_and_concurrency" time="0.994" /><testcase classname="tests.core.test_engineering_reviews" name="test_stage2_completion_end_to_end" time="1.600" /><testcase classname="tests.core.test_intelligence" name="test_knowledge_service_formulas_and_materials" time="0.001" /><testcase classname="tests.core.test_intelligence" name="test_deterministic_calculation_service" time="0.002" /><testcase classname="tests.core.test_intelligence" name="test_engineering_benchmark_evaluation" time="0.001" /><testcase classname="tests.core.test_pcb_workspace" name="test_empty_design_and_library_symbols_cannot_clear" time="0.407" /><testcase classname="tests.core.test_pcb_workspace" name="test_snapshot_persistence_and_context_changes" time="0.442" /><testcase classname="tests.core.test_pcb_workspace" name="test_tamper_detection" time="0.221" /><testcase classname="tests.core.test_pcb_workspace" name="test_missing_tool_and_timeout_are_not_clean" time="0.428" /><testcase classname="tests.core.test_pcb_workspace" name="test_issues_and_cli_use_same_service" time="0.428" /><testcase classname="tests.core.test_pcb_workspace" name="test_import_preserves_files_and_archives" time="0.240" /><testcase classname="tests.core.test_pcb_workspace" name="test_paths_and_check_types_are_validated" time="0.166" /><testcase classname="tests.core.test_pcb_workspace" name="test_notes_and_spec_changes_invalidate_existing_result" time="0.480" /><testcase classname="tests.core.test_pcb_workspace" name="test_malformed_reports_never_clean[not json]" time="0.017" /><testcase classname="tests.core.test_pcb_workspace" name="test_malformed_reports_never_clean[{}]" time="0.006" /><testcase classname="tests.core.test_pcb_workspace" name="test_malformed_reports_never_clean[{&quot;violations&quot;:null}]" time="0.018" /><testcase classname="tests.core.test_pcb_workspace" name="test_malformed_reports_never_clean[{&quot;sheets&quot;:[4]}]" time="0.018" /><testcase classname="tests.core.test_pcb_workspace" name="test_real_report_arrays_all_counted" time="0.017" /><testcase classname="tests.core.test_pcb_workspace" name="test_low_level_preserves_reports_and_rejects_malformed" time="0.155" /><testcase classname="tests.core.test_product_lifecycle" name="test_product_lifecycle_12_stages_initialization" time="0.187" /><testcase classname="tests.core.test_product_lifecycle" name="test_product_lifecycle_blockers_and_readiness" time="0.186" /><testcase classname="tests.core.test_product_lifecycle" name="test_product_lifecycle_evidence_register" time="0.227" /><testcase classname="tests.core.test_product_lifecycle" name="test_product_lifecycle_stage_approval_persistence" time="0.263" /><testcase classname="tests.core.test_product_lifecycle" name="test_kicad_service_discovery_and_erc_parser" time="0.202" /><testcase classname="tests.core.test_product_lifecycle" name="test_product_independent_workflows_unaffected" time="0.152" /><testcase classname="tests.core.test_retired_integrations" name="test_commercial_integrations_retired_without_deleting_history" time="0.744" /><testcase classname="tests.core.test_service" name="test_product_revision_survives_restart" time="0.217" /><testcase classname="tests.core.test_service" name="test_duplicate_code_and_revision_are_atomic" time="0.197" /><testcase classname="tests.core.test_service" name="test_invalid_units_and_ranges[payload0]" time="0.001" /><testcase classname="tests.core.test_service" name="test_invalid_units_and_ranges[payload1]" time="0.001" /><testcase classname="tests.core.test_service" name="test_invalid_units_and_ranges[payload2]" time="0.001" /><testcase classname="tests.core.test_service" name="test_invalid_units_and_ranges[payload3]" time="0.001" /><testcase classname="tests.core.test_service" name="test_path_traversal_and_missing_product" time="0.144" /><testcase classname="tests.core.test_service" name="test_workspace_failure_rolls_back" time="0.162" /><testcase classname="tests.core.test_service" name="test_newer_database_rejected" time="0.125" /><testcase classname="tests.core.test_v19_design_synthesis" name="test_candidate_synthesis_non_isolated_buck" time="0.003" /><testcase classname="tests.core.test_v19_design_synthesis" name="test_candidate_synthesis_isolated_flyback" time="0.002" /><testcase classname="tests.core.test_v19_design_synthesis" name="test_parametric_design_engine_propagation" time="0.003" /><testcase classname="tests.core.test_v19_design_synthesis" name="test_native_artifact_generation" time="0.011" /><testcase classname="tests.core.test_v19_design_synthesis" name="test_cross_tool_sync_and_external_edits" time="0.271" /><testcase classname="tests.core.test_v19_design_synthesis" name="test_component_library_queries" time="0.128" /><testcase classname="tests.core.test_v19_design_synthesis" name="test_design_synthesis_with_invalid_characters_and_newlines" time="0.256"><failure message="assert 0 == 1&#10; +  where 0 = len([])">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-425/test_design_synthesis_with_inv0')
+
+    def test_design_synthesis_with_invalid_characters_and_newlines(tmp_path: Path):
+        """Verify synthesis and artifact export succeed with newlines, arrows, and special characters in title."""
+        service = StudioService(tmp_path)
+        messy_title = "buck_converter_(e.g._24v_dc_in_\n→\n_5v_dc_@_5a,_25w,_200_khz)"
+        reqs = [
+            Requirement(parameter="vin_nom", target_value=24.0, unit="V"),
+            Requirement(parameter="vin_min", target_value=18.0, unit="V"),
+            Requirement(parameter="vin_max", target_value=32.0, unit="V"),
+            Requirement(parameter="vout", target_value=5.0, unit="V"),
+            Requirement(parameter="iout", target_value=4.0, unit="A"),
+            Requirement(parameter="fsw", target_value=100000.0, unit="Hz"),
+            Requirement(parameter="ripple", target_value=0.05, unit="V"),
+        ]
+        design = service.design.create_design_from_requirements(
+            workspace_id="test_ws",
+            title=messy_title,
+            category="dc_dc_converter",
+            requirements=reqs,
+        )
+        assert design.id is not None
+    
+        # Generating native artifacts must not raise Errno 22
+        ws_dir = tmp_path / "workspaces" / "test_ws"
+        ws_dir.mkdir(parents=True, exist_ok=True)
+        artifacts = service.design.generate_native_artifacts(design.id, ws_dir)
+        assert len(artifacts) &gt;= 3
+    
+        # Check generated files exist on disk
+        sch_files = list(ws_dir.glob("**/*.kicad_sch"))
+&gt;       assert len(sch_files) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests\core\test_v19_design_synthesis.py:231: AssertionError</failure></testcase><testcase classname="tests.core.test_v20_lifecycle" name="test_v20_standalone_workspace_lifecycle_15_stages" time="0.231" /><testcase classname="tests.core.test_v20_lifecycle" name="test_v20_ecr_lifecycle_and_impact_analysis" time="0.137" /><testcase classname="tests.core.test_v20_lifecycle" name="test_v20_physical_measurement_ingestion_and_comparison" time="0.147" /><testcase classname="tests.core.test_v21_cli" name="test_cli_legacy_products" time="0.243" /><testcase classname="tests.core.test_v21_cli" name="test_cli_workspace_subcommands" time="0.446" /><testcase classname="tests.core.test_v21_cli" name="test_cli_specification_validate" time="0.176" /><testcase classname="tests.core.test_v21_cli" name="test_cli_calculations" time="0.426" /><testcase classname="tests.core.test_v21_cli" name="test_cli_design_synthesis" time="0.276"><failure message="SystemExit: 2">self = ArgumentParser(prog='mendex design generate', usage=None, description=None, formatter_class=&lt;class 'argparse.HelpFormatter'&gt;, conflict_handler='error', add_help=True)
+args = ['--workspace', '594988a1-c5f1-4cd8-9b01-b8d9f2f0d020', '--title', 'Buck 24V-5V', '--vin-nom', '24.0', ...]
+namespace = Namespace(workspace='594988a1-c5f1-4cd8-9b01-b8d9f2f0d020', project=None, title='Buck 24V-5V', category='dc_dc_converter', vin_nom=24.0, vin_min=None, vin_max=None, vout=5.0, iout=4.0, fsw=None, ripple=None, isolation=None, product_id=None)
+intermixed = False
+
+    def _parse_known_args2(self, args, namespace, intermixed):
+        if args is None:
+            # args default to the system args
+            args = _sys.argv[1:]
+        else:
+            # make sure that args are mutable
+            args = list(args)
+    
+        # default Namespace built from parser defaults
+        if namespace is None:
+            namespace = Namespace()
+    
+        # add any action defaults that aren't present
+        for action in self._actions:
+            if action.dest is not SUPPRESS:
+                if not hasattr(namespace, action.dest):
+                    if action.default is not SUPPRESS:
+                        setattr(namespace, action.dest, action.default)
+    
+        # add any parser defaults that aren't present
+        for dest in self._defaults:
+            if not hasattr(namespace, dest):
+                setattr(namespace, dest, self._defaults[dest])
+    
+        # parse the arguments and exit if there are any errors
+        if self.exit_on_error:
+            try:
+&gt;               namespace, args = self._parse_known_args(args, namespace, intermixed)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+C:\Python313\Lib\argparse.py:1937: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = ArgumentParser(prog='mendex design generate', usage=None, description=None, formatter_class=&lt;class 'argparse.HelpFormatter'&gt;, conflict_handler='error', add_help=True)
+arg_strings = ['--workspace', '594988a1-c5f1-4cd8-9b01-b8d9f2f0d020', '--title', 'Buck 24V-5V', '--vin-nom', '24.0', ...]
+namespace = Namespace(workspace='594988a1-c5f1-4cd8-9b01-b8d9f2f0d020', project=None, title='Buck 24V-5V', category='dc_dc_converter', vin_nom=24.0, vin_min=None, vin_max=None, vout=5.0, iout=4.0, fsw=None, ripple=None, isolation=None, product_id=None)
+intermixed = False
+
+    def _parse_known_args(self, arg_strings, namespace, intermixed):
+        # replace arg strings that are file references
+        if self.fromfile_prefix_chars is not None:
+            arg_strings = self._read_args_from_files(arg_strings)
+    
+        # map all mutually exclusive arguments to the other arguments
+        # they can't occur with
+        action_conflicts = {}
+        for mutex_group in self._mutually_exclusive_groups:
+            group_actions = mutex_group._group_actions
+            for i, mutex_action in enumerate(mutex_group._group_actions):
+                conflicts = action_conflicts.setdefault(mutex_action, [])
+                conflicts.extend(group_actions[:i])
+                conflicts.extend(group_actions[i + 1:])
+    
+        # find all option indices, and determine the arg_string_pattern
+        # which has an 'O' if there is an option at an index,
+        # an 'A' if there is an argument, or a '-' if there is a '--'
+        option_string_indices = {}
+        arg_string_pattern_parts = []
+        arg_strings_iter = iter(arg_strings)
+        for i, arg_string in enumerate(arg_strings_iter):
+    
+            # all args after -- are non-options
+            if arg_string == '--':
+                arg_string_pattern_parts.append('-')
+                for arg_string in arg_strings_iter:
+                    arg_string_pattern_parts.append('A')
+    
+            # otherwise, add the arg to the arg strings
+            # and note the index if it was an option
+            else:
+                option_tuples = self._parse_optional(arg_string)
+                if option_tuples is None:
+                    pattern = 'A'
+                else:
+                    option_string_indices[i] = option_tuples
+                    pattern = 'O'
+                arg_string_pattern_parts.append(pattern)
+    
+        # join the pieces together to form the pattern
+        arg_strings_pattern = ''.join(arg_string_pattern_parts)
+    
+        # converts arg strings to the appropriate and then takes the action
+        seen_actions = set()
+        seen_non_default_actions = set()
+        warned = set()
+    
+        def take_action(action, argument_strings, option_string=None):
+            seen_actions.add(action)
+            argument_values = self._get_values(action, argument_strings)
+    
+            # error if this argument is not allowed with other previously
+            # seen arguments
+            if action.option_strings or argument_strings:
+                seen_non_default_actions.add(action)
+                for conflict_action in action_conflicts.get(action, []):
+                    if conflict_action in seen_non_default_actions:
+                        msg = _('not allowed with argument %s')
+                        action_name = _get_action_name(conflict_action)
+                        raise ArgumentError(action, msg % action_name)
+    
+            # take the action if we didn't receive a SUPPRESS value
+            # (e.g. from a default)
+            if argument_values is not SUPPRESS:
+                action(self, namespace, argument_values, option_string)
+    
+        # function to convert arg_strings into an optional action
+        def consume_optional(start_index):
+    
+            # get the optional identified at this index
+            option_tuples = option_string_indices[start_index]
+            # if multiple actions match, the option string was ambiguous
+            if len(option_tuples) &gt; 1:
+                options = ', '.join([option_string
+                    for action, option_string, sep, explicit_arg in option_tuples])
+                args = {'option': arg_strings[start_index], 'matches': options}
+                msg = _('ambiguous option: %(option)s could match %(matches)s')
+                raise ArgumentError(None, msg % args)
+    
+            action, option_string, sep, explicit_arg = option_tuples[0]
+    
+            # identify additional optionals in the same arg string
+            # (e.g. -xyz is the same as -x -y -z if no args are required)
+            match_argument = self._match_argument
+            action_tuples = []
+            while True:
+    
+                # if we found no optional action, skip it
+                if action is None:
+                    extras.append(arg_strings[start_index])
+                    extras_pattern.append('O')
+                    return start_index + 1
+    
+                # if there is an explicit argument, try to match the
+                # optional's string arguments to only this
+                if explicit_arg is not None:
+                    arg_count = match_argument(action, 'A')
+    
+                    # if the action is a single-dash option and takes no
+                    # arguments, try to parse more single-dash options out
+                    # of the tail of the option string
+                    chars = self.prefix_chars
+                    if (
+                        arg_count == 0
+                        and option_string[1] not in chars
+                        and explicit_arg != ''
+                    ):
+                        if sep or explicit_arg[0] in chars:
+                            msg = _('ignored explicit argument %r')
+                            raise ArgumentError(action, msg % explicit_arg)
+                        action_tuples.append((action, [], option_string))
+                        char = option_string[0]
+                        option_string = char + explicit_arg[0]
+                        optionals_map = self._option_string_actions
+                        if option_string in optionals_map:
+                            action = optionals_map[option_string]
+                            explicit_arg = explicit_arg[1:]
+                            if not explicit_arg:
+                                sep = explicit_arg = None
+                            elif explicit_arg[0] == '=':
+                                sep = '='
+                                explicit_arg = explicit_arg[1:]
+                            else:
+                                sep = ''
+                        else:
+                            extras.append(char + explicit_arg)
+                            extras_pattern.append('O')
+                            stop = start_index + 1
+                            break
+                    # if the action expect exactly one argument, we've
+                    # successfully matched the option; exit the loop
+                    elif arg_count == 1:
+                        stop = start_index + 1
+                        args = [explicit_arg]
+                        action_tuples.append((action, args, option_string))
+                        break
+    
+                    # error if a double-dash option did not use the
+                    # explicit argument
+                    else:
+                        msg = _('ignored explicit argument %r')
+                        raise ArgumentError(action, msg % explicit_arg)
+    
+                # if there is no explicit argument, try to match the
+                # optional's string arguments with the following strings
+                # if successful, exit the loop
+                else:
+                    start = start_index + 1
+                    selected_patterns = arg_strings_pattern[start:]
+                    arg_count = match_argument(action, selected_patterns)
+                    stop = start + arg_count
+                    args = arg_strings[start:stop]
+                    action_tuples.append((action, args, option_string))
+                    break
+    
+            # add the Optional to the list and return the index at which
+            # the Optional's string args stopped
+            assert action_tuples
+            for action, args, option_string in action_tuples:
+                if action.deprecated and option_string not in warned:
+                    self._warning(_("option '%(option)s' is deprecated") %
+                                  {'option': option_string})
+                    warned.add(option_string)
+                take_action(action, args, option_string)
+            return stop
+    
+        # the list of Positionals left to be parsed; this is modified
+        # by consume_positionals()
+        positionals = self._get_positional_actions()
+    
+        # function to convert arg_strings into positional actions
+        def consume_positionals(start_index):
+            # match as many Positionals as possible
+            match_partial = self._match_arguments_partial
+            selected_pattern = arg_strings_pattern[start_index:]
+            arg_counts = match_partial(positionals, selected_pattern)
+    
+            # slice off the appropriate arg strings for each Positional
+            # and add the Positional and its args to the list
+            for action, arg_count in zip(positionals, arg_counts):
+                args = arg_strings[start_index: start_index + arg_count]
+                # Strip out the first '--' if it is not in REMAINDER arg.
+                if action.nargs == PARSER:
+                    if arg_strings_pattern[start_index] == '-':
+                        assert args[0] == '--'
+                        args.remove('--')
+                elif action.nargs != REMAINDER:
+                    if (arg_strings_pattern.find('-', start_index,
+                                                 start_index + arg_count) &gt;= 0):
+                        args.remove('--')
+                start_index += arg_count
+                if args and action.deprecated and action.dest not in warned:
+                    self._warning(_("argument '%(argument_name)s' is deprecated") %
+                                  {'argument_name': action.dest})
+                    warned.add(action.dest)
+                take_action(action, args)
+    
+            # slice off the Positionals that we just parsed and return the
+            # index at which the Positionals' string args stopped
+            positionals[:] = positionals[len(arg_counts):]
+            return start_index
+    
+        # consume Positionals and Optionals alternately, until we have
+        # passed the last option string
+        extras = []
+        extras_pattern = []
+        start_index = 0
+        if option_string_indices:
+            max_option_string_index = max(option_string_indices)
+        else:
+            max_option_string_index = -1
+        while start_index &lt;= max_option_string_index:
+    
+            # consume any Positionals preceding the next option
+            next_option_string_index = start_index
+            while next_option_string_index &lt;= max_option_string_index:
+                if next_option_string_index in option_string_indices:
+                    break
+                next_option_string_index += 1
+            if not intermixed and start_index != next_option_string_index:
+                positionals_end_index = consume_positionals(start_index)
+    
+                # only try to parse the next optional if we didn't consume
+                # the option string during the positionals parsing
+                if positionals_end_index &gt; start_index:
+                    start_index = positionals_end_index
+                    continue
+                else:
+                    start_index = positionals_end_index
+    
+            # if we consumed all the positionals we could and we're not
+            # at the index of an option string, there were extra arguments
+            if start_index not in option_string_indices:
+                strings = arg_strings[start_index:next_option_string_index]
+                extras.extend(strings)
+                extras_pattern.extend(arg_strings_pattern[start_index:next_option_string_index])
+                start_index = next_option_string_index
+    
+            # consume the next optional and any arguments for it
+            start_index = consume_optional(start_index)
+    
+        if not intermixed:
+            # consume any positionals following the last Optional
+            stop_index = consume_positionals(start_index)
+    
+            # if we didn't consume all the argument strings, there were extras
+            extras.extend(arg_strings[stop_index:])
+        else:
+            extras.extend(arg_strings[start_index:])
+            extras_pattern.extend(arg_strings_pattern[start_index:])
+            extras_pattern = ''.join(extras_pattern)
+            assert len(extras_pattern) == len(extras)
+            # consume all positionals
+            arg_strings = [s for s, c in zip(extras, extras_pattern) if c != 'O']
+            arg_strings_pattern = extras_pattern.replace('O', '')
+            stop_index = consume_positionals(0)
+            # leave unknown optionals and non-consumed positionals in extras
+            for i, c in enumerate(extras_pattern):
+                if not stop_index:
+                    break
+                if c != 'O':
+                    stop_index -= 1
+                    extras[i] = None
+            extras = [s for s in extras if s is not None]
+    
+        # make sure all required actions were present and also convert
+        # action defaults which were not given as arguments
+        required_actions = []
+        for action in self._actions:
+            if action not in seen_actions:
+                if action.required:
+                    required_actions.append(_get_action_name(action))
+                else:
+                    # Convert action default now instead of doing it before
+                    # parsing arguments to avoid calling convert functions
+                    # twice (which may fail) if the argument was given, but
+                    # only if it was defined already in the namespace
+                    if (action.default is not None and
+                        isinstance(action.default, str) and
+                        hasattr(namespace, action.dest) and
+                        action.default is getattr(namespace, action.dest)):
+                        setattr(namespace, action.dest,
+                                self._get_value(action, action.default))
+    
+        if required_actions:
+&gt;           raise ArgumentError(None, _('the following arguments are required: %s') %
+                       ', '.join(required_actions))
+E           argparse.ArgumentError: the following arguments are required: --fsw, --ripple
+
+C:\Python313\Lib\argparse.py:2234: ArgumentError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-425/test_cli_design_synthesis0')
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x000002995F7F0DD0&gt;
+
+    def test_cli_design_synthesis(tmp_path, capsys):
+        # 1. Create workspace
+        main(["--root", str(tmp_path), "workspace", "create", "DesignCLI"])
+        ws_id = json.loads(capsys.readouterr().out)["workspace_id"]
+    
+        # 2. Generate design
+&gt;       exit_code = main([
+            "--root", str(tmp_path),
+            "design", "generate",
+            "--workspace", ws_id,
+            "--title", "Buck 24V-5V",
+            "--vin-nom", "24.0",
+            "--vout", "5.0",
+            "--iout", "4.0",
+        ])
+
+tests\core\test_v21_cli.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mendex_core\cli.py:258: in main
+    args = parser.parse_args(argv)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:1898: in parse_args
+    args, argv = self.parse_known_args(args, namespace)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:1908: in parse_known_args
+    return self._parse_known_args2(args, namespace, intermixed=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:1937: in _parse_known_args2
+    namespace, args = self._parse_known_args(args, namespace, intermixed)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:2169: in _parse_known_args
+    positionals_end_index = consume_positionals(start_index)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:2144: in consume_positionals
+    take_action(action, args)
+C:\Python313\Lib\argparse.py:2013: in take_action
+    action(self, namespace, argument_values, option_string)
+C:\Python313\Lib\argparse.py:1258: in __call__
+    subnamespace, arg_strings = subparser.parse_known_args(arg_strings, None)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:1908: in parse_known_args
+    return self._parse_known_args2(args, namespace, intermixed=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:1937: in _parse_known_args2
+    namespace, args = self._parse_known_args(args, namespace, intermixed)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:2169: in _parse_known_args
+    positionals_end_index = consume_positionals(start_index)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:2144: in consume_positionals
+    take_action(action, args)
+C:\Python313\Lib\argparse.py:2013: in take_action
+    action(self, namespace, argument_values, option_string)
+C:\Python313\Lib\argparse.py:1258: in __call__
+    subnamespace, arg_strings = subparser.parse_known_args(arg_strings, None)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:1908: in parse_known_args
+    return self._parse_known_args2(args, namespace, intermixed=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python313\Lib\argparse.py:1939: in _parse_known_args2
+    self.error(str(err))
+C:\Python313\Lib\argparse.py:2658: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = ArgumentParser(prog='mendex design generate', usage=None, description=None, formatter_class=&lt;class 'argparse.HelpFormatter'&gt;, conflict_handler='error', add_help=True)
+status = 2
+message = 'mendex design generate: error: the following arguments are required: --fsw, --ripple\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+&gt;       _sys.exit(status)
+E       SystemExit: 2
+
+C:\Python313\Lib\argparse.py:2645: SystemExit</failure></testcase><testcase classname="tests.core.test_v21_cli" name="test_cli_tool_commands" time="0.393" /><testcase classname="tests.core.test_v21_controller" name="test_workspace_operations" time="0.171" /><testcase classname="tests.core.test_v21_controller" name="test_specification_validation" time="0.593" /><testcase classname="tests.core.test_v21_controller" name="test_deterministic_calculations" time="0.152" /><testcase classname="tests.core.test_v21_controller" name="test_calculations_refuse_missing_inputs" time="0.138" /><testcase classname="tests.core.test_v21_controller" name="test_design_synthesis_and_artifacts" time="0.340" /><testcase classname="tests.core.test_v21_controller" name="test_tools_and_diagnostics" time="0.290" /><testcase classname="tests.core.test_v21_controller" name="test_report_generation" time="0.307" /><testcase classname="tests.core.test_v21_controller" name="test_create_project_auto_enrolls_generic_lifecycle" time="0.257" /><testcase classname="tests.core.test_v21_engineering_projects" name="test_project_lifecycle_and_single_record" time="8.863" /><testcase classname="tests.core.test_v21_engineering_projects" name="test_mcp_project_tools" time="0.352" /><testcase classname="tests.core.test_v21_engineering_projects" name="test_cli_project_commands" time="0.415" /><testcase classname="tests.core.test_v21_mcp" name="test_mcp_initialize" time="0.165" /><testcase classname="tests.core.test_v21_mcp" name="test_mcp_ping" time="0.155" /><testcase classname="tests.core.test_v21_mcp" name="test_mcp_tools_list" time="0.167" /><testcase classname="tests.core.test_v21_mcp" name="test_mcp_tool_call_calculations" time="0.166" /><testcase classname="tests.core.test_v21_mcp" name="test_mcp_workflow_call" time="0.199"><failure message="assert True is False">mcp_server = &lt;mendex_core.mcp.server.MendexMCPServer object at 0x000002995FDDB680&gt;
+tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-425/test_mcp_workflow_call0')
+
+    def test_mcp_workflow_call(mcp_server, tmp_path):
+        # 1. Create workspace
+        req_ws = {
+            "jsonrpc": "2.0",
+            "id": 20,
+            "method": "tools/call",
+            "params": {
+                "name": "create_workspace",
+                "arguments": {"name": "MCP Converter WS"},
+            },
+        }
+        resp_ws = mcp_server.handle_request(req_ws)
+        assert resp_ws["result"]["isError"] is False
+        ws_data = json.loads(resp_ws["result"]["content"][0]["text"])
+        ws_id = ws_data["workspace_id"]
+    
+        # 2. Synthesize Design
+        req_gen = {
+            "jsonrpc": "2.0",
+            "id": 21,
+            "method": "tools/call",
+            "params": {
+                "name": "generate_design",
+                "arguments": {
+                    "workspace_id": ws_id,
+                    "title": "MCP Buck 24V-5V",
+                    "vin_nom": 24.0,
+                    "vout": 5.0,
+                    "iout": 4.0,
+                },
+            },
+        }
+        resp_gen = mcp_server.handle_request(req_gen)
+&gt;       assert resp_gen["result"]["isError"] is False
+E       assert True is False
+
+tests\core\test_v21_mcp.py:120: AssertionError</failure></testcase><testcase classname="tests.core.test_v21_mcp" name="test_mcp_stdio_stream" time="0.152" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_generations_and_regeneration_preserve_registered_bytes" time="0.432" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_mcp_and_controller_reject_omitted_engineering_inputs[vin_nom]" time="0.180" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_mcp_and_controller_reject_omitted_engineering_inputs[vout]" time="0.126" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_mcp_and_controller_reject_omitted_engineering_inputs[iout]" time="0.209" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_mcp_and_controller_reject_omitted_engineering_inputs[fsw_hz]" time="0.195" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_mcp_and_controller_reject_omitted_engineering_inputs[ripple_v]" time="0.161" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_linked_design_specification_preserves_provenance_and_rejects_conflict" time="0.433" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_concurrent_processes_initialize_one_database_without_partial_schema" time="0.976" /><testcase classname="tests.core.test_v31_audit_fixes" name="test_native_run_snapshots_and_manifest_do_not_replace_originals" time="1.696" /><testcase classname="tests.core.test_workflow_contracts" name="test_node_registry_registration" time="0.002" /><testcase classname="tests.core.test_workflow_contracts" name="test_quantity_canonical_conversion" time="0.002" /><testcase classname="tests.core.test_workflow_contracts" name="test_type_and_unit_compatibility" time="0.002" /><testcase classname="tests.core.test_workflow_contracts" name="test_safe_math_expression_evaluation" time="0.002" /><testcase classname="tests.core.test_workflow_contracts" name="test_cycle_detection_and_topological_sort" time="0.002" /><testcase classname="tests.core.test_workflow_contracts" name="test_workflow_storage_crud_product_independent" time="0.152" /><testcase classname="tests.core.test_workflow_engine" name="test_linear_calculation_and_validation_workflow" time="0.093" /><testcase classname="tests.core.test_workflow_engine" name="test_failure_propagation_and_skip" time="0.004" /><testcase classname="tests.core.test_workflow_engine" name="test_cancellation_token" time="0.004" /><testcase classname="tests.integration.test_day3" name="test_end_to_end_with_shell_free_editor_handoff" time="0.565"><failure message="assert 25824 == 1234">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/pytest-of-Sagar/pytest-425/test_end_to_end_with_shell_fre0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000299617B30E0&gt;
+capsys = &lt;_pytest.capture.CaptureFixture object at 0x0000029961818550&gt;
+
+    def test_end_to_end_with_shell_free_editor_handoff(tmp_path, monkeypatch, capsys):
+        service = StudioService(tmp_path)
+        product = service.create_product("MC-100", "Illustrative pilot", "transformer", "Test engineer")
+        service.update_specification(product.active_revision_id, Specification(vin_nom_v=24, source="Illustrative fixture only"))
+        revision = service.create_revision(product.product_id, "R002")
+        editor = tmp_path / "Code.exe"
+        editor.write_bytes(b"mock executable; never executed")
+        monkeypatch.setattr(launch, "find_vscode", lambda: editor)
+        requests = []
+        def spawn(argv, **kwargs):
+            requests.append((argv, kwargs))
+            return SimpleNamespace(pid=1234)
+        monkeypatch.setattr(launch.subprocess, "Popen", spawn)
+        result = service.open_in_vscode(revision.revision_id)
+&gt;       assert result["pid"] == 1234
+E       assert 25824 == 1234
+
+tests\integration\test_day3.py:28: AssertionError</failure></testcase><testcase classname="tests.integration.test_day3" name="test_launch_paths_and_missing_editor" time="0.167" /><testcase classname="tests.integration.test_day3" name="test_windows_code_command_uses_executable_not_batch_file" time="0.003" /><testcase classname="tests.integration.test_day3" name="test_doctor_export_and_cli_errors" time="0.650" /><testcase classname="tests.integration.test_engineering_lifecycle_interfaces" name="test_cli_mcp_share_records_without_duplicate_projects" time="0.372" /><testcase classname="tests.integration.test_engineering_lifecycle_interfaces" name="test_strict_errors_and_no_agent_approval" time="0.364" /><testcase classname="tests.integration.test_engineering_lifecycle_interfaces" name="test_definition_discovery_and_registration_through_both_clients" time="0.355" /><testcase classname="tests.integration.test_engineering_record_interfaces" name="test_metadata_requirements_calculations_and_artifacts_share_records" time="0.858" /><testcase classname="tests.integration.test_engineering_record_interfaces" name="test_validation_reports_and_export_share_core" time="0.944" /><testcase classname="tests.integration.test_engineering_record_interfaces" name="test_schema_discovery_strict_errors_and_legacy_compatibility" time="0.596" /><testcase classname="tests.integration.test_restore" name="test_closed_database_and_evidence_backup_restore" time="0.574" /><testcase classname="tests.integration.test_v15_integration_hook" name="test_real_ltspice_connector_through_codex_orchestrator" time="0.974" /><testcase classname="tests.integration.test_v15_jobs" name="test_catalog_settings_and_no_false_ready" time="0.274" /><testcase classname="tests.integration.test_v15_jobs" name="test_generic_job_evidence_report_retry_and_restart" time="0.845" /><testcase classname="tests.integration.test_v15_jobs" name="test_failure_malformed_output_and_timeout[parameters0-FAILED-EXECUTION_FAILED]" time="0.339" /><testcase classname="tests.integration.test_v15_jobs" name="test_failure_malformed_output_and_timeout[parameters1-FAILED-MALFORMED_OUTPUT]" time="0.376" /><testcase classname="tests.integration.test_v15_jobs" name="test_failure_malformed_output_and_timeout[parameters2-TIMED_OUT-TIMED_OUT]" time="0.348" /><testcase classname="tests.integration.test_v15_jobs" name="test_cancel_queued_and_running_no_reuse" time="0.648" /><testcase classname="tests.integration.test_v15_jobs" name="test_invalid_input_and_unsupported_native_job" time="0.160" /><testcase classname="tests.integration.test_v15_jobs" name="test_manifest_and_staged_input_tampering_are_detected" time="0.622" /><testcase classname="tests.integration.test_v15_jobs" name="test_dataset_metadata_review_and_hash" time="0.193" /><testcase classname="tests.integration.test_v15_jobs" name="test_v3_to_v4_preserves_legacy_revisions" time="0.464" /><testcase classname="tests.integration.test_v15_jobs" name="test_cli_generic_demo_and_reopen" time="0.382" /><testcase classname="tests.integration.test_v15_jobs" name="test_reviewed_hook_rejects_unsubstantiated_ready" time="0.295" /><testcase classname="tests.integration.test_v16_resilience" name="test_v16_missing_executable_rejection" time="0.176" /><testcase classname="tests.integration.test_v16_resilience" name="test_v16_invalid_input_failure_handling" time="0.278" /><testcase classname="tests.integration.test_v16_resilience" name="test_v16_timeout_and_process_cleanup" time="1.313" /><testcase classname="tests.integration.test_v16_resilience" name="test_v16_cancellation_queued_and_running" time="0.449" /><testcase classname="tests.integration.test_v16_resilience" name="test_v16_tampering_detection_and_integrity" time="0.418" /><testcase classname="tests.integration.test_v16_resilience" name="test_v16_workspace_recovery_after_restart" time="0.252" /><testcase classname="tests.integration.test_v16_workflow" name="test_v16_generic_end_to_end_ltspice_workflow" time="1.917" /><testcase classname="tests.integration.test_v17_product_independent" name="test_create_engineering_workspace_without_product" time="0.152" /><testcase classname="tests.integration.test_v17_product_independent" name="test_engineering_activity_and_job_lifecycle_without_product" time="0.344" /><testcase classname="tests.integration.test_v17_product_independent" name="test_optional_product_association_downstream" time="0.243" /><testcase classname="tests.integration.test_v19_e2e_scenarios" name="test_scenario_a_calculation_workflow" time="0.231" /><testcase classname="tests.integration.test_v19_e2e_scenarios" name="test_scenario_b_simulation_workflow" time="0.198" /><testcase classname="tests.integration.test_v19_e2e_scenarios" name="test_scenario_c_research_workflow" time="0.161" /><testcase classname="tests.integration.test_v19_e2e_scenarios" name="test_scenario_d_reporting_workflow" time="0.170" /><testcase classname="tests.integration.test_v19_e2e_scenarios" name="test_scenario_e_persistence" time="0.290" /><testcase classname="tests.integration.test_v19_e2e_scenarios" name="test_scenario_f_failure_recovery" time="0.195" /><testcase classname="tests.integration.test_v19_e2e_scenarios" name="test_scenario_g_product_independence" time="0.173" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_a_create_and_reopen_generic_design" time="0.292" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_b_candidate_synthesis_multi_topology" time="0.006" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_c_circuit_artifact_and_analytical_comparison" time="0.306" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_d_parameter_edit_and_revision_comparison" time="0.161" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_e_kicad_erc_valid_and_invalid" time="2.805" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_f_kicad_pcb_drc" time="110.662" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_g_femm_magnetic_model_generation" time="0.005" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_h_workflow_five_parameter_sweep" time="0.264" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_j_external_edit_and_stale_invalidation" time="0.308" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_k_lifecycle_evidence_and_bom_revision" time="0.140" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_l_failure_recovery_and_cloud_opt_out" time="0.125" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_m_clean_windows_installer_and_wizard" time="0.002" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_n_physical_measurement_vs_simulation" time="0.161" /><testcase classname="tests.integration.test_v19_revised_acceptance" name="test_scenario_o_optional_product_association" time="0.169" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_a_product_independent_workspace" time="0.129" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_b_ltspice_analytical_reference" time="0.570" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_c_femm_magnetic_simulation" time="0.005"><skipped type="pytest.skip" message="NOT_EVALUATED: no excited FEMM reference model (winding current + boundary conditions) exists yet. The un-excited core model is covered by test_v20_qualification::test_real_femm_magnetic_simulation.">C:\Mendex studio\tests\integration\test_v20_acceptance.py:84: NOT_EVALUATED: no excited FEMM reference model (winding current + boundary conditions) exists yet. The un-excited core model is covered by test_v20_qualification::test_real_femm_magnetic_simulation.</skipped></testcase><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_d_kicad_erc_valid_and_invalid" time="2.142" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_e_kicad_pcb_drc" time="2.118" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_f_freecad_model_export" time="0.727" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_g_h_workflow_execution_and_sweeps" time="0.165" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_i_traceable_report_generation" time="0.308" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_j_physical_measurement_ingestion" time="0.152" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_k_lifecycle_stale_evidence_detection" time="0.305" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_l_existing_product_linked_compatibility" time="0.172" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_m_failure_recovery_unavailable_tools" time="0.143" /><testcase classname="tests.integration.test_v20_acceptance" name="test_scenario_n_installer_and_wizard" time="0.007" /><testcase classname="tests.integration.test_v20_qualification" name="test_real_ltspice_buck_simulation" time="1.897" /><testcase classname="tests.integration.test_v20_qualification" name="test_ltspice_asc_graphical_schematic_generation" time="0.002" /><testcase classname="tests.integration.test_v20_qualification" name="test_kicad_populated_pcb_generation" time="0.016" /><testcase classname="tests.integration.test_v20_qualification" name="test_real_freecad_step_generation" time="0.645" /><testcase classname="tests.integration.test_v20_qualification" name="test_real_femm_magnetic_simulation" time="0.993" /><testcase classname="tests.integration.test_v20_qualification" name="test_closed_loop_ai_design_iteration" time="4.194" /><testcase classname="tests.integration.test_v21_e2e" name="test_v21_generic_engineering_e2e_workflow" time="0.637" /><testcase classname="tests.ui.test_command_center_cleanup" name="test_workspace_action_is_unique_and_persists_through_core" time="3.917" /><testcase classname="tests.ui.test_command_center_cleanup" name="test_search_and_resource_navigation_use_current_pages" time="2.072" /><testcase classname="tests.ui.test_dashboard_inventory" name="test_dashboard_inventory_supported_resources_plus_ngspice" time="0.226" /><testcase classname="tests.ui.test_design_studio_ui" name="test_tool_launch_rejects_incompatible_inputs" time="0.005" /><testcase classname="tests.ui.test_design_studio_ui" name="test_open_native_rejects_unrecognized_file_types" time="0.002" /><testcase classname="tests.ui.test_design_studio_ui" name="test_design_studio_dialog_and_panel_ui" time="0.096" /><testcase classname="tests.ui.test_engineering_guide_dialog" name="test_engineering_guide_dialog_removed" time="0.000" /><testcase classname="tests.ui.test_engineering_guide_dialog" name="test_guide_buttons_in_window" time="0.939" /><testcase classname="tests.ui.test_pcb_workspace_ui" name="test_empty_check_in_background_and_revision_switch" time="1.355" /><testcase classname="tests.ui.test_product_lifecycle_ui" name="test_product_engineering_overview_panel_ui" time="0.378" /><testcase classname="tests.ui.test_product_lifecycle_ui" name="test_calculation_tab_and_direct_signoff" time="0.258" /><testcase classname="tests.ui.test_step3_wizards" name="test_tradeoff_comparator_dialog" time="0.006" /><testcase classname="tests.ui.test_step3_wizards" name="test_product_wizard_dialog" time="0.109" /><testcase classname="tests.ui.test_step4_magnetics" name="test_dowell_analysis_calculation" time="0.001" /><testcase classname="tests.ui.test_step4_magnetics" name="test_magnetic_core_sizing_and_loss_calculation" time="0.000" /><testcase classname="tests.ui.test_step4_magnetics" name="test_dowell_visualizer_dialog_ui" time="0.011" /><testcase classname="tests.ui.test_step4_magnetics" name="test_magnetic_comparator_dialog_ui" time="0.020" /><testcase classname="tests.ui.test_step4_magnetics" name="test_component_library_panel_magnetics_tab" time="0.084" /><testcase classname="tests.ui.test_step5_reporting" name="test_executive_dossier_html_generation" time="0.169" /><testcase classname="tests.ui.test_step5_reporting" name="test_revision_diff_dialog_ui" time="0.159" /><testcase classname="tests.ui.test_step5_reporting" name="test_product_lifecycle_diff_and_dossier_buttons" time="0.153" /><testcase classname="tests.ui.test_switchloss_ui" name="test_component_library_switchloss_tab" time="0.086" /><testcase classname="tests.ui.test_switchloss_ui" name="test_calculations_tab_switchloss_nav" time="0.104" /><testcase classname="tests.ui.test_v15_panels" name="test_generic_ui_to_job_evidence_report_without_product" time="1.097" /><testcase classname="tests.ui.test_waveform_viewer" name="test_waveform_viewer_widget" time="0.255" /><testcase classname="tests.ui.test_window" name="test_real_service_editor_roundtrip_and_restart" time="2.934" /><testcase classname="tests.ui.test_workflow_studio_ui" name="test_workflow_studio_ui_initialization" time="0.161" /><testcase classname="tests.ui.test_workflow_studio_ui" name="test_canvas_add_node_and_connect" time="0.165" /><testcase classname="tests.ui.test_workspace_panels" name="test_transformer_workspace_panel" time="0.674" /><testcase classname="tests.ui.test_workspace_panels" name="test_semiconductor_workspace_panel" time="0.093" /><testcase classname="tests.ui.test_workspace_panels" name="test_dcdc_workspace_panel" time="0.111" /><testcase classname="tests.ui.test_workspace_panels" name="test_window_integration_with_workspace_panels" time="1.033" /></testsuite></testsuites>

@@ -12,6 +12,7 @@ import json
 import os
 import shutil
 from datetime import datetime, timezone
+import math
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 from uuid import UUID, uuid4
@@ -679,6 +680,8 @@ class MendexEngineeringController:
                 values[name] = float(raw)
             except (TypeError, ValueError):
                 raise ValueError(f"Calculation input '{name}' must be numeric (got {raw!r}).")
+            if not math.isfinite(values[name]):
+                raise ValueError(f"Calculation input '{name}' must be a finite number (got {raw!r}).")
         if missing:
             raise ValueError(f"Missing required inputs for '{calc}' calculation: {', '.join(missing)}. No defaults are assumed.")
 

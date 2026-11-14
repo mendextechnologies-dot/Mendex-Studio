@@ -478,9 +478,9 @@ class ProductEngineeringOverviewPanel(QWidget):
         btn_drc.clicked.connect(self._run_kicad_drc)
         top_actions.addWidget(btn_drc)
 
-        btn_audit_iec = QPushButton("🛡️ Audit IEC 60664-1 Safety")
+        btn_audit_iec = QPushButton("Review Insulation Inputs")
         btn_audit_iec.setStyleSheet("font-weight: 700; color: #f9e2af; background-color: #3b2f15; border: 1px solid #7c5e10; padding: 4px 10px; border-radius: 4px;")
-        btn_audit_iec.setToolTip("Evaluate high-voltage insulation coordination, clearance, and creepage against IEC 60664-1 and IEC 61010-1.")
+        btn_audit_iec.setToolTip("Show missing insulation context; no qualified ruleset is installed.")
         btn_audit_iec.clicked.connect(self._audit_iec_safety)
         top_actions.addWidget(btn_audit_iec)
 
@@ -654,20 +654,24 @@ class ProductEngineeringOverviewPanel(QWidget):
             self.lbl_s1.setText("<b>PCB Outline Dimensions:</b> NOT_EVALUATED (No board layout)")
             self.lbl_s2.setText("<b>Layer Stackup:</b> NOT_EVALUATED")
 
+        self.lbl_s3.setText("<b>HV Creepage Clearance:</b> NOT_EVALUATED")
+        self.lbl_s4.setText("<b>Safety Compliance:</b> NOT_EVALUATED")
         if drc_report and drc_report.exists():
             try:
                 drc_data = json.loads(drc_report.read_text(encoding="utf-8"))
-                violations = drc_data.get("violations", [])
-                unconnected = drc_data.get("unconnected_items", [])
+                if not isinstance(drc_data, dict) or not isinstance(drc_data.get("violations"), list) or not isinstance(drc_data.get("unconnected_items"), list):
+                    raise ValueError("DRC report has no explicit violation/unconnected lists")
+                violations = drc_data["violations"]
+                unconnected = drc_data["unconnected_items"]
                 if not violations:
-                    self.lbl_drc_badge.setText(f"KiCad DRC: PASSED (0 Violations, {len(unconnected)} Unconnected)")
+                    self.lbl_drc_badge.setText(f"Recorded DRC: 0 Violations, {len(unconnected)} Unconnected (unqualified)")
                     self.lbl_drc_badge.setStyleSheet("background: #1b4332; color: #a6e3a1; font-weight: 700; padding: 4px 8px; border-radius: 4px;")
-                    self.lbl_s4.setText("<b>Safety Compliance:</b> IPC-2221B DRC Passed")
+                    self.lbl_s4.setText("<b>Safety Compliance:</b> NOT_EVALUATED (DRC is a separate check)")
                 else:
                     self.lbl_drc_badge.setText(f"KiCad DRC: FAILED ({len(violations)} Violations)")
                     self.lbl_drc_badge.setStyleSheet("background: #4a1525; color: #f38ba8; font-weight: 700; padding: 4px 8px; border-radius: 4px;")
-                    self.lbl_s4.setText("<b>Safety Compliance:</b> DRC Violations Detected")
-                self.lbl_s3.setText(f"<b>HV Clearance:</b> Verified via {drc_report.name}")
+                    self.lbl_s4.setText("<b>Safety Compliance:</b> NOT_EVALUATED (DRC issues recorded)")
+                self.lbl_s3.setText("<b>HV Creepage Clearance:</b> NOT_EVALUATED")
                 report_txt += f"DRC REPORT: {drc_report.name} (KiCad {drc_data.get('kicad_version', '10.0')})\n"
                 report_txt += f"  Status: {'PASSED (0 Violations)' if not violations else f'FAILED ({len(violations)} Violations)'}\n"
                 report_txt += f"  Unconnected Items: {len(unconnected)}\n"
@@ -704,11 +708,7 @@ class ProductEngineeringOverviewPanel(QWidget):
             self.lbl_erc_badge.setText("KiCad ERC: NOT_EVALUATED")
             self.lbl_erc_badge.setStyleSheet("background: #2b2b3b; color: #a6adc8; font-weight: 700; padding: 4px 8px; border-radius: 4px;")
 
-        report_txt += "Physical Design Guidelines:\n"
-        report_txt += " - Air Slot: 5.0 mm isolation distance routed across Layer 1 & 2\n"
-        report_txt += " - Primary Track Width: 0.8 mm (1A pulsed resonant current)\n"
-        report_txt += " - Secondary Track Width: 0.35 mm (1mA steady state, low thermal stress)\n"
-        report_txt += " - Dielectric breakdown capability: > 3.5 kV with Sylgard 184 potting\n"
+        report_txt += "Insulation safety: NOT_EVALUATED. Review actual geometry and qualified requirements separately from DRC.\n"
         self.txt_kicad_results.setText(report_txt)
         if pcb_count > 0:
             self._audit_iec_safety(quiet=True)
@@ -964,9 +964,9 @@ class ProductEngineeringOverviewPanel(QWidget):
         btn_open_bom.clicked.connect(self._open_bom_file)
         actions.addWidget(btn_open_bom)
 
-        btn_audit_derating = QPushButton("⚡ Audit Component Derating (IPC-9592B)")
+        btn_audit_derating = QPushButton("Compare Supplied Component Stress")
         btn_audit_derating.setStyleSheet("font-weight: 700; color: #a6e3a1; background-color: #1b4332; border: 1px solid #2d6a4f; padding: 4px 10px; border-radius: 4px;")
-        btn_audit_derating.setToolTip("Audit Bill of Materials component stress against industrial 80% derating rules (IPC-9592B / NAVSEA).")
+        btn_audit_derating.setToolTip("Compare explicit operating/rated values and supplied limit sources; engineering qualification remains NOT_EVALUATED.")
         btn_audit_derating.clicked.connect(self._audit_bom_derating)
         actions.addWidget(btn_audit_derating)
 
@@ -1008,136 +1008,62 @@ class ProductEngineeringOverviewPanel(QWidget):
         self._audit_bom_derating(quiet=True)
     def _audit_iec_safety(self, quiet: bool = False):
         if not self.current_revision_id:
-            if not quiet:
-                QMessageBox.warning(self, "No Project", "Please select an active project revision.")
             return
-
-        revision = self.service.get_revision(self.current_revision_id)
-        vout = float(getattr(revision.specification, "vout_v", 1000.0) or 1000.0) if revision.specification else 1000.0
-
         from mendex_core.intelligence.calculations import DeterministicCalculationService
-        calc = DeterministicCalculationService()
-        res = calc.calculate_iec_creepage_clearance(
-            working_voltage_rms=vout,
-            peak_voltage_v=vout,
-            pollution_degree=2,
-            material_group="IIIa",
-            insulation_type="reinforced",
-            slot_width_mm=5.0,
-        )
-
-        req_cl = res.outputs["required_clearance_mm"]
-        req_cr = res.outputs["required_creepage_mm"]
-        slot_w = res.outputs["effective_slot_width_mm"]
-        is_ok = bool(res.outputs["compliant"])
-
-        self.lbl_s3.setText(f"<b>HV Creepage Clearance:</b> {slot_w:.1f} mm Isolation Slot (Req: {req_cl/2.0:.1f} mm Basic / {req_cl:.1f} mm Reinforced)")
-        self.lbl_s4.setText(f"<b>Safety Compliance:</b> <span style='color: #a6e3a1; font-weight: 700;'>IEC 61010-1 / 60664-1 COMPLIANT ({'PASS' if is_ok else 'FAIL'})</span>")
-
+        # The legacy specification has no qualified insulation-coordination intake.
+        # In particular DC output magnitude is not a working RMS/impulse voltage.
+        assessment = DeterministicCalculationService().calculate_iec_creepage_clearance()
+        self.lbl_s3.setText("<b>HV Creepage Clearance:</b> NOT_EVALUATED (context and qualified ruleset required)")
+        self.lbl_s4.setText("<b>Safety Compliance:</b> NOT_EVALUATED")
         if not quiet:
-            msg = (
-                "=== IEC 60664-1 & IEC 61010-1 INSULATION AUDIT ===\n\n"
-                f"Working Voltage:           {vout:.1f} V RMS / {vout:.1f} V DC\n"
-                f"Pollution Degree:          2 (Indoor laboratory / office)\n"
-                f"PCB Material Group:        IIIa (Standard FR-4, CTI 175-400)\n"
-                f"Insulation Classification: Reinforced (Double Safety Barrier)\n\n"
-                f"Clearance (Air Gap Req):   {req_cl:.2f} mm (Basic: {req_cl/2.0:.2f} mm)\n"
-                f"Creepage (Surface Req):    {req_cr:.2f} mm (Unslotted FR-4)\n"
-                f"Milled Slot (Edge.Cuts):   {slot_w:.2f} mm Isolation Slot\n\n"
-                f"Status: {'PASSED — 100% Compliant' if is_ok else 'FAILED'}\n"
-                "Standard: IEC 60664-1:2020 & IEC 61010-1:2010 Section 6.7"
-            )
-            QMessageBox.information(self, "IEC High-Voltage Insulation Audit", msg)
+            QMessageBox.information(self, "Insulation coordination: NOT_EVALUATED",
+                "\n".join(assessment.blockers + ["Missing inputs: " + ", ".join(assessment.missing_inputs)]))
 
     def _audit_bom_derating(self, quiet: bool = False):
+        self.bom_table.setRowCount(0)
+        self.lbl_bom_summary.setText("BOM qualification: NOT_EVALUATED; explicit stress values, units and limit sources required")
         if not self.current_revision_id:
-            if not quiet:
-                QMessageBox.warning(self, "No Project", "Please select an active project revision.")
             return
-
         revision = self.service.get_revision(self.current_revision_id)
         ws_path = self.service.workspace_path(revision)
-        boms = list(ws_path.glob("**/*bom*.csv"))
-        if not boms or not boms[0].exists():
-            if not quiet:
-                QMessageBox.warning(self, "Not Found", "No BOM CSV found in project workspace.")
+        boms = sorted(ws_path.glob("**/*bom*.csv"), key=lambda path: path.stat().st_mtime_ns, reverse=True)
+        if not boms:
             return
-
-        vout = float(getattr(revision.specification, "vout_v", 1000.0) or 1000.0) if revision.specification else 1000.0
-
-        from mendex_core.intelligence.calculations import DeterministicCalculationService
-        calc = DeterministicCalculationService()
-
-        stress_profiles = {
-            "Q1": ("mosfet", 600.0, 1200.0, "1200 V / 36 A", "600 V pk"),
-            "T1": ("transformer", vout, 3000.0, "3000 V RMS", f"{vout:.0f} V DC"),
-            "D1": ("diode", vout, 1200.0, "1200 V / 2 A", f"{vout:.0f} V pk"),
-            "C1": ("capacitor", vout, 1200.0, "1200 V Film", f"{vout:.0f} V DC"),
-            "R_LOAD": ("resistor", 5.0, 10.0, "1500 V / 10 W", "5.0 W (1000V/50mA)"),
-            "MECH-1": ("mechanical", 62.0, 200.0, "200 °C / UL94 V-0", "62 °C max"),
-        }
-
         try:
-            with open(boms[0], "r", encoding="utf-8") as f:
-                reader = csv.DictReader(f)
-                rows = list(reader)
-
+            with boms[0].open(encoding="utf-8-sig", newline="") as handle:
+                rows = [{key.strip().lower(): value for key, value in row.items() if key is not None}
+                        for row in csv.DictReader(handle)]
             self.bom_table.setRowCount(len(rows))
-            pass_count = 0
-            for r_idx, r in enumerate(rows):
-                des = r.get("designator", "").strip()
-                pn = r.get("part_number", "").strip()
-                desc = r.get("description", "").strip()
-                pkg = r.get("package", "").strip()
-                qty = r.get("qty", "1").strip()
-
-                profile = stress_profiles.get(des, ("component", 1.0, 2.0, "Standard", "Normal"))
-                ctype, op_val, rated_val, rated_str, op_str = profile
-                der = calc.calculate_component_derating(ctype, op_val, rated_val)
-
-                ratio_pct = der.outputs["stress_ratio"] * 100.0
-                limit_pct = der.outputs["max_allowed_ratio"] * 100.0
-                is_pass = bool(der.outputs["compliant"])
-                if is_pass or ratio_pct <= 85.0:
-                    pass_count += 1
-                    status_str = f"✅ PASS ({limit_pct:.0f}% Rule)"
-                else:
-                    status_str = "⚠️ MARGINAL"
-
-                self.bom_table.setItem(r_idx, 0, QTableWidgetItem(str(r_idx + 1)))
-                self.bom_table.setItem(r_idx, 1, QTableWidgetItem(des))
-                self.bom_table.setItem(r_idx, 2, QTableWidgetItem(pn))
-                self.bom_table.setItem(r_idx, 3, QTableWidgetItem(desc))
-                self.bom_table.setItem(r_idx, 4, QTableWidgetItem(pkg))
-                self.bom_table.setItem(r_idx, 5, QTableWidgetItem(rated_str))
-                self.bom_table.setItem(r_idx, 6, QTableWidgetItem(op_str))
-                self.bom_table.setItem(r_idx, 7, QTableWidgetItem(f"{ratio_pct:.1f}%"))
-                st_item = QTableWidgetItem(status_str)
-                st_item.setForeground(Qt.green if "PASS" in status_str else Qt.yellow)
-                self.bom_table.setItem(r_idx, 8, st_item)
-                self.bom_table.setItem(r_idx, 9, QTableWidgetItem(qty))
-
-            self.lbl_bom_summary.setText(f"BOM Status: {pass_count} / {len(rows)} Components Evaluated · Industrial Derating (IPC-9592B) Qualified")
-            self.lbl_bom_summary.setStyleSheet("font-weight: 700; color: #a6e3a1; margin-left: 10px;")
-
+            from mendex_core.intelligence.calculations import DeterministicCalculationService
+            calc = DeterministicCalculationService()
+            for index, row in enumerate(rows):
+                verdict, ratio = "NOT_EVALUATED", "Unknown"
+                operating, rated = row.get("operating_value", ""), row.get("rated_value", "")
+                unit = row.get("unit", "").strip()
+                rated_unit = row.get("rated_unit", unit).strip()
+                operating_unit = row.get("operating_unit", unit).strip()
+                if operating and rated and rated_unit and rated_unit == operating_unit:
+                    try:
+                        result = calc.calculate_component_derating(
+                            row.get("component_type") or "supplied component", float(operating), float(rated),
+                            max_allowed_ratio=float(row["max_allowed_ratio"]) if row.get("max_allowed_ratio") else None,
+                            limit_source=row.get("limit_source") or None)
+                        ratio = f"{result.outputs['stress_ratio'] * 100:.1f}%"
+                        verdict = result.comparison_status
+                    except (ValueError, TypeError, OverflowError):
+                        verdict = "NOT_EVALUATED (invalid supplied values)"
+                cells = [str(index + 1), row.get("designator", "Unknown"),
+                         row.get("part_number") or row.get("mpn", "Unknown"), row.get("description", ""),
+                         row.get("package", "Unknown"), f"{rated} {rated_unit}" if rated else "Unknown",
+                         f"{operating} {operating_unit}" if operating else "Unknown", ratio, verdict,
+                         row.get("quantity") or row.get("qty", "Unknown")]
+                for column, value in enumerate(cells):
+                    self.bom_table.setItem(index, column, QTableWidgetItem(value))
             if not quiet:
-                msg = (
-                    "=== BILL OF MATERIALS ELECTRICAL DERATING AUDIT ===\n\n"
-                    f"Standard: IPC-9592B / NAVSEA Class 2/3 Power Conversion\n"
-                    f"Evaluated Components: {len(rows)}\n"
-                    f"Qualified Deratings:   {pass_count} / {len(rows)} (100% compliant)\n\n"
-                    "Component Stress Summary:\n"
-                    f" - Q1 (SiC MOSFET):   600 V pk on 1200 V rating -> 50.0% stress (Limit: 80%)\n"
-                    f" - T1 (Transformer):  1000 V on 3000 V isolation -> 33.3% stress\n"
-                    f" - D1 (SiC Diode):    1000 V on 1200 V rating -> 83.3% stress (Marginal/Safe)\n"
-                    f" - C1 (HV Film Cap):  1000 V on 1200 V rating -> 83.3% stress\n"
-                    f" - R_LOAD (Resistor): 5.0 W on 10 W rating -> 50.0% stress (Limit: 60%)\n"
-                    f" - MECH-1 (Bobbin):   62 °C on 200 °C PPS -> Robust thermal headroom\n\n"
-                    "Status: ALL CRITICAL COMPONENTS COMPLIANT"
-                )
-                QMessageBox.information(self, "BOM Derating Audit Complete", msg)
-        except Exception as e:
-            self.lbl_bom_summary.setText(f"Error auditing BOM: {e}")
+                QMessageBox.information(self, "BOM supplied-value comparison",
+                    "Engineering qualification NOT_EVALUATED. Comparisons use only supplied values and limit sources; no standard-derived limits or operating stresses are assumed.")
+        except (OSError, ValueError, csv.Error) as exc:
+            self.lbl_bom_summary.setText(f"BOM qualification NOT_EVALUATED: {exc}")
 
 
     # -------------------------------------------------------------------------

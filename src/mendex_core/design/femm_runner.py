@@ -6,13 +6,20 @@ solves field equations, extracts peak flux density (B_max), and checks core satu
 from __future__ import annotations
 
 import math
+import os
+import re
 import time
 import subprocess
+import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 from .ir import IRMagneticGeometry
+from .generators.femm_generator import FEMMMagneticGenerator
+from integrations.runners.safe_runner import SafeRunner
+
+_FEMM_PROCESS_LOCK = threading.Lock()
 
 
 class FEMMSimulationResult(BaseModel):
@@ -36,7 +43,7 @@ class FEMMSimulationResult(BaseModel):
 
 
 class FEMMRunner:
-    """Controls real FEMM 4.2 finite element solver via official filelink protocol."""
+    """Controls real FEMM 4.2 finite element solver via headless script execution."""
 
     DEFAULT_BIN = Path(r"C:\femm42\bin\femm.exe")
 
@@ -46,7 +53,7 @@ class FEMMRunner:
 
     @property
     def is_available(self) -> bool:
-        return self.exe_path.exists() and self.rootdir is not None
+        return self.exe_path.exists() and self.exe_path.is_file()
 
     def run_magnetic_analysis(
         self,
@@ -54,8 +61,26 @@ class FEMMRunner:
         work_dir: Path,
         saturation_limit_t: float = 0.49,
         timeout_s: float = 30.0,
+        peak_current_a: Optional[float] = None,
     ) -> FEMMSimulationResult:
         """Runs FEMM 4.2 finite element mesher and solver on magnetic core geometry."""
+        with _FEMM_PROCESS_LOCK:
+            return self._run_magnetic_analysis_locked(
+                geometry=geometry,
+                work_dir=work_dir,
+                saturation_limit_t=saturation_limit_t,
+                timeout_s=timeout_s,
+                peak_current_a=peak_current_a,
+            )
+
+    def _run_magnetic_analysis_locked(
+        self,
+        geometry: IRMagneticGeometry,
+        work_dir: Path,
+        saturation_limit_t: float = 0.49,
+        timeout_s: float = 30.0,
+        peak_current_a: Optional[float] = None,
+    ) -> FEMMSimulationResult:
         if not self.is_available:
             return FEMMSimulationResult(
                 success=False,
@@ -64,146 +89,90 @@ class FEMMRunner:
                 error_message=f"FEMM executable not found at {self.exe_path}",
             )
 
+        work_dir = Path(work_dir).resolve()
         work_dir.mkdir(parents=True, exist_ok=True)
         core_fem = work_dir / f"{geometry.core_type.lower()}_core.fem"
-        core_fem_str = str(core_fem).replace("\\", "/")
 
-        ifile = self.rootdir / "ifile.txt"
-        ofile = self.rootdir / "ofile.txt"
+        eff_current = peak_current_a if peak_current_a is not None else getattr(geometry, "peak_current_a", 0.0) or 0.0
 
-        # Clear any dangling pipe files
-        if ifile.exists():
-            try:
-                ifile.unlink()
-            except Exception:
-                pass
-        if ofile.exists():
-            try:
-                ofile.unlink()
-            except Exception:
-                pass
-
-        # Launch FEMM in filelink mode
-        proc = subprocess.Popen([str(self.exe_path), "-filelink", "-windowhide"])
-        time.sleep(0.4)
-
-        def _call_femm(cmd_str: str) -> str:
-            with open(ifile, "w", encoding="latin1") as f:
-                f.write(f"flput({cmd_str})")
-            
-            start_t = time.time()
-            while not ofile.exists():
-                time.sleep(0.01)
-                if time.time() - start_t > timeout_s:
-                    raise TimeoutError(f"FEMM filelink timed out waiting for response to: {cmd_str}")
-
-            with open(ofile, "r", encoding="latin1") as f:
-                resp = f.read().strip()
-            ofile.unlink()
-            return resp
-
-        try:
-            _call_femm("setcompatibilitymode(0)")
-            _call_femm("create(0)")
-            _call_femm('mi_probdef(100000, "millimeters", "planar", 1e-8, 20, 30)')
-
-            # Draw core outline
-            w = geometry.flange_od_mm / 2.0
-            h = geometry.bobbin_height_mm / 2.0
-            _call_femm(f"mi_drawrectangle(-{w}, -{h}, {w}, {h})")
-
-            # Materials
-            _call_femm('mi_addmaterial("Air", 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0)')
-            _call_femm(f'mi_addmaterial("{geometry.core_material}", 2200, 2200, 0, 0, 0, 0, 0, 1, 0, 0, 0)')
-            _call_femm("mi_addblocklabel(0, 0)")
-            _call_femm("mi_selectlabel(0, 0)")
-            _call_femm(f'mi_setblockprop("{geometry.core_material}", 1, 0, "<None>", 0, 0, 0)')
-            _call_femm("mi_clearselected()")
-
-            # Save and solve
-            _call_femm(f'mi_saveas("{core_fem_str}")')
-            _call_femm("mi_createmesh()")
-            _call_femm("mi_analyze(1)")
-            _call_femm("mi_loadsolution()")
-
-            # Point value calculation in core center
-            raw_pt = _call_femm("mo_getpointvalues(0, 0)")
-            
-            # Close documents
-            _call_femm("mo_close()")
-            _call_femm("mi_close()")
-            _call_femm("exit()")
-
-            # Parse flux density magnitude from solver output
-            b_measured = None
-            if raw_pt and raw_pt.strip():
-                try:
-                    import json
-                    nums = json.loads(raw_pt)
-                    if isinstance(nums, list) and len(nums) >= 3:
-                        b1 = float(nums[1])
-                        b2 = float(nums[2])
-                        b_calc = math.sqrt(b1**2 + b2**2)
-                        # A zero field means the model carries no excitation; never substitute an estimate.
-                        if b_calc > 1e-6:
-                            b_measured = b_calc
-                    elif isinstance(nums, (int, float)):
-                        b_measured = abs(float(nums))
-                except Exception:
-                    b_measured = None
-
-            if b_measured is None:
-                return FEMMSimulationResult(
-                    success=False,
-                    b_max_tesla=0.0,
-                    saturation_threshold_t=saturation_limit_t,
-                    is_saturated=False,
-                    core_fem_path=str(core_fem),
-                    solver_status="NOT_EVALUATED",
-                    summary_verdict="NOT_EVALUATED",
-                    error_message=(
-                        "No verified flux density: solver returned no or zero field. The generated model has no "
-                        "winding excitation or boundary conditions, so saturation was not evaluated."
-                    ),
-                )
-
-            is_sat = b_measured >= saturation_limit_t
+        # When there is no excitation current, solver field is physically zero.
+        # AGENTS.md rule: Unavailable checks remain NOT_EVALUATED. Never fabricate calculations.
+        if eff_current <= 0:
             return FEMMSimulationResult(
-                success=True,
-                b_max_tesla=b_measured,
+                success=False,
+                b_max_tesla=0.0,
                 saturation_threshold_t=saturation_limit_t,
-                is_saturated=is_sat,
+                is_saturated=False,
                 core_fem_path=str(core_fem),
-                solver_status="SOLVED_CONVERGED",
-                summary_verdict="PASSED" if not is_sat else "FAILED (SATURATED)",
+                solver_status="NOT_EVALUATED",
+                summary_verdict="NOT_EVALUATED",
+                error_message=(
+                    "No verified flux density: solver returned no or zero field. The generated model has no "
+                    "winding excitation or boundary conditions, so saturation was not evaluated."
+                ),
             )
 
-        except Exception as e:
+        # Excited model path: generate complete FEA model with winding excitation and A=0 Dirichlet boundary
+        geom_copy = geometry.model_copy(update={"peak_current_a": eff_current})
+        lua_script = FEMMMagneticGenerator.generate_lua_script(geom_copy, output_ans_path=str(work_dir / "femm_sim.ans"))
+        lua_file = work_dir / "femm_sim.lua"
+        lua_file.write_text(lua_script, encoding="utf-8")
+
+        runner = SafeRunner()
+        cmd = [str(self.exe_path), "-windowhide", f"-lua-script={lua_file.resolve()}"]
+        start_t = time.perf_counter()
+        exec_out = runner.run(cmd, cwd=work_dir, timeout_s=int(timeout_s))
+        elapsed = time.perf_counter() - start_t
+
+        if exec_out.exit_code != 0:
             return FEMMSimulationResult(
                 success=False,
                 solver_status="SOLVER_ERROR",
                 summary_verdict="FAILED",
-                error_message=str(e),
+                execution_time_s=elapsed,
+                error_message=f"FEMM solver exited with code {exec_out.exit_code}: {exec_out.stderr}",
             )
-        finally:
-            try:
-                proc.terminate()
-            except Exception:
-                pass
-            if ifile.exists():
-                try:
-                    ifile.unlink()
-                except Exception:
-                    pass
-            if ofile.exists():
-                try:
-                    ofile.unlink()
-                except Exception:
-                    pass
+
+        results_txt = work_dir / "results.txt"
+        b_max = None
+        if results_txt.exists():
+            for line in results_txt.read_text(encoding="utf-8").splitlines():
+                if "=" in line:
+                    k, v = line.strip().split("=", 1)
+                    if k.strip().lower() in ("peak_b_pk_tesla", "b_max", "b_max_t", "b_max_tesla"):
+                        try:
+                            b_max = float(v.strip())
+                        except ValueError:
+                            pass
+
+        if b_max is None or b_max <= 1e-6:
+            return FEMMSimulationResult(
+                success=False,
+                b_max_tesla=0.0,
+                saturation_threshold_t=saturation_limit_t,
+                is_saturated=False,
+                core_fem_path=str(work_dir / "temp_mag.fem"),
+                solver_status="NOT_EVALUATED",
+                summary_verdict="NOT_EVALUATED",
+                execution_time_s=elapsed,
+                error_message="No verified flux density extracted from solver results.",
+            )
+
+        is_sat = b_max >= saturation_limit_t
+        return FEMMSimulationResult(
+            success=True,
+            b_max_tesla=b_max,
+            saturation_threshold_t=saturation_limit_t,
+            is_saturated=is_sat,
+            core_fem_path=str(work_dir / "temp_mag.fem"),
+            solver_status="SOLVED_CONVERGED",
+            summary_verdict="PASSED" if not is_sat else "FAILED (SATURATED)",
+            execution_time_s=elapsed,
+        )
 
     @classmethod
     def run_script(cls, script_path: Path, working_dir: Optional[Path] = None) -> FEMMSimulationResult:
-        """Executes a Lua script headlessly in FEMM."""
+        """Executes a Lua script headlessly in FEMM and extracts metrics from results."""
         runner = cls()
         script = Path(script_path).resolve()
         if not script.exists():
@@ -213,25 +182,55 @@ class FEMMRunner:
                 summary_verdict="NOT_EVALUATED",
                 error_message=f"Script file '{script}' not found.",
             )
-        wdir = working_dir or script.parent
+        wdir = (working_dir or script.parent).resolve()
         executable = str(runner.exe_path) if runner.exe_path.exists() else "femm.exe"
         cmd = [executable, "-windowhide", f"-lua-script={script}"]
+        
+        safe_runner = SafeRunner()
         start = time.perf_counter()
-        try:
-            res = subprocess.run(cmd, cwd=str(wdir), capture_output=True, text=True, timeout=60)
-            elapsed = time.perf_counter() - start
-            # Exit code 0 only proves the script ran; no field quantity is extracted here.
-            return FEMMSimulationResult(
-                success=(res.returncode == 0),
-                solver_status="SCRIPT_COMPLETED" if res.returncode == 0 else "SOLVER_ERROR",
-                summary_verdict="NOT_EVALUATED" if res.returncode == 0 else "FAILED",
-                execution_time_s=elapsed,
-                error_message=res.stderr if res.returncode != 0 else None,
-            )
-        except Exception as exc:
+        exec_out = safe_runner.run(cmd, cwd=wdir, timeout_s=60)
+        elapsed = time.perf_counter() - start
+
+        if exec_out.exit_code != 0:
             return FEMMSimulationResult(
                 success=False,
                 solver_status="SOLVER_ERROR",
-                summary_verdict="NOT_EVALUATED",
-                error_message=str(exc),
+                summary_verdict="FAILED",
+                execution_time_s=elapsed,
+                error_message=exec_out.stderr or f"Exit code {exec_out.exit_code}",
             )
+
+        # Check if results.txt or femm_results.txt was created
+        b_max = None
+        for r_name in ("results.txt", "femm_results.txt"):
+            rf = wdir / r_name
+            if rf.exists():
+                for line in rf.read_text(encoding="utf-8").splitlines():
+                    if "=" in line:
+                        k, v = line.strip().split("=", 1)
+                        if k.strip().lower() in ("peak_b_pk_tesla", "b_max", "b_max_t", "b_max_tesla"):
+                            try:
+                                b_max = float(v.strip())
+                            except ValueError:
+                                pass
+                if b_max is not None:
+                    break
+
+        if b_max is not None and b_max > 1e-6:
+            is_sat = b_max >= 0.49
+            return FEMMSimulationResult(
+                success=True,
+                b_max_tesla=b_max,
+                is_saturated=is_sat,
+                solver_status="SOLVED_CONVERGED",
+                summary_verdict="PASSED" if not is_sat else "FAILED (SATURATED)",
+                execution_time_s=elapsed,
+            )
+
+        # Script completed cleanly but no field output recorded
+        return FEMMSimulationResult(
+            success=True,
+            solver_status="SCRIPT_COMPLETED",
+            summary_verdict="NOT_EVALUATED",
+            execution_time_s=elapsed,
+        )

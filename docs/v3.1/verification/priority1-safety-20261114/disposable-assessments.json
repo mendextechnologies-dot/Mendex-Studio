@@ -1,0 +1,144 @@
+{
+  "insulation": {
+    "calculation_id": "eaf24ce9-d8e6-4717-8fb0-352a234bb3f2",
+    "formula_id": "SAFETY-INSULATION-INTAKE-02",
+    "name": "Insulation coordination context (not evaluated)",
+    "inputs": {
+      "working_voltage_rms": 1000.0,
+      "peak_voltage_v": 1500.0,
+      "slot_width_mm": 5.0
+    },
+    "input_units": {
+      "working_voltage_rms": "V",
+      "peak_voltage_v": "V",
+      "slot_width_mm": "mm"
+    },
+    "outputs": {},
+    "output_units": {},
+    "origin": "calculated",
+    "verified": false,
+    "executed_at": "2026-11-14T05:39:10.870105+00:00",
+    "provenance": "mendex_core.intelligence.calculations::calculate_iec_creepage_clearance",
+    "reference_source": "Applicability background only: https://webstore.iec.ch/en/publication/59671 ; https://www.ti.com/video/6146024211001",
+    "notes": [
+      "NOT_EVALUATED. No qualified rule tables, measurements or engineering approval are supplied.",
+      "DC output voltage is not implicitly converted into working RMS, peak or impulse voltage."
+    ],
+    "evaluation_status": "NOT_EVALUATED",
+    "ruleset_status": "UNAVAILABLE",
+    "comparison_status": "NOT_EVALUATED",
+    "context": {
+      "working_voltage_rms": 1000.0,
+      "peak_voltage_v": 1500.0,
+      "slot_width_mm": 5.0,
+      "altitude_m": null,
+      "rated_impulse_voltage_v": null,
+      "working_frequency_hz": null,
+      "pollution_degree": 3,
+      "material_group": "IIIa",
+      "insulation_type": "reinforced",
+      "standard_edition": null
+    },
+    "missing_inputs": [
+      "altitude_m",
+      "rated_impulse_voltage_v",
+      "working_frequency_hz",
+      "standard_edition",
+      "qualified_ruleset",
+      "measured_clearance_and_creepage_paths"
+    ],
+    "blockers": [
+      "No qualified standard-specific ruleset is installed; no required distances or compliance verdict can be calculated.",
+      "A slot width or a PCB DRC result alone does not establish insulation safety."
+    ]
+  },
+  "derating_without_limit": {
+    "calculation_id": "9e94fb4c-0e1f-48ee-86d0-4c9ffb8def99",
+    "formula_id": "ARITHMETIC-DERATING-02",
+    "name": "Supplied component stress comparison",
+    "inputs": {
+      "operating_val": 600.0,
+      "rated_val": 1200.0
+    },
+    "input_units": {
+      "operating_val": "same supplied unit",
+      "rated_val": "same supplied unit"
+    },
+    "outputs": {
+      "stress_ratio": 0.5,
+      "rating_headroom_pct": 50.0
+    },
+    "output_units": {
+      "stress_ratio": "ratio",
+      "rating_headroom_pct": "%"
+    },
+    "origin": "calculated",
+    "verified": false,
+    "executed_at": "2026-11-14T05:39:10.870219+00:00",
+    "provenance": "mendex_core.intelligence.calculations::calculate_component_derating",
+    "reference_source": "No supplied limit source",
+    "notes": [
+      "Engineering qualification NOT_EVALUATED; no standards compliance, temperature applicability or operating/rated unit equivalence is independently verified."
+    ],
+    "evaluation_status": "NOT_EVALUATED",
+    "ruleset_status": "UNAVAILABLE",
+    "comparison_status": "NOT_EVALUATED",
+    "context": {
+      "component_type": "mosfet",
+      "standard": null,
+      "max_allowed_ratio": null,
+      "limit_source": null
+    },
+    "missing_inputs": [
+      "max_allowed_ratio",
+      "limit_source"
+    ],
+    "blockers": [
+      "No qualified derating standard/profile is installed. A supplied-limit comparison is arithmetic only."
+    ]
+  },
+  "supplied_limit_exceeded": {
+    "calculation_id": "89359104-a5a9-4ab5-bede-7fef983402d1",
+    "formula_id": "ARITHMETIC-DERATING-02",
+    "name": "Supplied component stress comparison",
+    "inputs": {
+      "operating_val": 8.0,
+      "rated_val": 10.0
+    },
+    "input_units": {
+      "operating_val": "same supplied unit",
+      "rated_val": "same supplied unit"
+    },
+    "outputs": {
+      "stress_ratio": 0.8,
+      "rating_headroom_pct": 19.999999999999996,
+      "max_allowed_ratio": 0.6
+    },
+    "output_units": {
+      "stress_ratio": "ratio",
+      "rating_headroom_pct": "%",
+      "max_allowed_ratio": "ratio"
+    },
+    "origin": "calculated",
+    "verified": false,
+    "executed_at": "2026-11-14T05:39:10.870251+00:00",
+    "provenance": "mendex_core.intelligence.calculations::calculate_component_derating",
+    "reference_source": "Software fixture comparison; not a standards limit",
+    "notes": [
+      "Engineering qualification NOT_EVALUATED; no standards compliance, temperature applicability or operating/rated unit equivalence is independently verified."
+    ],
+    "evaluation_status": "NOT_EVALUATED",
+    "ruleset_status": "UNAVAILABLE",
+    "comparison_status": "EXCEEDS_SUPPLIED_LIMIT",
+    "context": {
+      "component_type": "resistor",
+      "standard": null,
+      "max_allowed_ratio": 0.6,
+      "limit_source": "Software fixture comparison; not a standards limit"
+    },
+    "missing_inputs": [],
+    "blockers": [
+      "No qualified derating standard/profile is installed. A supplied-limit comparison is arithmetic only."
+    ]
+  }
+}

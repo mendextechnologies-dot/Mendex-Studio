@@ -262,6 +262,8 @@ class WorkflowExecutionEngine:
         )
 
         if self.storage:
+            if not self.storage.get_workflow(workflow.id):
+                self.storage.save_workflow(workflow)
             self.storage.record_run(exec_record)
 
         return exec_record

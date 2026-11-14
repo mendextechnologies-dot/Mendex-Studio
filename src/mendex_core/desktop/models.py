@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional, Optional
 from uuid import UUID
 
 from pydantic import Field, model_validator
@@ -60,6 +60,20 @@ class BOMQuery(Model):
     revision_id: UUID
 
 
+class CADPreviewQuery(Model):
+    revision_id: UUID
+    kind: Literal["pcb", "schematic", "3d"] = "pcb" 
+
+
+class AutoRouteQuery(Model):
+    revision_id: UUID
+    pour_ground: bool = True
+    ground_net: str = "GND"
+    ripup: str = "all"
+    default_track: float = 0.4
+    power_track: float = 1.2
+
+
 class ReviewRequestQuery(Model):
     revision_id: UUID
     stage_id: str = "requirements"
@@ -82,6 +96,10 @@ class ReviewDecisionQuery(Model):
     expected_requirements_digest: str
     expected_specification_hash: str
     idempotency_key: str = Field(min_length=1, max_length=128)
+
+
+class BackupQuery(Model):
+    destination: Optional[str] = None
 
 
 class BridgeRequest(Model):

@@ -1,0 +1,5 @@
+startup 1.287s
+overview median 470 ms max 1764 ms
+projects median 1265 ms max 1582 ms
+reports median 2088 ms max 2164 ms
+tools median 534 ms max 599 ms

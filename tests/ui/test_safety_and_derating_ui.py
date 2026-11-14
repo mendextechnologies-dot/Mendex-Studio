@@ -1,73 +1,74 @@
+"""Safety presentation must not manufacture measurements or qualification."""
 import os
-os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
-
-from pathlib import Path
+import json
+import pytest
+os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 from PySide6.QtWidgets import QApplication
 from mendex_core.service import StudioService
-from mendex_core.intelligence.calculations import DeterministicCalculationService
 from mendex_ui.product_lifecycle_panel import ProductEngineeringOverviewPanel
 
-
-def test_deterministic_safety_and_derating_math():
-    calc = DeterministicCalculationService()
-
-    # 1. IEC 60664-1 & 61010-1 Clearance and Creepage
-    res = calc.calculate_iec_creepage_clearance(
-        working_voltage_rms=1000.0,
-        peak_voltage_v=1000.0,
-        pollution_degree=2,
-        material_group="IIIa",
-        insulation_type="reinforced",
-        slot_width_mm=5.0,
-    )
-    assert res.outputs["required_clearance_mm"] == 5.0  # 2 * 2.5mm
-    assert res.outputs["required_creepage_mm"] == 20.0  # 2 * 10mm
-    assert res.outputs["compliant"] == 1.0
-
-    # Test basic insulation with insufficient slot
-    res_fail = calc.calculate_iec_creepage_clearance(
-        working_voltage_rms=1000.0,
-        peak_voltage_v=1000.0,
-        pollution_degree=2,
-        material_group="IIIa",
-        insulation_type="reinforced",
-        slot_width_mm=2.0,  # Less than required 5.0mm
-    )
-    assert res_fail.outputs["compliant"] == 0.0
-
-    # 2. Component Derating (IPC-9592B)
-    res_mosfet = calc.calculate_component_derating("mosfet", 600.0, 1200.0)
-    assert res_mosfet.outputs["stress_ratio"] == 0.50
-    assert res_mosfet.outputs["compliant"] == 1.0
-
-    res_resistor = calc.calculate_component_derating("resistor", 8.0, 10.0)
-    assert res_resistor.outputs["stress_ratio"] == 0.80
-    assert res_resistor.outputs["compliant"] == 0.0  # Exceeds 60% resistor limit
+_KEEP_ALIVE = []
 
 
-def test_ui_pcb_safety_and_bom_derating():
+@pytest.mark.parametrize('report', [{}, {'violations': [], 'unconnected_items': []}])
+def test_drc_file_cannot_grant_insulation_compliance(tmp_path, report):
     app = QApplication.instance() or QApplication([])
-    service = StudioService(Path(r"C:\Mendex studio"))
+    service = StudioService(tmp_path)
+    product = service.create_product('DRC', 'Separate software check', 'pcb', 'Fixture engineer')
+    revision = service.get_revision(product.active_revision_id)
+    workspace = service.workspace_path(revision)
+    (workspace / 'pcb/fixture.kicad_pcb').write_text('(kicad_pcb)', encoding='utf-8')
+    (workspace / 'pcb/fixture_drc.json').write_text(json.dumps(report), encoding='utf-8')
     panel = ProductEngineeringOverviewPanel(service)
+    _KEEP_ALIVE.extend([app, panel])
+    panel.set_product(product.product_id, product.active_revision_id)
+    assert 'NOT_EVALUATED' in panel.lbl_s3.text()
+    assert 'NOT_EVALUATED' in panel.lbl_s4.text()
+    assert 'COMPLIANT' not in panel.lbl_s4.text()
+    if not report:
+        assert 'PASSED' not in panel.lbl_drc_badge.text()
 
-    # Set to SV-1000
-    prods = service.list_products()
-    if prods:
-        p = prods[0]
-        panel.set_product(p.product_id, p.active_revision_id)
-        app.processEvents()
+def test_safety_ui_without_context_is_not_evaluated(tmp_path):
+    app = QApplication.instance() or QApplication([])
+    service = StudioService(tmp_path)
+    product = service.create_product('UNQUALIFIED', 'No insulation intake', 'pcb', 'Fixture engineer')
+    panel = ProductEngineeringOverviewPanel(service)
+    _KEEP_ALIVE.extend([app, panel])
+    panel.set_product(product.product_id, product.active_revision_id)
+    panel._audit_iec_safety(quiet=True)
+    assert 'NOT_EVALUATED' in panel.lbl_s3.text()
+    assert 'NOT_EVALUATED' in panel.lbl_s4.text()
+    assert '5.0 mm' not in panel.lbl_s3.text()
+    assert 'COMPLIANT' not in panel.lbl_s4.text()
 
-        # Audit IEC safety
-        panel._audit_iec_safety(quiet=True)
-        assert "5.0 mm" in panel.lbl_s3.text()
-        assert "COMPLIANT" in panel.lbl_s4.text()
 
-        # Audit BOM derating
-        panel._audit_bom_derating(quiet=True)
-        assert panel.bom_table.rowCount() == 6
-        assert "Industrial Derating" in panel.lbl_bom_summary.text()
-        assert panel.bom_table.columnCount() == 10
+def test_bom_rows_do_not_receive_guessed_stresses_or_passes(tmp_path):
+    app = QApplication.instance() or QApplication([])
+    service = StudioService(tmp_path)
+    product = service.create_product('BOM', 'Unknown stresses', 'pcb', 'Fixture engineer')
+    revision = service.get_revision(product.active_revision_id)
+    source = service.workspace_path(revision) / 'bom.csv'
+    source.write_text('designator,part_number,description,qty\nQ1,Unknown,No supplied stress,1\n', encoding='utf-8')
+    panel = ProductEngineeringOverviewPanel(service)
+    _KEEP_ALIVE.extend([app, panel])
+    panel.set_product(product.product_id, product.active_revision_id)
+    panel._audit_bom_derating(quiet=True)
+    assert panel.bom_table.rowCount() == 1
+    assert panel.bom_table.item(0, 7).text() == 'Unknown'
+    assert panel.bom_table.item(0, 8).text() == 'NOT_EVALUATED'
+    assert 'NOT_EVALUATED' in panel.lbl_bom_summary.text()
 
-        # Check Q1 and R_LOAD status
-        q1_status = panel.bom_table.item(0, 8).text()
-        assert "PASS" in q1_status
+
+def test_explicit_bom_comparison_never_overrides_exceeded_limit(tmp_path):
+    app = QApplication.instance() or QApplication([])
+    service = StudioService(tmp_path)
+    product = service.create_product('LIMIT', 'Supplied comparison only', 'pcb', 'Fixture engineer')
+    source = service.workspace_path(service.get_revision(product.active_revision_id)) / 'bom.csv'
+    source.write_text('designator,operating_value,rated_value,unit,max_allowed_ratio,limit_source\nR1,8,10,W,0.6,Software fixture criterion\nR2,1,2,W,,\n', encoding='utf-8')
+    panel = ProductEngineeringOverviewPanel(service)
+    _KEEP_ALIVE.extend([app, panel])
+    panel.set_product(product.product_id, product.active_revision_id)
+    panel._audit_bom_derating(quiet=True)
+    assert panel.bom_table.item(0, 8).text() == 'EXCEEDS_SUPPLIED_LIMIT'
+    assert panel.bom_table.item(1, 8).text() == 'NOT_EVALUATED'
+    assert 'NOT_EVALUATED' in panel.lbl_bom_summary.text()

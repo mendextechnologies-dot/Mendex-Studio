@@ -227,13 +227,47 @@ def test_design_synthesis_with_invalid_characters_and_newlines(tmp_path: Path):
     assert len(artifacts) >= 3
 
     # Check generated files exist on disk
-    sch_files = list(ws_dir.glob("**/*.kicad_sch"))
+    sch_files = [tmp_path / a.path for a in artifacts if a.path.endswith(".kicad_sch")]
     assert len(sch_files) == 1
     assert "\n" not in str(sch_files[0])
     assert "→" not in str(sch_files[0])
     assert sch_files[0].exists()
 
-    pcb_files = list(ws_dir.glob("**/*.kicad_pcb"))
+    pcb_files = [tmp_path / a.path for a in artifacts if a.path.endswith(".kicad_pcb")]
     assert len(pcb_files) == 1
     assert pcb_files[0].exists()
 
+
+
+def test_kicad_pcb_generator_copper_track_routing(tmp_path: Path):
+    """Verify KiCadPCBGenerator emits 45-degree chamfered copper tracks when route_tracks=True."""
+    from mendex_core.design.generators.kicad_pcb_generator import KiCadPCBGenerator
+    from mendex_core.design.ir import DesignIntermediateRepresentation, IRComponent, ComponentType, IRNet, IRNetPinRef
+
+    ir = DesignIntermediateRepresentation(
+        design_id="test_routing",
+        name="Test Routed PCB",
+        components=[
+            IRComponent(id="J1", name="Terminal", designator="J1", type=ComponentType.CONNECTOR, footprint="TerminalBlock:TerminalBlock_bornier-2_P5.08mm"),
+            IRComponent(id="Q1", name="MOSFET", designator="Q1", type=ComponentType.SWITCH_SIC, footprint="Package_TO_SOT_SMD:TO-252-2"),
+        ],
+        nets=[
+            IRNet(name="VIN_PWR", is_power=True, connections=[
+                IRNetPinRef(component_id="J1", pin_id="1"),
+                IRNetPinRef(component_id="Q1", pin_id="2"),
+            ]),
+            IRNet(name="GND_RET", is_ground=True, connections=[
+                IRNetPinRef(component_id="J1", pin_id="2"),
+                IRNetPinRef(component_id="Q1", pin_id="3"),
+            ]),
+        ],
+    )
+    pcb_file = tmp_path / "routed.kicad_pcb"
+    KiCadPCBGenerator.export_pcb(ir, pcb_file, route_tracks=True)
+    assert pcb_file.exists()
+    content = pcb_file.read_text(encoding="utf-8")
+    assert "(segment " in content
+    assert 'layer "F.Cu"' in content
+    assert 'layer "B.Cu"' in content
+    assert 'width 1.00' in content  # Power net width
+    assert "Routed Hardware Design" in content

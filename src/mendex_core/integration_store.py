@@ -18,6 +18,8 @@ def migrate(db):
 def migrate_v5(db):
     """Additive schema v5 for product-independent workspaces and engineering activities."""
     cur = db.cursor()
+    if cur.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='activities'").fetchone():
+        return
     # Check integration_workspaces columns
     cols = [r[1] for r in cur.execute("PRAGMA table_info(integration_workspaces)").fetchall()]
     
@@ -56,4 +58,4 @@ def migrate_v5(db):
             db.execute("ALTER TABLE integration_jobs ADD COLUMN activity_id TEXT REFERENCES activities(id)")
             db.execute("CREATE INDEX IF NOT EXISTS idx_job_activity ON integration_jobs(activity_id)")
 
-        # db.execute("PRAGMA user_version=5")
+

@@ -1,0 +1,20 @@
+import sys,json,os,time,pathlib; sys.path.insert(0,r"C:\Mendex studio\src")
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"e2e.py")).read().split("# 1\n")[0])
+st=json.load(open(os.path.join(ROOT,"..","e2e_state.json"))); pid=st["pid"]; studio=srv.controller.service
+r2=str(studio.get_product(__import__("uuid").UUID(pid)).active_revision_id)
+studio.engineering_lifecycle.enroll({"revision_id":r2,"source":"Audit","reason":"E2E R002","idempotency_key":"enr2"})
+studio.engineering_lifecycle.apply({"revision_id":r2,"source":"Audit","reason":"start","idempotency_key":"st2","action":"start","stage_id":"project_initialization"})
+base={"revision_id":r2,"stage_id":"project_initialization","source":"Audit","reason":"E2E","expected_input_hash":specification_hash(studio.get_revision(r2).specification)}
+raw=pathlib.Path(ROOT)/st["sim"]["raw_file"]
+e,ev=mcp("record_validation_evidence",{**base,"idempotency_key":"val2","evidence_path":str(raw),"expected_evidence_sha256":file_hash(raw),
+  "check":{"check_id":"vout_sim","status":"pass","reviewer":"Audit (unauthenticated)","notes":"RC netlist software check","evidence_kind":"SIMULATED","measured_value":1.601,"minimum":0,"maximum":5,"unit":"V"}})
+log("10 (retry on draft R002) record_validation_evidence","PASS" if not e else "FAIL",json.dumps(ev)[:700])
+c,rep=cli("engineering","generate_revision_report",req={**base,"idempotency_key":"rep2"})
+log("14 (retry on R002) generate_revision_report","PASS" if c==0 else "FAIL",json.dumps(rep)[:700])
+b=Bridge(ROOT); d,dt=b.call("reports"); rows=d.get("result",[])
+rr=rep.get("report",{}).get("report_id") if isinstance(rep,dict) else None
+x,dt2=b.call("export_report",{"report_id":rr,"idempotency_key":"exp-ui-2"}) if rr else ({},0)
+p=(x or {}).get("result",{}).get("path")
+pj,_=b.call("project",{"project_id":pid})
+log("15 (retry) report via desktop API","PASS" if rows and p and os.path.isfile(os.path.join(ROOT,p)) else "FAIL",f"reports rows={len(rows)} ({dt*1000:.1f} ms) first={json.dumps(rows[:1])[:500]}\nexport_report ({dt2*1000:.1f} ms) -> {json.dumps(x)[:400]}\nproject(active R002) now: {'result' in pj}; validation={json.dumps(pj.get('result',{}).get('validation'))[:300]}")
+b.close()

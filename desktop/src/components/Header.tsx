@@ -76,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
           }}
         >
           <CheckCircle2 size={13} />
-          <span>Auto-Sync Active (2.5s)</span>
+          <span>Refresh polling (4s)</span>
         </div>
 
         {/* Manual Refresh Button */}

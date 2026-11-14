@@ -14,20 +14,21 @@ export interface ProjectRecord {
 
 export interface SimulationJob {
   job_id: string;
-  project_id?: string;
-  project_name?: string;
-  revision_id?: string;
+  project_id?: string | null;
+  project_name?: string | null;
+  revision_id?: string | null;
   tool_id: string;
   operation: string;
-  status: 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED';
+  status: 'QUEUED' | 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED' | 'TIMED_OUT' | 'NOT_SUPPORTED';
+  stale?: boolean | null;
   created_at: string;
-  started_at?: string;
-  ended_at?: string;
-  exit_code?: number;
+  started_at?: string | null;
+  ended_at?: string | null;
+  exit_code?: number | null;
   progress: number;
   evidence_available: boolean;
   workspace_id: string;
-  provenance: Record<string, any>;
+  provenance: Record<string, any> | string;
   engineering_status: string;
 }
 

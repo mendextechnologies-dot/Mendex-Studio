@@ -1,0 +1,58 @@
+import sys,json,os,subprocess,time,hashlib; sys.path.insert(0,r"C:\Mendex studio\src")
+from bridge import Bridge, PY, REPO
+ROOT=sys.argv[1]; os.makedirs(ROOT,exist_ok=True)
+from mendex_core.mcp.server import MendexMCPServer
+from mendex_core.evidence import specification_hash
+from mendex_core.engineering_lifecycle.storage import file_hash
+R={}
+def log(step,status,ev): R[step]=(status,ev); print(f"## {step}: {status}\n{ev}\n",flush=True)
+srv=MendexMCPServer(ROOT)
+def mcp(name,args):
+    r=srv.handle_request({"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":name,"arguments":args}})["result"]
+    t=r["content"][0]["text"]
+    try: return r["isError"], json.loads(t)
+    except Exception: return r["isError"], {"raw":t[:600]}
+def cli(*a,req=None):
+    env=dict(os.environ,PYTHONPATH=REPO+r"\src")
+    args=[PY,"-m","mendex_core.cli","--root",ROOT,*a]
+    if req is not None:
+        p=os.path.join(ROOT,"..",f"req-{time.time_ns()}.json"); open(p,"w").write(json.dumps(req)); args.append(p)
+    c=subprocess.run(args,capture_output=True,text=True,cwd=REPO,env=env,timeout=600); 
+    try: return c.returncode,json.loads(c.stdout or c.stderr)
+    except Exception: return c.returncode,(c.stdout+c.stderr)[-800:]
+# 1
+e,p=mcp("create_project",{"name":"Audit Generic Buck 12V-5V","code":"AUDE2E","owner":"Audit"}); log("1 create project (MCP create_project)","PASS" if not e else "FAIL",json.dumps(p)[:400])
+pid=p.get("project_id"); rid=p.get("revision_id")
+studio=srv.controller.service
+# 3
+e,s=mcp("save_project_specification",{"project_id":pid,"spec_data":{"vin_min_v":10,"vin_nom_v":12,"vin_max_v":14,"vout_v":5,"iout_a":2,"switching_frequency_hz":200000,"topology":"buck","source":"Audit"}})
+log("3a specs via MCP save_project_specification","PASS" if not e else "FAIL",json.dumps(s)[:500])
+# 2
+try:
+    a=studio.engineering_lifecycle.enroll({"revision_id":rid,"source":"Audit","reason":"E2E","idempotency_key":"enr"})
+    b=studio.engineering_lifecycle.apply({"revision_id":rid,"source":"Audit","reason":"start","idempotency_key":"st","action":"start","stage_id":"project_initialization"})
+    c,show=cli("lifecycle","show",rid); log("2 init lifecycle (core enroll+start; CLI lifecycle show)","PASS" if c==0 else "FAIL",json.dumps(show)[:500])
+except Exception as x: log("2 init lifecycle","FAIL",repr(x))
+base={"revision_id":rid,"stage_id":"project_initialization","source":"Audit","reason":"E2E","expected_input_hash":specification_hash(studio.get_revision(rid).specification)}
+base["expected_input_hash"]=specification_hash(studio.get_revision(rid).specification)
+c,rq=cli("engineering","record_requirements",req={**base,"idempotency_key":"rq1","requirements":[{"id":"vout","discipline":"electrical","description":"Vout 5 V +/-2% at 2 A","source":"Audit"}]})
+log("3b requirements via CLI record_requirements","PASS" if c==0 else "FAIL",json.dumps(rq)[:400])
+# 4
+e,cr=mcp("record_calculation_run",{**base,"idempotency_key":"calc1","calculation":"losses","assumptions":["Audit synthetic MOSFET values"],"parameters":{"part_number":"AUDIT-FET","r_ds_on_ohm":0.02,"i_rms_a":2,"duty_cycle":0.42,"e_on_j":1e-6,"e_off_j":2e-6,"frequency_hz":200000}})
+log("4 calculation via MCP record_calculation_run","PASS" if not e and cr.get("status")=="SUCCEEDED" else "FAIL",json.dumps(cr)[:700])
+# 5 persist
+c,lc=cli("engineering","list_calculation_runs",req={"revision_id":rid})
+log("5 persisted (read back from a separate CLI process)","PASS" if c==0 and lc.get("records") else "FAIL",json.dumps(lc)[:300])
+# 6 artifact
+ws=studio.workspace_path(studio.get_revision(rid)); os.makedirs(ws/"sim",exist_ok=True)
+net=ws/"sim"/"buck_rc.net"
+net.write_text("* Audit RC step netlist\nV1 in 0 PULSE(0 5 0 1u 1u 1m 2m)\nR1 in out 1k\nC1 out 0 1u\n.tran 0 2m 0 1u\n.end\n")
+c,ar=cli("engineering","register_engineering_artifact",req={**base,"idempotency_key":"art1","relative_path":"sim/buck_rc.net","expected_sha256":file_hash(net),"classification":"documentation"})
+log("6 register design artifact (CLI)","PASS" if c==0 else "FAIL",json.dumps(ar)[:500])
+# 8 sim
+t=time.time(); c,sim=cli("simulation","run","--project",pid,"--tool","ltspice","--netlist","buck_rc.net"); dt=time.time()-t
+log(f"8 REAL LTspice via CLI simulation run ({dt:.1f}s)","PASS" if c==0 and isinstance(sim,dict) and sim.get("status") in ("COMPLETED","SUCCEEDED","completed") else "CHECK",json.dumps(sim)[:1500])
+#REV
+# 7 revision
+e,rv=mcp("create_revision",{"product_id":pid,"label":"R002"}) ; log("7 revision (MCP create_revision)","PASS" if not e else "FAIL",json.dumps(rv)[:500])
+json.dump({"pid":pid,"rid":rid,"sim":sim,"base":base,"ws":str(ws)},open(os.path.join(ROOT,"..","e2e_state.json"),"w"),default=str)

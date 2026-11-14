@@ -18,7 +18,8 @@
       "enum": [
         "project_context",
         "specification_fields",
-        "validation_record"
+        "validation_record",
+        "human_review"
       ],
       "title": "Kind",
       "type": "string"

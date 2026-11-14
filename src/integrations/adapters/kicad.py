@@ -33,7 +33,7 @@ class KiCadAdapter(BaseToolAdapter):
         )
 
     def supported_operations(self) -> list[str]:
-        return ["erc", "drc", "export_gerber", "export_step", "version"]
+        return ["erc", "drc", "export_gerber", "export_step", "render_3d", "route", "version"]
 
     def execute(self, request: JobRequest, workdir: Path | None = None) -> JobResult:
         if self.descriptor.state == ToolState.NOT_INSTALLED or not self.descriptor.executable_path:
@@ -73,9 +73,57 @@ class KiCadAdapter(BaseToolAdapter):
             cmd = [str(exe), "pcb", "export", "step", "--output", str(output_step.resolve()), str(input_file.resolve())]
         elif operation == "export_gerber":
             input_file = Path(request.input_paths[0]) if request.input_paths else (workdir / "board.kicad_pcb")
+            force = bool((request.parameters or {}).get("force", False))
+            if not force and input_file.exists():
+                from mendex_core.pcb import native_structure
+                struct = None
+                try:
+                    struct = native_structure(input_file)
+                except (ValueError, OSError):
+                    pass
+                if struct is not None:
+                    routed_tracks = struct.get("segment", 0) + struct.get("arc", 0)
+                    if routed_tracks == 0:
+                        from datetime import datetime, timezone
+                        now_iso = datetime.now(timezone.utc).isoformat()
+                        return JobResult(
+                            job_id=request.job_id,
+                            tool_id=self.tool_id,
+                            status=JobState.FAILED,
+                            start_time=now_iso,
+                            end_time=now_iso,
+                            exit_code=1,
+                            stdout="",
+                            stderr=f"Refusing to export Gerbers: board has 0 routed tracks (placement only, {struct.get('footprint', 0)} footprints). Complete routing and verify DRC passes before manufacturing export.",
+                            error_message="Refusing to export Gerbers: board has 0 routed copper tracks (placement only).",
+                            diagnostics=["Board is placement-only (0 copper tracks). Manufacturing Gerber export blocked."],
+                            artifacts=[],
+                        )
+            if not force and input_file.exists() and (request.parameters or {}).get("auto_route", False):
+                from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+                copper = CopperKiCadAdapter(kicad_cli_path=str(exe))
+                copper.route_pcb(input_file)
+
             gerber_dir = workdir / "gerbers"
             gerber_dir.mkdir(parents=True, exist_ok=True)
             cmd = [str(exe), "pcb", "export", "gerbers", "--output", str(gerber_dir.resolve()), str(input_file.resolve())]
+        elif operation == "render_3d":
+            input_file = Path(request.input_paths[0]) if request.input_paths else (workdir / "board.kicad_pcb")
+            output_png = workdir / f"{input_file.stem}_3d.png"
+            from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+            copper = CopperKiCadAdapter(kicad_cli_path=str(exe))
+            view = (request.parameters or {}).get("view", "iso")
+            width = int((request.parameters or {}).get("width", 1200))
+            copper.render_3d(input_file, output_png=output_png, view=view, width=width)
+            cmd = [str(exe), "version"]
+        elif operation == "route":
+            input_file = Path(request.input_paths[0]) if request.input_paths else (workdir / "board.kicad_pcb")
+            from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+            copper = CopperKiCadAdapter(kicad_cli_path=str(exe))
+            pour = bool((request.parameters or {}).get("pour_ground", True))
+            ground_net = (request.parameters or {}).get("ground_net", "GND")
+            copper.route_pcb(input_file, pour_ground=pour, ground_net=ground_net)
+            cmd = [str(exe), "version"]
         else:
             raise NotImplementedError(f"Unsupported KiCad operation: {operation}")
 
