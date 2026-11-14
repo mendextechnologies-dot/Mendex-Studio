@@ -527,7 +527,15 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
             )}
           </div>
           <span style={{ fontSize: 11, color: '#64748b', display: 'block', marginTop: 4 }}>
-            Direct vector geometry extracted from <code>{activeData?.filename || 'CAD file'}</code>
+            {viewMode === 'gerber' ? (
+              <>RS-274X Gerber & Excellon Drill Layer Stack with Precision Clearance Ruler</>
+            ) : viewMode === '3d' ? (
+              <>High-resolution 3D raytraced photorealistic preview</>
+            ) : viewMode === 'pcb' ? (
+              <>Direct vector geometry extracted from <code>{pcbData?.filename || 'pcb.kicad_pcb'}</code></>
+            ) : (
+              <>Direct vector geometry extracted from <code>{schData?.filename || 'schematic.kicad_sch'}</code></>
+            )}
           </span>
         </div>
 

@@ -104,6 +104,7 @@ export interface ProjectDetailData {
     lifecycle_status: string;
     created_at: string;
     specification: Record<string, any>;
+    specification_hash?: string;
   };
   revisions: Array<{
     revision_id: string;

@@ -3173,19 +3173,34 @@
           "created_at": "2026-11-14T17:51:26.860995+00:00"
         },
         {
-          "id": "df68220e-55cd-4a1f-8efb-d3f978ad3d76",
+          "id": "9ea9fb0e-8d3d-47d9-b918-76b7147e7f10",
           "design_id": "5badf992-8f2e-405a-a38e-9cefa4e3a63c",
           "revision_id": "d0b5b26e-2387-46dc-b8ef-84134bf13474",
           "kind": "gerber_bundle",
           "name": "pcb_gerbers.zip",
           "path": "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/pcb/gerbers/pcb_gerbers.zip",
           "format": "zip",
-          "sha256": "31e5781462aa1a647173891f988aa06d733965d4b7919f05e704ec402ddf85e8",
+          "sha256": "601396482980a8419267cbcc6e45969d650db370d2d9446bd1635e35558078f4",
           "source_service": "KiCadLifecycleService",
           "parent_ids": [],
           "edit_provenance": "Deterministic Manufacturing Release",
           "is_external_modified": false,
-          "created_at": "2026-11-14T19:16:38.531376+00:00"
+          "created_at": "2026-11-14T19:57:32.650993+00:00"
+        },
+        {
+          "id": "6bf85869-a3ca-47d4-aef8-ac00541b7470",
+          "design_id": "5badf992-8f2e-405a-a38e-9cefa4e3a63c",
+          "revision_id": "d0b5b26e-2387-46dc-b8ef-84134bf13474",
+          "kind": "report",
+          "name": "report.pdf",
+          "path": "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/reports/96a69af1-6286-4249-a2dc-af4f9f81fa6c/report.pdf",
+          "format": "pdf",
+          "sha256": "565bc5d40fd9cce405281458786a4d01753ec179336340a58ea0ea661007b479",
+          "source_service": "KiCadLifecycleService",
+          "parent_ids": [],
+          "edit_provenance": "Complete Product Engineering Dossier (PDF)",
+          "is_external_modified": false,
+          "created_at": "2026-11-14T19:57:41.046943+00:00"
         }
       ],
       "created_at": "2026-11-14T17:49:22.820461+00:00",

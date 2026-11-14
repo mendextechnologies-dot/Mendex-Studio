@@ -1633,27 +1633,52 @@ class DesktopService:
         pcb_path = pcb_files[0]
         gerber_out_dir = pcb_path.parent / "gerbers"
 
-        # Auto-export if gerbers do not exist yet and auto_export is requested
-        has_existing_gerbers = gerber_out_dir.exists() and any(
-            f.is_file() and f.suffix.lower() not in (".zip", ".lck") for f in gerber_out_dir.iterdir()
-        )
-        if not has_existing_gerbers and getattr(request, "auto_export", True):
-            exp_res = self.export_gerbers(models.GerberExportQuery(revision_id=request.revision_id, auto_route=False, check_drc=False))
-            if not exp_res.get("success"):
-                exp_res = self.export_gerbers(models.GerberExportQuery(revision_id=request.revision_id, auto_route=True, check_drc=False))
-
-        # Check for Gerber ZIP
+        # Check for existing Gerber ZIP first
         cand_zips = [
             gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
             pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
             pcb_path.parent / "gerbers.zip",
             gerber_out_dir / "gerbers.zip",
         ]
+        if gerber_out_dir.exists():
+            for zf in gerber_out_dir.glob("*_gerbers.zip"):
+                if zf not in cand_zips:
+                    cand_zips.append(zf)
+        for zf in pcb_path.parent.glob("*_gerbers.zip"):
+            if zf not in cand_zips:
+                cand_zips.append(zf)
+
         zip_path = None
         for cz in cand_zips:
             if cz.exists() and cz.stat().st_size > 0:
                 zip_path = cz
                 break
+
+        # Check for uncompressed Gerber layer files
+        has_existing_gerbers = gerber_out_dir.exists() and any(
+            f.is_file() and f.suffix.lower() not in (".zip", ".lck") for f in gerber_out_dir.iterdir()
+        )
+        # If ZIP exists but individual files are uncompressed/missing, extract ZIP directly (instantaneous)
+        if not has_existing_gerbers and zip_path and zip_path.exists():
+            import zipfile
+            try:
+                gerber_out_dir.mkdir(parents=True, exist_ok=True)
+                with zipfile.ZipFile(zip_path, "r") as zf:
+                    zf.extractall(gerber_out_dir)
+                has_existing_gerbers = any(
+                    f.is_file() and f.suffix.lower() not in (".zip", ".lck") for f in gerber_out_dir.iterdir()
+                )
+            except Exception:
+                pass
+
+        if not has_existing_gerbers and getattr(request, "auto_export", True):
+            exp_res = self.export_gerbers(models.GerberExportQuery(revision_id=request.revision_id, auto_route=False, check_drc=False))
+            if not exp_res.get("success"):
+                exp_res = self.export_gerbers(models.GerberExportQuery(revision_id=request.revision_id, auto_route=True, check_drc=False))
+            for cz in cand_zips:
+                if cz.exists() and cz.stat().st_size > 0:
+                    zip_path = cz
+                    break
 
         has_gerbers = zip_path is not None
         gerber_sha256 = _file_sha256(zip_path) if has_gerbers else None

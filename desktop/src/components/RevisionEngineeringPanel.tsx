@@ -1,3 +1,4 @@
+import { SpecificationDetailCard } from './SpecificationDetailCard';
 import { ThermalSizingCalculatorCard } from './ThermalSizingCalculatorCard';
 import { TopologySynthesizerCard } from './TopologySynthesizerCard';
 import { CADPreviewCanvas } from './CADPreviewCanvas';
@@ -162,15 +163,14 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile, onRefresh 
   }, [cadFiles, cadCategory, cadFilter]);
 
   return <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-    <div><h3 style={{ fontSize: 18 }}>{titles[section]}</h3>
-      <p style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 6 }}>Stored records for {data.product.code} / {data.revision.revision_label}. Execution, evidence integrity and engineering acceptance are separate.</p>
-    </div>
-    {section === 'specifications' && <>
-      <div style={grid}>{Object.entries(data.revision.specification).map(([key, value]) => <div key={key} className="card">
-        <strong style={{ fontSize: 13 }}>{key}</strong>
-        <p style={{ fontSize: 15, fontWeight: 700, margin: '8px 0 4px', color: '#172033' }}>{label(value)}</p>
-      </div>)}</div>
-    </>}
+    {section !== 'specifications' && (
+      <div><h3 style={{ fontSize: 18 }}>{titles[section]}</h3>
+        <p style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 6 }}>Stored records for {data.product.code} / {data.revision.revision_label}. Execution, evidence integrity and engineering acceptance are separate.</p>
+      </div>
+    )}
+    {section === 'specifications' && (
+      <SpecificationDetailCard data={data} />
+    )}
     {section === 'requirements' && <>
       {requirements.map((record, i) => <div key={record.record_id || i} className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}><strong>Requirements snapshot {i + 1}</strong><span className="badge badge-blue">Recorded</span></div>

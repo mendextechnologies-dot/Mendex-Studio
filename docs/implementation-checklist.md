@@ -236,7 +236,14 @@
 - [x] **Test Verification**:
   - `tests/core/test_sv1000_p0_schematic.py`: **2/2 PASSED**.
   - `tests/core/test_cad_preview_and_reports.py`: **10/10 PASSED**.
-  - `npm --prefix desktop run build`: **PASSED** (0 TypeScript/Vite errors).
+  - `tests/core/test_bom_pricing.py`: **2/2 PASSED**.
+  - `tests/integration/test_v20_qualification.py`: **7/7 PASSED**.
+  - `npm --prefix desktop run build`: **PASSED** (1,592 modules in 1.96s, 0 errors).
+- [x] **Gerber Inspection & Uncompressed Release Package Extraction Hardening (`src/mendex_core/desktop/service.py`, `CADPreviewCanvas.tsx`)**:
+  - Enhanced `DesktopService.gerber_inspect` to look for existing archive bundles (`*_gerbers.zip`, `gerbers.zip`) in both revision PCB root and `gerbers/` output directory.
+  - Automatically uncompresses pre-packaged Gerber releases on demand if individual uncompressed layer files are not yet extracted, eliminating redundant regeneration cycles.
+  - Refined layer inspector and CAD preview subtitles in `CADPreviewCanvas.tsx` for precise RS-274X layer stack and KiCad vector extraction attribution.
+  - Synchronized design record `pcb_gerbers.zip` and authoritative dossier `report.pdf` SHA-256 hashes in `engineering_designs/5badf992-8f2e-405a-a38e-9cefa4e3a63c.json`.
 
 ---
 ## KiCad 10 Native Schematic Format Upgrade & CAD Artifacts List View — 14 November 2026
