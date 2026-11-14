@@ -2228,3 +2228,18 @@ un_pcb_drc) return structured operation receipts with operation_id, operation_ty
   - TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 1.99s.
   - Core test suite (`test_laboratory_test_plan.py`, `test_bom_pricing.py`, `test_gerber_caliper_clearance.py`): **8/8 PASSED**.
   - Direct HTTP RPC validation: EMC-100 returned in 36 ms, SV-1000 returned in 17 ms.
+
+### Milestone: Oscilloscope Dual-Cursor Calipers & Ripple Analyzer (Option 3) — 15 November 2026 — VERIFIED FIXED
+- [x] **Oscilloscope Dual-Cursor Calipers (desktop/src/components/WaveformChart.tsx)**:
+  - Engineered interactive dual-cursor calipers (Cursor A in Cyan #06b6d4, Cursor B in Amber #f59e0b) on LTspice transient waveform viewer.
+  - Added draggable / click-to-reposition caliper controls with dedicated active cursor selector (Cursor A / Cursor B), lock/unlock toggle, and quick steady-state snap actions.
+  - Built live mathematical delta telemetry ribbon: time span delta $\\Delta T = |t_B - t_A|$, instantaneous frequency  = 1 / \\Delta T$ (with auto Hz/kHz/MHz formatting), and per-channel voltage/current signal deltas ($\\Delta V$, $\\Delta I$).
+- [x] **Steady-State Ripple Analyzer & Specification Limit Verification (desktop/src/components/WaveformChart.tsx, desktop/src/components/RevisionEngineeringPanel.tsx)**:
+  - Integrated numerical steady-state ripple percentage calculation: $\% \\text{ Ripple} = \\frac{V_{\\text{pp}}}{V_{\\text{mean}}} \\times 100\\%$.
+  - Wired live specification comparison against data.revision.specification.vout_ripple_max_mv, rendering dynamic compliance indicators (✓ CLEAN RIPPLE / Warning) and limit readouts.
+- [x] **Vector SVG Oscilloscope Capture Export (WaveformChart.tsx)**:
+  - Integrated 1-click standalone SVG export generating high-resolution, vector-scaled simulation captures with dark-room grid theme and caliper annotations for engineering review dossiers.
+- [x] **Verification**:
+  - Frontend TypeScript build (
+pm --prefix desktop run build): **0 ERRORS**, built in 1.64s.
+  - Automated test suite (	ests/core/test_waveform_calipers_ui.py): **1/1 PASSED in 0.73s**.

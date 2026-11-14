@@ -200,6 +200,7 @@ export const RevisionEngineeringPanel = ({ section, data, onOpenFile, onRefresh 
                 relativePath={rawFile.relative_path}
                 title={`${data.product.code} Transient Simulation Waveform`}
                 onOpenNative={() => onOpenFile?.(rawFile.relative_path)}
+                targetRippleMaxMv={(data.revision?.specification as any)?.vout_ripple_max_mv ?? null}
               />
             </div>
           );
