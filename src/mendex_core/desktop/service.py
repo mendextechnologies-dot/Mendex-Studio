@@ -2778,6 +2778,34 @@ class DesktopService:
             return self.studio.generate_release_package(request.revision_id, author=getattr(request, "author", "Lead Systems Engineer"))
         if method == "reveal_release_package":
             return {"revealed": self.studio.reveal_release_package(request.revision_id)}
+        if method == "ingest_oscilloscope_csv":
+            return self.studio.ingest_oscilloscope_csv(
+                revision_id=request.revision_id,
+                filename=request.filename,
+                content=request.content,
+                channel_mapping=request.channel_mapping,
+                operator=request.operator or "Lead Hardware Engineer",
+                notes=request.notes or "",
+            )
+        if method == "list_oscilloscope_measurements":
+            return self.studio.list_oscilloscope_measurements(request.revision_id)
+        if method == "get_oscilloscope_waveform":
+            return self.studio.get_oscilloscope_waveform(
+                revision_id=request.revision_id,
+                measurement_id=request.measurement_id,
+                traces=request.traces,
+                start=request.start,
+                limit=request.limit,
+                decimate=request.decimate,
+            )
+        if method == "correlate_oscilloscope_waveform":
+            return self.studio.correlate_oscilloscope_waveform(
+                revision_id=request.revision_id,
+                measurement_id=request.measurement_id,
+                sim_relative_path=request.sim_relative_path,
+                channel_mapping=request.channel_mapping,
+                target_tolerance_pct=request.target_tolerance_pct,
+            )
         if method == "backup":
             dest = getattr(request, "destination", None) if request else None
             backup_path = self.studio.backup_database(dest)
@@ -2893,4 +2921,8 @@ ROUTES.update(
     get_release_package=models.ReleasePackageQuery,
     build_release_package=models.ReleasePackageQuery,
     reveal_release_package=models.ReleasePackageQuery,
+    ingest_oscilloscope_csv=models.ScopeIngestQuery,
+    list_oscilloscope_measurements=models.ScopeListQuery,
+    get_oscilloscope_waveform=models.ScopeWaveformQuery,
+    correlate_oscilloscope_waveform=models.ScopeCorrelateQuery,
 )

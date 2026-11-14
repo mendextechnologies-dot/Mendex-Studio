@@ -834,3 +834,35 @@ class StudioService:
     def reveal_release_package(self, revision_id):
         return self.reveal_project_file(revision_id, "release_package")
 
+    def ingest_oscilloscope_csv(self, revision_id, filename, content, channel_mapping=None, operator="Lead Hardware Engineer", notes=""):
+        return self.measurements.ingest_oscilloscope_csv(
+            revision_id=revision_id,
+            filename=filename,
+            content=content,
+            channel_mapping=channel_mapping,
+            operator=operator,
+            notes=notes,
+        )
+
+    def list_oscilloscope_measurements(self, revision_id):
+        return self.measurements.list_oscilloscope_measurements(revision_id)
+
+    def get_oscilloscope_waveform(self, revision_id, measurement_id, traces=None, start=0, limit=2000, decimate=True):
+        return self.measurements.get_oscilloscope_waveform(
+            revision_id=revision_id,
+            measurement_id=measurement_id,
+            traces=traces,
+            start=start,
+            limit=limit,
+            decimate=decimate,
+        )
+
+    def correlate_oscilloscope_waveform(self, revision_id, measurement_id, sim_relative_path, channel_mapping, target_tolerance_pct=5.0):
+        return self.measurements.correlate_with_simulation(
+            revision_id=revision_id,
+            measurement_id=measurement_id,
+            sim_relative_path=sim_relative_path,
+            channel_mapping=channel_mapping,
+            target_tolerance_pct=target_tolerance_pct,
+        )
+

@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Optional
+from typing import Dict, List, Literal, Optional
 from uuid import UUID
 
 from pydantic import Field, model_validator
@@ -268,3 +268,35 @@ class ReleasePackageQuery(Model):
     revision_id: UUID
     author: Optional[str] = "Lead Systems Engineer"
 
+
+
+class ScopeIngestQuery(Model):
+    idempotency_key: Optional[str] = None
+    revision_id: UUID
+    filename: str
+    content: str
+    channel_mapping: Optional[Dict[str, str]] = None
+    operator: Optional[str] = "Lead Hardware Engineer"
+    notes: Optional[str] = ""
+
+
+class ScopeListQuery(Model):
+    revision_id: UUID
+
+
+class ScopeWaveformQuery(Model):
+    revision_id: UUID
+    measurement_id: str
+    traces: Optional[List[str]] = None
+    start: int = 0
+    limit: int = 2000
+    decimate: bool = True
+
+
+class ScopeCorrelateQuery(Model):
+    idempotency_key: Optional[str] = None
+    revision_id: UUID
+    measurement_id: str
+    sim_relative_path: str
+    channel_mapping: Dict[str, str]
+    target_tolerance_pct: float = 5.0
