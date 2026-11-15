@@ -2,6 +2,22 @@
 
 ## Audit Remediation — Mendex Engineering Studio Quality & Integrity Hardening — 14 November 2026
 
+### Milestone: Lifecycle Review Staleness Remediation, Ephemeral File Filtering & UI Navigation State Preservation — 15 November 2026 — VERIFIED FIXED
+- [x] **Ephemeral Workspace Output Filtering in Review Staleness Engine (`src/mendex_core/engineering_reviews/service.py`)**:
+  - Implemented `is_ephemeral_workspace_file(rel: str) -> bool` to exclude execution caches, analytical calculator outputs (`bom/exports/*`, `tests/laboratory_test_plan/*`, `simulations/thermal/*`, `reports/*`), and lock/temporary files from revision document hash tracking.
+  - Resolved false-positive staleness triggers where mounting interactive UI cards recalculated analytical figures with current timestamps and invalidated previously approved human reviews.
+  - Primary engineering baselines (KiCad schematics `.kicad_sch`, PCB layouts `.kicad_pcb`, official BOMs `bom/bom.json`, requirements matrices) remain strictly protected and guarded.
+- [x] **Persistent URL State Synchronization & Connected Header Refresh (`desktop/src/App.tsx`, `ProjectDetail.tsx`)**:
+  - Implemented bidirectional URL synchronization using `window.history.replaceState` (`?page=projects&project=<uuid>`).
+  - Preserved active project view and route state across hard browser reloads (F5 / Ctrl+F5).
+  - Connected the top-right header `[ 🔄 Refresh ]` action directly to `ProjectDetail` via `refreshKey`, allowing instant re-querying without losing the active project context.
+- [x] **End-to-End Human Review Re-Approval & Qualification**:
+  - Recorded attributable human sign-offs (`Lead Power Systems Engineer`, `ReviewDecision.APPROVED`) across both SpectraVolt SV-1000 and Electromagnet Driver EMC-100.
+  - Confirmed 9/9 stages `COMPLETED` with 0 blockers on both projects in `EngineeringLifecycleService`.
+- [x] **Test Verification & Production Build**:
+  - `tests/core/test_engineering_reviews.py` + `tests/core/test_engineering_lifecycle.py`: **40/40 PASSED in 25.5s**.
+  - Frontend production build (`npm --prefix desktop run build`): **PASSED with 0 errors (1,597 modules built in 4.33s)**.
+
 ### Milestone: Interactive ECR / ECO Management & Schematic Diff Viewer (Option 2) — 15 November 2026 — VERIFIED FIXED
 - [x] **Interactive ECR / ECO Management & Schematic Diff Viewer (`desktop/src/components/ECRManagementCard.tsx`, `ProjectDetail.tsx`)**:
   - Implemented closed-loop Engineering Change Management panel directly mounted as a primary tab `Changes (ECR)` in `ProjectDetail.tsx`.

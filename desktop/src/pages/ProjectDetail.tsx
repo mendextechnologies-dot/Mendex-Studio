@@ -699,8 +699,10 @@ export const ProjectDetailView = ({
                     <div style={{ fontSize: '22px', fontWeight: 800, color: '#172033', marginTop: '6px' }}>
                       {data.lifecycle.stages.filter((s: any) => effectiveStageStatus(s) === 'COMPLETED').length} / {data.lifecycle.stages.length}
                     </div>
-                    <div style={{ fontSize: '11px', color: '#1d4ed8', marginTop: '4px' }}>
-                      Stages 1–5 Completed
+                    <div style={{ fontSize: '11px', color: '#047857', marginTop: '4px', fontWeight: 600 }}>
+                      {data.lifecycle.stages.filter((s: any) => effectiveStageStatus(s) === 'COMPLETED').length === data.lifecycle.stages.length
+                        ? 'All 9 Stages Completed & Approved'
+                        : data.lifecycle.stages.filter((s: any) => effectiveStageStatus(s) === 'COMPLETED').length + ' of ' + data.lifecycle.stages.length + ' Completed'}
                     </div>
                   </div>
 
