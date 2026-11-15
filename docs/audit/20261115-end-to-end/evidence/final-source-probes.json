@@ -1,0 +1,87 @@
+{
+  "empty_thermal_current": {
+    "success": true,
+    "revision_id": "93d9c462-5533-4bc6-87a7-baceb4b43345",
+    "ambient_c": 25.0,
+    "copper_weight_oz": 2.0,
+    "chassis_cooling": false,
+    "cooling_mode": "BARE_PCB_STILL_AIR",
+    "total_board_loss_w": 0.0,
+    "max_temperature_c": 25.0,
+    "max_component": "N/A",
+    "min_thermal_margin_c": 50.0,
+    "overall_status": "PASS",
+    "board_bbox": {
+      "min_x": 0,
+      "min_y": 0,
+      "max_x": 100,
+      "max_y": 80
+    },
+    "hotspots": [],
+    "isotherms": [
+      {
+        "temp_c": 70.0,
+        "color": "#ef4444",
+        "label": "Hot (>70\u00b0C)"
+      },
+      {
+        "temp_c": 55.0,
+        "color": "#f97316",
+        "label": "Warm (55\u00b0C)"
+      },
+      {
+        "temp_c": 40.0,
+        "color": "#84cc16",
+        "label": "Elevated (40\u00b0C)"
+      },
+      {
+        "temp_c": 30.0,
+        "color": "#06b6d4",
+        "label": "Cool (<35\u00b0C)"
+      }
+    ],
+    "tim_specification": null,
+    "standards_compliance": {
+      "ipc_9592b_derated": true,
+      "navmat_derating": true,
+      "max_allowable_junction_c": 120.0
+    },
+    "report_sha256": "64a6fa9fe70ee8afbecd43956af7a21339cde151e7c1cd03e193f3911f3a1f1d"
+  },
+  "empty_enclosure_without_solver": {
+    "success": true,
+    "product_code": "AUDIT-FINAL",
+    "revision_label": "R001",
+    "revision_id": "93d9c462-5533-4bc6-87a7-baceb4b43345",
+    "dimensions": {
+      "outer_length_mm": 99.0,
+      "outer_width_mm": 79.0,
+      "total_height_mm": 48.2,
+      "wall_thickness_mm": 3.0,
+      "standoff_height_mm": 6.0,
+      "material": "Aluminum 6061-T6 (Black Anodize MIL-A-8625 Type II)",
+      "weight_approx_grams": 165.0
+    },
+    "thermal_interface": {
+      "tim_part": "Bergquist Gap Pad 5000S35",
+      "tim_conductivity_w_mk": 5.0,
+      "tim_thickness_mm": 1.5,
+      "tim_dimensions_mm": "20.0 x 20.0",
+      "pedestal_height_mm": 4.5,
+      "junction_temp_bare_c": 144.0,
+      "junction_temp_chassis_c": 55.8,
+      "delta_t_benefit_c": 88.2
+    },
+    "step_generated": false,
+    "files": {
+      "svg_drawing": "mechanical\\enclosure_drawing.svg",
+      "tim_specification": "mechanical\\thermal_interface_specification.md",
+      "freecad_script": "mechanical\\make_enclosure.py",
+      "step_assembly": null,
+      "step_base": null,
+      "step_lid": null
+    },
+    "svg_drawing_content": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 900 750\" width=\"100%\" height=\"100%\" style=\"background:#0f172a; font-family:'JetBrains Mono', Consolas, monospace;\">\n  <defs>\n    <pattern id=\"grid\" width=\"20\" height=\"20\" patternUnits=\"userSpaceOnUse\">\n      <path d=\"M 20 0 L 0 0 0 20\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"0.7\"/>\n    </pattern>\n    <linearGradient id=\"metal\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">\n      <stop offset=\"0%\" stop-color=\"#334155\"/>\n      <stop offset=\"50%\" stop-color=\"#1e293b\"/>\n      <stop offset=\"100%\" stop-color=\"#0f172a\"/>\n    </linearGradient>\n    <linearGradient id=\"tim-glow\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n      <stop offset=\"0%\" stop-color=\"#f97316\"/>\n      <stop offset=\"100%\" stop-color=\"#eab308\"/>\n    </linearGradient>\n  </defs>\n\n  <!-- Background Grid -->\n  <rect width=\"100%\" height=\"100%\" fill=\"url(#grid)\" />\n\n  <!-- Drawing Border & Title Block -->\n  <rect x=\"25\" y=\"25\" width=\"850\" height=\"700\" fill=\"none\" stroke=\"#475569\" stroke-width=\"2\"/>\n  <rect x=\"25\" y=\"655\" width=\"850\" height=\"70\" fill=\"#1e293b\" stroke=\"#475569\" stroke-width=\"1.5\"/>\n  <text x=\"45\" y=\"685\" fill=\"#38bdf8\" font-size=\"14\" font-weight=\"bold\">MENDEX ENGINEERING STUDIO \u00b7 MECHANICAL SPECIFICATION</text>\n  <text x=\"45\" y=\"708\" fill=\"#94a3b8\" font-size=\"11\">PRODUCT: AUDIT-FINAL (R001) \u00b7 DUAL-CHAMBER ANODIZED 6061-T6 ALUMINUM ENCLOSURE</text>\n  <text x=\"620\" y=\"685\" fill=\"#cbd5e1\" font-size=\"11\">UNITS: MILLIMETERS (mm)</text>\n  <text x=\"620\" y=\"708\" fill=\"#e2e8f0\" font-size=\"11\">TOLERANCE: \u00b10.15 mm \u00b7 SCALE 1:1</text>\n\n  <!-- VIEW 1: TOP PLAN VIEW (Enclosure Base + PCB Mounting) -->\n  <g transform=\"translate(60, 60)\">\n    <text x=\"0\" y=\"-12\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">VIEW A: TOP ORTHOGRAPHIC PLAN VIEW (OPEN TUB)</text>\n\n    <!-- Outer Aluminum Shell -->\n    <rect x=\"0\" y=\"0\" width=\"316.8\" height=\"252.8\" rx=\"6\" fill=\"#1e293b\" stroke=\"#38bdf8\" stroke-width=\"2\"/>\n    \n    <!-- Inner Cavity -->\n    <rect x=\"9.600000000000001\" y=\"9.600000000000001\" width=\"297.6\" height=\"233.60000000000002\" fill=\"#0f172a\" stroke=\"#64748b\" stroke-width=\"1.5\" stroke-dasharray=\"4,2\"/>\n\n    <!-- PCB Outline Ghost -->\n    <rect x=\"22.400000000000002\" y=\"22.400000000000002\" width=\"272.0\" height=\"208.0\" rx=\"2\" fill=\"#065f46\" fill-opacity=\"0.25\" stroke=\"#10b981\" stroke-width=\"1.5\"/>\n    <text x=\"35.2\" y=\"48.0\" fill=\"#10b981\" font-size=\"10\">PCB: 85.0 \u00d7 65.0 mm</text>\n\n    <!-- 4 M3 Standoff Bosses -->\n    <circle cx=\"38.400000000000006\" cy=\"38.400000000000006\" r=\"10\" fill=\"#334155\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <circle cx=\"38.400000000000006\" cy=\"38.400000000000006\" r=\"4\" fill=\"#0f172a\" stroke=\"#f8fafc\" stroke-width=\"1\"/>\n\n    <circle cx=\"278.40000000000003\" cy=\"38.400000000000006\" r=\"10\" fill=\"#334155\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <circle cx=\"278.40000000000003\" cy=\"38.400000000000006\" r=\"4\" fill=\"#0f172a\" stroke=\"#f8fafc\" stroke-width=\"1\"/>\n\n    <circle cx=\"38.400000000000006\" cy=\"214.4\" r=\"10\" fill=\"#334155\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <circle cx=\"38.400000000000006\" cy=\"214.4\" r=\"4\" fill=\"#0f172a\" stroke=\"#f8fafc\" stroke-width=\"1\"/>\n\n    <circle cx=\"278.40000000000003\" cy=\"214.4\" r=\"10\" fill=\"#334155\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <circle cx=\"278.40000000000003\" cy=\"214.4\" r=\"4\" fill=\"#0f172a\" stroke=\"#f8fafc\" stroke-width=\"1\"/>\n\n    <!-- Thermal Pedestal Boss (Under Q1) -->\n    <rect x=\"112.0\" y=\"134.4\" width=\"64.0\" height=\"64.0\" rx=\"2\" fill=\"url(#tim-glow)\" fill-opacity=\"0.3\" stroke=\"#f97316\" stroke-width=\"2\"/>\n    <text x=\"115.2\" y=\"172.8\" fill=\"#f97316\" font-size=\"9\" font-weight=\"bold\">Q1 TIM BOSS (20.0\u00d720.0)</text>\n\n    <!-- Connector Ports -->\n    <rect x=\"54.400000000000006\" y=\"-4\" width=\"51.2\" height=\"8\" fill=\"#e11d48\" stroke=\"#f43f5e\" stroke-width=\"1\"/>\n    <text x=\"57.6\" y=\"-8\" fill=\"#f43f5e\" font-size=\"9\">J1 PORT (24V)</text>\n\n    <rect x=\"211.20000000000002\" y=\"248.8\" width=\"51.2\" height=\"8\" fill=\"#e11d48\" stroke=\"#f43f5e\" stroke-width=\"1\"/>\n    <text x=\"208.0\" y=\"268.8\" fill=\"#f43f5e\" font-size=\"9\">J2 PORT (1000V)</text>\n\n    <!-- Dimension Lines -->\n    <line x1=\"0\" y1=\"282.8\" x2=\"316.8\" y2=\"282.8\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <line x1=\"0\" y1=\"277.8\" x2=\"0\" y2=\"287.8\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <line x1=\"316.8\" y1=\"277.8\" x2=\"316.8\" y2=\"287.8\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <text x=\"133.4\" y=\"297.8\" fill=\"#cbd5e1\" font-size=\"11\">99.0 mm (OUTER)</text>\n\n    <line x1=\"346.8\" y1=\"0\" x2=\"346.8\" y2=\"252.8\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <line x1=\"341.8\" y1=\"0\" x2=\"351.8\" y2=\"0\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <line x1=\"341.8\" y1=\"252.8\" x2=\"351.8\" y2=\"252.8\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <text x=\"356.8\" y=\"130.4\" fill=\"#cbd5e1\" font-size=\"11\">79.0 mm</text>\n  </g>\n\n  <!-- VIEW 2: FRONT SECTIONAL ELEVATION VIEW -->\n  <g transform=\"translate(60, 420)\">\n    <text x=\"0\" y=\"-12\" fill=\"#38bdf8\" font-size=\"12\" font-weight=\"bold\">VIEW B: CROSS-SECTIONAL ELEVATION (THERMAL SINK PATH &amp; HV CLEARANCE)</text>\n\n    <!-- Enclosure Base Cut Profile -->\n    <path d=\"M 0 0 L 316.8 0 L 316.8 171.52 L 0 171.52 Z\" fill=\"none\" stroke=\"#475569\" stroke-width=\"1.5\"/>\n\n    <!-- Bottom Chassis Wall -->\n    <rect x=\"0\" y=\"161.92000000000002\" width=\"316.8\" height=\"9.600000000000001\" fill=\"#334155\" stroke=\"#38bdf8\" stroke-width=\"1\"/>\n    <!-- Left & Right Walls -->\n    <rect x=\"0\" y=\"0\" width=\"9.600000000000001\" height=\"171.52\" fill=\"#334155\" stroke=\"#38bdf8\" stroke-width=\"1\"/>\n    <rect x=\"307.2\" y=\"0\" width=\"9.600000000000001\" height=\"171.52\" fill=\"#334155\" stroke=\"#38bdf8\" stroke-width=\"1\"/>\n    \n    <!-- Top Lid -->\n    <rect x=\"0\" y=\"0\" width=\"316.8\" height=\"9.600000000000001\" fill=\"#334155\" stroke=\"#38bdf8\" stroke-width=\"1\"/>\n    <!-- Nomex HV Dielectric Sheet -->\n    <rect x=\"9.600000000000001\" y=\"9.600000000000001\" width=\"297.6\" height=\"3\" fill=\"#eab308\" stroke=\"none\"/>\n    <text x=\"76.80000000000001\" y=\"18\" fill=\"#eab308\" font-size=\"9\">NOMEX 410 DIELECTRIC SHIELD (7.5 kV)</text>\n\n    <!-- M3 Standoffs (6mm) -->\n    <rect x=\"28.8\" y=\"142.72\" width=\"16\" height=\"19.200000000000003\" fill=\"#64748b\" stroke=\"#cbd5e1\" stroke-width=\"1\"/>\n    <rect x=\"968.96\" y=\"142.72\" width=\"16\" height=\"19.200000000000003\" fill=\"#64748b\" stroke=\"#cbd5e1\" stroke-width=\"1\"/>\n\n    <!-- Raised Aluminum Thermal Pedestal (4.5mm) -->\n    <rect x=\"112.0\" y=\"147.52\" width=\"64.0\" height=\"14.4\" fill=\"#475569\" stroke=\"#38bdf8\" stroke-width=\"1.5\"/>\n    <text x=\"115.2\" y=\"167.52\" fill=\"#38bdf8\" font-size=\"8\">4.5mm CHASSIS BOSS</text>\n\n    <!-- Bergquist Thermal Gap Pad (1.5mm nominal / 1.2mm compressed) -->\n    <rect x=\"112.0\" y=\"142.72\" width=\"64.0\" height=\"4.800000000000001\" fill=\"#f97316\" stroke=\"#fb923c\" stroke-width=\"1\"/>\n    <text x=\"115.2\" y=\"155.52\" fill=\"#f97316\" font-size=\"8\" font-weight=\"bold\">1.5mm TIM GAP PAD</text>\n\n    <!-- PCB Board Elevation -->\n    <rect x=\"22.400000000000002\" y=\"137.60000000000002\" width=\"272.0\" height=\"5.120000000000001\" fill=\"#10b981\" stroke=\"#059669\" stroke-width=\"1\"/>\n\n    <!-- Transformer T1 Tallest Component Profile (30mm) -->\n    <rect x=\"150.4\" y=\"41.599999999999994\" width=\"89.60000000000001\" height=\"96.0\" fill=\"#6366f1\" fill-opacity=\"0.3\" stroke=\"#818cf8\" stroke-width=\"1.5\"/>\n    <text x=\"156.8\" y=\"80.0\" fill=\"#818cf8\" font-size=\"9\">T1 TRANSFORMER (30mm)</text>\n\n    <!-- Air Headroom Callout -->\n    <line x1=\"195.20000000000002\" y1=\"12.600000000000001\" x2=\"195.20000000000002\" y2=\"41.599999999999994\" stroke=\"#eab308\" stroke-width=\"1.2\" stroke-dasharray=\"2,2\"/>\n    <text x=\"208.0\" y=\"3.1999999999999886\" fill=\"#eab308\" font-size=\"9\">HV AIR CLEARANCE: 10.0 mm (PASS)</text>\n\n    <!-- Dimension Line: Total Height -->\n    <line x1=\"341.8\" y1=\"0\" x2=\"341.8\" y2=\"171.52\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <line x1=\"336.8\" y1=\"0\" x2=\"346.8\" y2=\"0\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <line x1=\"336.8\" y1=\"171.52\" x2=\"346.8\" y2=\"171.52\" stroke=\"#94a3b8\" stroke-width=\"1.2\"/>\n    <text x=\"351.8\" y=\"89.76\" fill=\"#cbd5e1\" font-size=\"11\">53.6 mm TOTAL HEIGHT</text>\n  </g>\n</svg>\n",
+    "tim_specification_content": "# AUDIT-FINAL: Thermal Interface & Chassis Heat Sinking Specification\n\n**Product**: AUDIT-FINAL High-Voltage Isolated DC-DC Converter  \n**Revision**: R001  \n**Primary Heat Source**: Switching MOSFET $Q_1$ (`C3M0065090J`, TO-252-2 DPAK)  \n**Dissipation**: $P_{Q1} = 5.87\\text{ W}$ @ 50W rated output  \n**Chassis Material**: Aluminum 6061-T6 (Thermal Conductivity $k = 167\\text{ W}/(m\\cdot K)$)  \n\n---\n\n## 1. Selected Thermal Interface Material (TIM)\n\n| Specification Parameter | Value / Characteristic | Manufacturer / Standard |\n| :--- | :--- | :--- |\n| **Material Name** | **Bergquist Gap Pad 5000S35** | Henkel / Bergquist |\n| **Alternate Qualified** | Laird Tflex HD90000 | Laird Technologies |\n| **Thermal Conductivity ($k_{tim}$)** | **$5.0\\text{ W}/(m\\cdot K)$** | ASTM D5470 |\n| **Pre-cut Dimensions** | **$20.0\\text{ mm} \\times 20.0\\text{ mm}$** | Pre-cut squares |\n| **Nominal Thickness ($t_{nom}$)** | **$1.50\\text{ mm}$** (0.060 in) | Standard thickness |\n| **Compressed Thickness ($t_{comp}$)** | **$1.20\\text{ mm}$** (20% deflection) | Under $0.6\\text{ N}\\cdot\\text{m}$ standoff torque |\n| **Dielectric Breakdown Voltage** | **$> 10.0\\text{ kV AC}$** ($> 6.7\\text{ kV/mm}$) | ASTM D149 (Safe against primary grounding) |\n| **Continuous Operating Range** | $-60^\\circ\\text{C}$ to $+200^\\circ\\text{C}$ | Well above silicone limits |\n\n---\n\n## 2. Quantitative Thermal Resistance Network\n\n```\n   [Junction Tj]\n         |\n         | R_th,jc = 1.50 \u00b0C/W (TO-252-2 SiC die to package tab)\n         v\n     [Case Tc]\n         |\n         | R_th,vias = 1.80 \u00b0C/W (16x plated 0.3mm vias through 1.6mm FR-4)\n         v\n[Bottom PCB Thermal Pad]\n         |\n         | R_th,tim = 0.60 \u00b0C/W (Bergquist 5000S35 @ 20% compression)\n         v\n[Aluminum Chassis Boss]\n         |\n         | R_th,chassis = 3.20 \u00b0C/W (Natural convection to ambient from 320 cm\u00b2 box)\n         v\n    [Ambient Ta]\n```\n\n### Analytical Calculation:\n1. **TIM Thermal Resistance ($R_{\\theta,tim}$)**:\n   $$R_{\\theta,tim} = \\frac{t_{comp}}{k_{tim} \\cdot A_{tim}} = \\frac{1.20 \\times 10^{-3}\\text{ m}}{5.0\\text{ W}/(m\\cdot K) \\cdot 4.0 \\times 10^{-4}\\text{ m}^2} = 0.60^\\circ\\text{C/W}$$\n\n2. **Total Thermal Path Resistance to Chassis ($R_{\\theta,path}$)**:\n   $$R_{\\theta,path} = R_{\\theta,jc} + R_{\\theta,vias} + R_{\\theta,tim} + R_{\\theta,chassis} = 1.50 + 1.80 + 0.60 + 3.20 = 7.10^\\circ\\text{C/W}$$\n\n3. **Effective Junction-to-Ambient with Parallel PCB Surface Diffusion ($R_{\\theta,eff}$)**:\n   $$R_{\\theta,eff} = \\frac{R_{\\theta,bare} \\cdot R_{\\theta,path}}{R_{\\theta,bare} + R_{\\theta,path}} = \\frac{20.20 \\cdot 7.10}{20.20 + 7.10} = 5.25^\\circ\\text{C/W}$$\n\n4. **Junction Temperature at $T_a = 25.0^\\circ\\text{C}$**:\n   $$T_j = 25.0^\\circ\\text{C} + (5.87\\text{ W} \\cdot 5.25^\\circ\\text{C/W}) = \\mathbf{55.8^\\circ\\text{C}}$$\n\n### Comparison with Bare PCB in Still Air:\n* **Bare PCB (No Enclosure/No TIM)**: $T_j = 144.0^\\circ\\text{C}$ (Thermal Margin: $-24.0^\\circ\\text{C}$ vs $120^\\circ\\text{C}$ IPC-9592B limit $\\to$ **WARNING/UNACCEPTABLE**).\n* **With Chassis + Bergquist Gap Pad**: $T_j = \\mathbf{55.8^\\circ\\text{C}}$ (Thermal Margin: $\\mathbf{+64.2^\\circ\\text{C}}$ vs $120^\\circ\\text{C}$ limit $\\to$ **PASS/EXCELLENT**).\n\n---\n\n## 3. Physical Installation & Torque Procedure\n\n1. **Surface Inspection**: Clean the bottom copper thermal via grid under $Q_1$ and the aluminum chassis pedestal with 99.9% Isopropyl Alcohol (IPA). Ensure surfaces are free of burrs, flux, or particulate matter.\n2. **TIM Placement**: Peel the protective release liner from side 1 of the Bergquist Gap Pad 5000S35 ($20 \\times 20\\text{ mm}$). Center the pad precisely over the chassis pedestal. Gently press to eliminate trapped air bubbles. Peel the top protective liner.\n3. **PCB Seating**: Lower the assembled PCBA over the four M3 corner standoffs, ensuring the bottom copper thermal vias sit flat against the exposed gap pad.\n4. **Fastener Torquing**:\n   - Fasteners: Four M3 $\\times$ 6mm zinc-plated socket head cap screws with split-ring lock washers.\n   - Torquing Sequence: Diagonal star pattern (H1 $\\to$ H4 $\\to$ H2 $\\to$ H3).\n   - Final Torque: **$0.60\\text{ N}\\cdot\\text{m} \\pm 0.05\\text{ N}\\cdot\\text{m}$** (yields the target 20% TIM deflection without stressing the FR-4 laminate).\n5. **Electrical Insulation Verification**: Verify with DMM that resistance between Primary Ground (`PRI_GND`) and Chassis Earth is either isolated ($> 100\\text{ M}\\Omega$) or connected per system grounding specification.\n"
+  }
+}

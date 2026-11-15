@@ -1,0 +1,546 @@
+{
+  "empty_wcca": {
+    "success": true,
+    "revision_id": "a1f8a056-d417-4193-a534-3c194a3b4606",
+    "distribution": "gaussian",
+    "num_iterations": 20,
+    "overall_readiness": "MARGINAL_REQUIRES_TRIMMING",
+    "specification_limits": {
+      "vout_nominal_v": 1000.0,
+      "lsl_vout_v": 980.0,
+      "usl_vout_v": 1020.0,
+      "tolerance_percent": 2.0,
+      "ripple_limit_mv": 500.0
+    },
+    "statistics": {
+      "mean_v": 1000.23,
+      "std_dev_v": 5.8716,
+      "median_v": 1000.465,
+      "min_v": 991.689,
+      "max_v": 1012.072,
+      "three_sigma_lower_v": 982.615,
+      "three_sigma_upper_v": 1017.845,
+      "cp": 1.135,
+      "cpk": 1.122,
+      "statistical_yield_percent": 100.0
+    },
+    "histogram_bins": [
+      {
+        "bin_start": 991.689,
+        "bin_end": 993.727,
+        "bin_center": 992.708,
+        "count": 2,
+        "frequency": 0.1
+      },
+      {
+        "bin_start": 993.727,
+        "bin_end": 995.765,
+        "bin_center": 994.746,
+        "count": 4,
+        "frequency": 0.2
+      },
+      {
+        "bin_start": 995.765,
+        "bin_end": 997.804,
+        "bin_center": 996.785,
+        "count": 3,
+        "frequency": 0.15
+      },
+      {
+        "bin_start": 997.804,
+        "bin_end": 999.842,
+        "bin_center": 998.823,
+        "count": 1,
+        "frequency": 0.05
+      },
+      {
+        "bin_start": 999.842,
+        "bin_end": 1001.88,
+        "bin_center": 1000.861,
+        "count": 1,
+        "frequency": 0.05
+      },
+      {
+        "bin_start": 1001.88,
+        "bin_end": 1003.919,
+        "bin_center": 1002.9,
+        "count": 4,
+        "frequency": 0.2
+      },
+      {
+        "bin_start": 1003.919,
+        "bin_end": 1005.957,
+        "bin_center": 1004.938,
+        "count": 2,
+        "frequency": 0.1
+      },
+      {
+        "bin_start": 1005.957,
+        "bin_end": 1007.995,
+        "bin_center": 1006.976,
+        "count": 1,
+        "frequency": 0.05
+      },
+      {
+        "bin_start": 1007.995,
+        "bin_end": 1010.034,
+        "bin_center": 1009.015,
+        "count": 0,
+        "frequency": 0.0
+      },
+      {
+        "bin_start": 1010.034,
+        "bin_end": 1012.072,
+        "bin_center": 1011.053,
+        "count": 2,
+        "frequency": 0.1
+      }
+    ],
+    "eva_corners": [
+      {
+        "corner_name": "Cold Min Line (Worst Undershoot)",
+        "condition": "Vin=20.4V, T=-40\u00b0C, -1% R1, +1% R2, -1% Vref",
+        "vout_v": 970.445,
+        "vsw_peak_v": 40.98,
+        "ripple_mv": 425.0,
+        "margin_status": "PASS"
+      },
+      {
+        "corner_name": "Hot Max Line (Worst Overshoot)",
+        "condition": "Vin=27.6V, T=+85\u00b0C, +1% R1, -1% R2, +1% Vref",
+        "vout_v": 1030.353,
+        "vsw_peak_v": 53.12,
+        "ripple_mv": 575.0,
+        "margin_status": "PASS"
+      },
+      {
+        "corner_name": "Maximum Switch Stress Corner",
+        "condition": "Vin_max=27.6V, Lm=+10%, Max Load, T=+85\u00b0C",
+        "vout_v": 1005.0,
+        "vsw_peak_v": 54.71,
+        "ripple_mv": 475.0,
+        "margin_status": "PASS"
+      },
+      {
+        "corner_name": "Maximum Ripple Corner",
+        "condition": "Vin_min=20.4V, Cout=-10%, ESR=+30%, Full Load",
+        "vout_v": 998.0,
+        "vsw_peak_v": 46.8,
+        "ripple_mv": 610.0,
+        "margin_status": "PASS"
+      }
+    ],
+    "sensitivities": [
+      {
+        "component": "R1 (Feedback Upper Divider)",
+        "parameter": "Resistance",
+        "tolerance_pct": 1.0,
+        "sensitivity_pct": 48.2
+      },
+      {
+        "component": "R2 (Feedback Lower Divider)",
+        "parameter": "Resistance",
+        "tolerance_pct": 1.0,
+        "sensitivity_pct": 36.4
+      },
+      {
+        "component": "U1 (Bandgap Reference)",
+        "parameter": "Vref Drift",
+        "tolerance_pct": 1.0,
+        "sensitivity_pct": 11.2
+      },
+      {
+        "component": "Cout (Filter Capacitance)",
+        "parameter": "Capacitance & ESR",
+        "tolerance_pct": 10.0,
+        "sensitivity_pct": 2.8
+      },
+      {
+        "component": "T1 (Transformer Magnetizing Inductance)",
+        "parameter": "Lm",
+        "tolerance_pct": 10.0,
+        "sensitivity_pct": 1.4
+      }
+    ],
+    "monte_carlo_runs": [
+      {
+        "iteration": 1,
+        "vout_v": 1010.35,
+        "ripple_mv": 18.36,
+        "vsw_peak_v": 48.05,
+        "temperature_c": 58.3,
+        "vin_v": 25.13
+      },
+      {
+        "iteration": 2,
+        "vout_v": 1002.058,
+        "ripple_mv": 17.2,
+        "vsw_peak_v": 47.77,
+        "temperature_c": -11.6,
+        "vin_v": 24.93
+      },
+      {
+        "iteration": 3,
+        "vout_v": 1012.072,
+        "ripple_mv": 18.84,
+        "vsw_peak_v": 46.88,
+        "temperature_c": 71.6,
+        "vin_v": 23.94
+      },
+      {
+        "iteration": 4,
+        "vout_v": 1007.132,
+        "ripple_mv": 18.22,
+        "vsw_peak_v": 47.33,
+        "temperature_c": 80.9,
+        "vin_v": 24.44
+      },
+      {
+        "iteration": 5,
+        "vout_v": 1004.94,
+        "ripple_mv": 17.71,
+        "vsw_peak_v": 48.22,
+        "temperature_c": 43.7,
+        "vin_v": 25.35
+      },
+      {
+        "iteration": 6,
+        "vout_v": 993.732,
+        "ripple_mv": 17.93,
+        "vsw_peak_v": 47.02,
+        "temperature_c": -22.5,
+        "vin_v": 24.28
+      },
+      {
+        "iteration": 7,
+        "vout_v": 1003.607,
+        "ripple_mv": 17.77,
+        "vsw_peak_v": 47.61,
+        "temperature_c": 31.1,
+        "vin_v": 24.76
+      },
+      {
+        "iteration": 8,
+        "vout_v": 991.689,
+        "ripple_mv": 17.64,
+        "vsw_peak_v": 47.88,
+        "temperature_c": 29.2,
+        "vin_v": 25.16
+      },
+      {
+        "iteration": 9,
+        "vout_v": 995.019,
+        "ripple_mv": 18.0,
+        "vsw_peak_v": 46.2,
+        "temperature_c": -10.8,
+        "vin_v": 23.45
+      },
+      {
+        "iteration": 10,
+        "vout_v": 994.359,
+        "ripple_mv": 17.67,
+        "vsw_peak_v": 47.58,
+        "temperature_c": 10.8,
+        "vin_v": 24.83
+      },
+      {
+        "iteration": 11,
+        "vout_v": 1002.276,
+        "ripple_mv": 17.88,
+        "vsw_peak_v": 46.38,
+        "temperature_c": 22.6,
+        "vin_v": 23.54
+      },
+      {
+        "iteration": 12,
+        "vout_v": 996.951,
+        "ripple_mv": 17.66,
+        "vsw_peak_v": 46.66,
+        "temperature_c": -29.0,
+        "vin_v": 23.88
+      },
+      {
+        "iteration": 13,
+        "vout_v": 1002.714,
+        "ripple_mv": 17.79,
+        "vsw_peak_v": 45.75,
+        "temperature_c": 49.6,
+        "vin_v": 22.91
+      },
+      {
+        "iteration": 14,
+        "vout_v": 995.154,
+        "ripple_mv": 19.21,
+        "vsw_peak_v": 46.35,
+        "temperature_c": 32.4,
+        "vin_v": 23.59
+      },
+      {
+        "iteration": 15,
+        "vout_v": 1004.718,
+        "ripple_mv": 18.75,
+        "vsw_peak_v": 46.23,
+        "temperature_c": 41.2,
+        "vin_v": 23.36
+      },
+      {
+        "iteration": 16,
+        "vout_v": 997.576,
+        "ripple_mv": 17.49,
+        "vsw_peak_v": 48.42,
+        "temperature_c": 33.5,
+        "vin_v": 25.63
+      },
+      {
+        "iteration": 17,
+        "vout_v": 999.185,
+        "ripple_mv": 18.54,
+        "vsw_peak_v": 45.15,
+        "temperature_c": 20.3,
+        "vin_v": 22.35
+      },
+      {
+        "iteration": 18,
+        "vout_v": 1001.745,
+        "ripple_mv": 16.57,
+        "vsw_peak_v": 50.33,
+        "temperature_c": -6.6,
+        "vin_v": 27.5
+      },
+      {
+        "iteration": 19,
+        "vout_v": 997.062,
+        "ripple_mv": 17.94,
+        "vsw_peak_v": 46.61,
+        "temperature_c": 29.3,
+        "vin_v": 23.83
+      },
+      {
+        "iteration": 20,
+        "vout_v": 992.259,
+        "ripple_mv": 16.46,
+        "vsw_peak_v": 48.85,
+        "temperature_c": -11.2,
+        "vin_v": 26.12
+      }
+    ],
+    "report_sha256": "668b2297add334f47e0e6a1726d9ad373069bfc27040b5d2c19d5b6abddb55cd"
+  },
+  "empty_thermal": {
+    "success": true,
+    "revision_id": "a1f8a056-d417-4193-a534-3c194a3b4606",
+    "ambient_c": 25.0,
+    "copper_weight_oz": 2.0,
+    "total_board_loss_w": 0.0,
+    "max_temperature_c": 25.0,
+    "max_component": "N/A",
+    "min_thermal_margin_c": 50.0,
+    "overall_status": "PASS",
+    "board_bbox": {
+      "min_x": 0,
+      "min_y": 0,
+      "max_x": 100,
+      "max_y": 80
+    },
+    "hotspots": [],
+    "isotherms": [
+      {
+        "temp_c": 70.0,
+        "color": "#ef4444",
+        "label": "Hot (>70\u00b0C)"
+      },
+      {
+        "temp_c": 55.0,
+        "color": "#f97316",
+        "label": "Warm (55\u00b0C)"
+      },
+      {
+        "temp_c": 40.0,
+        "color": "#84cc16",
+        "label": "Elevated (40\u00b0C)"
+      },
+      {
+        "temp_c": 30.0,
+        "color": "#06b6d4",
+        "label": "Cool (<35\u00b0C)"
+      }
+    ],
+    "standards_compliance": {
+      "ipc_9592b_derated": true,
+      "navmat_derating": true,
+      "max_allowable_junction_c": 120.0
+    },
+    "report_sha256": "b8c85abea98d63f50f0bb87e668c29140ce7f3a0be0d8625fc8b23f91e29ac94"
+  },
+  "empty_laboratory_plan": {
+    "error_type": "TypeError",
+    "error": "unsupported format string passed to NoneType.__format__"
+  },
+  "package_incomplete": {
+    "status": "READY",
+    "package_exists": true,
+    "product_code": "AUDIT-ONLY",
+    "product_name": "Disposable framework audit",
+    "revision_label": "AUDIT-NEXT",
+    "revision_id": "a1f8a056-d417-4193-a534-3c194a3b4606",
+    "package_filename": "AUDIT-ONLY_AUDIT-NEXT_Complete_Manufacturing_Release.zip",
+    "package_relative_path": "release_package/AUDIT-ONLY_AUDIT-NEXT_Complete_Manufacturing_Release.zip",
+    "package_size_bytes": 156,
+    "package_sha256": "36aeaa180c03b2170c9a79a1cd4d740782a2c3dedf2c1b92364b4fc8ff0c96e9",
+    "generated_at": "2026-11-15T08:57:49.111848+00:00",
+    "generator": "Audit fixture",
+    "contents": [
+      {
+        "file": "only_report.html",
+        "category": "testing_qa",
+        "size_bytes": 24,
+        "sha256": "d99d3b090136c66c55b508dfecedf6026c0845bd6d483266d96063f3e30dd618"
+      }
+    ],
+    "categories": {
+      "cad": [],
+      "fabrication": [],
+      "assembly": [],
+      "bom": [],
+      "testing_qa": [
+        {
+          "file": "only_report.html",
+          "category": "testing_qa",
+          "size_bytes": 24,
+          "sha256": "d99d3b090136c66c55b508dfecedf6026c0845bd6d483266d96063f3e30dd618"
+        }
+      ],
+      "other": []
+    },
+    "available_candidates_count": 1,
+    "governance_notice": "Engineering qualification: Design handover package. All constituent deliverables are cryptographically registered with SHA-256 checksums. Final production manufacturing release requires attributable human review and completed physical laboratory verification per AGENTS.md rules."
+  },
+  "package_members": [
+    "only_report.html"
+  ],
+  "package_zip_crc": null,
+  "package_after_corruption": {
+    "status": "READY",
+    "package_exists": true,
+    "product_code": "AUDIT-ONLY",
+    "product_name": "Disposable framework audit",
+    "revision_label": "AUDIT-NEXT",
+    "revision_id": "a1f8a056-d417-4193-a534-3c194a3b4606",
+    "package_filename": "AUDIT-ONLY_AUDIT-NEXT_Complete_Manufacturing_Release.zip",
+    "package_relative_path": "release_package/AUDIT-ONLY_AUDIT-NEXT_Complete_Manufacturing_Release.zip",
+    "package_size_bytes": 23,
+    "package_sha256": "36aeaa180c03b2170c9a79a1cd4d740782a2c3dedf2c1b92364b4fc8ff0c96e9",
+    "generated_at": "2026-11-15T08:57:49.111848+00:00",
+    "generator": "Audit fixture",
+    "contents": [
+      {
+        "file": "only_report.html",
+        "category": "testing_qa",
+        "size_bytes": 24,
+        "sha256": "d99d3b090136c66c55b508dfecedf6026c0845bd6d483266d96063f3e30dd618"
+      }
+    ],
+    "categories": {
+      "cad": [],
+      "fabrication": [],
+      "assembly": [],
+      "bom": [],
+      "testing_qa": [
+        {
+          "file": "only_report.html",
+          "category": "testing_qa",
+          "size_bytes": 24,
+          "sha256": "d99d3b090136c66c55b508dfecedf6026c0845bd6d483266d96063f3e30dd618"
+        }
+      ],
+      "other": []
+    },
+    "available_candidates_count": 1,
+    "governance_notice": "Engineering qualification: Design handover package. All constituent deliverables are cryptographically registered with SHA-256 checksums. Final production manufacturing release requires attributable human review and completed physical laboratory verification per AGENTS.md rules."
+  },
+  "pricing_unknown_part": {
+    "success": true,
+    "revision_id": "a1f8a056-d417-4193-a534-3c194a3b4606",
+    "product_code": "AUDIT-ONLY",
+    "product_name": "Disposable framework audit",
+    "currency": "USD",
+    "total_line_items": 1,
+    "total_components": 1,
+    "summary": {
+      "board_cost_1": 0.08,
+      "board_cost_25": 0.04,
+      "board_cost_100": 0.02,
+      "board_cost_1000": 0.01,
+      "volume_savings_pct": 87.5,
+      "batch_cost_1": 0.08,
+      "batch_cost_25": 1.0,
+      "batch_cost_100": 2.0,
+      "batch_cost_1000": 10.0
+    },
+    "top_cost_drivers": [
+      {
+        "rank": 1,
+        "designator": "R1",
+        "mpn": "AUDIT-NONEXISTENT-PART",
+        "description": "resistor",
+        "category": "Resistors",
+        "cost_1000": 0.01,
+        "share_pct": 100.0,
+        "cumulative_share_pct": 100.0
+      }
+    ],
+    "category_breakdown": [
+      {
+        "category": "Resistors",
+        "item_count": 1,
+        "total_cost_1": 0.08,
+        "total_cost_1000": 0.01,
+        "pct_of_total": 100.0
+      }
+    ],
+    "items": [
+      {
+        "item_num": 1,
+        "designator": "R1",
+        "quantity": 1,
+        "description": "resistor",
+        "manufacturer": "Standard Vendor",
+        "mpn": "AUDIT-NONEXISTENT-PART",
+        "package": "SMD",
+        "category": "Resistors",
+        "lifecycle": "ACTIVE",
+        "distributor": "Digi-Key / Yageo",
+        "packaging": "Cut Tape / Reel",
+        "lead_time_weeks": "2-4 wks",
+        "sourcing_risk": "LOW",
+        "pricing_tiers": {
+          "tier_1": {
+            "unit_price": 0.08,
+            "ext_price": 0.08
+          },
+          "tier_25": {
+            "unit_price": 0.04,
+            "ext_price": 0.04
+          },
+          "tier_100": {
+            "unit_price": 0.02,
+            "ext_price": 0.02
+          },
+          "tier_1000": {
+            "unit_price": 0.008,
+            "ext_price": 0.01
+          }
+        }
+      }
+    ],
+    "csv_path": "bom/exports/procurement_bom.csv",
+    "json_path": "bom/exports/procurement_schedule.json",
+    "markdown_path": "bom/exports/procurement_schedule.md",
+    "html_path": "bom/exports/procurement_schedule.html",
+    "sha256": "b6df435e9f706de396e9063e6fa15da8056029a2ed2c0d421ebc69c08496430b",
+    "disclaimer": "Engineering qualification: NOT_EVALUATED. Analytical price break estimation for design-to-cost evaluation. Does not authorize procurement release."
+  },
+  "archived_revision_status": "archived",
+  "archived_wcca": true,
+  "archived_package": "READY"
+}

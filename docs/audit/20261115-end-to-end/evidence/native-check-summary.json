@@ -1,0 +1,34 @@
+{
+  "pytest-temp\\test_kicad_schematic_erc_zero_0\\kicad_buck\\erc.json": {
+    "severity_counts": {},
+    "unconnected": 0,
+    "keys": [
+      "$schema",
+      "coordinate_units",
+      "date",
+      "ignored_checks",
+      "included_severities",
+      "kicad_version",
+      "sheets",
+      "source"
+    ]
+  },
+  "pytest-temp\\test_kicad_pcb_drc_and_no_isol0\\drc.json": {
+    "severity_counts": {
+      "warning": 16
+    },
+    "unconnected": 0,
+    "keys": [
+      "$schema",
+      "coordinate_units",
+      "date",
+      "ignored_checks",
+      "included_severities",
+      "kicad_version",
+      "schematic_parity",
+      "source",
+      "unconnected_items",
+      "violations"
+    ]
+  }
+}

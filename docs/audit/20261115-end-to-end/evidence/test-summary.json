@@ -1,0 +1,31 @@
+{
+  "total": "157",
+  "failures": "4",
+  "seconds": "423.146",
+  "groups": {
+    "tests.core.test_milestone1_revision_integrity_and_export_gates": 5,
+    "tests.core.test_milestone2_coherent_buck_reference": 7,
+    "tests.core.test_milestone3_truthful_evidence_and_waveforms": 10,
+    "tests.core.test_milestone4_repeatable_delivery_and_agent_parity": 10,
+    "tests.core.test_milestone_qualified_engineering_inputs": 9,
+    "tests.core.test_milestone_wider_engineering_coverage": 9,
+    "tests.core.test_release_handover_package": 1,
+    "tests.core.test_turnkey_manufacturing_package": 2,
+    "tests.core.test_wcca_engine": 3,
+    "tests.core.test_pcb_thermal_engine": 2,
+    "tests.core.test_oscilloscope_correlation": 9,
+    "tests.core.test_bom_export_integrity": 7,
+    "tests.core.test_safety_applicability": 33,
+    "tests.core.test_engineering_records": 26,
+    "tests.core.test_requirements_traceability_matrix": 2,
+    "tests.adapters.test_ltspice_adapter": 4,
+    "tests.adapters.test_kicad_adapter": 3,
+    "tests.integrations.test_copper_kicad_adapter": 15
+  },
+  "failed": [
+    "tests.core.test_milestone4_repeatable_delivery_and_agent_parity::test_g21_installer_script_and_entry_point",
+    "tests.core.test_bom_export_integrity::test_exports_use_supplied_rows_and_preserve_every_previous_byte",
+    "tests.core.test_bom_export_integrity::test_emc100_reference_design_bom_compilation",
+    "tests.adapters.test_ltspice_adapter::test_ltspice_numpy_waveforms_parser"
+  ]
+}

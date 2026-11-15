@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="157" time="423.146" timestamp="2026-11-15T14:27:12.155999+05:30" hostname="LAPTOP-00P5DJUV"><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_frozen_revision_rejects_all_mutators_before_adapter_execution" time="0.548" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_cad_preview_on_archived_revision_writes_to_cache_outside_workspace" time="0.288" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_design_revision_isolation_strictness" time="0.409" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_gerber_export_gate_blocks_failing_and_unrouted_boards" time="0.296" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_routing_failures_propagate_truthfully_to_desktop" time="1.716" /><testcase classname="tests.core.test_milestone2_coherent_buck_reference" name="test_coherent_buck_ir_synthesis" time="0.002" /><testcase classname="tests.core.test_milestone2_coherent_buck_reference" name="test_ltspice_asc_and_netlist_electrical_equivalence" time="2.697" /><testcase classname="tests.core.test_milestone2_coherent_buck_reference" name="test_kicad_schematic_erc_zero_critical_errors" time="138.195" /><testcase classname="tests.core.test_milestone2_coherent_buck_reference" name="test_kicad_pcb_drc_and_no_isolation_slot" time="44.000" /><testcase classname="tests.core.test_milestone2_coherent_buck_reference" name="test_isolated_topology_retains_isolation_slot_when_appropriate" time="0.027" /><testcase classname="tests.core.test_milestone2_coherent_buck_reference" name="test_negative_detection_omitted_gate_path" time="2.312" /><testcase classname="tests.core.test_milestone2_coherent_buck_reference" name="test_negative_detection_omitted_load_path" time="2.430" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g04_nested_kicad_erc_report_parsing_detects_all_errors" time="0.016" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g04_empty_or_malformed_erc_yields_not_evaluated" time="0.009" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g04_empty_femm_evidence_never_manufactures_pass" time="0.007" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g04_unexcited_femm_evidence_yields_not_evaluated" time="0.023" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g04_saturated_femm_evidence_yields_saturated" time="0.020" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g04_qualified_femm_evidence_yields_truthful_margin" time="0.027" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g07_waveform_rpc_pagination_enforces_start_and_limit" time="0.465" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g07_time_weighted_averaging_vs_unweighted_sample_mean" time="0.005" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g07_explicit_zero_tolerance_not_overwritten" time="0.005" /><testcase classname="tests.core.test_milestone3_truthful_evidence_and_waveforms" name="test_g07_full_time_domain_preview_decimation" time="0.013" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g18_mcp_tools_strictly_exclude_review_approval_operations" time="0.202" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g18_agent_attempt_to_execute_review_approval_is_forbidden" time="0.165" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g19_mcp_exposes_copper_tools_and_all_seven_calculators" time="0.453" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g19_mcp_calculation_dispatch_executes_all_new_calculators" time="0.179" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g19_mcp_copper_tools_dispatch_via_desktop_service" time="0.857" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g24_native_operations_return_receipts" time="13.374" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g21_installer_script_and_entry_point" time="0.006"><failure message="AssertionError: assert False&#10; +  where False = exists()&#10; +    where exists = WindowsPath('scripts/build_windows_installer.ps1').exists">def test_g21_installer_script_and_entry_point():
+        """Verifies that the standalone Windows installer script exists and entry-point is registered."""
+        installer_script = Path("scripts/build_windows_installer.ps1")
+&gt;       assert installer_script.exists()
+E       AssertionError: assert False
+E        +  where False = exists()
+E        +    where exists = WindowsPath('scripts/build_windows_installer.ps1').exists
+
+..\..\..\..\tests\core\test_milestone4_repeatable_delivery_and_agent_parity.py:265: AssertionError</failure></testcase><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g19_mcp_all_new_engineering_tools_dispatch" time="17.901" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g19_cli_commands_parity" time="19.128" /><testcase classname="tests.core.test_milestone4_repeatable_delivery_and_agent_parity" name="test_g24_idempotent_receipt_lookup_and_deduplication" time="0.698" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g10_creepage_material_groups_yield_distinct_iec60664_distances" time="0.003" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g10_creepage_rejects_negative_or_zero_voltage" time="0.006" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g10_creepage_rejects_invalid_material_group_and_pollution_degree" time="0.002" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g08_steinmetz_loss_paths_concur_under_declared_conventions" time="0.004" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g08_steinmetz_rejects_non_positive_coefficients_or_invalid_conventions" time="0.008" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g09_trace_width_formula_label_attributes_ipc2221_empirical_derivation" time="0.007" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g09_semiconductor_thermal_requires_heatsink_specification_to_claim_pass" time="0.008" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g05_buck_synthesis_components_resolve_exact_mpns_ratings_and_footprints" time="0.006" /><testcase classname="tests.core.test_milestone_qualified_engineering_inputs" name="test_g06_specification_and_requirements_link_verification_methods" time="0.006" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g11_femm_inductor_script_generation" time="0.002" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g11_analytical_reluctance_benchmark" time="0.002" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g12_buck_small_signal_bode_analysis" time="0.007" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g12_line_and_load_regulation_evaluation" time="0.004" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g12_fault_response_evaluation" time="0.007" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g13_topology_applicability_matrix_and_candidate_stamping" time="0.010" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g15_mechanical_pcb_envelope_and_3d_model_coverage" time="0.029" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g16_g17_validation_write_evidence_source_enforcement" time="0.433" /><testcase classname="tests.core.test_milestone_wider_engineering_coverage" name="test_g23_physical_testing_gate_blocks_unverified_engineering_release" time="0.462" /><testcase classname="tests.core.test_release_handover_package" name="test_release_package_end_to_end" time="0.767" /><testcase classname="tests.core.test_turnkey_manufacturing_package" name="test_kicad_service_exports_pos_d356_and_stats" time="0.656" /><testcase classname="tests.core.test_turnkey_manufacturing_package" name="test_turnkey_manufacturing_package_flow" time="2.440" /><testcase classname="tests.core.test_wcca_engine" name="test_wcca_engine_statistical_computation" time="0.116" /><testcase classname="tests.core.test_wcca_engine" name="test_wcca_eva_corners" time="0.021" /><testcase classname="tests.core.test_wcca_engine" name="test_wcca_studio_and_desktop_rpc" time="0.627" /><testcase classname="tests.core.test_pcb_thermal_engine" name="test_pcb_thermal_engine_calculations" time="0.018" /><testcase classname="tests.core.test_pcb_thermal_engine" name="test_pcb_thermal_studio_and_rpc" time="0.694" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_scope_vendor_detection" time="0.006" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_parse_tektronix_csv" time="0.019" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_parse_keysight_csv" time="0.006" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_parse_rigol_csv" time="0.006" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_decimate_waveform_envelope_preservation" time="0.011" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_channel_metrics" time="0.008" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_waveform_correlation_pass" time="0.006" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_waveform_correlation_tolerance_exceeded" time="0.007" /><testcase classname="tests.core.test_oscilloscope_correlation" name="test_studio_service_oscilloscope_ingestion_and_rpc" time="0.522" /><testcase classname="tests.core.test_bom_export_integrity" name="test_missing_or_malformed_bom_never_inserts_example_parts[None]" time="0.165" /><testcase classname="tests.core.test_bom_export_integrity" name="test_missing_or_malformed_bom_never_inserts_example_parts[not JSON]" time="0.200" /><testcase classname="tests.core.test_bom_export_integrity" name="test_missing_or_malformed_bom_never_inserts_example_parts[[]]" time="0.197" /><testcase classname="tests.core.test_bom_export_integrity" name="test_missing_or_malformed_bom_never_inserts_example_parts[[{&quot;description&quot;:&quot;incomplete&quot;}]]" time="0.747" /><testcase classname="tests.core.test_bom_export_integrity" name="test_exports_use_supplied_rows_and_preserve_every_previous_byte" time="0.596"><failure message="FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Mendex studio\\docs\\audit\\20261115-end-to-end\\evidence\\pytest-temp\\test_exports_use_supplied_rows0\\products\\c9d302e7-c9de-4f43-93ba-8eac26dfa21f\\revisions\\03f0451e-3191-40eb-b1a3-a20e7eeb9a5d\\bom\\exports\\9182b57a1eda4eb59ddcd8da51ec44a7\\Bill_of_Materials.docx'">context = (&lt;mendex_core.service.StudioService object at 0x0000026D10B467B0&gt;, Product(product_id=UUID('c9d302e7-c9de-4f43-93ba-8e...lied_rows0/products/c9d302e7-c9de-4f43-93ba-8eac26dfa21f/revisions/03f0451e-3191-40eb-b1a3-a20e7eeb9a5d/bom/bom.json'))
+
+    def test_exports_use_supplied_rows_and_preserve_every_previous_byte(context):
+        pytest.importorskip('docx')
+        studio, _, revision, source = context
+        source.parent.mkdir()
+        data = json.dumps([{'designator': 'R_EXPLICIT', 'quantity': 2,
+                           'description': 'Supplied fixture resistor; not engineering evidence',
+                           'mpn': 'FIXTURE-ONLY', 'source': 'Software test'}]).encode()
+        source.write_bytes(data)
+&gt;       a = bom_generator.generate_bom_deliverables(studio, revision.revision_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..\..\..\..\tests\core\test_bom_export_integrity.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\src\mendex_core\bom_generator.py:80: in generate_bom_deliverables
+    return _generate_bom_deliverables(studio, revision_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\src\mendex_core\bom_generator.py:134: in _generate_bom_deliverables
+    build_bom_docx(docx_path, items, project_code=product.code, project_name=product.name,
+..\..\..\..\src\mendex_core\bom_generator.py:33: in build_bom_docx
+    document.save(output_path)
+..\..\..\..\.venv\Lib\site-packages\docx\document.py:204: in save
+    self._part.save(path_or_stream)
+..\..\..\..\.venv\Lib\site-packages\docx\parts\document.py:114: in save
+    self.package.save(path_or_stream)
+..\..\..\..\.venv\Lib\site-packages\docx\opc\package.py:166: in save
+    PackageWriter.write(pkg_file, self.rels, self.parts)
+..\..\..\..\.venv\Lib\site-packages\docx\opc\pkgwriter.py:34: in write
+    phys_writer = PhysPkgWriter(pkg_file)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv\Lib\site-packages\docx\opc\phys_pkg.py:109: in __init__
+    self._zipf = ZipFile(pkg_file, "w", compression=ZIP_DEFLATED)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;zipfile.ZipFile [closed]&gt;
+file = 'C:\\Mendex studio\\docs\\audit\\20261115-end-to-end\\evidence\\pytest-temp\\test_exports_use_supplied_rows0\\products...evisions\\03f0451e-3191-40eb-b1a3-a20e7eeb9a5d\\bom\\exports\\9182b57a1eda4eb59ddcd8da51ec44a7\\Bill_of_Materials.docx'
+mode = 'w', compression = 8, allowZip64 = True, compresslevel = None
+strict_timestamps = True, metadata_encoding = None
+
+    def __init__(self, file, mode="r", compression=ZIP_STORED, allowZip64=True,
+                 compresslevel=None, *, strict_timestamps=True, metadata_encoding=None):
+        """Open the ZIP file with mode read 'r', write 'w', exclusive create 'x',
+        or append 'a'."""
+        if mode not in ('r', 'w', 'x', 'a'):
+            raise ValueError("ZipFile requires mode 'r', 'w', 'x', or 'a'")
+    
+        _check_compression(compression)
+    
+        self._allowZip64 = allowZip64
+        self._didModify = False
+        self.debug = 0  # Level of printing: 0 through 3
+        self.NameToInfo = {}    # Find file info given name
+        self.filelist = []      # List of ZipInfo instances for archive
+        self.compression = compression  # Method of compression
+        self.compresslevel = compresslevel
+        self.mode = mode
+        self.pwd = None
+        self._comment = b''
+        self._strict_timestamps = strict_timestamps
+        self.metadata_encoding = metadata_encoding
+    
+        # Check that we don't try to write with nonconforming codecs
+        if self.metadata_encoding and mode != 'r':
+            raise ValueError(
+                "metadata_encoding is only supported for reading files")
+    
+        # Check if we were passed a file-like object
+        if isinstance(file, os.PathLike):
+            file = os.fspath(file)
+        if isinstance(file, str):
+            # No, it's a filename
+            self._filePassed = 0
+            self.filename = file
+            modeDict = {'r' : 'rb', 'w': 'w+b', 'x': 'x+b', 'a' : 'r+b',
+                        'r+b': 'w+b', 'w+b': 'wb', 'x+b': 'xb'}
+            filemode = modeDict[mode]
+            while True:
+                try:
+&gt;                   self.fp = io.open(file, filemode)
+                              ^^^^^^^^^^^^^^^^^^^^^^^
+E                   FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Mendex studio\\docs\\audit\\20261115-end-to-end\\evidence\\pytest-temp\\test_exports_use_supplied_rows0\\products\\c9d302e7-c9de-4f43-93ba-8eac26dfa21f\\revisions\\03f0451e-3191-40eb-b1a3-a20e7eeb9a5d\\bom\\exports\\9182b57a1eda4eb59ddcd8da51ec44a7\\Bill_of_Materials.docx'
+
+C:\Python313\Lib\zipfile\__init__.py:1367: FileNotFoundError</failure></testcase><testcase classname="tests.core.test_bom_export_integrity" name="test_archived_revision_cannot_receive_bom_exports" time="0.242" /><testcase classname="tests.core.test_bom_export_integrity" name="test_emc100_reference_design_bom_compilation" time="0.146"><failure message="mendex_core.service.StudioError: Product not found">def test_emc100_reference_design_bom_compilation():
+        from pathlib import Path
+        from mendex_core.desktop.service import DesktopService
+        studio = StudioService(Path("."))
+&gt;       product = studio.get_product("5b0852dd-7920-4451-b869-049f46254387")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..\..\..\..\tests\core\test_bom_export_integrity.py:70: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\src\mendex_core\service.py:167: in get_product
+    return self._get("products", product_id, Product)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;mendex_core.service.StudioService object at 0x0000026D1A5BA7B0&gt;
+table = 'products', identifier = '5b0852dd-7920-4451-b869-049f46254387'
+model = &lt;class 'mendex_core.models.Product'&gt;
+
+    def _get(self, table, identifier, model):
+        try:
+            identifier = str(UUID(str(identifier)))
+        except (ValueError, TypeError) as exc:
+            raise StudioError("INVALID_INPUT", "Expected a valid product or revision UUID") from exc
+        with self.connection() as db:
+            row = db.execute(f"SELECT payload FROM {table} WHERE id=?", (identifier,)).fetchone()
+        if row is None:
+&gt;           raise StudioError("NOT_FOUND", f"{model.__name__} not found")
+E           mendex_core.service.StudioError: Product not found
+
+..\..\..\..\src\mendex_core\service.py:163: StudioError</failure></testcase><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[I-1]" time="0.006" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[I-2]" time="0.004" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[I-3]" time="0.006" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[I-4]" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[II-1]" time="0.007" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[II-2]" time="0.006" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[II-3]" time="0.008" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[II-4]" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[IIIa-1]" time="0.007" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[IIIa-2]" time="0.008" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[IIIa-3]" time="0.007" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[IIIa-4]" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[IIIb-1]" time="0.008" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[IIIb-2]" time="0.006" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[IIIb-3]" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_no_context_combination_can_use_unqualified_rule_tables[IIIb-4]" time="0.006" /><testcase classname="tests.core.test_safety_applicability" name="test_missing_inputs_are_explicit_without_assumed_environment_or_geometry" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs0]" time="0.008" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs1]" time="0.003" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs2]" time="0.002" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs3]" time="0.003" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs4]" time="0.010" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs5]" time="0.004" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs6]" time="0.007" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs7]" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs8]" time="0.007" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_safety_context_rejected[kwargs9]" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_derating_has_no_implicit_standard_limit_or_qualification" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_stress_arithmetic_rejected[nan-10]" time="0.007" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_stress_arithmetic_rejected[1-0]" time="0.006" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_stress_arithmetic_rejected[-1-10]" time="0.005" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_stress_arithmetic_rejected[True-2]" time="0.006" /><testcase classname="tests.core.test_safety_applicability" name="test_invalid_stress_arithmetic_rejected[1e+308-1e-308]" time="0.007" /><testcase classname="tests.core.test_engineering_records" name="test_discovery_does_not_install_records_schema" time="0.203" /><testcase classname="tests.core.test_engineering_records" name="test_metadata_concurrency_and_idempotency" time="0.450" /><testcase classname="tests.core.test_engineering_records" name="test_structured_requirements_history_and_coverage" time="0.603" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[dowell]" time="0.534" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[losses]" time="0.559" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[steinmetz]" time="0.406" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[flyback]" time="0.449" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[semiconductor_thermal]" time="0.476" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[magnetic_thermal]" time="1.329" /><testcase classname="tests.core.test_engineering_records" name="test_calculation_matches_existing_core_and_preserves_provenance[ipc2152_thermal]" time="0.370" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change0]" time="0.386" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change1]" time="0.941" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change2]" time="0.335" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change3]" time="0.411" /><testcase classname="tests.core.test_engineering_records" name="test_no_silent_coercion_clamping_or_nonfinite_inputs[change4]" time="0.403" /><testcase classname="tests.core.test_engineering_records" name="test_numerical_execution_failure_is_recorded_as_failed" time="0.386" /><testcase classname="tests.core.test_engineering_records" name="test_artifact_snapshot_integrity_and_paths" time="0.524" /><testcase classname="tests.core.test_engineering_records" name="test_stage_and_specification_guards" time="0.476" /><testcase classname="tests.core.test_engineering_records" name="test_validation_uses_existing_core_integrity" time="1.069" /><testcase classname="tests.core.test_engineering_records" name="test_receipt_failure_rolls_back_core_write_and_cleans_only_new_evidence" time="0.533" /><testcase classname="tests.core.test_engineering_records" name="test_report_generation_export_tamper_and_no_missing_input_fabrication" time="2.845" /><testcase classname="tests.core.test_engineering_records" name="test_live_job_not_recovered_by_observer_and_foreign_cancellation_rejected" time="0.850" /><testcase classname="tests.core.test_engineering_records" name="test_record_migration_rollback_preserves_lifecycle_and_backup" time="0.771" /><testcase classname="tests.core.test_engineering_records" name="test_immutable_record_tables_and_future_component_rejection" time="0.588" /><testcase classname="tests.core.test_engineering_records" name="test_legacy_report_export_is_explicitly_unverified" time="2.611" /><testcase classname="tests.core.test_engineering_records" name="test_record_context_rejects_archived_revision" time="0.429" /><testcase classname="tests.core.test_requirements_traceability_matrix" name="test_requirements_traceability_data_retrieval" time="1.416" /><testcase classname="tests.core.test_requirements_traceability_matrix" name="test_requirements_traceability_matrix_card_mounting" time="0.009" /><testcase classname="tests.adapters.test_ltspice_adapter" name="test_ltspice_smoke_run" time="0.544" /><testcase classname="tests.adapters.test_ltspice_adapter" name="test_ltspice_missing_input_error" time="0.057" /><testcase classname="tests.adapters.test_ltspice_adapter" name="test_ltspice_parser_with_sample_log" time="0.030" /><testcase classname="tests.adapters.test_ltspice_adapter" name="test_ltspice_numpy_waveforms_parser" time="0.023"><failure message="assert 0.0 == 5.0">tmp_path = WindowsPath('C:/Mendex studio/docs/audit/20261115-end-to-end/evidence/pytest-temp/test_ltspice_numpy_waveforms_p0')
+
+    def test_ltspice_numpy_waveforms_parser(tmp_path):
+        sample_raw = (
+            "Title: Sample Transient\n"
+            "Date: Tue Nov 10 2026\n"
+            "Plotname: Transient Analysis\n"
+            "Flags: real forward\n"
+            "No. Variables: 3\n"
+            "No. Points: 2\n"
+            "Variables:\n"
+            "\t0\ttime\ttime\n"
+            "\t1\tV(in)\tvoltage\n"
+            "\t2\tV(out)\tvoltage\n"
+            "Values:\n"
+            "0\t0.0\n"
+            "\t10.0\n"
+            "\t0.0\n"
+            "1\t1e-3\n"
+            "\t10.0\n"
+            "\t5.0\n"
+        )
+        raw_file = tmp_path / "sample.raw"
+        raw_file.write_text(sample_raw, encoding="utf-8")
+    
+        waveforms = parse_ascii_raw_waveforms(raw_file)
+        assert "time" in waveforms
+        assert "V(in)" in waveforms
+        assert "V(out)" in waveforms
+        assert len(waveforms["time"]) == 2
+        assert waveforms["V(in)"][0] == 10.0
+    
+        metrics = calculate_waveform_metrics(waveforms)
+        assert metrics["V(in)"]["mean"] == 10.0
+&gt;       assert metrics["V(out)"]["p2p"] == 5.0
+E       assert 0.0 == 5.0
+
+..\..\..\..\tests\adapters\test_ltspice_adapter.py:130: AssertionError</failure></testcase><testcase classname="tests.adapters.test_kicad_adapter" name="test_kicad_adapter_descriptor" time="0.048" /><testcase classname="tests.adapters.test_kicad_adapter" name="test_kicad_adapter_version_execution" time="0.241" /><testcase classname="tests.adapters.test_kicad_adapter" name="test_kicad_drc_json_parser" time="0.024" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_adapter_availability" time="0.006" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_adapter_doctor_status" time="0.596" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_adapter_place_pcb_and_argument_normalization" time="26.292" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_adapter_route_pcb_with_power_netclasses" time="27.560" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_adapter_render_3d" time="4.636" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_kicad_service_render_3d" time="4.625" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_kicad_adapter_render_3d_operation" time="4.901" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_adapter_apply_schematic" time="3.841" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_adapter_export_fab_and_argument_normalization" time="40.347" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_adapter_export_cad_step" time="4.814" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_desktop_service_auto_route_rpc" time="0.005" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_desktop_service_apply_schematic_rpc" time="0.007" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_calculate_iec60664_creepage_analytical_margins" time="0.006" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_mill_isolation_slot_with_iec60664_creepage" time="4.706" /><testcase classname="tests.integrations.test_copper_kicad_adapter" name="test_four_layer_power_pcb_stackup_and_internal_planes" time="21.572" /></testsuite></testsuites>

@@ -1,0 +1,19 @@
+{
+  "typescript_initial_exit": 0,
+  "typescript_final_exit": 0,
+  "initial_pytest": {
+    "total": 157,
+    "passed": 153,
+    "failed": 4
+  },
+  "targeted_retests": {
+    "passed": 2,
+    "failed": 0
+  },
+  "closing_regression": {
+    "passed": 56,
+    "failed": 0
+  },
+  "engineering_release": "NOT_EVALUATED",
+  "note": "Working-tree drift is documented; tests do not establish manufacturing approval."
+}

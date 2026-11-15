@@ -331,7 +331,7 @@ export const Reports: React.FC = () => {
                     )}
                   </div>
                   <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
-                    Report ID: <code style={{ color: '#334155' }}>{activeReportDossier.report_id.slice(0, 8)}…</code> · Revision: <code style={{ color: '#334155' }}>{activeReportDossier.revision_id.slice(0, 8)}…</code> · Compiled: {activeReportDossier.generated_at ? new Date(activeReportDossier.generated_at).toLocaleString() : 'N/A'}
+                    Compiled: {activeReportDossier.generated_at ? new Date(activeReportDossier.generated_at).toLocaleString() : 'N/A'} · Status: <span style={{ color: '#166534', fontWeight: 600 }}>Formal Engineering Dossier</span>
                   </div>
                 </div>
               </div>

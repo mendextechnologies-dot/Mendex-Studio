@@ -1,0 +1,16 @@
+{
+  "utc": "2026-11-15T09:10:18.689446+00:00",
+  "members": [
+    "model.step",
+    "only_report.html"
+  ],
+  "status_incomplete": "READY",
+  "status_corrupted": "READY",
+  "source_sha256": {
+    "src/mendex_core/design/release_packager.py": "cca0cd26fb6b478437b12a178aa55ff2f3488c1b237458b9aeb348ed378a8e10",
+    "src/mendex_core/desktop/service.py": "c911702a182581f390b3980fcfa7c577aa174dd88c5d34f6e1982ee16d83f85c",
+    "src/mendex_core/desktop/models.py": "5997c0f4817422fe4d6dcf1d33bd8d5ebda6d840f9dc6add9ec015f6a7a8d562",
+    "desktop/src/api/client.ts": "f396511bb2e762df951bb17bdc077735236fb7d79cdb308c6ca6c4873a249031",
+    "desktop/src/api/types.ts": "4c0b2e6dfe6cd96fc40ebe1083ddfb4805f64b3fd89cb2f0e5c57cf75e56f2d0"
+  }
+}

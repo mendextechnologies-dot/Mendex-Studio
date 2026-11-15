@@ -1,0 +1,25 @@
+{
+  "inventory_count": 658,
+  "extensions": {
+    ".json": 180,
+    ".md": 40,
+    ".csv": 40,
+    ".docx": 23,
+    ".pdf": 37,
+    ".step": 5,
+    ".kicad_pcb": 69,
+    ".kicad_pro": 66,
+    ".kicad_sch": 77,
+    ".zip": 17,
+    ".log": 12,
+    ".net": 7,
+    ".raw": 7,
+    ".gbr": 58,
+    ".gbl": 5,
+    ".gtl": 5,
+    ".drl": 7,
+    ".asc": 3
+  },
+  "disposable_revision": "a1f8a056-d417-4193-a534-3c194a3b4606",
+  "note": "All synthetic inputs are audit-only; no physical measurement or product design."
+}

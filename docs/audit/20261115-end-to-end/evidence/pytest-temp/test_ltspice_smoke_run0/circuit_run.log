@@ -1,0 +1,8 @@
+=== Command: C:\Program Files\ADI\LTspice\LTspice.exe -b -ascii C:\Mendex studio\docs\audit\20261115-end-to-end\evidence\pytest-temp\test_ltspice_smoke_run0\circuit.net ===
+=== Started: 2026-11-15T09:01:50.383787+00:00 ===
+=== Working Directory: C:\Mendex studio\docs\audit\20261115-end-to-end\evidence\pytest-temp\test_ltspice_smoke_run0 ===
+=== Exit Code: 0 ===
+
+--- STDOUT ---
+
+--- STDERR ---

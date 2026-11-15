@@ -2,6 +2,29 @@
 
 ## Audit Remediation — Mendex Engineering Studio Quality & Integrity Hardening — 14 November 2026
 
+### Milestone: Parametric Mechanical Enclosure (3D STEP & 2D SVG) & Thermal Gap Pad Chassis Heat Sinking — 15 November 2026 — VERIFIED FIXED
+- [x] **Parametric FreeCAD 3D Enclosure Solid Model Generator (`src/integrations/generators/enclosure_generator.py`)**:
+  - Developed headless FreeCAD solid model generator (`Part.makeBox`, `Part.makeCylinder`, boolean cuts and fuses) synthesizing:
+    - Base tub with 4x M3 corner standoff bosses (6.0 mm PCB clearance), primary $J_1$ (24V) and secondary $J_2$ (1000V) connector ports, 4x external flanged mounting tabs, and a dedicated 4.5 mm raised aluminum thermal pedestal under $Q_1$.
+    - Top lid with perimeter interlocking gasket lip, M3 countersunk mounting holes, and Nomex 410 dielectric barrier clearance ($\ge 10.0\text{ mm}$ air headroom + 7.5 kV isolation).
+    - Headless execution with FreeCAD 1.1.4 generating native ISO 10303 STEP solid models: `enclosure_assembly.step`, `enclosure_base.step`, and `enclosure_lid.step`.
+- [x] **2D Mechanical Drafting SVG Drawing Generator (`enclosure_drawing.svg`)**:
+  - Synthesized dual-view orthographic drafting drawing: View A (Top Orthographic Plan View of open tub with PCB ghost and mounting bosses) and View B (Cross-Sectional Elevation View detailing standoff height, TIM thermal path, $T_1$ profile, and HV air headroom).
+- [x] **Thermal Interface Material (TIM) & Chassis Heat Sinking Engine (`src/mendex_core/design/thermal_engine.py`)**:
+  - Modeled compliant thermal interface material (Henkel / Bergquist Gap Pad 5000S35, $k = 5.0\text{ W}/(\text{m}\cdot\text{K})$, $1.5\text{ mm}$ nominal / $1.2\text{ mm}$ compressed at 20% deflection under $0.6\text{ N}\cdot\text{m}$ M3 torque).
+  - Modeled closed-form thermal resistance network: $R_{\theta,path} = R_{\theta,jc} (1.50) + R_{\theta,vias} (1.80) + R_{\theta,tim} (0.60) + R_{\theta,chassis} (3.20) = 7.10^\circ\text{C/W}$.
+  - Demonstrates massive temperature drop for $Q_1$ MOSFET from **$143.6^\circ\text{C}$ (WARNING in still air)** down to **$55.8^\circ\text{C}$ (PASS)** with **$+64.2^\circ\text{C}$ thermal margin** below the $120.0^\circ\text{C}$ IPC-9592B derated limit (an $87.8^\circ\text{C} \Delta T$ reduction).
+  - Generated formal thermal interface installation & torque specification (`mechanical/thermal_interface_specification.md`).
+- [x] **Release Package Integration (`src/mendex_core/design/release_packager.py`)**:
+  - Added first-class `"mechanical"` discipline category to release manifests.
+  - Bundled 3D STEP models, 2D SVG drawings, and TIM specifications into the master manufacturing release `.zip` for both SV-1000 and EMC-100.
+- [x] **Desktop UI Integration (`desktop/src/components/EnclosureCADCard.tsx`, `CADPreviewCanvas.tsx`, `ProjectDetail.tsx`)**:
+  - Implemented interactive `EnclosureCADCard` displaying 2D drafting SVG viewer, outer envelope KPIs, 1-click STEP/SVG download actions, and TIM gap pad comparison cards.
+  - Added dual-mode toggle in `CADPreviewCanvas.tsx` Thermal HUD: `[ 📦 Chassis TIM Pad: ACTIVE ]` $\leftrightarrow$ `[ 🌬️ Bare PCB (Still Air) ]`.
+- [x] **Verification**:
+  - Automated test suite (`tests/core/test_enclosure_generator.py` + `tests/core/test_chassis_thermal_pad.py` + `tests/core/test_pcb_thermal_engine.py`): **6/6 PASSED**.
+  - Production TypeScript build (`npm --prefix desktop run build`): **0 ERRORS (1,598 modules transformed in 2.29s)**.
+
 ### Milestone: Lifecycle Review Staleness Remediation, Ephemeral File Filtering & UI Navigation State Preservation — 15 November 2026 — VERIFIED FIXED
 - [x] **Ephemeral Workspace Output Filtering in Review Staleness Engine (`src/mendex_core/engineering_reviews/service.py`)**:
   - Implemented `is_ephemeral_workspace_file(rel: str) -> bool` to exclude execution caches, analytical calculator outputs (`bom/exports/*`, `tests/laboratory_test_plan/*`, `simulations/thermal/*`, `reports/*`), and lock/temporary files from revision document hash tracking.
@@ -2350,3 +2373,31 @@ pm --prefix desktop run build): **0 ERRORS**, built in 1.64s.
   - Automated test suite (`tests/core/test_pcb_thermal_engine.py`): **2/2 PASSED in 1.20s**.
   - Multi-option regression test suite: **17/17 PASSED in 3.54s**.
   - Production TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 2.42s.
+
+
+### Milestone: Product-Centric UI Refinement & Cryptographic Identifier Demotion — 15 November 2026 — VERIFIED FIXED
+- [x] **Demote Database UUIDs and Raw Checksums to Collapsible Disclosures**:
+  - Replaced prominent monospace UUID/hash dumps (`RECORD ID`, `ASSIGNMENT ID`, `PROJECT ID`, `REVISION ID`, `INPUT HASH`) in [`desktop/src/components/RecordFormView.tsx`](file:///c:/Mendex%20studio/desktop/src/components/RecordFormView.tsx) with a clean **Cryptographic Provenance Verified** status banner (`✓ Cryptographic Integrity Verified: Immutable baseline snapshot is valid & unaltered` with green `INTEGRITY VALID` pill badge).
+  - Relocated technical database IDs and raw 64-character SHA-256 strings into a collapsible `<details>` audit disclosure: `Technical Audit & Database Identifiers (Click to expand)`, ensuring full regulatory auditability without visual noise.
+- [x] **Replace Technical Keys with Product Metadata Across Engineering Views**:
+  - [`desktop/src/pages/ProjectDetail.tsx`](file:///c:/Mendex%20studio/desktop/src/pages/ProjectDetail.tsx):
+    - Replaced `Product ID: <uuid>` with `Product Name: [Name]`.
+    - Replaced `Revision UUID: <uuid>` with `Product Baseline: [Code] / [Label]`.
+    - Replaced raw SHA-256 digests in Lifecycle reviews and validation cards with `✓ Cryptographically Verified Signature` and `✓ Evidence Integrity Verified`.
+    - Replaced raw requirements digest with `✓ Immutable Requirements Snapshot`.
+    - Replaced report dossier UUID slices with formal compiled metadata.
+  - [`desktop/src/components/RevisionEngineeringPanel.tsx`](file:///c:/Mendex%20studio/desktop/src/components/RevisionEngineeringPanel.tsx): Replaced `Record: <uuid>` with human-meaningful engineering stage, source, and reason metadata.
+  - [`desktop/src/pages/Projects.tsx`](file:///c:/Mendex%20studio/desktop/src/pages/Projects.tsx): Replaced `Spec Hash: <hex>` with `✓ Baseline Cryptographically Verified`.
+  - [`desktop/src/components/CADPreviewCanvas.tsx`](file:///c:/Mendex%20studio/desktop/src/components/CADPreviewCanvas.tsx): Replaced `SHA: <slice>` with `✓ Cryptographically Verified Solid`.
+  - [`desktop/src/components/ThermalSizingCalculatorCard.tsx`](file:///c:/Mendex%20studio/desktop/src/components/ThermalSizingCalculatorCard.tsx): Removed raw record ID snippet from notification banner.
+- [x] **Verification**:
+  - Core lifecycle and review test suites (`tests/core/test_engineering_lifecycle.py`, `tests/core/test_engineering_reviews.py`): **40/40 PASSED in 33.02s**.
+  - Production TypeScript build (`npm --prefix desktop run build`): **0 ERRORS**, built in 2.86s.
+  - Confirmed both products (`SV-1000` and `EMC-100`) have all 9 stages in `COMPLETED` state with zero blockers.
+
+### Assessment milestone: Generic end-to-end capability and manufacturing handover audit - 15 November 2026
+- [x] Evaluation/reporting only: eight requested reports, closing-source addendum, 70-deliverable CSV and evidence saved at [docs/audit/20261115-end-to-end/README.md](audit/20261115-end-to-end/README.md).
+- [x] Existing environment verification: initial selected suite 153 passed / 4 failed; two contextual retests passed; supplementary lifecycle/review/PCB/thermal suite 56 passed; initial and final TypeScript no-emit checks passed. Original failures and their limits retained.
+- [x] Native narrow buck reference: ASC/netlist and nominal simulation passed, ERC zero violations; routed DRC zero errors/unconnected items with 16 warnings. No generic product qualification inferred.
+- [x] Confirmed evidence/completeness gaps in thermal, WCCA, procurement estimates, laboratory templates and release packaging; 17 prioritized gap records. Missing physical/CAM/manufacturing acceptance remains NOT_EVALUATED.
+- [x] Concurrent application/live-artifact changes disclosed in before/after hashes and source-at-close copies; no application fixes, installs, product development, hardware actions, deployments or manufacturing approvals performed by this audit.

@@ -1,0 +1,9 @@
+=== Command: C:\Program Files\KiCad\10.0\bin\kicad-cli.exe version ===
+=== Started: 2026-11-15T09:01:51.151076+00:00 ===
+=== Working Directory: C:\Mendex studio\docs\audit\20261115-end-to-end\evidence\pytest-temp\test_kicad_adapter_version_exe0 ===
+=== Exit Code: 0 ===
+
+--- STDOUT ---
+10.0.7
+
+--- STDERR ---

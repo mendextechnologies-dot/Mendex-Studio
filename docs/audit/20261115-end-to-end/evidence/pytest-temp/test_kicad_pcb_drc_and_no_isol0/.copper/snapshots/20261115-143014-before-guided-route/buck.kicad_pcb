@@ -1,0 +1,777 @@
+(kicad_pcb
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(general
+		(thickness 1.6)
+		(legacy_teardrops no)
+	)
+	(paper "A4")
+	(layers
+		(0 "F.Cu" signal)
+		(2 "B.Cu" signal)
+		(5 "F.SilkS" user "F.Silkscreen")
+		(7 "B.SilkS" user "B.Silkscreen")
+		(1 "F.Mask" user)
+		(3 "B.Mask" user)
+		(25 "Edge.Cuts" user)
+		(27 "Margin" user)
+		(31 "F.CrtYd" user "F.Courtyard")
+		(29 "B.CrtYd" user "B.Courtyard")
+		(35 "F.Fab" user)
+		(33 "B.Fab" user)
+	)
+	(setup
+		(pad_to_mask_clearance 0.05)
+		(allow_soldermask_bridges_in_footprints no)
+		(tenting
+			(front yes)
+			(back yes)
+		)
+		(covering
+			(front no)
+			(back no)
+		)
+		(plugging
+			(front no)
+			(back no)
+		)
+		(capping no)
+		(filling no)
+		(pcbplotparams
+			(layerselection 0x00000000_00000000_55555555_5755f5ff)
+			(plot_on_all_layers_selection 0x00000000_00000000_00000000_00000000)
+			(disableapertmacros no)
+			(usegerberextensions yes)
+			(usegerberattributes yes)
+			(usegerberadvancedattributes yes)
+			(creategerberjobfile yes)
+			(dashed_line_dash_ratio 12)
+			(dashed_line_gap_ratio 3)
+			(svgprecision 4)
+			(plotframeref no)
+			(mode 1)
+			(useauxorigin no)
+			(pdf_front_fp_property_popups yes)
+			(pdf_back_fp_property_popups yes)
+			(pdf_metadata yes)
+			(pdf_single_document no)
+			(dxfpolygonmode yes)
+			(dxfimperialunits yes)
+			(dxfusepcbnewfont yes)
+			(psnegative no)
+			(psa4output no)
+			(plot_black_and_white yes)
+			(sketchpadsonfab no)
+			(plotpadnumbers no)
+			(hidednponfab no)
+			(sketchdnponfab yes)
+			(crossoutdnponfab yes)
+			(subtractmaskfromsilk no)
+			(outputformat 1)
+			(mirror no)
+			(drillshape 1)
+			(scaleselection 1)
+			(outputdirectory "")
+		)
+	)
+	(footprint "Inductor_SMD:L_1210_3225Metric"
+		(layer "F.Cu")
+		(uuid "0221ad1c-65ce-4805-9c4d-e78d677d5853")
+		(at 166 112)
+		(property "Reference" "L1"
+			(at 0 -3.5 0)
+			(layer "F.SilkS")
+			(uuid "7bee2dc8-6f54-4209-b616-7198cbad090f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Molded Power Inductor"
+			(at 0 3.5 0)
+			(layer "F.Fab")
+			(uuid "f0c6b197-3a39-4454-94fb-bfbb2a744a56")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "00786e23-7ebc-44d9-bd99-ecd3191c075b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "52e9019c-0c0c-472e-9105-d2e1d3c79120")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "1" smd roundrect
+			(at -1.45 0)
+			(size 1 2.5)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "SW")
+			(uuid "a3b7768a-ff6c-4de9-8cad-22ed7ae54289")
+		)
+		(pad "2" smd roundrect
+			(at 1.45 0)
+			(size 1 2.5)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "VOUT")
+			(uuid "de55435d-3db9-48ed-8829-9ad35315fc40")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1210_3225Metric.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
+		(layer "F.Cu")
+		(uuid "19a3c305-969a-496d-af98-3e5fc93cdc2c")
+		(at 148 130)
+		(property "Reference" "V_G1"
+			(at 0 -3.5 0)
+			(layer "F.SilkS")
+			(uuid "83434bbf-adf7-4cee-b06d-80410f26de40")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "High-Side Gate Drive PWM Source"
+			(at 0 3.5 0)
+			(layer "F.Fab")
+			(uuid "34074b63-a7a8-4e4f-ae53-0ba0018f0b75")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "51fc3150-763d-4492-8587-5b3724c1ba3e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "c2717bc2-2aa0-4aec-b703-d8450a778eab")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "n" smd roundrect
+			(at 0.95 0)
+			(size 1 1.3)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "SW")
+			(uuid "d6a3b223-367c-46a6-904a-e4ffdfbaa7e6")
+		)
+		(pad "p" smd roundrect
+			(at -0.95 0)
+			(size 1 1.3)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GATE_HI")
+			(uuid "8be8c266-3f3b-4509-bf9e-1ffb44efa58a")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x02_P2.54mm_Vertical.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(footprint "Capacitor_SMD:C_1210_3225Metric"
+		(layer "F.Cu")
+		(uuid "1f2ef3f8-8e95-4382-81c5-54e890df9ab7")
+		(at 112 130)
+		(property "Reference" "C1"
+			(at 0 -3.5 0)
+			(layer "F.SilkS")
+			(uuid "6c32e9e7-a34a-4a7e-8ac8-b003183089a2")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Multi-Layer Ceramic Capacitor (MLCC)"
+			(at 0 3.5 0)
+			(layer "F.Fab")
+			(uuid "9200d680-b25e-42ad-b57b-7796e0b04c1c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "cbf3f8a7-ff91-4924-9e2c-7dc45c7a0998")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "6c525848-1173-4aa5-a411-4afc334a4430")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "1" smd roundrect
+			(at -1.45 0)
+			(size 1 2.5)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "VOUT")
+			(uuid "e9f5e26d-9de4-401a-b03c-ea89ea532c5e")
+		)
+		(pad "2" smd roundrect
+			(at 1.45 0)
+			(size 1 2.5)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GND")
+			(uuid "ec633050-760c-4110-9421-7868348a6d90")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1210_3225Metric.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(footprint "Package_TO_SOT_SMD:TO-252-2"
+		(layer "F.Cu")
+		(uuid "2ee22dbe-4d37-4a28-8f91-d9f0a29c35f7")
+		(at 130 112)
+		(property "Reference" "Q1"
+			(at 0 -3.5 0)
+			(layer "F.SilkS")
+			(uuid "763b8abf-3790-440a-95e1-c66fe7e44d9c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "High-Side Power MOSFET"
+			(at 0 3.5 0)
+			(layer "F.Fab")
+			(uuid "9f258468-e8e2-4428-929d-344e5b418804")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "cf11465c-bf25-4754-8906-1c3d43204411")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "84b7aa20-2934-42cc-8481-ef9e88c61031")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -3.3 -3.5)
+			(end 3.3 4.5)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.SilkS")
+			(uuid "47fef29b-6cc4-4318-a024-f1efbb9756a2")
+		)
+		(pad "1" smd roundrect
+			(at -2.28 -2.5)
+			(size 1.14 2)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GATE_HI")
+			(uuid "b7e303fd-8be0-4062-9f1c-0395901e3ad0")
+		)
+		(pad "2" smd roundrect
+			(at 0 2.2)
+			(size 6 5.5)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "VIN")
+			(uuid "7b6a838f-56a6-49f3-843e-2a436e96c4e4")
+		)
+		(pad "3" smd roundrect
+			(at 2.28 -2.5)
+			(size 1.14 2)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "SW")
+			(uuid "310e3c97-2d50-4b50-9551-b7a243525da5")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/TO-252-2.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
+		(layer "F.Cu")
+		(uuid "b68c5f93-1fce-4817-8ca6-252e71bbd86a")
+		(at 112 112)
+		(property "Reference" "V1"
+			(at 0 -3.5 0)
+			(layer "F.SilkS")
+			(uuid "d53a051a-35c6-4f8b-b627-7394e9f1a097")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Input DC Supply Terminal"
+			(at 0 3.5 0)
+			(layer "F.Fab")
+			(uuid "cad9e748-3676-4f96-b7af-6d92fa742f3c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "6f9228c1-d9d7-4e86-beeb-638060dd3d8a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "053230e1-8a82-45e7-9a02-85eac705f448")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "n" smd roundrect
+			(at 0.95 0)
+			(size 1 1.3)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GND")
+			(uuid "4bc95ea4-9564-46bd-bfa3-91bb9c79fb7e")
+		)
+		(pad "p" smd roundrect
+			(at -0.95 0)
+			(size 1 1.3)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "VIN")
+			(uuid "c2d9a2a7-e5a0-486a-88f0-2253292098fb")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x02_P2.54mm_Vertical.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(footprint "Resistor_SMD:R_1206_3216Metric"
+		(layer "F.Cu")
+		(uuid "c4face7a-e058-4a45-89a8-df9ec4bc6bec")
+		(at 130 130)
+		(property "Reference" "R_LOAD"
+			(at 0 -3.5 0)
+			(layer "F.SilkS")
+			(uuid "4445e42b-e4fe-4a7f-a0fe-a778383083ff")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Thick Film Chip Resistor"
+			(at 0 3.5 0)
+			(layer "F.Fab")
+			(uuid "8b4fcecf-685b-4ce4-9e29-5cd7d1a5256f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "1837b4fc-1fbd-4eca-9464-5aa9156f5c1d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "42035b5c-c4ba-472f-91de-e609107262e0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "1" smd roundrect
+			(at -1.45 0)
+			(size 1 1.6)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "VOUT")
+			(uuid "888ef02d-c6c0-4f99-a2f2-ff67eaff9d32")
+		)
+		(pad "2" smd roundrect
+			(at 1.45 0)
+			(size 1 1.6)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GND")
+			(uuid "ebe66327-b1ba-433b-8717-86af631a8633")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_1206_3216Metric.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
+		(layer "F.Cu")
+		(uuid "c6798bcb-184c-4f02-9e3a-33fc5f5b0791")
+		(at 166 130)
+		(property "Reference" "V_G2"
+			(at 0 -3.5 0)
+			(layer "F.SilkS")
+			(uuid "7b6d4ce8-1e03-45b9-b1e0-b6b4cb4fd760")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Low-Side Gate Drive PWM Source"
+			(at 0 3.5 0)
+			(layer "F.Fab")
+			(uuid "5645993d-f66f-43bb-af82-0b2a2f01e27f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "80d12af5-8ab2-4675-beaa-c76edb2ce2cd")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "9c9fb632-65e1-4ede-ad5d-52090bf114bb")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(duplicate_pad_numbers_are_jumpers no)
+		(pad "n" smd roundrect
+			(at 0.95 0)
+			(size 1 1.3)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GND")
+			(uuid "1aaea714-7731-495b-96b0-c8eab081b864")
+		)
+		(pad "p" smd roundrect
+			(at -0.95 0)
+			(size 1 1.3)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GATE_LO")
+			(uuid "8ab25248-f885-4b7a-9b0a-5bdcb3b27303")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x02_P2.54mm_Vertical.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(footprint "Package_TO_SOT_SMD:TO-252-2"
+		(layer "F.Cu")
+		(uuid "e6c6c0bd-41d9-419b-8114-edf037da9f25")
+		(at 148 112)
+		(property "Reference" "Q2"
+			(at 0 -3.5 0)
+			(layer "F.SilkS")
+			(uuid "faf500aa-4eb6-4694-ae16-7bf091b41db3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Synchronous Low-Side Power MOSFET"
+			(at 0 3.5 0)
+			(layer "F.Fab")
+			(uuid "85e1e2af-31af-4295-9871-e4fd74a35c94")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "19c2610f-e1a4-4a6a-ac5d-6ad4f538a7ea")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "671fbb16-1979-444a-8df2-8381f7e59bb0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -3.3 -3.5)
+			(end 3.3 4.5)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.SilkS")
+			(uuid "10df8b4c-0097-4aa8-930b-d271afecb9e1")
+		)
+		(pad "1" smd roundrect
+			(at -2.28 -2.5)
+			(size 1.14 2)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GATE_LO")
+			(uuid "e78c0156-fb72-4344-96e1-30c917a9d4de")
+		)
+		(pad "2" smd roundrect
+			(at 0 2.2)
+			(size 6 5.5)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "SW")
+			(uuid "73eb4572-dd1b-4ac5-8bbb-04d63bb9febe")
+		)
+		(pad "3" smd roundrect
+			(at 2.28 -2.5)
+			(size 1.14 2)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.25)
+			(net "GND")
+			(uuid "7d7b0c89-4e3f-4de3-807d-50c4665c8a23")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/TO-252-2.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(gr_rect
+		(start 100 100)
+		(end 175 155)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(fill no)
+		(layer "Edge.Cuts")
+		(uuid "c249295e-1cec-46f9-9311-6bd3c6b209a9")
+	)
+	(gr_text "Mendex Studio: Placement Only (Unrouted - Routing & DRC Required Before Fabrication)"
+		(at 105 97 0)
+		(layer "F.SilkS")
+		(uuid "1d45feb3-ce3f-4ba5-94d2-4afd7bf9ddfa")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(zone
+		(net "GND")
+		(layer "B.Cu")
+		(uuid "01e2e4e5-bbb9-4684-b12d-4a4d2e298959")
+		(name "GND_BCu")
+		(hatch edge 0.5)
+		(connect_pads thru_hole_only
+			(clearance 0.5)
+		)
+		(min_thickness 0.25)
+		(fill yes
+			(thermal_gap 0.5)
+			(thermal_bridge_width 0.5)
+			(island_removal_mode 0)
+		)
+		(polygon
+			(pts
+				(xy 175 155) (xy 100 155) (xy 100 100) (xy 175 100)
+			)
+		)
+		(filled_polygon
+			(layer "B.Cu")
+			(pts
+				(xy 174.442539 100.520185) (xy 174.488294 100.572989) (xy 174.4995 100.6245) (xy 174.4995 154.3755)
+				(xy 174.479815 154.442539) (xy 174.427011 154.488294) (xy 174.3755 154.4995) (xy 100.6245 154.4995)
+				(xy 100.557461 154.479815) (xy 100.511706 154.427011) (xy 100.5005 154.3755) (xy 100.5005 100.6245)
+				(xy 100.520185 100.557461) (xy 100.572989 100.511706) (xy 100.6245 100.5005) (xy 174.3755 100.5005)
+			)
+		)
+	)
+	(embedded_fonts no)
+)

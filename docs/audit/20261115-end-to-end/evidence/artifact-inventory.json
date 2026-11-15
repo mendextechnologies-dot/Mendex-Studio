@@ -1,0 +1,3292 @@
+[
+  {
+    "path": "products\\shared\\revisions\\f96f723e-2272-4fb4-a7e2-c9820806515c\\simulations\\wcca\\wcca_analysis.json",
+    "size": 7163,
+    "sha256": "1e83238ee6e365adc4991784a499aac9645c4162eec8ab493d693bbc3ad0532c"
+  },
+  {
+    "path": "products\\shared\\revisions\\776b3cc4-e704-4ff0-bae7-2428c4fcdabe\\simulations\\wcca\\wcca_analysis.json",
+    "size": 7163,
+    "sha256": "55c767141e94e2e96130a1d308c33a710611a6b076fc913614f89d7cf60b0269"
+  },
+  {
+    "path": "products\\shared\\revisions\\5b819bd5-83ab-44f0-ae6f-ac99c9e8eb3f\\simulations\\wcca\\wcca_analysis.json",
+    "size": 7163,
+    "sha256": "598aeb0a0e4c5115d8b1fb109e76541909092eb020b04e808255ab25f595cebe"
+  },
+  {
+    "path": "products\\shared\\revisions\\5229a720-3790-4880-9540-a89455d0a2bb\\simulations\\wcca\\wcca_analysis.json",
+    "size": 7163,
+    "sha256": "3fc0b3f9995574597eccc43ccab7a7dde1a0e511cc133ad7d475354cfc346b84"
+  },
+  {
+    "path": "products\\shared\\revisions\\4f7f559e-6e6f-4c86-9080-a1581ea95276\\simulations\\wcca\\wcca_analysis.json",
+    "size": 7163,
+    "sha256": "85f47d8aff0ce4096e159c338992038549857ddc71726295229d5711b1252286"
+  },
+  {
+    "path": "products\\shared\\revisions\\4787e60f-be0a-482e-a42e-52290061a787\\simulations\\wcca\\wcca_analysis.json",
+    "size": 7163,
+    "sha256": "0931f1c5bc49c115ddcd91a77a117cf6e2d1fb726cfdaeb06a991e21d33269ba"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\revision.json",
+    "size": 609,
+    "sha256": "bf4c0672b4337194a4304c78f4568e9c25b8e104f41b08454f0ab4a10316a8ff"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\assembly\\sv1000_assembly_documentation.md",
+    "size": 7136,
+    "sha256": "29ad68b8dde61317543ef0114c00b5519e7b7894f7242eeceb1c26d5ce833e6f"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\bom\\bom.csv",
+    "size": 4682,
+    "sha256": "3133a4329db039ebf97e55cfc1c4ee71dd00145ccc14be5f9a6b851630ea6d11"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\bom\\bom.json",
+    "size": 11313,
+    "sha256": "9f69d7f1225328380b75dea224b54ec058f09e019d9f405a78c4a99761860fc8"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\bom\\SV1000_Bill_of_Materials.docx",
+    "size": 40153,
+    "sha256": "7575e599a10051484ccca4cc4626a2fb26eda927e5640bb7b7b5860257fe7245"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\bom\\SV1000_Bill_of_Materials.pdf",
+    "size": 141151,
+    "sha256": "4e0f56e54d219f9643df7bb95a1547d53f3bf63c8d0c23bbbefebc993849fc0d"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\magnetics\\T1_transformer_specification.md",
+    "size": 3981,
+    "sha256": "15da28cd6593a14288db5afacbc2bd799022d24435b157691a31b06a594afe20"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\mechanical\\etd34_bobbin.step",
+    "size": 12093,
+    "sha256": "8028ec7e4cbe6e8521a228b059ee4c94f995cf50934622e1cb2b297345cebdcb"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\drc_report.json",
+    "size": 6500,
+    "sha256": "d336fc8fe9414a435d7b6ae0139abe749c32c3051e0a508887bacd71bc302418"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\erc_report.json",
+    "size": 35842,
+    "sha256": "67dcdf942a775e7765ba4bd0aabd1bdb6fffb997a0d791f2767f20c5883a4631"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\fabrication_spec.md",
+    "size": 3094,
+    "sha256": "48ba53c12fe981ca18928c9b01f5ab55af2386c2a99180b9168c056ee983ac44"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000.kicad_pcb",
+    "size": 430133,
+    "sha256": "1cfe9e2fea55f5eb4924757ae8010a02939d68322b1ac8cc5bd96835e2777f28"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000.kicad_sch",
+    "size": 118027,
+    "sha256": "ff15a3811bee77d09c2360f79965066b92fbf989d602ef3ed84392f088512e05"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000_drc_0e65f5a1-b9d1-4d3e-b2f7-633ec14932ba.json",
+    "size": 1079,
+    "sha256": "438b6f4aaf3b1a5bba14840a96ab672acfd7d46de2f41460a88b8312123e29a7"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000_drc_1b056e60-2d39-49fd-af64-a2012f72519f.json",
+    "size": 1079,
+    "sha256": "3c4d15542235f7f2f93521a10ceff4e82f8314e89d700058b8f3e1946a006f41"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000_drc_9516be2b-8d98-4689-a6e8-740991a8ac1c.json",
+    "size": 1079,
+    "sha256": "62406a189521ddbee9e3f13950090827a2087aeeb6d35d6db5360558c1a94e60"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000_drc_bf08ac35-723d-4db1-89b8-47587f356df6.json",
+    "size": 6209,
+    "sha256": "0dc50fb47073ab41e4a51b702b688f90578ce1c59b32765bda7fb3791ee3c1f6"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000_drc_f850f063-ef5d-451e-b2dd-0034cd706e38.json",
+    "size": 1079,
+    "sha256": "b8330a75f3d8034f36b467f29c1fa0fb2399e3aa9136a4fe2dd501255aafff9e"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\sv1000_turnkey_manufacturing.zip",
+    "size": 121150,
+    "sha256": "26355abc9c51c87b0587df41ba45f89d823f32762518a8dfa7f85b33ffbef4fc"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\T1_transformer_specification.md",
+    "size": 3981,
+    "sha256": "15da28cd6593a14288db5afacbc2bd799022d24435b157691a31b06a594afe20"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\test_drc_after_silk.json",
+    "size": 12580,
+    "sha256": "1cbe3d8fd9fd3cbd79c52bd45884fd8c3e1c0138d1a473e41290bed6a1437ac5"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\test_drc_err.json",
+    "size": 1079,
+    "sha256": "028cd341e107f66395a55a4eece53e703011f3505d87d1d2b45390b25e6628c5"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\release_package\\release_manifest.json",
+    "size": 57918,
+    "sha256": "1a85d6be66f2f38a4258e1ed2e58518358e645030139990c578b16df5c983c5f"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\release_package\\SV-1000_R001_Complete_Manufacturing_Release.zip",
+    "size": 6971786,
+    "sha256": "10437246e2e99b086766ffabcd5a94bb58eff03d1382118e391294da46625f0c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\release_package\\SV1000_R001_Complete_Manufacturing_Release.zip",
+    "size": 317400,
+    "sha256": "670f6a6f0d5668d620bdecd6fd5c10a177fbcd4647f0d69b85396c0e0452b06e"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\SV1000_Stage3_Feasibility_Report.md",
+    "size": 14638,
+    "sha256": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\SV1000_Stage4_Calculations_Report.md",
+    "size": 12040,
+    "sha256": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\SV1000_Stage5_Design_Report.md",
+    "size": 3333,
+    "sha256": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\SV1000_Stage6_Simulation_Report.md",
+    "size": 5503,
+    "sha256": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\SV1000_Stage7_Design_Verification_Report.md",
+    "size": 8740,
+    "sha256": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\SV1000_Stage8_Physical_Test_Plan.md",
+    "size": 4280,
+    "sha256": "df1abcd78caf9343d1e5d12f42e6ccde2c53e732f7d2d20baae54350a7dd5a88"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\SV1000_Stage9_Final_Engineering_Dossier.md",
+    "size": 6248,
+    "sha256": "3a8067e4c568b27db40d18c0bbc9b151f75a9d9c14793efd6177f25c331776cc"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\simulations\\flyback_circuit.log",
+    "size": 891,
+    "sha256": "f2e0b1bc57d25e15df6ae18ca6ba27d02c34738eb27e47fce195e8621ff0575d"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\simulations\\flyback_circuit.net",
+    "size": 849,
+    "sha256": "e25e47e7fcb6e82e022c73e6c9ea1760bf2be4e1f89d848a4ac872aa7a5db9eb"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\simulations\\flyback_circuit.raw",
+    "size": 730038,
+    "sha256": "eceabddec6f2d446667b4dd167f9739167626381dec1901af14c2a23bf394c88"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\021ce66f-a0d7-454c-b434-7be790bf0a70\\manifest.json",
+    "size": 2553,
+    "sha256": "4b268d8c144793652d768b4b89d3dcad0e7079123689a3ef68024e19fdd774c0"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\04afe118-7ead-4a20-aaf3-c05e2e8d7c93\\manifest.json",
+    "size": 2117,
+    "sha256": "84b91ce8f016642c5a578451f1315952e9f9e725a77229e0f0a866d8617b68ea"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\1c06d18c-c044-4743-9814-b7e49e8ce901\\manifest.json",
+    "size": 2517,
+    "sha256": "e834e24bfb8cbb5b8ace26e175b1c41c72c353edc366a2b5fc898f276e573615"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\3772bc6a-5184-4b26-83b5-b973238c4e55\\manifest.json",
+    "size": 2523,
+    "sha256": "1625243809ae8973fd8a3e196ed4dab756629f85b6e580a413482450c5aa7151"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\4899cb32-a86a-4ad8-87c6-c86f531517e9\\manifest.json",
+    "size": 2184,
+    "sha256": "5b77f39990db807723f893a8f042ffccdd9205475416770115654abd01ae357c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\50023d71-6150-4e52-be2a-13eac43994ce\\manifest.json",
+    "size": 2463,
+    "sha256": "ecb844632f2e6b131f0ba43c655bb172308694cd14d55c4f6c8490d0e002f6dc"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\75f09673-faff-458a-a76d-3b35c902799c\\manifest.json",
+    "size": 2525,
+    "sha256": "b5043657ff7d84c56fd920e8f02fc18786aa5e00b838f7d9892e9509919a39a3"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\765595c4-4484-432e-81ba-3112119437be\\manifest.json",
+    "size": 2160,
+    "sha256": "5aa70c95ccbcb706129a0a947dae8da82aa8a5ec84fa62adde5545a2d1d83b33"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\8b6f09ab-86d7-4378-b144-20839a38c254\\manifest.json",
+    "size": 2521,
+    "sha256": "0c53e8ffa3a509afd3b0369ab2576a335880650e06dbf66be95c440fb8757f9c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\8eaecca0-ef50-4d29-9635-315931f788c7\\manifest.json",
+    "size": 2522,
+    "sha256": "93cae5fb09d155f571f9d2f86996ccdab1c07b44d45eebd60845a0eb6afd9c77"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\9f19dc4f-4c0b-4584-a877-628aba3270e4\\manifest.json",
+    "size": 2519,
+    "sha256": "67cd113de07d5df81c02a300addd0b61a30e899b9294126caa36ee2273cc55d2"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\abe528d0-36f4-4447-8d49-4758be0f71ec\\manifest.json",
+    "size": 2592,
+    "sha256": "aa3937de656105989a77c18bfd7a45180332b71b4b990ac9b7fbe7e71141ff37"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\c600648a-5a45-49d0-ae7c-bbffd60580ed\\manifest.json",
+    "size": 2164,
+    "sha256": "c06b7fc620750a11bdde2714b4b5d39696b230fcc7c633c9007af36f53e8f04b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\c721f0c3-ddd3-4889-ad25-d8d1d2473292\\manifest.json",
+    "size": 2159,
+    "sha256": "659714386f6f04b9d6a46d245d170afc17b1fa5237b047746d35a1f76c0470bd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\cc69f3e2-0042-4dfd-960b-16352311e4d4\\manifest.json",
+    "size": 2567,
+    "sha256": "f311722b9d482c46b4d7a95a6b787eb758094a3426580c8d5260ae0ad0d17db2"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\ec1642ee-e1d9-400a-83f8-f4db7b7d55e6\\manifest.json",
+    "size": 2268,
+    "sha256": "b31cff3534382b7cd1c44848b14ea674404254e743cbffaab70b3d4f5aec530f"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\ec1642ee-e1d9-400a-83f8-f4db7b7d55e6\\raw\\evidence.md",
+    "size": 5908,
+    "sha256": "451978f8bb3da26d7181e581b7e3f50d3920992ad548d73fbeaabc0676734e36"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\cc69f3e2-0042-4dfd-960b-16352311e4d4\\raw\\evidence.csv",
+    "size": 1735,
+    "sha256": "fbcf82bc642688c6259857498b5d0336f16e121e3206da92643e598dc6653f0e"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\c721f0c3-ddd3-4889-ad25-d8d1d2473292\\raw\\evidence.md",
+    "size": 5503,
+    "sha256": "1a35c0c27334ddb0399ea1e1c345b78b1df7499d09f6d1f5d39828512d6196da"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\c600648a-5a45-49d0-ae7c-bbffd60580ed\\raw\\evidence.md",
+    "size": 12040,
+    "sha256": "212517b523103f86475fd9972fda05e40e051bed37594d77176cd0852b129957"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\abe528d0-36f4-4447-8d49-4758be0f71ec\\raw\\evidence.csv",
+    "size": 1735,
+    "sha256": "fbcf82bc642688c6259857498b5d0336f16e121e3206da92643e598dc6653f0e"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\9f19dc4f-4c0b-4584-a877-628aba3270e4\\raw\\evidence.md",
+    "size": 12260,
+    "sha256": "c4ab0e963865570102659904aa82a0b4e4fd384eb9f2ae95db630b93ab2d0b39"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\8eaecca0-ef50-4d29-9635-315931f788c7\\raw\\evidence.md",
+    "size": 5908,
+    "sha256": "451978f8bb3da26d7181e581b7e3f50d3920992ad548d73fbeaabc0676734e36"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\8b6f09ab-86d7-4378-b144-20839a38c254\\raw\\evidence.pdf",
+    "size": 1046330,
+    "sha256": "763d45836a6cae537ef5be98404a4658c35f856f84a578566b975ea972bf16dd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\765595c4-4484-432e-81ba-3112119437be\\raw\\evidence.md",
+    "size": 3333,
+    "sha256": "18462e38c18996a5538361d41b96709020d56c4735e16d07b0ca8a3875ca4e42"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\75f09673-faff-458a-a76d-3b35c902799c\\raw\\evidence.csv",
+    "size": 4682,
+    "sha256": "3133a4329db039ebf97e55cfc1c4ee71dd00145ccc14be5f9a6b851630ea6d11"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\50023d71-6150-4e52-be2a-13eac43994ce\\raw\\evidence.md",
+    "size": 1872,
+    "sha256": "24fa700f358e24e339171f858e38905ed564d6dc01cfc1cab45b29f5e28c7d44"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\4899cb32-a86a-4ad8-87c6-c86f531517e9\\raw\\evidence.md",
+    "size": 8740,
+    "sha256": "01f77356568280c17d92496338b0fe3f12f86b028bac867d453a684d586cdf08"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\1c06d18c-c044-4743-9814-b7e49e8ce901\\raw\\evidence.md",
+    "size": 5908,
+    "sha256": "451978f8bb3da26d7181e581b7e3f50d3920992ad548d73fbeaabc0676734e36"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\04afe118-7ead-4a20-aaf3-c05e2e8d7c93\\raw\\evidence.md",
+    "size": 14638,
+    "sha256": "35d105738236d546da64ed8e3b2b8a97f0ecde18e4a8f87485c844408245946d"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\validation\\021ce66f-a0d7-454c-b434-7be790bf0a70\\raw\\evidence.json",
+    "size": 33865,
+    "sha256": "2302d6dcf22e21ee052597389be9eff0158129984dacd00f312275ea2f84781a"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\tests\\laboratory_test_plan\\test_plan.json",
+    "size": 10678,
+    "sha256": "e51f3f45cb985114369c5ee12b8af9c23c4eb4cf533dcfa86a28b5c8e07aedda"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\tests\\laboratory_test_plan\\test_plan.md",
+    "size": 12260,
+    "sha256": "ca169b1bb8bc183b9a8e72e5efedf8b17c7f0cd4fa7981f051d7e512b3d84b75"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\simulations\\thermal\\pcb_thermal_analysis.json",
+    "size": 3551,
+    "sha256": "5ee86a127a4f6559fc0bc7d635b141320801d5e024eff10c51978b0ed534c787"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\simulations\\wcca\\wcca_analysis.json",
+    "size": 8812,
+    "sha256": "82bbc7ea9b9bbcf7072d0af050acaaf76ad3412510fcd703981d9cc488e83cca"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\01_Product_Requirements_Specification.md",
+    "size": 22403,
+    "sha256": "b05ae05535ae4ee97f1925fd92e810d3a5372ff54b43924845d5b42a8d42a9a9"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\02_Electrical_Requirements_Matrix.md",
+    "size": 12952,
+    "sha256": "2867fb7c32a88e0ce47763c1c3bb08f9f8a512dde656d9e264545e08e59b7236"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\03_Mechanical_Requirements_Matrix.md",
+    "size": 2685,
+    "sha256": "436906a43904e5debe958f3d5bfdf2532ac3ab7e95cdad70c5829a59b586bb16"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\04_Safety_and_Insulation_Requirements.md",
+    "size": 5032,
+    "sha256": "c15d85719572b167b43dd09294a9480fdbced11068a37740e2acf0dd0cb3be69"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\05_Control_and_Communication_Requirements.md",
+    "size": 3530,
+    "sha256": "7e476c88d7e86f7ad6cc34ab801a66584fa588f01e929b6b6de77eac0631196a"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\06_Engineering_Assumptions_Register.md",
+    "size": 9445,
+    "sha256": "dde9ad9539ccec896e7df65555fbc66edb7a46030417afbbd1b9a218df1caf19"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\07_Requirements_Conflict_Register.md",
+    "size": 6932,
+    "sha256": "5d4a61556f37dc29ca983b56026be88def35135edd376b8a4993aa507995de41"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\08_Verification_and_Validation_Matrix.md",
+    "size": 60330,
+    "sha256": "b670b14f0ad63d0b3364152651a2cc6f80d8931dcdc9770e3015042181e8cab2"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\09_Preliminary_Feasibility_Report.md",
+    "size": 5897,
+    "sha256": "affdd71795f4d79e73ba2e7f6b4ee4089eac3e373cc50f79e5a88a25f0af90dd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\10_Stage_by_Stage_Development_Plan.md",
+    "size": 2466,
+    "sha256": "8865aafb3e542f15e7381a75868116aa646a4c8c2afefb23fae01ad8fc7142a0"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\ERS.json",
+    "size": 374106,
+    "sha256": "074876741e1d6f62d1cf07a2d0f843324a895967b487394ff9d6ae3fb97d72e3"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\preliminary-core-execution.json",
+    "size": 12233,
+    "sha256": "bca681a4015a6924130ffcda2835a56b6cae402f139e2487b2e135803fd5ce3c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\requirements.csv",
+    "size": 197606,
+    "sha256": "6ab8c569f38fbece93851f237d7bcc15d5bc90add70c4d0cb884c7d07439239a"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\source-blocks.json",
+    "size": 42947,
+    "sha256": "fab6f38ace4add58411a7bce1416ac78c93356615c23f2ebebef5d34150e541f"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\requirements\\word-v3-9a0d99a5\\source-handbook.docx",
+    "size": 739766,
+    "sha256": "65f6941b2d058b9178f3ed22f31dca25618100d9b4df488f9e91d48cb952c3ef"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\4548b3ee-cb3f-44dc-84a4-c372d225093e\\report.pdf",
+    "size": 1046330,
+    "sha256": "763d45836a6cae537ef5be98404a4658c35f856f84a578566b975ea972bf16dd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\4548b3ee-cb3f-44dc-84a4-c372d225093e\\snapshot.json",
+    "size": 103999,
+    "sha256": "f21f2046a8f781975f60a58aeda335fae0e91fe45f2281f60e6b389857b79411"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\4b50a8d6-8d02-4e40-8416-247e6d6ca7c0\\report.pdf",
+    "size": 1151061,
+    "sha256": "cfe7bf72e6663bbbd3502097866aed8800c2900cf0403415304e241ca5632fc5"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\4b50a8d6-8d02-4e40-8416-247e6d6ca7c0\\snapshot.json",
+    "size": 103999,
+    "sha256": "f20613b178913c454e681784a1143bfba53dcb27e4242659dacc9327d1432ede"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\6524153c-27fa-48fa-b092-23727ec2390f\\report.pdf",
+    "size": 1154766,
+    "sha256": "8d69084787dc74bd912bc744052e582ac0da23fca225faa44f2af6e12df3dbd0"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\6524153c-27fa-48fa-b092-23727ec2390f\\snapshot.json",
+    "size": 103999,
+    "sha256": "b1857c176571701d6d337a56f55caf4a20f28c97c9f5778da9814374a181eb3f"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\ccf1352b-f5ce-4c8a-ba74-da4ad5db24d7\\report.pdf",
+    "size": 1053990,
+    "sha256": "a2566114719e400e16fa7fdda3563d2739e3f26590bfa9abc42da9965871d342"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\ccf1352b-f5ce-4c8a-ba74-da4ad5db24d7\\snapshot.json",
+    "size": 103999,
+    "sha256": "244dacfdd49780206d339ee04419b76eb383825089c1e2eb95b0fff0798992f5"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\ff47f7da-8b99-43f9-a4af-35faab9688e9\\report.pdf",
+    "size": 1074204,
+    "sha256": "77931a86ebac53600ee6f0fdc8986792b0044455a34825a8481266dea9fab4dc"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\reports\\ff47f7da-8b99-43f9-a4af-35faab9688e9\\snapshot.json",
+    "size": 110372,
+    "sha256": "660f3275dc0a42e894142f245fc1f2861f91c45a2b752bf3689194ff850c5ee0"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\drc.json",
+    "size": 31651,
+    "sha256": "9c82b7e3599243f7e15138813221fa0c6189c6e24c41079020c6518a9e9741cb"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\erc.json",
+    "size": 1037,
+    "sha256": "b7ffd20a524635385eaf7da369923ddc6aed13263ad2b01e655b76b1fae673a8"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\stats.json",
+    "size": 3164,
+    "sha256": "780b1f5e8ebf2eae372104a11ea7f19f4fe5a5505c00aa30d352d5128d94adc3"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\verify.json",
+    "size": 25960,
+    "sha256": "cbc9f7e5bdf183acca255f0a1e5cd847abce10dfc6bc265138366be112b8a56e"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-B_Courtyard.gbr",
+    "size": 438,
+    "sha256": "a3fc6e8f83466a97bc272db57ecc22ea479e6a2cf77f3b854f247059ad731f4a"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-B_Cu.gbl",
+    "size": 81326,
+    "sha256": "9a1359e0702b8c3bdc91bca99599e5e890b44b9c25ed353419fc9420e50916d1"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-B_Cu.gbr",
+    "size": 81326,
+    "sha256": "73c618ca2fcc9eaf201203628c2d687cb48a3c05e5911dd633687d8bf216fa0c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-B_Fab.gbr",
+    "size": 447,
+    "sha256": "a96c392289e33f922b44d892fba47df726b7e1adc53cacb8fddde49f748fa7fa"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-B_Mask.gbr",
+    "size": 2540,
+    "sha256": "dc63ab6465fe57ef5e192fd0ab72b7092c16c42f3b3736cb8dbeb5b78a529a40"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-B_Silkscreen.gbr",
+    "size": 467,
+    "sha256": "5227dad2276f53763f8d7c4b53c55f70079f2acc6c12a7482e8bd442579fd72d"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-Edge_Cuts.gbr",
+    "size": 769,
+    "sha256": "b228bda5ad68d0357f49d34e5bc7a10f151b6c086a046ec1a7b7bc6288f01454"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-F_Courtyard.gbr",
+    "size": 5334,
+    "sha256": "f492af0b46d7d8da7a23db5ff9c40a4d883e19f013eb553fac2f97d66b80bbb0"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-F_Cu.gbr",
+    "size": 17060,
+    "sha256": "ad6ec723ab0b9de8b339c1ff6bcfec1055d413ea0ed41bd054d002669e8821e9"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-F_Cu.gtl",
+    "size": 17060,
+    "sha256": "e4d90aaf039835836a35e4a506d7869cbc71883bf41569a31221e73fb83ebf47"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-F_Fab.gbr",
+    "size": 290715,
+    "sha256": "4d3345b6951abaf0355a81c74f8d6856d5ee22eaa28c41fbe7ee0eec68beb451"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-F_Mask.gbr",
+    "size": 6336,
+    "sha256": "4de8bc9a64de67e1ec209b1565cb3612067aa449c027ab1e919a92e2fb8a2c79"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-F_Silkscreen.gbr",
+    "size": 62170,
+    "sha256": "d14a9faf8257fbd78af806e5421eb10dce5bdcf0bfb5d9ee110bab55c89a980c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000-Margin.gbr",
+    "size": 438,
+    "sha256": "a3fc6e8f83466a97bc272db57ecc22ea479e6a2cf77f3b854f247059ad731f4a"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000.drl",
+    "size": 1487,
+    "sha256": "96ccfc891868ce5a156ed4fefd5d828a560a3a8e7f366746a1cd9b4affd557dc"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000_board_stats.json",
+    "size": 3164,
+    "sha256": "b50789e8d7b4c19588a6c34655cf25b8bae231e18048d4fe976b51957fc431b1"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000_bom.csv",
+    "size": 7910,
+    "sha256": "df633e99e01e610fc0c2f617a8986fd900a6669a3c91b65b7b4c87c95a7579c2"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000_cpl.csv",
+    "size": 2728,
+    "sha256": "4873029425d04bde80176f4df055e2b927d2e5863d6246574eb5e66da2a3ce4c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000_gerbers.zip",
+    "size": 116687,
+    "sha256": "04a6bf2f0129f9fea28bd404ae196f92ab6d666c9f3e1ce17bc95efe2a3d9331"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\gerbers\\sv1000_turnkey_manufacturing.zip",
+    "size": 121150,
+    "sha256": "26355abc9c51c87b0587df41ba45f89d823f32762518a8dfa7f85b33ffbef4fc"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-215217-before-pcb-setup\\sv1000.kicad_pcb",
+    "size": 17240,
+    "sha256": "4e67b379e70bb57dc0e2f8f59950e1596bb5381cf474008001963b5b09461b1c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-215217-before-pcb-setup\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-215217-before-pcb-setup\\sv1000.kicad_sch",
+    "size": 11424,
+    "sha256": "5b65880c2dc7b7b0bd4338a2ca69fba725623a12426484cdf632de9cc4e8af16"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-235815-sch_apply\\sv1000.kicad_pcb",
+    "size": 17286,
+    "sha256": "faea15a43a32c42f352f994703c490eaadef66bdbd015884021bd93627051b4b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-235815-sch_apply\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-235815-sch_apply\\sv1000.kicad_sch",
+    "size": 378,
+    "sha256": "bf6e3ec50a78f90d432f86eecebaab49d76307da000b586eb2611d8fa3dcac55"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-235821-sch_layout\\sv1000.kicad_pcb",
+    "size": 17286,
+    "sha256": "faea15a43a32c42f352f994703c490eaadef66bdbd015884021bd93627051b4b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-235821-sch_layout\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261114-235821-sch_layout\\sv1000.kicad_sch",
+    "size": 116511,
+    "sha256": "c17395bfa98400352f0ea213ebfce53c0915af5309a3556d034b2f17fd89c983"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001531-sch_apply\\sv1000.kicad_pcb",
+    "size": 17286,
+    "sha256": "faea15a43a32c42f352f994703c490eaadef66bdbd015884021bd93627051b4b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001531-sch_apply\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001531-sch_apply\\sv1000.kicad_sch",
+    "size": 378,
+    "sha256": "bf6e3ec50a78f90d432f86eecebaab49d76307da000b586eb2611d8fa3dcac55"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001551-sch_layout\\sv1000.kicad_pcb",
+    "size": 17286,
+    "sha256": "faea15a43a32c42f352f994703c490eaadef66bdbd015884021bd93627051b4b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001551-sch_layout\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001551-sch_layout\\sv1000.kicad_sch",
+    "size": 116563,
+    "sha256": "863b24d6eea78b8414b5fc21475227000b4b582d1eb7e1f41a4aacd62e7713f3"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001607-before-pcb-sync\\sv1000.kicad_pcb",
+    "size": 17286,
+    "sha256": "faea15a43a32c42f352f994703c490eaadef66bdbd015884021bd93627051b4b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001607-before-pcb-sync\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001607-before-pcb-sync\\sv1000.kicad_sch",
+    "size": 121121,
+    "sha256": "57d0e66dcf98bd6de6be47060187a66aafba92ade5eb0364e96959e00f4e9fa1"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001635-before-pcb-place\\sv1000.kicad_pcb",
+    "size": 131737,
+    "sha256": "9b614e261a8f5077f8f86759db1f71b565889bdca464e790301a23c6c84f51f0"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001635-before-pcb-place\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001635-before-pcb-place\\sv1000.kicad_sch",
+    "size": 121121,
+    "sha256": "57d0e66dcf98bd6de6be47060187a66aafba92ade5eb0364e96959e00f4e9fa1"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001651-before-pcb-pour\\sv1000.kicad_pcb",
+    "size": 135340,
+    "sha256": "259cd5e6a9ed20b0e7cfb723b8a0e222a610d407e2253c3e5482b620a4786bdd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001651-before-pcb-pour\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001651-before-pcb-pour\\sv1000.kicad_sch",
+    "size": 121121,
+    "sha256": "57d0e66dcf98bd6de6be47060187a66aafba92ade5eb0364e96959e00f4e9fa1"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001822-before-guided-route\\sv1000.kicad_pcb",
+    "size": 198046,
+    "sha256": "959409bf1dff0c41ed18b7cd7409811023078451f055a5e6595fbb913f44e486"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001822-before-guided-route\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-001822-before-guided-route\\sv1000.kicad_sch",
+    "size": 121121,
+    "sha256": "57d0e66dcf98bd6de6be47060187a66aafba92ade5eb0364e96959e00f4e9fa1"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002105-sch_apply\\sv1000.kicad_pcb",
+    "size": 241990,
+    "sha256": "6769bd1c7e52e8b1be056d1198abdf695e8813a3fc319fe7194aba740d813054"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002105-sch_apply\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002105-sch_apply\\sv1000.kicad_sch",
+    "size": 378,
+    "sha256": "bf6e3ec50a78f90d432f86eecebaab49d76307da000b586eb2611d8fa3dcac55"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002122-sch_layout\\sv1000.kicad_pcb",
+    "size": 241990,
+    "sha256": "6769bd1c7e52e8b1be056d1198abdf695e8813a3fc319fe7194aba740d813054"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002122-sch_layout\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002122-sch_layout\\sv1000.kicad_sch",
+    "size": 123916,
+    "sha256": "d06917c732e88ab5073350f1fb9c0410ee2ae77d2b072d38bef10149a9a49320"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002138-before-pcb-sync\\sv1000.kicad_pcb",
+    "size": 241990,
+    "sha256": "6769bd1c7e52e8b1be056d1198abdf695e8813a3fc319fe7194aba740d813054"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002138-before-pcb-sync\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002138-before-pcb-sync\\sv1000.kicad_sch",
+    "size": 130150,
+    "sha256": "738b40110ddbda8f4644b53c33240f0cff9ad65a4d96eb9d69b32d9d1f429f15"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002149-before-pcb-pour\\sv1000.kicad_pcb",
+    "size": 242639,
+    "sha256": "9962a6f1becca8711e774878aea180794e2d8ef3a87bc1eb54c9397ec50bc426"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002149-before-pcb-pour\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002149-before-pcb-pour\\sv1000.kicad_sch",
+    "size": 130150,
+    "sha256": "738b40110ddbda8f4644b53c33240f0cff9ad65a4d96eb9d69b32d9d1f429f15"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002315-before-guided-route\\sv1000.kicad_pcb",
+    "size": 242639,
+    "sha256": "c46d870f8b2725f8258c71b0048fcb5f44209381a314a12f2c4038692cef669c"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002315-before-guided-route\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002315-before-guided-route\\sv1000.kicad_sch",
+    "size": 130150,
+    "sha256": "738b40110ddbda8f4644b53c33240f0cff9ad65a4d96eb9d69b32d9d1f429f15"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002946-sch_apply\\sv1000.kicad_pcb",
+    "size": 242633,
+    "sha256": "52e7d116b6c3aabbb5256747f15c9f408caefc1390e97f2fa4a386b930a9eabd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002946-sch_apply\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002946-sch_apply\\sv1000.kicad_sch",
+    "size": 378,
+    "sha256": "bf6e3ec50a78f90d432f86eecebaab49d76307da000b586eb2611d8fa3dcac55"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002953-sch_layout\\sv1000.kicad_pcb",
+    "size": 242633,
+    "sha256": "52e7d116b6c3aabbb5256747f15c9f408caefc1390e97f2fa4a386b930a9eabd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002953-sch_layout\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002953-sch_layout\\sv1000.kicad_sch",
+    "size": 123916,
+    "sha256": "30bc97c0439cb4d884b5a6318eb3e3fc0d9c0087591e068b1a1697b50013853b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002959-before-pcb-sync\\sv1000.kicad_pcb",
+    "size": 242633,
+    "sha256": "52e7d116b6c3aabbb5256747f15c9f408caefc1390e97f2fa4a386b930a9eabd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002959-before-pcb-sync\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-002959-before-pcb-sync\\sv1000.kicad_sch",
+    "size": 130150,
+    "sha256": "e6840aacb4779273784ebc884dc6a6a2633fca1b4598d3d0928872eed60a0590"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-003004-before-pcb-pour\\sv1000.kicad_pcb",
+    "size": 242633,
+    "sha256": "5fc4759b6505f7c9b930d002f9757f775f0d68ab104f53f07e8e4d3cf4cf2dba"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-003004-before-pcb-pour\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-003004-before-pcb-pour\\sv1000.kicad_sch",
+    "size": 130150,
+    "sha256": "e6840aacb4779273784ebc884dc6a6a2633fca1b4598d3d0928872eed60a0590"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-003035-before-guided-route\\sv1000.kicad_pcb",
+    "size": 242633,
+    "sha256": "4f5116c2d538ee71d4bb04f519899f62e7525c5e1a06a4de95ed2d93adfe4a37"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-003035-before-guided-route\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-003035-before-guided-route\\sv1000.kicad_sch",
+    "size": 130150,
+    "sha256": "e6840aacb4779273784ebc884dc6a6a2633fca1b4598d3d0928872eed60a0590"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021719-before-pcb-pour\\sv1000.kicad_pcb",
+    "size": 242754,
+    "sha256": "6ac89696840cbe5f8a3b8a4a71df4051e7725c99b64d789dad9a6fcfd36da5e1"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021719-before-pcb-pour\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021719-before-pcb-pour\\sv1000.kicad_sch",
+    "size": 118027,
+    "sha256": "ff15a3811bee77d09c2360f79965066b92fbf989d602ef3ed84392f088512e05"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021730-before-pcb-pour\\sv1000.kicad_pcb",
+    "size": 242825,
+    "sha256": "fc3a585922b52e4b5474c7e62f768fc826140ccead928b6d543a76840cf8d4bd"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021730-before-pcb-pour\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021730-before-pcb-pour\\sv1000.kicad_sch",
+    "size": 118027,
+    "sha256": "ff15a3811bee77d09c2360f79965066b92fbf989d602ef3ed84392f088512e05"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021736-before-pcb-pour\\sv1000.kicad_pcb",
+    "size": 321526,
+    "sha256": "3e4057bfa211db54397c17f6e2234d7f7f54baba41e52516294f209be74cb145"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021736-before-pcb-pour\\sv1000.kicad_pro",
+    "size": 11010,
+    "sha256": "2f289566603979607b4d2a401f657e845111275346fcf67d6662e841a7834727"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-021736-before-pcb-pour\\sv1000.kicad_sch",
+    "size": 118027,
+    "sha256": "ff15a3811bee77d09c2360f79965066b92fbf989d602ef3ed84392f088512e05"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-033359-before-pcb-pour\\sv1000.kicad_pcb",
+    "size": 405241,
+    "sha256": "2ef8a41311cd0bbe4b8de9601a1644df8e97f635c52dbfacf3f5917b2f46683b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-033359-before-pcb-pour\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-033359-before-pcb-pour\\sv1000.kicad_sch",
+    "size": 118027,
+    "sha256": "ff15a3811bee77d09c2360f79965066b92fbf989d602ef3ed84392f088512e05"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-033500-before-guided-route\\sv1000.kicad_pcb",
+    "size": 405241,
+    "sha256": "ac72eb851bf8c88074f988cc5a548caed355b669f1532ecd81f5da7fc2ea8ac2"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-033500-before-guided-route\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-033500-before-guided-route\\sv1000.kicad_sch",
+    "size": 118027,
+    "sha256": "ff15a3811bee77d09c2360f79965066b92fbf989d602ef3ed84392f088512e05"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-140423-before-pcb-pour\\sv1000.kicad_pcb",
+    "size": 430133,
+    "sha256": "dabdcd0e7290ef8bb56c0e28424e1e7eccd4676e3328f89b046ade94e93a0f30"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-140423-before-pcb-pour\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-140423-before-pcb-pour\\sv1000.kicad_sch",
+    "size": 118027,
+    "sha256": "ff15a3811bee77d09c2360f79965066b92fbf989d602ef3ed84392f088512e05"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-140449-before-guided-route\\sv1000.kicad_pcb",
+    "size": 430242,
+    "sha256": "4097e689e1fa6d496fcc629fa93ecedd60ce011fdde279929a1857b535b4ae44"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-140449-before-guided-route\\sv1000.kicad_pro",
+    "size": 11009,
+    "sha256": "bb3dbdbe7557691b7ec269b28e75d89001a3fe0f04d0e0a3fd06beff8f64097b"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\pcb\\.copper\\snapshots\\20261115-140449-before-guided-route\\sv1000.kicad_sch",
+    "size": 118027,
+    "sha256": "ff15a3811bee77d09c2360f79965066b92fbf989d602ef3ed84392f088512e05"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\measurements\\laboratory\\SV1000_Physical_Test_Scorecard.md",
+    "size": 1872,
+    "sha256": "24fa700f358e24e339171f858e38905ed564d6dc01cfc1cab45b29f5e28c7d44"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\measurements\\laboratory\\sv1000_vout_steady_capture.csv",
+    "size": 1735,
+    "sha256": "fbcf82bc642688c6259857498b5d0336f16e121e3206da92643e598dc6653f0e"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\measurements\\scope\\131b03ec_manifest.json",
+    "size": 1441,
+    "sha256": "d442e0694fd2487e77b49e928ba07904299e73686a9fdb8af9fff69e085c869d"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\measurements\\scope\\131b03ec_sv1000_flight_bench_capture.csv",
+    "size": 171,
+    "sha256": "5e61317d52d22023419a7c542bcbdd32f7f3b867d2308ecdec77eab453793552"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\bom\\exports\\procurement_bom.csv",
+    "size": 7910,
+    "sha256": "df633e99e01e610fc0c2f617a8986fd900a6669a3c91b65b7b4c87c95a7579c2"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\bom\\exports\\procurement_schedule.json",
+    "size": 33865,
+    "sha256": "a603e7b6b512d6f8acd104e5c018adcb590c8a670ea441ec2c97fe164f8fad91"
+  },
+  {
+    "path": "products\\8f697275-3a8d-456c-ae20-138a7698df61\\revisions\\9b7c1396-64da-41f8-8649-77dc0f24e103\\bom\\exports\\procurement_schedule.md",
+    "size": 6173,
+    "sha256": "32274134610080fe22c648769ffbd1124fa5ee7477dd78b2b10e5e3f564162eb"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\revision.json",
+    "size": 609,
+    "sha256": "b7e8a8a96845e108715a24a34b8c3604810982720e35be432dec5cc80167db23"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\magnetics\\actuator_results.json",
+    "size": 634,
+    "sha256": "64aebf314cb7a19efdf15caf6899ec31145834f62d45932711944e7e0954c902"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers.zip",
+    "size": 16669,
+    "sha256": "601396482980a8419267cbcc6e45969d650db370d2d9446bd1635e35558078f4"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\pcb.kicad_pcb",
+    "size": 163067,
+    "sha256": "025cae685a7726d8e827c83dd55bf2638a9f56a9f19e62f554179dc2c8d582da"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\pcb.kicad_sch",
+    "size": 86750,
+    "sha256": "e58f3e1a7f140db0d768c22cd5fb290e3160e4097fa2e9c6d46f4c8b0ec39161"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\pcb.step",
+    "size": 528029,
+    "sha256": "9e6714654ee17061c7e3818a1641fba5bfa2b041a295a7ad50067152b98fdef8"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\pcb_gerbers.zip",
+    "size": 16669,
+    "sha256": "601396482980a8419267cbcc6e45969d650db370d2d9446bd1635e35558078f4"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\pcb_turnkey_manufacturing.zip",
+    "size": 20583,
+    "sha256": "cd19917e691378c50e92ad21049e04d3df839a0383bd48b6dab5bc41c460cfa2"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\drc_report.json",
+    "size": 147890,
+    "sha256": "2e2e59537afff1c426244500fff64b82ee46b0c9919096aaaeef3bce9fcd35fd"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\electromagnet_card.kicad_pcb",
+    "size": 42941,
+    "sha256": "48582f6b86cb1229710102598e4d58bda0e2ae67fed6bb5d8ed49b821b5f1d76"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\electromagnet_card.kicad_pro",
+    "size": 10064,
+    "sha256": "6e3c3bdff882a85938d093a39babe19c5e1aee6f1188b7d60771d68ad65a9aa7"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\electromagnet_card.kicad_sch",
+    "size": 31422,
+    "sha256": "fc07db649e24f39d464c2f8627714495f3ce6f5ad1b2a803cf8a39afbeebc763"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\electromagnet_card.step",
+    "size": 2127268,
+    "sha256": "7f81cb2ce4b4aa393f1f31e3130b9eaf720f660ac7018a75ea0e69a74fad00e6"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\erc_report.json",
+    "size": 124098,
+    "sha256": "c46e3948f32ea48d4d554d078c91b474be9d93f099c8838741417156384118bc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\drc_report.json",
+    "size": 147868,
+    "sha256": "d6a26d4f11aae76932e74ac6f98fd0df12f7167aebdd3bc6a3695c1636091383"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\electromagnet_card.kicad_pcb",
+    "size": 123621,
+    "sha256": "676087055e7712b9e7b8d0d67a042ace9ac60d9f2fbd1ca71ddb323e176915ab"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\electromagnet_card.kicad_pro",
+    "size": 11045,
+    "sha256": "f496c7d55e8ca09939809684e6f0bd755fe76ec75d3a7878594140d542f94023"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\electromagnet_card.kicad_sch",
+    "size": 138940,
+    "sha256": "196e08c7cd141a998cb93bc59bbdfc25f85c9f563fc1c6d8ccc21321ead9c62c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\electromagnet_card.step",
+    "size": 2127268,
+    "sha256": "3bb1b4899a67647ebc33783455eafb9f8b7a5b17061a167551b517bfa2644f52"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\electromagnet_card_drc_54d29c2a-ca8a-4431-b1e3-f47150b6c670.json",
+    "size": 54152,
+    "sha256": "3de3784680bd6503c4286bc6df2e2cf4a18816ff5eb8261761626e54bc28bddf"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\erc_report.json",
+    "size": 7822,
+    "sha256": "09bea8c441c384a22baf59f06058f23347f8e2dec1f544b33f486b0267bff66b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "69127e061bcb36da7319937633868fd1533233a2f7b37dd1715b89bc5851b38a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\pcb.kicad_sch",
+    "size": 279,
+    "sha256": "108b8ddde0c3571a660d9cf2e29e730b8adeb41b885be00120f5b5cf5eed7c0a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\drc_report.json",
+    "size": 1096,
+    "sha256": "a77ad3e6e6e26a6ff9e5fb789ab832117b6bce43dd0d0e97f60b12c703b4e196"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\electromagnet_card.kicad_sch",
+    "size": 139734,
+    "sha256": "2f52f89c727e09424fe2f838486431b5c349e88778407a1085a230b3865fd265"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\electromagnet_card.pdf",
+    "size": 119410,
+    "sha256": "0ba34ff3da7f736e52605e4981e4be243522df60d8c3cd12fe26529479669dae"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\erc_report.json",
+    "size": 1027,
+    "sha256": "a3b73a3233f7a0108facd7bfbe687e2a207efedf745ebfe5106fede28f5497f9"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\pcb.kicad_pcb",
+    "size": 92334,
+    "sha256": "fb6c4ba8889821a07c1670cf7bef99ee1350f1c3ed587e14dc293e00587b3d1e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\pcb.kicad_sch",
+    "size": 69015,
+    "sha256": "7d90c99a85bd5d83ad6032b3a7a473e60385e62ae120683603eb3868febdea11"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\pcb_drc_020b8cb2-6808-49f2-8d12-e0c1096b8f73.json",
+    "size": 1076,
+    "sha256": "c0fb6246ea499f03a1b36a0e0c271f85778757e264ba95231a8a5d8fe930e8a9"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\pcb_drc_97696062-b367-4da6-9022-537a09003130.json",
+    "size": 1076,
+    "sha256": "771fddd27ba3c916c22da2b050126c6195f83c539a8220cbb91904c075d370ed"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\pcb.kicad_pcb",
+    "size": 36264,
+    "sha256": "4937bf71cebd61b5651feaa84a0ba5ff7cf7e5d915752ab87f41b8645c3f1b4b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\pcb.kicad_pro",
+    "size": 5425,
+    "sha256": "5f4baebaa3c926e5052869d7bd2490394807c7b5de89658209d86d6962b69741"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\pcb.kicad_sch",
+    "size": 45695,
+    "sha256": "7d52a207705cfb1d3e8fcaf791da8f0cca42253e1bc1b182b9758f5037e8d83b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\pcb.kicad_pcb",
+    "size": 50208,
+    "sha256": "d14cfdfc56be3bff4d7ece5d28183d58c85d8001caa393002cd8159ef0a90198"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\pcb.kicad_pro",
+    "size": 5425,
+    "sha256": "5f4baebaa3c926e5052869d7bd2490394807c7b5de89658209d86d6962b69741"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\pcb.kicad_sch",
+    "size": 58667,
+    "sha256": "7e8225ca11d590606f92f88fd000518a408e22898faf94db59bafc5089f6a689"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\pcb_turnkey_manufacturing.zip",
+    "size": 3630,
+    "sha256": "621e6f8daa4a147fe36125ed0bd617c6820a2c05e9db6d01f2d4a89ddb05cf8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\release_package\\EMC-100_R001_Complete_Manufacturing_Release.zip",
+    "size": 8706417,
+    "sha256": "121bbff412d1cf792cee70e3314755074add527a97176962431aeba94b31025c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\release_package\\release_manifest.json",
+    "size": 101976,
+    "sha256": "dcfc1b1909656fe82212a9caf7462d493635ac5279c106db4ed8215f2a412cad"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\simulations\\electromagnet_pulse.log",
+    "size": 853,
+    "sha256": "6f70f2f0ebd048abf702e4e705c2175da5b2ddd5866541f946b3cec8a0056e5c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\simulations\\electromagnet_pulse.net",
+    "size": 1352,
+    "sha256": "59c53233e0a262568127c478b0cbe2eda08bd1207960650c1b0d80f6795b08da"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\simulations\\electromagnet_pulse.raw",
+    "size": 2732516,
+    "sha256": "62686f967756b2d04fc027dc37f57b23d11b0fd8ba97cafc0a9467d93f29a1b3"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\0da5deae-3f5c-4061-8966-32359828e1f8\\manifest.json",
+    "size": 2158,
+    "sha256": "7dbadaffbfb2dd3f09f1471a8a334ca3a81417ec15403f35e002ec456fff0516"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\1695438f-7ecf-4ffe-befc-f40a982386a7\\manifest.json",
+    "size": 2158,
+    "sha256": "51c0fdf5e83f2b32dc676a03740ebf5336da20c99309cf22379c51dadd2698af"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\17dbc8fe-7b3c-4f93-8526-faae84c624a4\\manifest.json",
+    "size": 2134,
+    "sha256": "55bebaae333723324eb029a23a89b2cc50cc19a0ed2452d4ab2423a9231be742"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\192e66f6-9725-4729-88b5-5f709346e3d4\\manifest.json",
+    "size": 2170,
+    "sha256": "6cc12fb5b72f8c927b85b5772a313d53a6a08d4a670b51a472d1bbed00d921a9"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\27b4c100-ed5a-44f4-9893-5b613a842016\\manifest.json",
+    "size": 2142,
+    "sha256": "26cca509e245a22374baa9642d03edfd71df31e281f51480e665ee35e9db1b62"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\34fc2423-786a-4a83-93d2-87b72e001aca\\manifest.json",
+    "size": 1733,
+    "sha256": "6afcaf5a75ab6c1bfca4c81268ea38a2b40d965a4e35e9225e38b69422760c0a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\36c669ec-46c1-4d32-a160-2a792d5f7b98\\manifest.json",
+    "size": 1723,
+    "sha256": "b8d873913d35c1f57d896b7ff1ee929e73f198941b4a17eba09c553b714c75e0"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\56d319e0-b736-4cb5-bdf2-2a9e3268c1c8\\manifest.json",
+    "size": 1723,
+    "sha256": "e63292e9b2b31b0cb76f51f3945c6ee89eb1f0ebafeca4b0b861f96f53ea9876"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\95b54b40-839b-4425-b5b2-464c2aa98d7e\\manifest.json",
+    "size": 2140,
+    "sha256": "f03e2ca94f76a2987f4fef0317c14aec618c71d46ce9498397cee74dab91d85b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\9d8a9998-d58d-4e94-8b20-fe8f446f7be3\\manifest.json",
+    "size": 1723,
+    "sha256": "a01605ab6ec20091c8d05b00a1a907ad2d09acdc4e31ba5d2f8b528f958e4e64"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\a5976fed-97cb-40bf-afcf-0e33b97b6d63\\manifest.json",
+    "size": 2146,
+    "sha256": "a72798138d1506536df90d1829f4fc9821e924f149233a6f98802c475ce223b9"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\a9444cbc-32f8-4606-83ca-dd07973f0d97\\manifest.json",
+    "size": 1741,
+    "sha256": "826cb80d62df3c1c9db223bade723bc606739d3a7b708b3842af70ab92d43c9f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\b10b08dc-04f8-4549-aeb3-eed133578323\\manifest.json",
+    "size": 2199,
+    "sha256": "c25ecf07fddd797d5e19aac1df2762c0b6398d0eec132fddbbcfedd13a3a0b60"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\b4fcc4c6-8db5-4639-8752-34aa20322114\\manifest.json",
+    "size": 1422,
+    "sha256": "c5fae0e0a60add3aa6f86cce986c785c5f9b2e6285b7d0fcbc07292d3956d49f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\b75bb164-0e49-42a6-a07e-1cb8d20587fc\\manifest.json",
+    "size": 1444,
+    "sha256": "f01929ef208a7714dcc42a9ce9ebf512484717620a902d60d7e01295e16a7be2"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\c4e347e2-19fd-4484-afb6-9cd1fc6ff89d\\manifest.json",
+    "size": 1719,
+    "sha256": "90bbade88cf4ee3eb30bb44f930c965f48735e18d508c5ec7152dc9c281f0813"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\cdd55434-dfb5-4fa5-8946-dfc674367ba2\\manifest.json",
+    "size": 1739,
+    "sha256": "64e7872a2f96003f106567956b5b82fc632d35a9942d34502257e064b3fd98f8"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\f2c8747b-b9b9-4b7b-86e5-4428e9d4f492\\manifest.json",
+    "size": 2138,
+    "sha256": "4d66cc5a03d1fdf82115ff11d79cd2b4c7b6562862ed01a5fe77fe3e4f8b7fae"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\f4a2f383-c3f2-45fc-b05d-7e341a3ac156\\manifest.json",
+    "size": 2135,
+    "sha256": "7cdc761cd0a14ea17a328870c6502e9706db523181c648977408e0ec9e302371"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\fe7cd74e-32a6-4aa3-acad-768376b89d2c\\manifest.json",
+    "size": 1730,
+    "sha256": "32a633ffd8f9c832c5fd9d4215ad23d74a29dc7f7acc55257687e688dc5f1d5d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\fe7cd74e-32a6-4aa3-acad-768376b89d2c\\raw\\evidence.json",
+    "size": 634,
+    "sha256": "64aebf314cb7a19efdf15caf6899ec31145834f62d45932711944e7e0954c902"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\f2c8747b-b9b9-4b7b-86e5-4428e9d4f492\\raw\\evidence.pdf",
+    "size": 247028,
+    "sha256": "8e0f53215b130c75474b6f2279dd0e9ba4bc0b091dc8ca5b6be53a3d697df40f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\cdd55434-dfb5-4fa5-8946-dfc674367ba2\\raw\\evidence.pdf",
+    "size": 257844,
+    "sha256": "b2389ad536d77e51cd2c40c48f976108f92ca7305421bf3b6256775271f04b08"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\b75bb164-0e49-42a6-a07e-1cb8d20587fc\\raw\\evidence.json",
+    "size": 147890,
+    "sha256": "2e2e59537afff1c426244500fff64b82ee46b0c9919096aaaeef3bce9fcd35fd"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\b4fcc4c6-8db5-4639-8752-34aa20322114\\raw\\evidence.json",
+    "size": 124098,
+    "sha256": "c46e3948f32ea48d4d554d078c91b474be9d93f099c8838741417156384118bc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\b10b08dc-04f8-4549-aeb3-eed133578323\\raw\\evidence.md",
+    "size": 1742,
+    "sha256": "5ee9ea19e4e1478917a00429853f10128c53b43de56c22abe1a98736a12dc520"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\a9444cbc-32f8-4606-83ca-dd07973f0d97\\raw\\evidence.log",
+    "size": 853,
+    "sha256": "6f70f2f0ebd048abf702e4e705c2175da5b2ddd5866541f946b3cec8a0056e5c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\a5976fed-97cb-40bf-afcf-0e33b97b6d63\\raw\\evidence.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\9d8a9998-d58d-4e94-8b20-fe8f446f7be3\\raw\\evidence.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\95b54b40-839b-4425-b5b2-464c2aa98d7e\\raw\\evidence.log",
+    "size": 853,
+    "sha256": "6f70f2f0ebd048abf702e4e705c2175da5b2ddd5866541f946b3cec8a0056e5c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\56d319e0-b736-4cb5-bdf2-2a9e3268c1c8\\raw\\evidence.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\36c669ec-46c1-4d32-a160-2a792d5f7b98\\raw\\evidence.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\34fc2423-786a-4a83-93d2-87b72e001aca\\raw\\evidence.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\27b4c100-ed5a-44f4-9893-5b613a842016\\raw\\evidence.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\192e66f6-9725-4729-88b5-5f709346e3d4\\raw\\evidence.json",
+    "size": 31672,
+    "sha256": "b33e7db733650204cf26a847a426a5dd8dc9cd21a4ff99f7033574c78e7d532c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\17dbc8fe-7b3c-4f93-8526-faae84c624a4\\raw\\evidence.md",
+    "size": 1742,
+    "sha256": "5ee9ea19e4e1478917a00429853f10128c53b43de56c22abe1a98736a12dc520"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\1695438f-7ecf-4ffe-befc-f40a982386a7\\raw\\evidence.docx",
+    "size": 38747,
+    "sha256": "8c61a7a02b55ba9f841bd654459533e07cff6824293bece421be9339e458fae3"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\validation\\0da5deae-3f5c-4061-8966-32359828e1f8\\raw\\evidence.docx",
+    "size": 38747,
+    "sha256": "8c61a7a02b55ba9f841bd654459533e07cff6824293bece421be9339e458fae3"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\tests\\laboratory_test_plan\\test_plan.json",
+    "size": 10693,
+    "sha256": "935c4fce83ae1f54c365a3eca5b490f74b5bf8e6c126a8add69f753ce1bb3905"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\tests\\laboratory_test_plan\\test_plan.md",
+    "size": 12279,
+    "sha256": "332e3891887618a92d371796050cd904e1b07703ee0b2da0a77b6d6f0c0a9202"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\1950bd11-b1da-4187-b5a4-5245aafd1115\\report.pdf",
+    "size": 247028,
+    "sha256": "8e0f53215b130c75474b6f2279dd0e9ba4bc0b091dc8ca5b6be53a3d697df40f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\1950bd11-b1da-4187-b5a4-5245aafd1115\\snapshot.json",
+    "size": 9423,
+    "sha256": "ea54f0e5bb1fd98da5f3faf4c9c6600666d721474698e1e3debaf42c3dc50340"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\34b81ddd-1fe3-4b0b-b414-65693edfcbfb\\report.pdf",
+    "size": 1141152,
+    "sha256": "0b0481bb4f172e648f12853cda5be998eb016f5073e658f6e6b10798313b9c12"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\34b81ddd-1fe3-4b0b-b414-65693edfcbfb\\snapshot.json",
+    "size": 35818,
+    "sha256": "d408b6bee0546e18695cb3735a044c2903cc311a7c575358361116c17c13f488"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\8b191c48-07d8-4ae9-8b85-b83c500db6db\\report.pdf",
+    "size": 1068772,
+    "sha256": "fb3146104994211c6e66b853cf9acdfd4a57a2baec3ee09630b3176455789c98"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\8b191c48-07d8-4ae9-8b85-b83c500db6db\\snapshot.json",
+    "size": 33095,
+    "sha256": "1b0214628c2746d3451af8ed91b425d955acaebcb0f517ac4a98e2a3a55aba69"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\967aba4f-b604-4d0d-8418-2b73a9661f0d\\report.pdf",
+    "size": 260491,
+    "sha256": "9ff125594ec031ad7d5355ead5b5d27ccf0be66e34d331b36e1071e16b3e6ad0"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\967aba4f-b604-4d0d-8418-2b73a9661f0d\\snapshot.json",
+    "size": 9423,
+    "sha256": "bc5313cf10dbda8d6d2d151715be136d75b13c24fb8215c2dc430dca8b009f6f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\96a69af1-6286-4249-a2dc-af4f9f81fa6c\\report.pdf",
+    "size": 1137818,
+    "sha256": "565bc5d40fd9cce405281458786a4d01753ec179336340a58ea0ea661007b479"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\96a69af1-6286-4249-a2dc-af4f9f81fa6c\\snapshot.json",
+    "size": 35818,
+    "sha256": "92c1012e1132b72ce93283286fd128de05ea12f12d782144c9f23319ba22d7e2"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\a0d980bd-e85c-4edd-afd9-2d999005f4d7\\report.pdf",
+    "size": 257844,
+    "sha256": "b2389ad536d77e51cd2c40c48f976108f92ca7305421bf3b6256775271f04b08"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\a0d980bd-e85c-4edd-afd9-2d999005f4d7\\snapshot.json",
+    "size": 9423,
+    "sha256": "dc3dc948f3051aedf9a29ce279b75f5a8a2310e573fe14a1e44d444b3970982d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\e113a471-3c45-4e8a-9b6f-a5384d08d4c4\\report.pdf",
+    "size": 985492,
+    "sha256": "bc6cf6e32416b6571a9250f870d8d3a1cf4e8e1cedef3fb7038463f6141ab0a5"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\reports\\e113a471-3c45-4e8a-9b6f-a5384d08d4c4\\snapshot.json",
+    "size": 27321,
+    "sha256": "690a48b5a0b2c13d4113db041a27657ee72a5afe7e6fbfa6404b12256666b5e0"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\erc.json",
+    "size": 1034,
+    "sha256": "436e851de59082c532edbc1b87940e9e1c70f180f67a4db9ecc88ace10234a0e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\verify.json",
+    "size": 365,
+    "sha256": "5e5e69cdc9481e2bff2fc27260a9a411bcf1d6d8716ab1abaed9e78c35a77fdc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\gerbers\\pcb_board_stats.json",
+    "size": 1810,
+    "sha256": "fead6614b041cbbf8238ca430b2eddb371d7f1a2d232d43f7bfa20b8a7902aa7"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\gerbers\\pcb_bom.csv",
+    "size": 7625,
+    "sha256": "d859f8c51def0fabd3b1d8294e5b081bdd563905b1dd2964dfe451d33bc02173"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\gerbers\\pcb_cpl.csv",
+    "size": 777,
+    "sha256": "5cce74a84ca24e6e2651640f66bbbdd741bf544d0baedfeb231d30171a8aefbc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\gerbers\\pcb_turnkey_manufacturing.zip",
+    "size": 3630,
+    "sha256": "621e6f8daa4a147fe36125ed0bd617c6820a2c05e9db6d01f2d4a89ddb05cf8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023404-created\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "c54961ee9ddf9571b19c46292670889ab2740df33933b0c62fe2bfbc26da8313"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023404-created\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023404-created\\pcb.kicad_sch",
+    "size": 279,
+    "sha256": "b1803407663d254d0a547449b83fe3e5a454e42afdd5ec36457ed540861a7181"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023412-sch_layout\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "c54961ee9ddf9571b19c46292670889ab2740df33933b0c62fe2bfbc26da8313"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023412-sch_layout\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023412-sch_layout\\pcb.kicad_sch",
+    "size": 58981,
+    "sha256": "0e1453eaebe59fe06da091d7bb587d4bd6e34a38ffd8ca4cd7b0ad60dc226004"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023416-before-pcb-sync\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "c54961ee9ddf9571b19c46292670889ab2740df33933b0c62fe2bfbc26da8313"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023416-before-pcb-sync\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023416-before-pcb-sync\\pcb.kicad_sch",
+    "size": 58667,
+    "sha256": "7e8225ca11d590606f92f88fd000518a408e22898faf94db59bafc5089f6a689"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023421-before-pcb-place\\pcb.kicad_pcb",
+    "size": 50036,
+    "sha256": "8e8dd6e390c9f693e3af61a03168b1db1fa60f195d306dbb9e5bf9d5ac09489b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023421-before-pcb-place\\pcb.kicad_pro",
+    "size": 5425,
+    "sha256": "5f4baebaa3c926e5052869d7bd2490394807c7b5de89658209d86d6962b69741"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690299\\.copper\\snapshots\\20261115-023421-before-pcb-place\\pcb.kicad_sch",
+    "size": 58667,
+    "sha256": "7e8225ca11d590606f92f88fd000518a408e22898faf94db59bafc5089f6a689"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\erc.json",
+    "size": 1034,
+    "sha256": "63e186cc2041bd6a0eaf0c364c0c7a4f2915ef46b86d11e8ad30457d9d8de3be"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\verify.json",
+    "size": 364,
+    "sha256": "fcca0e368b05d89edd46960655da7a3afd46dafb2af7a7c7dd489aeb7d04fe32"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023341-created\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "845e9360daa3717930c1fa9d5bea4bfff28cc70c07612c1b9f45b0ac3bdf032b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023341-created\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023341-created\\pcb.kicad_sch",
+    "size": 279,
+    "sha256": "5e6c5652f4ec934c826d56a74cd8794312e81341cc4d7e68f5bd44382ec3d379"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023349-sch_layout\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "845e9360daa3717930c1fa9d5bea4bfff28cc70c07612c1b9f45b0ac3bdf032b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023349-sch_layout\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023349-sch_layout\\pcb.kicad_sch",
+    "size": 47092,
+    "sha256": "6ef48b0a716455f0be42abaf28a2b194af8478b37f52b9c5b54e3e8fd212db0c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023353-before-pcb-sync\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "845e9360daa3717930c1fa9d5bea4bfff28cc70c07612c1b9f45b0ac3bdf032b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023353-before-pcb-sync\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023353-before-pcb-sync\\pcb.kicad_sch",
+    "size": 45695,
+    "sha256": "7d52a207705cfb1d3e8fcaf791da8f0cca42253e1bc1b182b9758f5037e8d83b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023358-before-pcb-place\\pcb.kicad_pcb",
+    "size": 36116,
+    "sha256": "e2130998c03db908529ff24bd4a5ba5eb7fc7d88d16f7d88403a39898e65f612"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023358-before-pcb-place\\pcb.kicad_pro",
+    "size": 5425,
+    "sha256": "5f4baebaa3c926e5052869d7bd2490394807c7b5de89658209d86d6962b69741"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690240\\.copper\\snapshots\\20261115-023358-before-pcb-place\\pcb.kicad_sch",
+    "size": 45695,
+    "sha256": "7d52a207705cfb1d3e8fcaf791da8f0cca42253e1bc1b182b9758f5037e8d83b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\drc.json",
+    "size": 4605,
+    "sha256": "e28ccd2861f2d29ef15312529e24584eb02da706089a499a8cdc44cf146879b5"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\erc.json",
+    "size": 1034,
+    "sha256": "560a18848053be5534949682931b256f98b3baf97add50176dd17db8c3380ebd"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\verify.json",
+    "size": 4091,
+    "sha256": "c7da9452e9e555c5e98791fa60e6e804c5cb96467f5769702ad3ded193e1d85a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-B_Cu.gbr",
+    "size": 24525,
+    "sha256": "43da3da573b938cde46b206a4d3e055b2b020d4777728ba48b3913c0b0be8123"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-B_Mask.gbr",
+    "size": 1048,
+    "sha256": "5721e0eae51c141fa4303c6802536bc6fb05bbfb19e20b1912712c75f71eeaa4"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-B_Paste.gbr",
+    "size": 460,
+    "sha256": "318d29a7ec0f4bd1dc09f66ab6a2859d93104a62988c486951dac4830dbf4980"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-B_Silkscreen.gbr",
+    "size": 461,
+    "sha256": "6c7658151fcd6126f9203019a075ec40ae748a4c8f2eb5ce28fdd5f55d6259d6"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-Edge_Cuts.gbr",
+    "size": 628,
+    "sha256": "d91f2ffa7090ada940a48b21d240582f3a9efd777ecf6f38b059e476c761e259"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-F_Cu.gbr",
+    "size": 5807,
+    "sha256": "3c80bea9408194ae5ba50b33d61e765050a8ad193efcc80f0bafd77f3c364781"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-F_Mask.gbr",
+    "size": 3174,
+    "sha256": "6fd0f3eb4e58b91a0fa0803452b8a6f2cfd500640ebf1bc60f01d757e3db1169"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-F_Paste.gbr",
+    "size": 2736,
+    "sha256": "5c3e0e327a6384119905e85a5e6fe942388265cc1974b2796aefe6a43391a19f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb-F_Silkscreen.gbr",
+    "size": 25933,
+    "sha256": "94358e6d5afbba90673160f2c45178c19dc35f68a96a344e6e941d7affa161d7"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb.drl",
+    "size": 670,
+    "sha256": "5f621a6a4cfe97f9ce6c39eb182b2744f610b900c9ae11db4497e1506d84c47b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\gerbers\\pcb_gerbers.zip",
+    "size": 16669,
+    "sha256": "601396482980a8419267cbcc6e45969d650db370d2d9446bd1635e35558078f4"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-231929-created\\pcb.kicad_pcb",
+    "size": 3478,
+    "sha256": "4a1ac4e7b62208def71a7160630bd5a0c76ab0b85e9ab0f0f62bbc6bc865a080"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-231929-created\\pcb.kicad_pro",
+    "size": 5418,
+    "sha256": "303c0c40de4610bf2b5784c382e0c74a2aeff3014f123ec5366f4b194f6bdcfc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-231929-created\\pcb.kicad_sch",
+    "size": 279,
+    "sha256": "d3fcbd92879624362f5e5774db93b6b3f6035920499781017a251576f44f9aa5"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232023-sch_apply\\electromagnet_card.kicad_sch",
+    "size": 139915,
+    "sha256": "560ed6ea47d868ed67321bc42b49bd2c726578877700f650f36bcb1bcaa3968a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232023-sch_apply\\pcb.kicad_pcb",
+    "size": 3478,
+    "sha256": "4a1ac4e7b62208def71a7160630bd5a0c76ab0b85e9ab0f0f62bbc6bc865a080"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232023-sch_apply\\pcb.kicad_pro",
+    "size": 5418,
+    "sha256": "303c0c40de4610bf2b5784c382e0c74a2aeff3014f123ec5366f4b194f6bdcfc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232023-sch_apply\\pcb.kicad_sch",
+    "size": 279,
+    "sha256": "d3fcbd92879624362f5e5774db93b6b3f6035920499781017a251576f44f9aa5"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232057-sch_layout\\electromagnet_card.kicad_sch",
+    "size": 139915,
+    "sha256": "560ed6ea47d868ed67321bc42b49bd2c726578877700f650f36bcb1bcaa3968a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232057-sch_layout\\pcb.kicad_pcb",
+    "size": 3478,
+    "sha256": "4a1ac4e7b62208def71a7160630bd5a0c76ab0b85e9ab0f0f62bbc6bc865a080"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232057-sch_layout\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232057-sch_layout\\pcb.kicad_sch",
+    "size": 67762,
+    "sha256": "6cfdb09abac5aacda549b914acbf61a2dbbb22770502de429143671e1d713308"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232107-before-pcb-sync\\electromagnet_card.kicad_sch",
+    "size": 139915,
+    "sha256": "560ed6ea47d868ed67321bc42b49bd2c726578877700f650f36bcb1bcaa3968a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232107-before-pcb-sync\\pcb.kicad_pcb",
+    "size": 3478,
+    "sha256": "4a1ac4e7b62208def71a7160630bd5a0c76ab0b85e9ab0f0f62bbc6bc865a080"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232107-before-pcb-sync\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232107-before-pcb-sync\\pcb.kicad_sch",
+    "size": 69015,
+    "sha256": "7d90c99a85bd5d83ad6032b3a7a473e60385e62ae120683603eb3868febdea11"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232119-before-pcb-place\\electromagnet_card.kicad_sch",
+    "size": 139915,
+    "sha256": "560ed6ea47d868ed67321bc42b49bd2c726578877700f650f36bcb1bcaa3968a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232119-before-pcb-place\\pcb.kicad_pcb",
+    "size": 65020,
+    "sha256": "343b67a5abf357b1177110f91ab57a71d86444d964a45cb40094b4c3fe9b61bb"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232119-before-pcb-place\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261114-232119-before-pcb-place\\pcb.kicad_sch",
+    "size": 69015,
+    "sha256": "7d90c99a85bd5d83ad6032b3a7a473e60385e62ae120683603eb3868febdea11"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003835-before-pcb-pour\\electromagnet_card.kicad_sch",
+    "size": 139734,
+    "sha256": "2f52f89c727e09424fe2f838486431b5c349e88778407a1085a230b3865fd265"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003835-before-pcb-pour\\pcb.kicad_pcb",
+    "size": 65254,
+    "sha256": "fc4430467f805363933e57790b87b1af0297cf4947f049917556c45eed69bd18"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003835-before-pcb-pour\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003835-before-pcb-pour\\pcb.kicad_sch",
+    "size": 69015,
+    "sha256": "7d90c99a85bd5d83ad6032b3a7a473e60385e62ae120683603eb3868febdea11"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003835-before-pcb-pour-2\\electromagnet_card.kicad_sch",
+    "size": 139734,
+    "sha256": "2f52f89c727e09424fe2f838486431b5c349e88778407a1085a230b3865fd265"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003835-before-pcb-pour-2\\pcb.kicad_pcb",
+    "size": 65254,
+    "sha256": "fc4430467f805363933e57790b87b1af0297cf4947f049917556c45eed69bd18"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003835-before-pcb-pour-2\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003835-before-pcb-pour-2\\pcb.kicad_sch",
+    "size": 69015,
+    "sha256": "7d90c99a85bd5d83ad6032b3a7a473e60385e62ae120683603eb3868febdea11"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003857-before-guided-route\\electromagnet_card.kicad_sch",
+    "size": 139734,
+    "sha256": "2f52f89c727e09424fe2f838486431b5c349e88778407a1085a230b3865fd265"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003857-before-guided-route\\pcb.kicad_pcb",
+    "size": 87070,
+    "sha256": "6733969c716feacbca6d317c1c026f5848a39c01c7e60103978a2fa9bc76402c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003857-before-guided-route\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003857-before-guided-route\\pcb.kicad_sch",
+    "size": 69015,
+    "sha256": "7d90c99a85bd5d83ad6032b3a7a473e60385e62ae120683603eb3868febdea11"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003900-before-guided-route\\electromagnet_card.kicad_sch",
+    "size": 139734,
+    "sha256": "2f52f89c727e09424fe2f838486431b5c349e88778407a1085a230b3865fd265"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003900-before-guided-route\\pcb.kicad_pcb",
+    "size": 92334,
+    "sha256": "16cc263d71c96d9b21ef55cc97b28e11280b37742036b374ac7a9fff7647028b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003900-before-guided-route\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794690217\\.copper\\snapshots\\20261115-003900-before-guided-route\\pcb.kicad_sch",
+    "size": 69015,
+    "sha256": "7d90c99a85bd5d83ad6032b3a7a473e60385e62ae120683603eb3868febdea11"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\drc.json",
+    "size": 114171,
+    "sha256": "73f0a403384fd4a7fe4bcdd9435a5ee2410cd30807528f9dbad0ecfdfad2f822"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\state.json",
+    "size": 235,
+    "sha256": "1882868ca0538699dd44cf4bcad9e61f5df9e3e617219975a696b2cb8b62bb38"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\verify.json",
+    "size": 75751,
+    "sha256": "c7969545ad512c68111400a86fd2352f67f55f6c9c04e0264a2c9a4e966d204e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card-B_Courtyard.gbr",
+    "size": 450,
+    "sha256": "b451a5d074bb0c663a0a5fdc6d3809a7a71de34f2f6dc68514c774dfd133d554"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card-B_Cu.gbl",
+    "size": 6379,
+    "sha256": "0dedd5fbbd306c89cd5bd5d5771b1eace7ea5a27a3f8bc984580aee1309a97fc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card-B_Fab.gbr",
+    "size": 459,
+    "sha256": "732e3ccee1f64fa582b1d3e71a34f5596e103a0b7c64a43c62936a158d644f0a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card-F_Courtyard.gbr",
+    "size": 450,
+    "sha256": "b451a5d074bb0c663a0a5fdc6d3809a7a71de34f2f6dc68514c774dfd133d554"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card-F_Cu.gtl",
+    "size": 10545,
+    "sha256": "834272f5a68f311d0a8e4b18a335328e4fc9bc91920a04ca17302203f65bc22d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card-F_Fab.gbr",
+    "size": 99629,
+    "sha256": "17a3799e2a2f152a78ecdd9a31eab39112ef743064fcccd90e1c76fc5fa1ee3d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card-Margin.gbr",
+    "size": 450,
+    "sha256": "b451a5d074bb0c663a0a5fdc6d3809a7a71de34f2f6dc68514c774dfd133d554"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card.drl",
+    "size": 1642,
+    "sha256": "60cc911b592242f407b401d2c071b04d10536a4d6b1c79366037dd9302499092"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\electromagnet_card_gerbers.zip",
+    "size": 35377,
+    "sha256": "6de4df3b7e0226128a5b84765724080828e771c15ed885a4d0ca4c3542706eed"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-B_Courtyard.gbr",
+    "size": 432,
+    "sha256": "4ecd7defe65b33d4301cbb4ee5c19399158521573b2e9b203404d70e9bfe1e0f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-B_Cu.gbl",
+    "size": 464,
+    "sha256": "4ce321c10b2d0947f689d8dcefe7f2e711636dc3f3f09802b0121a234229e99b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-B_Fab.gbr",
+    "size": 441,
+    "sha256": "0dc98627f83338fbc3d37fa07cbe8c34dd995395c1de2951866916367d9e4b2b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-F_Courtyard.gbr",
+    "size": 432,
+    "sha256": "4ecd7defe65b33d4301cbb4ee5c19399158521573b2e9b203404d70e9bfe1e0f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-F_Cu.gtl",
+    "size": 464,
+    "sha256": "95ca86fc5c5e163c6d40aef62bbd3f0800beb366c8017154a349457ea4afef0c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-F_Fab.gbr",
+    "size": 441,
+    "sha256": "f7d5da49bcadd8d86915be313a8c3d01580e0f8189f6c82597cfb8f72369a925"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-Margin.gbr",
+    "size": 432,
+    "sha256": "4ecd7defe65b33d4301cbb4ee5c19399158521573b2e9b203404d70e9bfe1e0f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-User_1.gbr",
+    "size": 432,
+    "sha256": "4ecd7defe65b33d4301cbb4ee5c19399158521573b2e9b203404d70e9bfe1e0f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-User_2.gbr",
+    "size": 432,
+    "sha256": "4ecd7defe65b33d4301cbb4ee5c19399158521573b2e9b203404d70e9bfe1e0f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-User_3.gbr",
+    "size": 432,
+    "sha256": "4ecd7defe65b33d4301cbb4ee5c19399158521573b2e9b203404d70e9bfe1e0f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-User_4.gbr",
+    "size": 432,
+    "sha256": "4ecd7defe65b33d4301cbb4ee5c19399158521573b2e9b203404d70e9bfe1e0f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-User_Comments.gbr",
+    "size": 435,
+    "sha256": "bf7fa3c2766aff7eb63b1857e5f33b994bbe112fd9e42e36204aed19cb2952ae"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-User_Drawings.gbr",
+    "size": 442,
+    "sha256": "7efa3e5614241be60e13952fafe8c8d44c33edaf9bfeff40fa55bfd0991f63cb"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-User_Eco1.gbr",
+    "size": 432,
+    "sha256": "26f658c7c4c8f4eaf4776d89ca204c1047862195c10f72f5a4e9f89d62452808"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb-User_Eco2.gbr",
+    "size": 432,
+    "sha256": "9d7d246b884f610a4446a29942506672c51bcf5060d2b3946718600f65465947"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb.drl",
+    "size": 274,
+    "sha256": "991ec7e82d4cb62c0427270c50fbd81dacd0a94670f352c5ee3dfe989a5ab5aa"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\gerbers\\pcb_gerbers.zip",
+    "size": 11253,
+    "sha256": "d1b8134decc34252feb12270bc00e527e7dacfc493308de9055d0bcf4966ff8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230030-before-KiCad-10-0-format-upgrade\\electromagnet_card.kicad_pcb",
+    "size": 42941,
+    "sha256": "48582f6b86cb1229710102598e4d58bda0e2ae67fed6bb5d8ed49b821b5f1d76"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230030-before-KiCad-10-0-format-upgrade\\electromagnet_card.kicad_pro",
+    "size": 11045,
+    "sha256": "f496c7d55e8ca09939809684e6f0bd755fe76ec75d3a7878594140d542f94023"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230030-before-KiCad-10-0-format-upgrade\\electromagnet_card.kicad_sch",
+    "size": 128551,
+    "sha256": "1701979b9da474929433d5a1b176f7fc8ba12d32ab40a54c526a18eed5b5c13e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230030-before-KiCad-10-0-format-upgrade\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "69127e061bcb36da7319937633868fd1533233a2f7b37dd1715b89bc5851b38a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230030-before-KiCad-10-0-format-upgrade\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230030-before-KiCad-10-0-format-upgrade\\pcb.kicad_sch",
+    "size": 279,
+    "sha256": "108b8ddde0c3571a660d9cf2e29e730b8adeb41b885be00120f5b5cf5eed7c0a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230334-before-guided-route\\electromagnet_card.kicad_pcb",
+    "size": 127396,
+    "sha256": "e846954c146c91ad7ac3ea17f3c3e18255e186e42065ee91dad92d881b4f29b2"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230334-before-guided-route\\electromagnet_card.kicad_pro",
+    "size": 11045,
+    "sha256": "f496c7d55e8ca09939809684e6f0bd755fe76ec75d3a7878594140d542f94023"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230334-before-guided-route\\electromagnet_card.kicad_sch",
+    "size": 128551,
+    "sha256": "1701979b9da474929433d5a1b176f7fc8ba12d32ab40a54c526a18eed5b5c13e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230334-before-guided-route\\pcb.kicad_pcb",
+    "size": 3019,
+    "sha256": "69127e061bcb36da7319937633868fd1533233a2f7b37dd1715b89bc5851b38a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230334-before-guided-route\\pcb.kicad_pro",
+    "size": 5352,
+    "sha256": "bea2569806f6e160a064fa77a0a3a176c22f0a623ed08dd83c30ad844d2c2346"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794678562\\.copper\\snapshots\\20261114-230334-before-guided-route\\pcb.kicad_sch",
+    "size": 279,
+    "sha256": "108b8ddde0c3571a660d9cf2e29e730b8adeb41b885be00120f5b5cf5eed7c0a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card-B_Courtyard.gbr",
+    "size": 450,
+    "sha256": "b451a5d074bb0c663a0a5fdc6d3809a7a71de34f2f6dc68514c774dfd133d554"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card-B_Cu.gbl",
+    "size": 6379,
+    "sha256": "0dedd5fbbd306c89cd5bd5d5771b1eace7ea5a27a3f8bc984580aee1309a97fc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card-B_Fab.gbr",
+    "size": 459,
+    "sha256": "732e3ccee1f64fa582b1d3e71a34f5596e103a0b7c64a43c62936a158d644f0a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card-F_Courtyard.gbr",
+    "size": 450,
+    "sha256": "b451a5d074bb0c663a0a5fdc6d3809a7a71de34f2f6dc68514c774dfd133d554"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card-F_Cu.gtl",
+    "size": 10545,
+    "sha256": "834272f5a68f311d0a8e4b18a335328e4fc9bc91920a04ca17302203f65bc22d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card-F_Fab.gbr",
+    "size": 99629,
+    "sha256": "17a3799e2a2f152a78ecdd9a31eab39112ef743064fcccd90e1c76fc5fa1ee3d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card-Margin.gbr",
+    "size": 450,
+    "sha256": "b451a5d074bb0c663a0a5fdc6d3809a7a71de34f2f6dc68514c774dfd133d554"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card.drl",
+    "size": 1642,
+    "sha256": "60cc911b592242f407b401d2c071b04d10536a4d6b1c79366037dd9302499092"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb_backup_1794668278\\gerbers\\electromagnet_card_gerbers.zip",
+    "size": 35377,
+    "sha256": "6de4df3b7e0226128a5b84765724080828e771c15ed885a4d0ca4c3542706eed"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\drc.json",
+    "size": 31534,
+    "sha256": "27785c41a6328003888ad85ffebb65a808d3003dc19049ff4e5455152149d171"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\erc.json",
+    "size": 1034,
+    "sha256": "40ad243b8a5140aae7e69fcd654bc28dd6eafa612e489719d9b0cfe3a53b888d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\verify.json",
+    "size": 22016,
+    "sha256": "6de4dd37216f92a7dc94489d8d71ee4fffcb6a2dc13f1e576d37c5a273f46250"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-B_Cu.gbr",
+    "size": 24525,
+    "sha256": "43da3da573b938cde46b206a4d3e055b2b020d4777728ba48b3913c0b0be8123"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-B_Mask.gbr",
+    "size": 1048,
+    "sha256": "5721e0eae51c141fa4303c6802536bc6fb05bbfb19e20b1912712c75f71eeaa4"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-B_Paste.gbr",
+    "size": 460,
+    "sha256": "318d29a7ec0f4bd1dc09f66ab6a2859d93104a62988c486951dac4830dbf4980"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-B_Silkscreen.gbr",
+    "size": 461,
+    "sha256": "6c7658151fcd6126f9203019a075ec40ae748a4c8f2eb5ce28fdd5f55d6259d6"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-Edge_Cuts.gbr",
+    "size": 628,
+    "sha256": "d91f2ffa7090ada940a48b21d240582f3a9efd777ecf6f38b059e476c761e259"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-F_Cu.gbr",
+    "size": 5807,
+    "sha256": "3c80bea9408194ae5ba50b33d61e765050a8ad193efcc80f0bafd77f3c364781"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-F_Mask.gbr",
+    "size": 3174,
+    "sha256": "6fd0f3eb4e58b91a0fa0803452b8a6f2cfd500640ebf1bc60f01d757e3db1169"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-F_Paste.gbr",
+    "size": 2736,
+    "sha256": "5c3e0e327a6384119905e85a5e6fe942388265cc1974b2796aefe6a43391a19f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb-F_Silkscreen.gbr",
+    "size": 25933,
+    "sha256": "94358e6d5afbba90673160f2c45178c19dc35f68a96a344e6e941d7affa161d7"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb.drl",
+    "size": 670,
+    "sha256": "5f621a6a4cfe97f9ce6c39eb182b2744f610b900c9ae11db4497e1506d84c47b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb_board_stats.json",
+    "size": 1817,
+    "sha256": "980c3d423366714a22dfa2979f428775ee553adfe09a72620364230d16cd10ef"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb_bom.csv",
+    "size": 7625,
+    "sha256": "d859f8c51def0fabd3b1d8294e5b081bdd563905b1dd2964dfe451d33bc02173"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb_cpl.csv",
+    "size": 1401,
+    "sha256": "c244ee04fbbcb545d0a0f5b86a05e537419df0a1cad01a4cd12298f82d194dda"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb_gerbers.zip",
+    "size": 16669,
+    "sha256": "601396482980a8419267cbcc6e45969d650db370d2d9446bd1635e35558078f4"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\gerbers\\pcb_turnkey_manufacturing.zip",
+    "size": 20583,
+    "sha256": "cd19917e691378c50e92ad21049e04d3df839a0383bd48b6dab5bc41c460cfa2"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023502-created\\pcb.kicad_pcb",
+    "size": 3478,
+    "sha256": "d0bb33c1cc99928d05ce5b233beb3ffdedbd03b90f6a0becef2aa39e613c31d9"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023502-created\\pcb.kicad_pro",
+    "size": 5418,
+    "sha256": "303c0c40de4610bf2b5784c382e0c74a2aeff3014f123ec5366f4b194f6bdcfc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023502-created\\pcb.kicad_sch",
+    "size": 279,
+    "sha256": "e47987a6b340689d933a29bad7b40fa2c9af1bbd0b5270a6734e27dd5455b302"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023512-sch_layout\\pcb.kicad_pcb",
+    "size": 3478,
+    "sha256": "d0bb33c1cc99928d05ce5b233beb3ffdedbd03b90f6a0becef2aa39e613c31d9"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023512-sch_layout\\pcb.kicad_pro",
+    "size": 5418,
+    "sha256": "303c0c40de4610bf2b5784c382e0c74a2aeff3014f123ec5366f4b194f6bdcfc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023512-sch_layout\\pcb.kicad_sch",
+    "size": 84270,
+    "sha256": "94e5ee03ce92114070aa287af5c4f2c8de625b2777b13a827d994c8915c614ea"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023516-before-pcb-sync\\pcb.kicad_pcb",
+    "size": 3478,
+    "sha256": "d0bb33c1cc99928d05ce5b233beb3ffdedbd03b90f6a0becef2aa39e613c31d9"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023516-before-pcb-sync\\pcb.kicad_pro",
+    "size": 5418,
+    "sha256": "303c0c40de4610bf2b5784c382e0c74a2aeff3014f123ec5366f4b194f6bdcfc"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023516-before-pcb-sync\\pcb.kicad_sch",
+    "size": 86750,
+    "sha256": "e58f3e1a7f140db0d768c22cd5fb290e3160e4097fa2e9c6d46f4c8b0ec39161"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023524-before-pcb-place\\pcb.kicad_pcb",
+    "size": 87023,
+    "sha256": "22004d135ab5b028e99399e667cfc2093754d6ec4af13856281cfea7b7361996"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023524-before-pcb-place\\pcb.kicad_pro",
+    "size": 5491,
+    "sha256": "4b58f3affbfc329654e1d765ba7e2504f46abce086521520e2085af16e5fe2c5"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023524-before-pcb-place\\pcb.kicad_sch",
+    "size": 86750,
+    "sha256": "e58f3e1a7f140db0d768c22cd5fb290e3160e4097fa2e9c6d46f4c8b0ec39161"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023628-before-pcb-pour\\pcb.kicad_pcb",
+    "size": 87236,
+    "sha256": "0e584be620c493d7b26b8707d6d067df468ce2425e6c6d1321c1e69046e29a14"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023628-before-pcb-pour\\pcb.kicad_pro",
+    "size": 5491,
+    "sha256": "4b58f3affbfc329654e1d765ba7e2504f46abce086521520e2085af16e5fe2c5"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023628-before-pcb-pour\\pcb.kicad_sch",
+    "size": 86750,
+    "sha256": "e58f3e1a7f140db0d768c22cd5fb290e3160e4097fa2e9c6d46f4c8b0ec39161"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023630-before-pcb-pour\\pcb.kicad_pcb",
+    "size": 114703,
+    "sha256": "2ed1ed9285b37bfbc571026e99726186978575030158877c6afa326bdfe83058"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023630-before-pcb-pour\\pcb.kicad_pro",
+    "size": 5491,
+    "sha256": "4b58f3affbfc329654e1d765ba7e2504f46abce086521520e2085af16e5fe2c5"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023630-before-pcb-pour\\pcb.kicad_sch",
+    "size": 86750,
+    "sha256": "e58f3e1a7f140db0d768c22cd5fb290e3160e4097fa2e9c6d46f4c8b0ec39161"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023632-before-pcb-pour\\pcb.kicad_pcb",
+    "size": 113000,
+    "sha256": "c7135f357e143279c72896903d524058cea3055e73d2b6ed2fc041189f9b7437"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023632-before-pcb-pour\\pcb.kicad_pro",
+    "size": 5491,
+    "sha256": "4b58f3affbfc329654e1d765ba7e2504f46abce086521520e2085af16e5fe2c5"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023632-before-pcb-pour\\pcb.kicad_sch",
+    "size": 86750,
+    "sha256": "e58f3e1a7f140db0d768c22cd5fb290e3160e4097fa2e9c6d46f4c8b0ec39161"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023633-before-pcb-pour\\pcb.kicad_pcb",
+    "size": 137506,
+    "sha256": "2c380fc50c07c1007dfd17639975523fc804ffd9041b17ee3e14091706770334"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023633-before-pcb-pour\\pcb.kicad_pro",
+    "size": 5917,
+    "sha256": "86177dc62ca604417b48b0205594b9239df6fee37a0b6d20291de99c4e1b206a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\pcb\\.copper\\snapshots\\20261115-023633-before-pcb-pour\\pcb.kicad_sch",
+    "size": 86750,
+    "sha256": "e58f3e1a7f140db0d768c22cd5fb290e3160e4097fa2e9c6d46f4c8b0ec39161"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\measurements\\laboratory\\emc100_isense_pulse_capture.csv",
+    "size": 1619,
+    "sha256": "d3f4b5e553b9e356cfb4b1662dcd2389f2b6cff359f3fc721e8105b14e5dc4d2"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\measurements\\laboratory\\EMC100_Physical_Test_Scorecard.md",
+    "size": 1742,
+    "sha256": "5ee9ea19e4e1478917a00429853f10128c53b43de56c22abe1a98736a12dc520"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\measurements\\laboratory\\emc100_vout_pulse_capture.csv",
+    "size": 1719,
+    "sha256": "7441bca3e773e3b2040603b3281d289c17f18fae12bd8802d46087c4fac58385"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\procurement_bom.csv",
+    "size": 7625,
+    "sha256": "d859f8c51def0fabd3b1d8294e5b081bdd563905b1dd2964dfe451d33bc02173"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\procurement_schedule.json",
+    "size": 31672,
+    "sha256": "05d271264294e464d0299bc728372a20faa6177b0589f4ff325935bac170b638"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\procurement_schedule.md",
+    "size": 5774,
+    "sha256": "20d71a4a34bf97ec008cf4d663415e353ae8afd96371eea88ffe58e0e03d86d3"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\07925c1ebde241a5b19cd84001ff0b8b\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "8c61a7a02b55ba9f841bd654459533e07cff6824293bece421be9339e458fae3"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\07925c1ebde241a5b19cd84001ff0b8b\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "ae113455b14b1a36fe5e3af1af43adc59802f79afb83347851de1d7d463a1a70"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\07925c1ebde241a5b19cd84001ff0b8b\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\07925c1ebde241a5b19cd84001ff0b8b\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\24c5194f7be749bdaee9f5a5412589ea\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "e9ee17257d7f3f2b79220038aae050710586f90c832a1577fc586ed3f461330d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\24c5194f7be749bdaee9f5a5412589ea\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "e3b253d8702d24242d0363a6639e1eee16e8c6af2b6f04311763899acbb7a1dd"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\24c5194f7be749bdaee9f5a5412589ea\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\24c5194f7be749bdaee9f5a5412589ea\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\296a48bd71cc4f8282a9e476578fa269\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "3bd98b4365cda7968d8dfc1e96e4176ce99bd218364898dc4823ca3c70367cd7"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\296a48bd71cc4f8282a9e476578fa269\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "0b80b1dea7d430a7ba962254d3df5b7bdef101d0585bca92f87021b76ae92df2"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\296a48bd71cc4f8282a9e476578fa269\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\296a48bd71cc4f8282a9e476578fa269\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\3b10a48d89b8440db68291a8248d26cf\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "ca870dd994d31b6130abc16ea7caabc094cb7e3e1046ae76c5299777bfee236e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\3b10a48d89b8440db68291a8248d26cf\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "39f6e5d14642a3d58d4081f4d288c2abe6434edff0c80f6fb79cd4afe0c86c21"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\3b10a48d89b8440db68291a8248d26cf\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\3b10a48d89b8440db68291a8248d26cf\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\4f7132a25b304114bbebf0bac4c624a5\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "80c3faafd3e56417ec2bb06e7ad30c98db7779b1e547e457a65545d41d314455"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\4f7132a25b304114bbebf0bac4c624a5\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "f567337b6e9fd12553a6454b49d942be6f8ec9fc6e77ea91d787e6d6deb0bfa7"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\4f7132a25b304114bbebf0bac4c624a5\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\4f7132a25b304114bbebf0bac4c624a5\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\56951ef655804afbaa05203dfe7984a2\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "51c3799a54a1f4d9d3cc7429eae691fa01dbcf239f4016d727cd17a56fe20ba1"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\56951ef655804afbaa05203dfe7984a2\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "b110637cd3132845cc4f085c4c7556829dde52825a5404ab55a3cf76ccd74e4a"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\56951ef655804afbaa05203dfe7984a2\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\56951ef655804afbaa05203dfe7984a2\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\57d7139527844d79a45f22125c9a114c\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "9faf13674c7103551e213fc4c9ae6757b4348767b6546599623bc0bd2180af49"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\57d7139527844d79a45f22125c9a114c\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "3acf919d74e5328adcaf5d6f0ae830bd13cf6916515d5f926d612d819d0032a9"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\57d7139527844d79a45f22125c9a114c\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\57d7139527844d79a45f22125c9a114c\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\65bb3565adca4ecf9fbdc5263a9460b2\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "188a583cf28a0a98384c0df0ab4a18448c1bf6d93fc47de97a4021baad5ee94b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\65bb3565adca4ecf9fbdc5263a9460b2\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "6a0df11a9ae56501db0dfaa8fc195c1f277f81906c0cb8ab7ddaa51f5cdf6d40"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\65bb3565adca4ecf9fbdc5263a9460b2\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\65bb3565adca4ecf9fbdc5263a9460b2\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\68661ae9ec3849da9e17387b459019c9\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "0adff7d7db279993c98a8fb1f0db2ada36585906b2b9a9d356795bf699478d8c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\68661ae9ec3849da9e17387b459019c9\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "aa4bc7a022865ee9d11bfcf98aaf98b906674f8e7ffc27e17825b1e1c55a82b0"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\68661ae9ec3849da9e17387b459019c9\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\68661ae9ec3849da9e17387b459019c9\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\86fde859ba3247af9740af4ca285956b\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "e66766b34766889c996dc3ac1a858baf4a498e9c65e3596105804da3c4c6874f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\86fde859ba3247af9740af4ca285956b\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "1390ce7f13a6fa5d73a211f03d20c438afd8d2b09dc1cd7ff9173012a48aaeab"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\86fde859ba3247af9740af4ca285956b\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\86fde859ba3247af9740af4ca285956b\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\95174d5c5090477a9af84ce674b4574f\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "dcd6743e150c5aae20d68caa631c02d09b64ceaf59cfd3aeb255ceda31b65495"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\95174d5c5090477a9af84ce674b4574f\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "e87ec2470b37a1535371623b61cb4db15f488461dac41853dca1abbbc9302411"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\95174d5c5090477a9af84ce674b4574f\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\95174d5c5090477a9af84ce674b4574f\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\98df7826beec4816936f6c3044dda3e5\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "a70ad9715ae800589e058300519d937891eb46a7ffeae4d9b95c38e0a4acccf8"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\98df7826beec4816936f6c3044dda3e5\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "6229a491e30beb20aa867a6e3d1c544d6f9bcf67638cd2dd7e3bbf88751612af"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\98df7826beec4816936f6c3044dda3e5\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\98df7826beec4816936f6c3044dda3e5\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\9e090bc697954c1286c0ccf81f4b5c81\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "2d7a70d6c92f3b6fe2cb246c9283fc48561e08a476f1310d2a2ead857d0d980c"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\9e090bc697954c1286c0ccf81f4b5c81\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "d32b15ad659e2498d68f4f1d546759f9c94b3a46ecb5ac732f55d45dcef3f310"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\9e090bc697954c1286c0ccf81f4b5c81\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\9e090bc697954c1286c0ccf81f4b5c81\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\b91e595ec2494476886a8472a82f74e1\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "decf09410cba9df7a3a11de98fa8b858b74d2e9e4461cae5dced90b0755ffa58"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\b91e595ec2494476886a8472a82f74e1\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "d9cf73f65256a17861c9e08baffad433063b9fd1559b71dda8544e988dc37133"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\b91e595ec2494476886a8472a82f74e1\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\b91e595ec2494476886a8472a82f74e1\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\c64791cded5e4125a9087b738f2529ea\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "d6a1825eb5405373c341883141b5609cf48e8d101ef3bb98c1f7a47ea410c9f1"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\c64791cded5e4125a9087b738f2529ea\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "15174021ae18bc77a2390c2e64174d45941d540b7250c16ff1c0c76fb758edcb"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\c64791cded5e4125a9087b738f2529ea\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\c64791cded5e4125a9087b738f2529ea\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\e5d92d76c8e348d38cb761d9da8c5c97\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "585416ea16b6bd93e8eba43c72cb4fd0580273b908d460bf4828b0013a3c6924"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\e5d92d76c8e348d38cb761d9da8c5c97\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "ea34203cbad67d2f6aae3a65ce390b40f155d075040b8bf9d1f96da66f150338"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\e5d92d76c8e348d38cb761d9da8c5c97\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\e5d92d76c8e348d38cb761d9da8c5c97\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\e786e9fc2fe54976ab6970ba1986957c\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "d3560075aae53bd7acdf5466fa38fccca7e25807c7e0d2b90bfd4e78cee6ac95"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\e786e9fc2fe54976ab6970ba1986957c\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "6e4663c1012060d8efbed5017895725a0841eb98e1cdeeb3e28152306b12fbac"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\e786e9fc2fe54976ab6970ba1986957c\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\e786e9fc2fe54976ab6970ba1986957c\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\ea162360506b44cd8b67c143a2240f25\\Bill_of_Materials.docx",
+    "size": 38747,
+    "sha256": "839d0ce052786a18fe950c43313724a4a965a94a3d38b2d3166e544ebe7e2d3f"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\ea162360506b44cd8b67c143a2240f25\\Bill_of_Materials.pdf",
+    "size": 191103,
+    "sha256": "828fbeb4e891587edf2232df35951871722fd3f34086c3305e4c11233cf6661d"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\ea162360506b44cd8b67c143a2240f25\\bom.csv",
+    "size": 4368,
+    "sha256": "8287a53b9d167a4bfc0b87f5d325230d4258454dab056b7c5eb4bf974c38b15b"
+  },
+  {
+    "path": "products\\5b0852dd-7920-4451-b869-049f46254387\\revisions\\db8689f3-d4fe-4dca-a71c-3fa9788b5f95\\bom\\exports\\ea162360506b44cd8b67c143a2240f25\\bom.json",
+    "size": 13324,
+    "sha256": "927fd17052e75ec4ec5a670194e67089f37e818baf562f90717714ac03817a8e"
+  },
+  {
+    "path": "engineering_designs\\5badf992-8f2e-405a-a38e-9cefa4e3a63c.json",
+    "size": 158325,
+    "sha256": "e0494e964dda971819ec2d6d13ccb25f93e7f101f2ea2b9f201cd7bf165adc0b"
+  },
+  {
+    "path": "engineering_designs\\a694e01a-bb54-41a3-9d40-19933577b6d6.json",
+    "size": 78533,
+    "sha256": "93d7df32cad6a9b8c848d0203ebc9355393b8fb8bb51315cfa6742965b5b96e6"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\board.step",
+    "size": 181923,
+    "sha256": "23c6c7373cef1583a36eb372c75ede742e0a91ff5136339caa021111b005c2f7"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\boundary-results.json",
+    "size": 620,
+    "sha256": "80c2f57062c929bc9ad72943597dd1933ba8ef91e5e88ddd29cd8729cccf54d6"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\cargo.log",
+    "size": 974,
+    "sha256": "138d5fb730f84d4dab4f41b271644184a0e427b013c3739f8f4af427749c23e0"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\desktop-observer.json",
+    "size": 55780,
+    "sha256": "0b5599d6c54d69b833f1cd484bfbc68e958540e3f47b17ff2764099cda1b4754"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\drc-after.json",
+    "size": 13836,
+    "sha256": "933443f340adf15796267bdce1a3230ecde6f27c7f16abdbb5c8229b26a1e75c"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\drc-before.json",
+    "size": 16558,
+    "sha256": "5282a84049aed981421de5d2620870899b4352ae55ad35014aaee18f50c002ab"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\e2e-continuation-transcript.json",
+    "size": 31745,
+    "sha256": "d612832f322f6c2321c07789dbd43db740abfe1365c6fe6d0a5a5dbef4895e1f"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\e2e-continuation.log",
+    "size": 600,
+    "sha256": "a0a48e9cbc01d3fce55608cd0ba49fafc356043ed3b961fb2f24586bb853e3cd"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\e2e-transcript.json",
+    "size": 133495,
+    "sha256": "abee14fbeac6cc3879a1055a325820081f7127e124af06cbcbe24c7b9582fabb"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\e2e.log",
+    "size": 3744,
+    "sha256": "5d661692a1fe9fb6bda71528d0e8759a1cc2ac92b8c7de2a34e505fda728067e"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\engineering-counterexamples.json",
+    "size": 1548,
+    "sha256": "1f673a7dfb12afa425366e3854972f14f0f3607329af190de832fab3961b1fc7"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\erc.json",
+    "size": 25372,
+    "sha256": "375aeaab11cf0f44b28411611b2dc65f59737b84a966e2667758477d2a921254"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\fixture-file-manifest.json",
+    "size": 7632,
+    "sha256": "9d0b3dfddd27c7ea774b0274458c82965fb9796349b3337b2bdd9560dfa90326"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\gaps.json",
+    "size": 24990,
+    "sha256": "cdb36d0828fed712470d79ccfd0082c390b2897e39257d1f5df237c9d379a1fd"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\implementation_source-after.json",
+    "size": 55071,
+    "sha256": "ad8ec1f18033a5cf155fe5eba3b7617f2e04c39026ad3a4f6d74edfe3f94d67e"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\independent-waveform-check.json",
+    "size": 716,
+    "sha256": "afc1720ac5cfda4991b9d1d6073e4c8e3e8ce7352ba9f315c293a3a105cb938a"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\mcp-native-stdio.json",
+    "size": 1716,
+    "sha256": "15a03427635d2666f0b303d57aceb99c6dcc8df4d24f52335e8546ae0a57764d"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\native-asc-netlisting.json",
+    "size": 856,
+    "sha256": "c9a89e1bfa2432dc2c28e479ceef63cbeeff5726b6369ac36ac054efbff792c1"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\native-ltspice-open.json",
+    "size": 540,
+    "sha256": "3e2f77506d52c6144f7a38ac6870f2c704bc99712b904df1cd0ad2986a5aa9b1"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\native-raw-info.json",
+    "size": 642,
+    "sha256": "2ad078e0acd7dff73fd24516332ef88e3f733c45dd6be145c8eecf9c1774f47f"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\non-ui-pytest.log",
+    "size": 390,
+    "sha256": "d4c04087aa90fff28ad41fb0f5cd36b7f1cd1fdfba69d3b09adb9eaab0ed5cf5"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\positions.csv",
+    "size": 496,
+    "sha256": "749f03a36d944f1b3f53413f0f5c26ec5ea212f600f8b48a0af78d0a27c1f400"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\preservation.json",
+    "size": 3488,
+    "sha256": "d1f1c7722ee092a5bfabb5927eadf311be899b04c2d5d8928e27fff6597359e6"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\production-after.json",
+    "size": 46164,
+    "sha256": "1b9e5d1679a71ca30c82695fae6515b32e5b64f9fd037c5825cf9730ce46eb3d"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\production-before.json",
+    "size": 46228,
+    "sha256": "74d43a14f411cc4bce1123eaeb03d4a6e6ae3ab4ee271c6d94e5452f1bb02840"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\safe-pytest.log",
+    "size": 4820,
+    "sha256": "130d26126f1f517aae37c3718751343f24b4520016f9a39fa447555be57f25f9"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\source-before.json",
+    "size": 64695,
+    "sha256": "51790b4ac4dbb0c99a04770b85d61e535ecab4b67f2abae5579b87817edfc5e5"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\source-current-all.json",
+    "size": 55073,
+    "sha256": "da671f0014898090472244991d31990b78ec3d2dfd89933562cb6c765cde5a53"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\source-drift.json",
+    "size": 4,
+    "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\tool-names.json",
+    "size": 1657,
+    "sha256": "77d97a87e4487facb3d27e9d7de01b0bc4d0556b3e750aa81e1d30d1a3da5b85"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\tracked_source-after.json",
+    "size": 64693,
+    "sha256": "17bf707c52201c18d06577213c1ddd480b76190910b135c6d46244241b4140f3"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\waveform-rpc-summary.json",
+    "size": 4049,
+    "sha256": "933aff987c901e3abaf00b14762407b1d9cc47ce2bc2995f43155c50f232ffd8"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\drill\\audit_ideal_buck.drl",
+    "size": 274,
+    "sha256": "ccf72c42562eb83792f013dda9f7d34025fe25039d481f71f420e507ad6d3090"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-B_Courtyard.gbr",
+    "size": 448,
+    "sha256": "b9a151e8bd187dec97c921974bddc3494204175ca2051fc3698ee0d139b818a3"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-B_Cu.gbl",
+    "size": 1972,
+    "sha256": "3339d0f604fd13a85e50793c0ee77f5dd9c98ce128009af91e2435f0ea7c097a"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-B_Fab.gbr",
+    "size": 457,
+    "sha256": "1d3ed83a34fa62086465068eb42082468b1f1ba058a084ab43ed4e2f9c2d88ca"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-F_Courtyard.gbr",
+    "size": 448,
+    "sha256": "b9a151e8bd187dec97c921974bddc3494204175ca2051fc3698ee0d139b818a3"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-F_Cu.gtl",
+    "size": 3579,
+    "sha256": "19c2a068733c765da1e553ea1e7b46d4cfdea1dd9c4fac646d4f875e27445746"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-F_Fab.gbr",
+    "size": 49893,
+    "sha256": "0d375c5e77b23aa907043888c7e1478a18cdc71c8da599404ce5fab11d72cd29"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\gerbers\\audit_ideal_buck-Margin.gbr",
+    "size": 448,
+    "sha256": "b9a151e8bd187dec97c921974bddc3494204175ca2051fc3698ee0d139b818a3"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\false-evidence-fixture\\magnetics\\femm_empty.json",
+    "size": 2,
+    "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\false-evidence-fixture\\pcb\\drc_report.json",
+    "size": 13836,
+    "sha256": "933443f340adf15796267bdce1a3230ecde6f27c7f16abdbb5c8229b26a1e75c"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\false-evidence-fixture\\pcb\\erc_report.json",
+    "size": 25372,
+    "sha256": "375aeaab11cf0f44b28411611b2dc65f59737b84a966e2667758477d2a921254"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\engineering_designs\\34265a00-3078-4a13-b087-8ab30b036f10.json",
+    "size": 41008,
+    "sha256": "faac29028917e34c6699b99d6fbec9f2c9f9bb0bb99293ae2575fdf740e10a9a"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\revision.json",
+    "size": 609,
+    "sha256": "1eb7a035ca867cd98bb94b5e16b5ecc6b6edaad8c497ce72d140924320dc5afc"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\bom\\bom.json",
+    "size": 1400,
+    "sha256": "a46465ea1e6d4b156e6a65d08fd86a58e184efa7e5dd0c8c3cd641b0f00a51cf"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\requirements\\audit-0.net",
+    "size": 761,
+    "sha256": "868585b39bd7ed2a28b49197d154304033c54995c4bae56b21a8e68238a3fc40"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\requirements\\audit-1.asc",
+    "size": 747,
+    "sha256": "0614d2813c6a3928a8dfbab89fa331910e128ff9474188589b87bac36a1d62b6"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\requirements\\audit-2.kicad_sch",
+    "size": 6593,
+    "sha256": "55bf542481975d947e748a80bf982959b4fcdec6fe50c7c44847cc8575e6bade"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\requirements\\audit-3.kicad_pcb",
+    "size": 17498,
+    "sha256": "76f93df3be27c2c6fb4c0c49878fdeb99141c59ea26d1211d48125b84180bc54"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\requirements\\audit-prototype-test-plan.md",
+    "size": 447,
+    "sha256": "9944edb85c90d975dc92707d44d94dc93808b888222e6d162b1fee12df404e6d"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\simulations\\audit-reference.raw",
+    "size": 12658215,
+    "sha256": "15f21478b125292f30a993159a2b7ba2e234ef685c337a3aa04de9591ece3c3e"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\reports\\d3e8749f-ce45-48a0-ad9c-36e282dbe78c\\report.pdf",
+    "size": 502766,
+    "sha256": "4dbfdb9f73863d6d6c6fcbed8880401c42e92b79d60b04a45b44459ae2c2c706"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\reports\\d3e8749f-ce45-48a0-ad9c-36e282dbe78c\\snapshot.json",
+    "size": 13828,
+    "sha256": "3fd315a4401a24d31c5093f0cdbeebc4b6c8a9145aa7b956dc13ff04743900c9"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\bom\\exports\\7b2af15d1ef445deb20f952d0fef9290\\Bill_of_Materials.docx",
+    "size": 37388,
+    "sha256": "dcbd88f98bdb1c3fe4463f558ac92fc3f8d411a0ef054b83a00033e450f6b8e9"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\bom\\exports\\7b2af15d1ef445deb20f952d0fef9290\\Bill_of_Materials.pdf",
+    "size": 149500,
+    "sha256": "d7a312b654f994a06ee3693c6e3384afab9d57c2e4ffcbcb56845d8b0ce00502"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\bom\\exports\\7b2af15d1ef445deb20f952d0fef9290\\bom.csv",
+    "size": 406,
+    "sha256": "52c200d2a7f27c04e16663d9f445d80d663dce62ef11402d0fa48f6184084dc3"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\products\\49f8e26c-b8ed-415d-8d0b-b104320f490c\\revisions\\c56d1a5a-4ad3-46e0-a13a-3426a6779017\\bom\\exports\\7b2af15d1ef445deb20f952d0fef9290\\bom.json",
+    "size": 1400,
+    "sha256": "a46465ea1e6d4b156e6a65d08fd86a58e184efa7e5dd0c8c3cd641b0f00a51cf"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ij\\dcda166c52ff4a6ea58f468b913a5e5b\\input.log",
+    "size": 564,
+    "sha256": "ce9dcb34bcdb1c17fa063f754c1346b5ea8c1618ed1d3329d2e5870417848d5f"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ij\\dcda166c52ff4a6ea58f468b913a5e5b\\input.net",
+    "size": 761,
+    "sha256": "868585b39bd7ed2a28b49197d154304033c54995c4bae56b21a8e68238a3fc40"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ij\\dcda166c52ff4a6ea58f468b913a5e5b\\input.op.raw",
+    "size": 1305,
+    "sha256": "d64d98793d785792206a89fbfe2c76f1416f749723d3a18b869c0509631869ee"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ij\\dcda166c52ff4a6ea58f468b913a5e5b\\input.raw",
+    "size": 12658215,
+    "sha256": "902eb39734647a529829c118ec52109f911baa1a04af834ba15c72f88f4590c1"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ij\\dcda166c52ff4a6ea58f468b913a5e5b\\job.log",
+    "size": 712,
+    "sha256": "c90da570b391c2e4d7b17bd6bb60daa2ae4d75a4818d45243b2e79ff62dad06a"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ij\\dcda166c52ff4a6ea58f468b913a5e5b\\manifest.json",
+    "size": 4728,
+    "sha256": "b357f70683b4e8b693a970cea517b7b69b2bacc2b13a9cbb433d571c21dca652"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ij\\dcda166c52ff4a6ea58f468b913a5e5b\\metrics.json",
+    "size": 118,
+    "sha256": "b7f807707cc82831fa8ad02817f748386de6e9efea27c39e955880fa7138e857"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ij\\dcda166c52ff4a6ea58f468b913a5e5b\\request.json",
+    "size": 1137,
+    "sha256": "0a05fd74cfc08a54dccbf2a8673fbd23945a860bd17b7b6d51f539aacd93d5fe"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\buck_circuit.net",
+    "size": 761,
+    "sha256": "868585b39bd7ed2a28b49197d154304033c54995c4bae56b21a8e68238a3fc40"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\buck_schematic.asc",
+    "size": 747,
+    "sha256": "0614d2813c6a3928a8dfbab89fa331910e128ff9474188589b87bac36a1d62b6"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pcb",
+    "size": 17498,
+    "sha256": "76f93df3be27c2c6fb4c0c49878fdeb99141c59ea26d1211d48125b84180bc54"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_pro",
+    "size": 2022,
+    "sha256": "a425f7bddd5f1dcf23483cc748fc0b9ba7061944836d392ef75a1019e1ccf691"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\audit_ideal_buck.kicad_sch",
+    "size": 6593,
+    "sha256": "55bf542481975d947e748a80bf982959b4fcdec6fe50c7c44847cc8575e6bade"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\drc.json",
+    "size": 16687,
+    "sha256": "10c276324d389561b3532941eed9695896707fb9b51bacdc542080ea92596324"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\state.json",
+    "size": 233,
+    "sha256": "09333abc8155f052d08bd18bf5a2950fc6c2f20824a7be079591042b85e54379"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\verify.json",
+    "size": 13648,
+    "sha256": "eb61f3d1473edda1aaac5fc27108fd4d8ea41ce5cbac02dba90510c78b37c3e6"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\snapshots\\20261114-203942-before-KiCad-10-0-format-upgrade\\audit_ideal_buck.kicad_pcb",
+    "size": 6587,
+    "sha256": "c75e2318e58b5c6db13bc9c776f7ef5e9c89651c8adce3be75a0821b3e864c07"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\snapshots\\20261114-203942-before-KiCad-10-0-format-upgrade\\audit_ideal_buck.kicad_pro",
+    "size": 2022,
+    "sha256": "a425f7bddd5f1dcf23483cc748fc0b9ba7061944836d392ef75a1019e1ccf691"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\snapshots\\20261114-203942-before-KiCad-10-0-format-upgrade\\audit_ideal_buck.kicad_sch",
+    "size": 6593,
+    "sha256": "55bf542481975d947e748a80bf982959b4fcdec6fe50c7c44847cc8575e6bade"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\snapshots\\20261114-204013-before-guided-route\\audit_ideal_buck.kicad_pcb",
+    "size": 14225,
+    "sha256": "f0c7c37329af391d350c02f7e73d815de26bbca2fd83f1afbde6b2431ac7e88c"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\snapshots\\20261114-204013-before-guided-route\\audit_ideal_buck.kicad_pro",
+    "size": 2022,
+    "sha256": "a425f7bddd5f1dcf23483cc748fc0b9ba7061944836d392ef75a1019e1ccf691"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\ga\\eea3d609c19646e5ae0ff2b8165e5eff\\kicad\\.copper\\snapshots\\20261114-204013-before-guided-route\\audit_ideal_buck.kicad_sch",
+    "size": 6593,
+    "sha256": "55bf542481975d947e748a80bf982959b4fcdec6fe50c7c44847cc8575e6bade"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\engineering-records\\artifacts\\02933db6-0874-4947-9992-90a5adee9978\\artifact.kicad_pcb",
+    "size": 17498,
+    "sha256": "76f93df3be27c2c6fb4c0c49878fdeb99141c59ea26d1211d48125b84180bc54"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\engineering-records\\artifacts\\2b449e76-f983-4a12-b2cc-fb3240988c3c\\artifact.net",
+    "size": 761,
+    "sha256": "868585b39bd7ed2a28b49197d154304033c54995c4bae56b21a8e68238a3fc40"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\engineering-records\\artifacts\\716aff32-af98-426b-aa9a-b93e2c41c1fa\\artifact.kicad_sch",
+    "size": 6593,
+    "sha256": "55bf542481975d947e748a80bf982959b4fcdec6fe50c7c44847cc8575e6bade"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\engineering-records\\artifacts\\d4a6faa3-55f9-4513-8e2a-b1e3ea109cc8\\artifact.asc",
+    "size": 747,
+    "sha256": "0614d2813c6a3928a8dfbab89fa331910e128ff9474188589b87bac36a1d62b6"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\dr\\ae82b92d77de43b6a1138dfbd6c4d9f2\\input.log",
+    "size": 564,
+    "sha256": "37a350d76bb727a88dd2a398b4710b2b2c5a60bb259b2845f2d9ca5e684fe1e6"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\dr\\ae82b92d77de43b6a1138dfbd6c4d9f2\\input.net",
+    "size": 761,
+    "sha256": "868585b39bd7ed2a28b49197d154304033c54995c4bae56b21a8e68238a3fc40"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\dr\\ae82b92d77de43b6a1138dfbd6c4d9f2\\input.op.raw",
+    "size": 1305,
+    "sha256": "648f38cb048038335bec08575377101c86d44947de896543e6bd87320d60b51b"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\dr\\ae82b92d77de43b6a1138dfbd6c4d9f2\\input.raw",
+    "size": 12658215,
+    "sha256": "15f21478b125292f30a993159a2b7ba2e234ef685c337a3aa04de9591ece3c3e"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\backups\\lifecycle-1dec5385-4092-4c7e-b67e-8ca465dec3e4\\manifest.json",
+    "size": 449,
+    "sha256": "3e3ec9a6d0c705b692a9956d7ebe348b7fdf2c603c9f4cdabb003c7350ba4384"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\disposable-project\\.mendex\\backups\\lifecycle-aa840b66-df63-430e-aade-f7e4533d4c84\\manifest.json",
+    "size": 449,
+    "sha256": "bec21c6f40544fd155f804b96d05843d5361ec2a11aa221f426ad84f96f810cc"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\boundary-fixture\\products\\2a2666f4-3772-47ed-99ce-8fd014a00b48\\revisions\\08c467f1-fec9-4539-b563-6a0b2769d8f3\\revision.json",
+    "size": 609,
+    "sha256": "d8128986758bf0b663d5ecf6ed9b06cb449896f14c591acadb52eb85367e3c14"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\boundary-fixture\\products\\2a2666f4-3772-47ed-99ce-8fd014a00b48\\revisions\\5cc774ce-7c24-42af-a7b2-a36db4e085a1\\revision.json",
+    "size": 609,
+    "sha256": "00168476a432037155ed4e8a765583ceae9ad7f7f2e69e0ad9b3b9d37d2e7a05"
+  },
+  {
+    "path": "docs\\audit\\evidence\\20261114-readiness\\boundary-fixture\\products\\2a2666f4-3772-47ed-99ce-8fd014a00b48\\revisions\\08c467f1-fec9-4539-b563-6a0b2769d8f3\\pcb\\fixture.kicad_pcb",
+    "size": 11,
+    "sha256": "b14d69c44060444f7f7a00d43ab8aa7a093b0893c7d4d8e49b27e597c7f25182"
+  }
+]

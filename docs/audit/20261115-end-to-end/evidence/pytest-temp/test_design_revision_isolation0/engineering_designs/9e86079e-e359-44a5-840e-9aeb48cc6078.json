@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.9.0",
+  "id": "9e86079e-e359-44a5-840e-9aeb48cc6078",
+  "workspace_id": "9614e257-00cb-4244-9b8d-be991a49a311",
+  "title": "Unassigned Legacy Design",
+  "category": "pcb",
+  "status": "DRAFT",
+  "active_revision_id": "999f9ad6-0760-4596-b70a-c065b212aeba",
+  "product_id": "9614e257-00cb-4244-9b8d-be991a49a311",
+  "core_revision_id": null,
+  "requirements": [],
+  "candidates": [],
+  "revisions": [
+    {
+      "id": "999f9ad6-0760-4596-b70a-c065b212aeba",
+      "design_id": "9e86079e-e359-44a5-840e-9aeb48cc6078",
+      "revision_index": 1,
+      "label": "DRev Legacy",
+      "ir": {
+        "schema_version": "1.9.0",
+        "id": "34b2c5f9-998f-43cc-89fb-c919821ca53b",
+        "title": "Untitled Design",
+        "topology": "Generic",
+        "category": "power_electronics",
+        "parameters": {},
+        "components": [],
+        "nets": [],
+        "ports": [],
+        "magnetic_geometry": null,
+        "metadata": {}
+      },
+      "requirements_hash": "",
+      "summary": "Initial baseline",
+      "artifacts": [],
+      "created_at": "2026-11-15T08:57:14.204060+00:00",
+      "created_by": "Engineer"
+    }
+  ],
+  "created_at": "2026-11-15T08:57:14.204034+00:00",
+  "updated_at": "2026-11-15T08:57:14.204041+00:00"
+}

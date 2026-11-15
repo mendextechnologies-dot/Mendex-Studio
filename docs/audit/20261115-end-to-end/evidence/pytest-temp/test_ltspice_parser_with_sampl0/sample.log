@@ -1,0 +1,9 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\test\circuit.net
+solver = Normal
+Maximum thread count: 16
+Direct Newton iteration succeeded in finding operating point.
+V(out): 9.999 voltage
+V(in): 10.0 voltage
+Total elapsed time: 0.042 seconds.
+WARNING: Time step too small on step 12

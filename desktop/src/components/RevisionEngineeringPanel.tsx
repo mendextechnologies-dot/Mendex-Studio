@@ -70,7 +70,10 @@ export function RecordDetails({ record, title, onOpenFile }: { record: any; titl
     ? 'NOT_EVALUATED' : record.effective_status || record.engineering_status || 'NOT_EVALUATED';
   return <article className="card">
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}><strong>{title}</strong><Status value={String(status)} /></div>
-    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>Record: {label(record.record_id || record.id)} · Stage: {label(record.stage_id)}</div>
+    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>
+      {record.source ? `Source: ${record.source} · ` : ''}Stage: {label(record.stage_id)}
+      {record.reason ? ` · ${record.reason}` : ''}
+    </div>
     {record.stale && <p role="status" style={{ marginTop: 8 }}>Stale record: inputs or evidence have changed.</p>}
     <details style={{ marginTop: 10 }}>
       <summary style={{ cursor: 'pointer', fontWeight: 600, color: 'var(--primary)' }}>

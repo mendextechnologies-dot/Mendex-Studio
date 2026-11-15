@@ -1,0 +1,4 @@
+{
+  "status": " M desktop/src/components/CADPreviewCanvas.tsx\n M desktop/src/components/RecordFormView.tsx\n M desktop/src/components/RevisionEngineeringPanel.tsx\n M desktop/src/components/ThermalSizingCalculatorCard.tsx\n M desktop/src/pages/ProjectDetail.tsx\n M desktop/src/pages/Projects.tsx\n M desktop/src/pages/Reports.tsx\n M docs/implementation-checklist.md\n M src/mendex_core/design/release_packager.py\n M src/mendex_core/design/thermal_engine.py\n M src/mendex_core/desktop/models.py\n M src/mendex_core/desktop/service.py\n M src/mendex_core/service.py\n?? docs/audit/20261115-end-to-end/\n?? src/integrations/generators/enclosure_generator.py\n",
+  "commit": "794f22d975ffc1f581a9f9d6b68c43eef36dece2\n"
+}

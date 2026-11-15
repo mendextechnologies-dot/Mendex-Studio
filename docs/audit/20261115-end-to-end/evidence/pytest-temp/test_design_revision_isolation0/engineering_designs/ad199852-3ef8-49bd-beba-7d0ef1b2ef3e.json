@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.9.0",
+  "id": "ad199852-3ef8-49bd-beba-7d0ef1b2ef3e",
+  "workspace_id": "9614e257-00cb-4244-9b8d-be991a49a311",
+  "title": "Design Linked to Rev A",
+  "category": "pcb",
+  "status": "DRAFT",
+  "active_revision_id": "efe866b8-9940-4e62-9628-73a0b0a73696",
+  "product_id": "9614e257-00cb-4244-9b8d-be991a49a311",
+  "core_revision_id": "833e10ba-aa46-4802-89de-1f7e0ff8655d",
+  "requirements": [],
+  "candidates": [],
+  "revisions": [
+    {
+      "id": "efe866b8-9940-4e62-9628-73a0b0a73696",
+      "design_id": "ad199852-3ef8-49bd-beba-7d0ef1b2ef3e",
+      "revision_index": 1,
+      "label": "DRev 1",
+      "ir": {
+        "schema_version": "1.9.0",
+        "id": "8c35a7c7-0ea2-486f-a12a-e2cd5202307c",
+        "title": "Untitled Design",
+        "topology": "Generic",
+        "category": "power_electronics",
+        "parameters": {},
+        "components": [],
+        "nets": [],
+        "ports": [],
+        "magnetic_geometry": null,
+        "metadata": {}
+      },
+      "requirements_hash": "",
+      "summary": "Initial baseline",
+      "artifacts": [
+        {
+          "id": "4624130a-9189-45a8-9d3d-8f027110fb50",
+          "design_id": "ad199852-3ef8-49bd-beba-7d0ef1b2ef3e",
+          "revision_id": "efe866b8-9940-4e62-9628-73a0b0a73696",
+          "kind": "gerber_bundle",
+          "name": "test.zip",
+          "path": "test_gerber.zip",
+          "format": "zip",
+          "sha256": "887d9ddf6ffbeec70e60da2741410cf546e45f24ab4ed77c8fd09599ab96434c",
+          "source_service": "KiCadLifecycleService",
+          "parent_ids": [],
+          "edit_provenance": "provenance",
+          "is_external_modified": false,
+          "created_at": "2026-11-15T08:57:14.355978+00:00"
+        }
+      ],
+      "created_at": "2026-11-15T08:57:14.203450+00:00",
+      "created_by": "Engineer"
+    }
+  ],
+  "created_at": "2026-11-15T08:57:14.203414+00:00",
+  "updated_at": "2026-11-15T08:57:14.203423+00:00"
+}

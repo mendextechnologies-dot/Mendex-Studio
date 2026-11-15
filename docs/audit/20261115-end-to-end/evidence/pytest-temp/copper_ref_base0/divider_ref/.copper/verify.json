@@ -1,0 +1,67 @@
+{
+ "erc": {
+  "ts": "2026-11-15T14:32:06",
+  "revision": "39c24ec8292457cf",
+  "signatures": [],
+  "messages": {},
+  "errors": 0,
+  "warnings": 0,
+  "excluded": 0,
+  "top": []
+ },
+ "drc": {
+  "ts": "2026-11-15T14:33:53",
+  "revision": "042dcceb7730d816",
+  "signatures": [
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 1 [/Vin] of J1 on F.Cu|Pad 1 [/Vin] of R1 on F.Cu",
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 2 [GND] of J1 on F.Cu|Pad 2 [GND] of J2 on F.Cu",
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 1 [/Vdiv] of J2 on F.Cu|Pad 2 [/Vdiv] of R1 on F.Cu",
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 2 [GND] of J2 on F.Cu|Pad 2 [GND] of R2 on F.Cu",
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 1 [/Vdiv] of R2 on F.Cu|Pad 2 [/Vdiv] of R1 on F.Cu"
+  ],
+  "messages": {
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 1 [/Vin] of J1 on F.Cu|Pad 1 [/Vin] of R1 on F.Cu": "Missing connection between items \u2014 J1.1, R1.1",
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 2 [GND] of J1 on F.Cu|Pad 2 [GND] of J2 on F.Cu": "Missing connection between items \u2014 J1.2, J2.2",
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 1 [/Vdiv] of J2 on F.Cu|Pad 2 [/Vdiv] of R1 on F.Cu": "Missing connection between items \u2014 J2.1, R1.2",
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 2 [GND] of J2 on F.Cu|Pad 2 [GND] of R2 on F.Cu": "Missing connection between items \u2014 J2.2, R2.2",
+   "unconnected_items|unconnected_items|Missing connection between items|Pad 1 [/Vdiv] of R2 on F.Cu|Pad 2 [/Vdiv] of R1 on F.Cu": "Missing connection between items \u2014 R1.2, R2.1"
+  },
+  "errors": 0,
+  "warnings": 0,
+  "unconnected": 5,
+  "parity": 0,
+  "excluded": 0,
+  "top": [
+   {
+    "severity": "error",
+    "type": "unconnected_items",
+    "message": "Missing connection between items \u2014 J1.1, R1.1",
+    "fix": "route it: pcb_route(tracks=[{\"from\":\"J1.1\",\"to\":\"R1.1\"}]) \u2014 or pcb_route() to autoroute every unrouted connection"
+   },
+   {
+    "severity": "error",
+    "type": "unconnected_items",
+    "message": "Missing connection between items \u2014 J1.2, J2.2",
+    "fix": "pcb_route() to autoroute every unrouted connection \u2014 or pcb_pour(net='GND') for the ground net"
+   },
+   {
+    "severity": "error",
+    "type": "unconnected_items",
+    "message": "Missing connection between items \u2014 J2.1, R1.2",
+    "fix": "route it: pcb_route(tracks=[{\"from\":\"J2.1\",\"to\":\"R1.2\"}]) \u2014 or pcb_route() to autoroute every unrouted connection"
+   },
+   {
+    "severity": "error",
+    "type": "unconnected_items",
+    "message": "Missing connection between items \u2014 J2.2, R2.2",
+    "fix": "pcb_route() to autoroute every unrouted connection \u2014 or pcb_pour(net='GND') for the ground net"
+   },
+   {
+    "severity": "error",
+    "type": "unconnected_items",
+    "message": "Missing connection between items \u2014 R1.2, R2.1",
+    "fix": "route it: pcb_route(tracks=[{\"from\":\"R1.2\",\"to\":\"R2.1\"}]) \u2014 or pcb_route() to autoroute every unrouted connection"
+   }
+  ]
+ }
+}

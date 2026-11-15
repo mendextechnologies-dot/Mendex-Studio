@@ -1,0 +1,24 @@
+{
+  "changed": [
+    "src/mendex_core/service.py",
+    "src/mendex_core/design/thermal_engine.py",
+    "desktop/src/components/CADPreviewCanvas.tsx",
+    "desktop/src/components/ThermalSizingCalculatorCard.tsx",
+    "desktop/src/pages/ProjectDetail.tsx",
+    "desktop/src/pages/Projects.tsx",
+    "desktop/src/pages/Reports.tsx",
+    "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/flyback_circuit.log",
+    "products/8f697275-3a8d-456c-ae20-138a7698df61/revisions/9b7c1396-64da-41f8-8649-77dc0f24e103/simulations/flyback_circuit.raw",
+    "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/bom/exports/procurement_schedule.html",
+    "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/bom/exports/procurement_schedule.json",
+    "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/bom/exports/procurement_schedule.md"
+  ],
+  "removed": [],
+  "added": [
+    "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/bom/exports/69289ecc25f7423c908511c82eadb162/Bill_of_Materials.docx",
+    "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/bom/exports/69289ecc25f7423c908511c82eadb162/Bill_of_Materials.pdf",
+    "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/bom/exports/69289ecc25f7423c908511c82eadb162/bom.csv",
+    "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/bom/exports/69289ecc25f7423c908511c82eadb162/bom.json",
+    "src/integrations/generators/enclosure_generator.py"
+  ]
+}

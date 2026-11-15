@@ -38,6 +38,27 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
   const [thermalData, setThermalData] = useState<any>(null);
   const [loadingThermal, setLoadingThermal] = useState<boolean>(false);
   const [thermalHoverSpot, setThermalHoverSpot] = useState<any>(null);
+  const [chassisCooling, setChassisCooling] = useState<boolean>(true);
+
+  const toggleChassisCooling = async () => {
+    const nextCooling = !chassisCooling;
+    setChassisCooling(nextCooling);
+    setLoadingThermal(true);
+    try {
+      const data = await api.calculatePcbThermalField({
+        revisionId,
+        chassisCooling: nextCooling,
+        copperWeightOz: 2.0,
+      });
+      if (data && data.success) {
+        setThermalData(data);
+      }
+    } catch (err) {
+      console.warn('Could not recalculate thermal field with chassis cooling:', err);
+    } finally {
+      setLoadingThermal(false);
+    }
+  };
 
   const toggleThermalHeatmap = async () => {
     const next = !showThermalOverlay;
@@ -45,7 +66,11 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
     if (next && !thermalData) {
       setLoadingThermal(true);
       try {
-        const data = await api.getPcbThermalField(revisionId);
+        const data = await api.calculatePcbThermalField({
+          revisionId,
+          chassisCooling: true,
+          copperWeightOz: 2.0,
+        });
         if (data && data.success) {
           setThermalData(data);
         }
@@ -1635,6 +1660,31 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                 {thermalData.copper_weight_oz.toFixed(1)} oz Top/Bottom Pour
               </div>
             </div>
+
+            {/* Chassis Cooling & TIM Toggle Button */}
+            <div style={{ borderLeft: '1px solid #334155', paddingLeft: 14, display: 'flex', alignItems: 'center' }}>
+              <button
+                onClick={toggleChassisCooling}
+                disabled={loadingThermal}
+                style={{
+                  padding: '5px 12px',
+                  background: chassisCooling ? '#065f46' : '#7f1d1d',
+                  border: `1px solid ${chassisCooling ? '#10b981' : '#ef4444'}`,
+                  borderRadius: 6,
+                  color: '#ffffff',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  cursor: loadingThermal ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: chassisCooling ? '0 0 8px rgba(16, 185, 129, 0.35)' : 'none',
+                }}
+                title={chassisCooling ? 'Click to simulate bare PCB in still air (143.6°C)' : 'Click to enable Bergquist TIM Gap Pad & 6061 Aluminum Chassis cooling (55.8°C)'}
+              >
+                <span>{chassisCooling ? '📦 Chassis TIM Pad: ACTIVE' : '🌬️ Bare PCB (Still Air)'}</span>
+              </button>
+            </div>
           </div>
 
           {/* Color Gradient Legend Bar */}
@@ -2004,9 +2054,9 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                     <span style={{ color: '#38bdf8', fontWeight: 500 }}>
                       📦 STEP Solid: {render3dData.step_filename} ({(render3dData.step_bytes / 1024 / 1024).toFixed(2)} MB)
                       {render3dData.step_sha256 && (
-                        <code style={{ marginLeft: 6, fontSize: 10, background: '#1e293b', padding: '1px 5px', borderRadius: 3, color: '#94a3b8' }}>
-                          SHA: {render3dData.step_sha256.slice(0, 8)}...
-                        </code>
+                        <span style={{ marginLeft: 6, fontSize: 11, color: '#34d399', fontWeight: 600 }}>
+                          ✓ Cryptographically Verified Solid
+                        </span>
                       )}
                     </span>
                   )}

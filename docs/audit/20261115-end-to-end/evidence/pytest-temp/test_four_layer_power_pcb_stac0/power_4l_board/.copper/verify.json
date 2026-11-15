@@ -1,0 +1,33 @@
+{
+ "drc": {
+  "ts": "2026-11-15T14:34:14",
+  "revision": "bd667f64b305d26d",
+  "signatures": [
+   "violations|isolated_copper|Isolated copper fill|Zone 'PRI_GND_In1Cu' [/PRI_GND] on In1.Cu, priority 0",
+   "violations|isolated_copper|Isolated copper fill|Zone 'VIN_In2Cu' [/VIN] on In2.Cu, priority 0"
+  ],
+  "messages": {
+   "violations|isolated_copper|Isolated copper fill|Zone 'PRI_GND_In1Cu' [/PRI_GND] on In1.Cu, priority 0": "Isolated copper fill",
+   "violations|isolated_copper|Isolated copper fill|Zone 'VIN_In2Cu' [/VIN] on In2.Cu, priority 0": "Isolated copper fill"
+  },
+  "errors": 0,
+  "warnings": 2,
+  "unconnected": 0,
+  "parity": 0,
+  "excluded": 0,
+  "top": [
+   {
+    "severity": "warning",
+    "type": "isolated_copper",
+    "message": "Isolated copper fill",
+    "fix": "adjust the copper pour: pcb_pour(net=\u2026, clearance=\u2026, thermal_spoke=\u2026) or pcb_pour(fill_only=true) to refill"
+   },
+   {
+    "severity": "warning",
+    "type": "isolated_copper",
+    "message": "Isolated copper fill",
+    "fix": "adjust the copper pour: pcb_pour(net=\u2026, clearance=\u2026, thermal_spoke=\u2026) or pcb_pour(fill_only=true) to refill"
+   }
+  ]
+ }
+}

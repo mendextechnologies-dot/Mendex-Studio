@@ -1,0 +1,21 @@
+{
+ "erc": {
+  "ts": "2026-11-15T14:33:02",
+  "revision": "038655ce07bf1e86",
+  "signatures": [],
+  "messages": {},
+  "errors": 0,
+  "warnings": 0,
+  "excluded": 0,
+  "top": []
+ },
+ "drc": {
+  "ts": "2026-11-15T14:32:09",
+  "revision": "b4f4b176d1276d76",
+  "source": "pcb",
+  "errors": 0,
+  "warnings": 0,
+  "unconnected": 5,
+  "parity": 0
+ }
+}

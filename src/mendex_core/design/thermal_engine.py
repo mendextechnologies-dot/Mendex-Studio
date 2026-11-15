@@ -35,6 +35,11 @@ class PCBThermalEngine:
         board_bbox: Dict[str, float],
         ambient_c: float = 25.0,
         copper_weight_oz: float = 2.0,
+        chassis_cooling: bool = False,
+        tim_conductivity_w_mk: float = 5.0,
+        tim_thickness_mm: float = 1.5,
+        tim_area_mm2: float = 400.0,
+        chassis_r_th_c_w: float = 3.2,
     ) -> Dict[str, Any]:
         """Computes component dissipation, junction temperatures, and thermal spreading fields."""
         pout_w = float(specification.get("pout_w") or specification.get("pout_max_w") or 50.0)
@@ -56,8 +61,19 @@ class PCBThermalEngine:
         hotspots: List[Dict[str, Any]] = []
         total_loss = 0.0
 
+        # TIM Gap Pad Thermal Impedance Calculation
+        # Deflection: 20% under 0.6 N*m standoff torque
+        t_comp_m = (tim_thickness_mm * 0.8) * 1e-3
+        area_m2 = tim_area_mm2 * 1e-6
+        r_th_tim = t_comp_m / (tim_conductivity_w_mk * area_m2)
+        r_th_vias = 1.80  # 16-via array (0.3mm plated) in copper thermal pad
+        r_th_jc_q1 = 1.50 # TO-252 SiC die to package thermal tab
+        r_th_path_q1 = r_th_jc_q1 + r_th_vias + r_th_tim + chassis_r_th_c_w
+
         # 1. Main Switching MOSFET (Q1)
         q1_fp = fp_map.get("Q1")
+        t_j_q1_bare = ambient_c
+        t_j_q1_chassis = ambient_c
         if q1_fp:
             # Conduction loss + switching loss
             i_pri_rms = (pout_w / (vin_nom * 0.88)) * 1.3
@@ -66,8 +82,20 @@ class PCBThermalEngine:
             p_sw = 0.5 * vin_nom * (i_pri_rms * 1.5) * (35e-9 + 25e-9) * fsw_hz
             p_q1 = round(p_cond + p_sw, 2)
             total_loss += p_q1
-            r_th_ja_q1 = round(28.5 / spread_mult, 1)
-            t_j_q1 = round(ambient_c + p_q1 * r_th_ja_q1, 1)
+            r_th_ja_bare = round(28.5 / spread_mult, 1)
+            t_j_q1_bare = round(ambient_c + p_q1 * r_th_ja_bare, 1)
+
+            # Parallel conduction: PCB surface spreading in parallel with chassis heat sink path
+            r_th_eff = round((r_th_ja_bare * r_th_path_q1) / (r_th_ja_bare + r_th_path_q1), 2)
+            t_j_q1_chassis = round(ambient_c + p_q1 * r_th_eff, 1)
+
+            if chassis_cooling:
+                r_th_ja_q1 = r_th_eff
+                t_j_q1 = t_j_q1_chassis
+            else:
+                r_th_ja_q1 = r_th_ja_bare
+                t_j_q1 = t_j_q1_bare
+
             hotspots.append({
                 "ref": "Q1",
                 "name": q1_fp.get("value", "SiC Power MOSFET 1200V"),
@@ -78,10 +106,13 @@ class PCBThermalEngine:
                 "loss_breakdown": f"P_cond={p_cond:.2f}W, P_sw={p_sw:.2f}W",
                 "r_th_ja_c_w": r_th_ja_q1,
                 "t_junction_c": t_j_q1,
+                "t_junction_bare_c": t_j_q1_bare,
+                "t_junction_chassis_c": t_j_q1_chassis,
                 "t_case_c": round(ambient_c + p_q1 * (r_th_ja_q1 * 0.75), 1),
                 "derated_limit_c": derated_semi_limit_c,
                 "thermal_margin_c": round(derated_semi_limit_c - t_j_q1, 1),
                 "spreading_radius_mm": round(14.0 * spread_mult, 1),
+                "tim_applied": chassis_cooling,
                 "status": "PASS" if t_j_q1 <= derated_semi_limit_c else "WARNING",
             })
 
@@ -233,6 +264,8 @@ class PCBThermalEngine:
             "revision_id": str(revision_id),
             "ambient_c": ambient_c,
             "copper_weight_oz": copper_weight_oz,
+            "chassis_cooling": chassis_cooling,
+            "cooling_mode": "CHASSIS_TIM_SINK" if chassis_cooling else "BARE_PCB_STILL_AIR",
             "total_board_loss_w": round(total_loss, 2),
             "max_temperature_c": max_temp_c,
             "max_component": max_comp,
@@ -241,6 +274,20 @@ class PCBThermalEngine:
             "board_bbox": board_bbox,
             "hotspots": hotspots,
             "isotherms": isotherms,
+            "tim_specification": {
+                "part_number": "Bergquist Gap Pad 5000S35",
+                "alternate": "Laird Tflex HD90000",
+                "conductivity_w_mk": tim_conductivity_w_mk,
+                "nominal_thickness_mm": tim_thickness_mm,
+                "compressed_thickness_mm": round(tim_thickness_mm * 0.8, 2),
+                "pad_area_mm2": tim_area_mm2,
+                "r_th_tim_c_w": round(r_th_tim, 2),
+                "r_th_chassis_c_w": chassis_r_th_c_w,
+                "chassis_material": "Aluminum 6061-T6",
+                "bare_pcb_max_temp_c": t_j_q1_bare,
+                "chassis_max_temp_c": t_j_q1_chassis,
+                "delta_t_reduction_c": round(t_j_q1_bare - t_j_q1_chassis, 1),
+            } if (chassis_cooling or q1_fp) else None,
             "standards_compliance": {
                 "ipc_9592b_derated": True,
                 "navmat_derating": True,

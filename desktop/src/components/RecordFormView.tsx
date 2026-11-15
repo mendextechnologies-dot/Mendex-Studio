@@ -499,93 +499,50 @@ export const RecordFormView: React.FC<RecordFormViewProps> = ({
             </div>
           </div>
 
-          {/* Section 2: Cryptographic Provenance & Evidence */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <h5 style={{ fontSize: 12, fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <ShieldCheck size={14} style={{ color: '#059669' }} />
-              <span>Cryptographic Provenance & Snapshot Integrity</span>
-            </h5>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 8 }}>
-              {sha256 && (
-                <FormField
-                  label="SHA-256 Digest (Payload)"
-                  value={sha256}
-                  mono
-                  copyable={sha256}
-                  fullWidth
-                />
+          {/* Section 2: Cryptographic Provenance & Snapshot Integrity (Product-Focused) */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 14px',
+              background: snapshot_integrity === false ? '#fef2f2' : '#f0fdf4',
+              border: `1px solid ${snapshot_integrity === false ? '#fca5a5' : '#bbf7d0'}`,
+              borderRadius: 6,
+              flexWrap: 'wrap',
+              gap: 10,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {snapshot_integrity === false ? (
+                <ShieldAlert size={16} color="#dc2626" />
+              ) : (
+                <ShieldCheck size={16} color="#059669" />
               )}
-              {input_hash && (
-                <FormField
-                  label="Input Hash"
-                  value={input_hash}
-                  mono
-                  copyable={input_hash}
-                  fullWidth
-                />
-              )}
-              {snapshot_path && (
-                <FormField
-                  label="Immutable Snapshot Path"
-                  value={snapshot_path}
-                  mono
-                  copyable={snapshot_path}
-                  fullWidth
-                />
-              )}
-              {actualRecordId && (
-                <FormField
-                  label="Record ID"
-                  value={actualRecordId}
-                  mono
-                  copyable={actualRecordId}
-                />
-              )}
-              {assignment_id && (
-                <FormField
-                  label="Assignment ID"
-                  value={assignment_id}
-                  mono
-                  copyable={assignment_id}
-                />
-              )}
-              {project_id && (
-                <FormField
-                  label="Project ID"
-                  value={project_id}
-                  mono
-                  copyable={project_id}
-                />
-              )}
-              {revision_id && (
-                <FormField
-                  label="Revision ID"
-                  value={revision_id}
-                  mono
-                  copyable={revision_id}
-                />
-              )}
-              <FormField
-                label="Snapshot Integrity"
-                value={
-                  snapshot_integrity === false ? (
-                    <span style={{ color: '#dc2626', fontWeight: 700 }}>FAILED</span>
-                  ) : (
-                    <span style={{ color: '#059669', fontWeight: 700 }}>VALID / UNALTERED</span>
-                  )
-                }
-              />
-              <FormField
-                label="Original Integrity"
-                value={
-                  original_integrity === false ? (
-                    <span style={{ color: '#dc2626', fontWeight: 700 }}>FAILED</span>
-                  ) : (
-                    <span style={{ color: '#059669', fontWeight: 700 }}>VALID / UNALTERED</span>
-                  )
-                }
-              />
+              <div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: snapshot_integrity === false ? '#991b1b' : '#166534' }}>
+                  {snapshot_integrity === false ? 'Cryptographic Integrity Warning' : 'Cryptographic Integrity Verified'}
+                </span>
+                <span style={{ fontSize: 11, color: snapshot_integrity === false ? '#b91c1c' : '#15803d', marginLeft: 8 }}>
+                  {snapshot_integrity === false
+                    ? 'Baseline evidence has been altered or tampered'
+                    : 'Immutable baseline snapshot is valid & unaltered'}
+                </span>
+              </div>
             </div>
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                padding: '3px 8px',
+                borderRadius: 4,
+                background: snapshot_integrity === false ? '#fee2e2' : '#dcfce7',
+                color: snapshot_integrity === false ? '#dc2626' : '#15803d',
+                border: `1px solid ${snapshot_integrity === false ? '#f87171' : '#86efac'}`,
+              }}
+            >
+              {snapshot_integrity === false ? 'INTEGRITY FAILED' : 'INTEGRITY VALID'}
+            </span>
           </div>
 
           {/* Section 3: Specification Parameters (if present) */}
@@ -760,6 +717,44 @@ export const RecordFormView: React.FC<RecordFormViewProps> = ({
                 )}
               </div>
             </div>
+          )}
+
+          {/* Collapsible Technical Database Identifiers & Cryptographic Hashes (Hidden by default for clean product view) */}
+          {(actualRecordId || sha256 || input_hash || project_id || revision_id || assignment_id) && (
+            <details
+              style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: 6,
+                padding: '8px 12px',
+                fontSize: 11,
+              }}
+            >
+              <summary
+                style={{
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  color: '#64748b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  userSelect: 'none',
+                }}
+              >
+                <Database size={13} />
+                <span>Technical Audit & Database Identifiers (Click to expand)</span>
+              </summary>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 8, marginTop: 10 }}>
+                {actualRecordId && <FormField label="Record ID" value={actualRecordId} mono copyable={actualRecordId} />}
+                {assignment_id && <FormField label="Assignment ID" value={assignment_id} mono copyable={assignment_id} />}
+                {project_id && <FormField label="Project ID" value={project_id} mono copyable={project_id} />}
+                {revision_id && <FormField label="Revision ID" value={revision_id} mono copyable={revision_id} />}
+                {design_id && <FormField label="Design ID" value={design_id} mono copyable={design_id} />}
+                {sha256 && <FormField label="SHA-256 Digest" value={sha256} mono copyable={sha256} fullWidth />}
+                {input_hash && <FormField label="Input Hash" value={input_hash} mono copyable={input_hash} fullWidth />}
+                {snapshot_path && <FormField label="Snapshot Path" value={snapshot_path} mono copyable={snapshot_path} fullWidth />}
+              </div>
+            </details>
           )}
 
           {/* Section 9: Additional Unmapped Metadata (guarantees zero data loss) */}

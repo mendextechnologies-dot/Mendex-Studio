@@ -579,10 +579,29 @@ export const api = {
     revisionId: string;
     ambientC?: number;
     copperWeightOz?: number;
+    chassisCooling?: boolean;
+    timConductivityWMk?: number;
+    timThicknessMm?: number;
+    timAreaMm2?: number;
+    chassisRThCW?: number;
   }) =>
     rpcCall<import('./types').PCBThermalFieldReport>('calculate_pcb_thermal_field', {
       revision_id: params.revisionId,
       ambient_c: params.ambientC ?? 25.0,
       copper_weight_oz: params.copperWeightOz ?? 2.0,
+      chassis_cooling: params.chassisCooling ?? false,
+      tim_conductivity_w_mk: params.timConductivityWMk ?? 5.0,
+      tim_thickness_mm: params.timThicknessMm ?? 1.5,
+      tim_area_mm2: params.timAreaMm2 ?? 400.0,
+      chassis_r_th_c_w: params.chassisRThCW ?? 3.2,
+    }),
+  getEnclosureModel: (revisionId: string) =>
+    rpcCall<import('./types').EnclosureModelReport>('get_enclosure_model', {
+      revision_id: revisionId,
+    }),
+  generateEnclosureModel: (revisionId: string, exportStep: boolean = true) =>
+    rpcCall<import('./types').EnclosureModelReport>('generate_enclosure_model', {
+      revision_id: revisionId,
+      export_step: exportStep,
     }),
 };

@@ -1,0 +1,4 @@
+Comment,Designator,Footprint,LCSC Part #
+VIN_IN,J1,R_0603_1608Metric,
+VDIV_OUT,J2,R_0603_1608Metric,
+10k 1%,"R1,R2",R_0805_2012Metric,C17414

@@ -1,0 +1,145 @@
+{
+ "drc": {
+  "ts": "2026-11-15T14:30:19",
+  "revision": "cf33bfc1605a7c10",
+  "signatures": [
+   "violations|lib_footprint_mismatch|Footprint 'C_1210_3225Metric' does not match copy in library 'Capacitor_SMD'|Footprint C1",
+   "violations|lib_footprint_mismatch|Footprint 'L_1210_3225Metric' does not match copy in library 'Inductor_SMD'|Footprint L1",
+   "violations|lib_footprint_mismatch|Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'|Footprint V1",
+   "violations|lib_footprint_mismatch|Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'|Footprint V_G1",
+   "violations|lib_footprint_mismatch|Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'|Footprint V_G2",
+   "violations|lib_footprint_mismatch|Footprint 'R_1206_3216Metric' does not match copy in library 'Resistor_SMD'|Footprint R_LOAD",
+   "violations|lib_footprint_mismatch|Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD'|Footprint Q1",
+   "violations|lib_footprint_mismatch|Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD'|Footprint Q2",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 1 [GATE_HI] of Q1 on F.Cu|Rectangle of Q1 on F.Silkscreen",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 2 [VIN] of Q1 on F.Cu|Rectangle of Q1 on F.Silkscreen",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 3 [SW] of Q1 on F.Cu|Rectangle of Q1 on F.Silkscreen",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 1 [GATE_LO] of Q2 on F.Cu|Rectangle of Q2 on F.Silkscreen",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 2 [SW] of Q2 on F.Cu|Rectangle of Q2 on F.Silkscreen",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 3 [GND] of Q2 on F.Cu|Rectangle of Q2 on F.Silkscreen",
+   "violations|silk_overlap|Silkscreen clearance|Rectangle of Q1 on F.Silkscreen|Reference field of Q1",
+   "violations|silk_overlap|Silkscreen clearance|Rectangle of Q2 on F.Silkscreen|Reference field of Q2"
+  ],
+  "messages": {
+   "violations|lib_footprint_mismatch|Footprint 'C_1210_3225Metric' does not match copy in library 'Capacitor_SMD'|Footprint C1": "Footprint 'C_1210_3225Metric' does not match copy in library 'Capacitor_SMD' \u2014 C1",
+   "violations|lib_footprint_mismatch|Footprint 'L_1210_3225Metric' does not match copy in library 'Inductor_SMD'|Footprint L1": "Footprint 'L_1210_3225Metric' does not match copy in library 'Inductor_SMD' \u2014 L1",
+   "violations|lib_footprint_mismatch|Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'|Footprint V1": "Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm' \u2014 V1",
+   "violations|lib_footprint_mismatch|Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'|Footprint V_G1": "Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm' \u2014 V_G1",
+   "violations|lib_footprint_mismatch|Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm'|Footprint V_G2": "Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm' \u2014 V_G2",
+   "violations|lib_footprint_mismatch|Footprint 'R_1206_3216Metric' does not match copy in library 'Resistor_SMD'|Footprint R_LOAD": "Footprint 'R_1206_3216Metric' does not match copy in library 'Resistor_SMD' \u2014 R_LOAD",
+   "violations|lib_footprint_mismatch|Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD'|Footprint Q1": "Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD' \u2014 Q1",
+   "violations|lib_footprint_mismatch|Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD'|Footprint Q2": "Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD' \u2014 Q2",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 1 [GATE_HI] of Q1 on F.Cu|Rectangle of Q1 on F.Silkscreen": "Silkscreen clipped by solder mask \u2014 Q1.1",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 2 [VIN] of Q1 on F.Cu|Rectangle of Q1 on F.Silkscreen": "Silkscreen clipped by solder mask \u2014 Q1.2",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 3 [SW] of Q1 on F.Cu|Rectangle of Q1 on F.Silkscreen": "Silkscreen clipped by solder mask \u2014 Q1.3",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 1 [GATE_LO] of Q2 on F.Cu|Rectangle of Q2 on F.Silkscreen": "Silkscreen clipped by solder mask \u2014 Q2.1",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 2 [SW] of Q2 on F.Cu|Rectangle of Q2 on F.Silkscreen": "Silkscreen clipped by solder mask \u2014 Q2.2",
+   "violations|silk_over_copper|Silkscreen clipped by solder mask|Pad 3 [GND] of Q2 on F.Cu|Rectangle of Q2 on F.Silkscreen": "Silkscreen clipped by solder mask \u2014 Q2.3",
+   "violations|silk_overlap|Silkscreen clearance|Rectangle of Q1 on F.Silkscreen|Reference field of Q1": "Silkscreen clearance",
+   "violations|silk_overlap|Silkscreen clearance|Rectangle of Q2 on F.Silkscreen|Reference field of Q2": "Silkscreen clearance"
+  },
+  "errors": 0,
+  "warnings": 16,
+  "unconnected": 0,
+  "parity": 0,
+  "excluded": 0,
+  "top": [
+   {
+    "severity": "warning",
+    "type": "lib_footprint_mismatch",
+    "message": "Footprint 'C_1210_3225Metric' does not match copy in library 'Capacitor_SMD' \u2014 C1",
+    "fix": "board footprint differs from the library copy \u2014 fine if intentional (KiCad keeps the board copy)"
+   },
+   {
+    "severity": "warning",
+    "type": "lib_footprint_mismatch",
+    "message": "Footprint 'L_1210_3225Metric' does not match copy in library 'Inductor_SMD' \u2014 L1",
+    "fix": "board footprint differs from the library copy \u2014 fine if intentional (KiCad keeps the board copy)"
+   },
+   {
+    "severity": "warning",
+    "type": "lib_footprint_mismatch",
+    "message": "Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm' \u2014 V1",
+    "fix": "board footprint differs from the library copy \u2014 fine if intentional (KiCad keeps the board copy)"
+   },
+   {
+    "severity": "warning",
+    "type": "lib_footprint_mismatch",
+    "message": "Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm' \u2014 V_G1",
+    "fix": "board footprint differs from the library copy \u2014 fine if intentional (KiCad keeps the board copy)"
+   },
+   {
+    "severity": "warning",
+    "type": "lib_footprint_mismatch",
+    "message": "Footprint 'PinHeader_1x02_P2.54mm_Vertical' does not match copy in library 'Connector_PinHeader_2.54mm' \u2014 V_G2",
+    "fix": "board footprint differs from the library copy \u2014 fine if intentional (KiCad keeps the board copy)"
+   },
+   {
+    "severity": "warning",
+    "type": "lib_footprint_mismatch",
+    "message": "Footprint 'R_1206_3216Metric' does not match copy in library 'Resistor_SMD' \u2014 R_LOAD",
+    "fix": "board footprint differs from the library copy \u2014 fine if intentional (KiCad keeps the board copy)"
+   },
+   {
+    "severity": "warning",
+    "type": "lib_footprint_mismatch",
+    "message": "Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD' \u2014 Q1",
+    "fix": "board footprint differs from the library copy \u2014 fine if intentional (KiCad keeps the board copy)"
+   },
+   {
+    "severity": "warning",
+    "type": "lib_footprint_mismatch",
+    "message": "Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD' \u2014 Q2",
+    "fix": "board footprint differs from the library copy \u2014 fine if intentional (KiCad keeps the board copy)"
+   },
+   {
+    "severity": "warning",
+    "type": "silk_over_copper",
+    "message": "Silkscreen clipped by solder mask \u2014 Q1.1",
+    "fix": "cosmetic: JLC clips silkscreen off pads \u2014 usually waivable; move refdes text if it becomes unreadable"
+   },
+   {
+    "severity": "warning",
+    "type": "silk_over_copper",
+    "message": "Silkscreen clipped by solder mask \u2014 Q1.2",
+    "fix": "cosmetic: JLC clips silkscreen off pads \u2014 usually waivable; move refdes text if it becomes unreadable"
+   },
+   {
+    "severity": "warning",
+    "type": "silk_over_copper",
+    "message": "Silkscreen clipped by solder mask \u2014 Q1.3",
+    "fix": "cosmetic: JLC clips silkscreen off pads \u2014 usually waivable; move refdes text if it becomes unreadable"
+   },
+   {
+    "severity": "warning",
+    "type": "silk_over_copper",
+    "message": "Silkscreen clipped by solder mask \u2014 Q2.1",
+    "fix": "cosmetic: JLC clips silkscreen off pads \u2014 usually waivable; move refdes text if it becomes unreadable"
+   },
+   {
+    "severity": "warning",
+    "type": "silk_over_copper",
+    "message": "Silkscreen clipped by solder mask \u2014 Q2.2",
+    "fix": "cosmetic: JLC clips silkscreen off pads \u2014 usually waivable; move refdes text if it becomes unreadable"
+   },
+   {
+    "severity": "warning",
+    "type": "silk_over_copper",
+    "message": "Silkscreen clipped by solder mask \u2014 Q2.3",
+    "fix": "cosmetic: JLC clips silkscreen off pads \u2014 usually waivable; move refdes text if it becomes unreadable"
+   },
+   {
+    "severity": "warning",
+    "type": "silk_overlap",
+    "message": "Silkscreen clearance",
+    "fix": "cosmetic: JLC clips silkscreen off pads \u2014 usually waivable; move refdes text if it becomes unreadable"
+   },
+   {
+    "severity": "warning",
+    "type": "silk_overlap",
+    "message": "Silkscreen clearance",
+    "fix": "cosmetic: JLC clips silkscreen off pads \u2014 usually waivable; move refdes text if it becomes unreadable"
+   }
+  ]
+ }
+}

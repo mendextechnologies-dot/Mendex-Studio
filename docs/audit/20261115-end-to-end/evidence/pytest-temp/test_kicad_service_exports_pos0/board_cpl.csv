@@ -1,0 +1,3 @@
+Ref,Val,Package,PosX,PosY,Rot,Side
+"Q1","MOSFET_N","TO-252-2",40.000000,-25.000000,0.000000,top
+"R1","10k","R_0805_2012Metric",20.000000,-20.000000,0.000000,top

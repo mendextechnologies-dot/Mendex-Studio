@@ -1,0 +1,39 @@
+{
+  "user_version": 4,
+  "integrity": [
+    [
+      "ok"
+    ]
+  ],
+  "tables": {
+    "products": 2,
+    "revisions": 2,
+    "tool_settings": 0,
+    "validations": 36,
+    "reports": 12,
+    "runs": 0,
+    "integration_settings": 0,
+    "integration_health": 13,
+    "integration_workspaces": 2,
+    "integration_jobs": 0,
+    "integration_datasets": 0,
+    "activities": 0,
+    "workflows": 1,
+    "workflow_runs": 1,
+    "lifecycle_approvals": 76,
+    "engineering_change_requests": 1,
+    "measurements": 5,
+    "engineering_lifecycle_schema": 1,
+    "engineering_lifecycle_definitions": 1,
+    "engineering_lifecycle_assignments": 2,
+    "engineering_lifecycle_events": 156,
+    "sqlite_sequence": 3,
+    "engineering_records_schema": 1,
+    "engineering_records_entries": 36,
+    "engineering_records_receipts": 47,
+    "engineering_reviews_schema": 1,
+    "engineering_reviewers": 7,
+    "engineering_reviews": 63,
+    "engineering_review_receipts": 63
+  }
+}

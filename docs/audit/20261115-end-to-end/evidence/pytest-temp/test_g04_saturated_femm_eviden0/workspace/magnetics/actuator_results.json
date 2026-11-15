@@ -1,0 +1,1 @@
+{"actuator_model": "Saturated Inductor", "peak_flux_density_b_max_t": 1.85, "core_saturation_threshold_t": 1.6, "saturation_margin_pct": -15.6, "core_saturated": true, "primary_turns": 50, "coil_excitation_current_a": 5.0, "ampere_turns": 250.0}

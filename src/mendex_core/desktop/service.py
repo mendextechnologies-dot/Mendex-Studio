@@ -2821,9 +2821,21 @@ class DesktopService:
                 revision_id=request.revision_id,
                 ambient_c=getattr(request, "ambient_c", 25.0),
                 copper_weight_oz=getattr(request, "copper_weight_oz", 2.0),
+                chassis_cooling=getattr(request, "chassis_cooling", False),
+                tim_conductivity_w_mk=getattr(request, "tim_conductivity_w_mk", 5.0),
+                tim_thickness_mm=getattr(request, "tim_thickness_mm", 1.5),
+                tim_area_mm2=getattr(request, "tim_area_mm2", 400.0),
+                chassis_r_th_c_w=getattr(request, "chassis_r_th_c_w", 3.2),
             )
         if method == "get_pcb_thermal_field":
             return self.studio.get_pcb_thermal_field(request.revision_id)
+        if method == "generate_enclosure_model":
+            return self.studio.generate_enclosure_model(
+                revision_id=request.revision_id,
+                export_step=getattr(request, "export_step", True),
+            )
+        if method == "get_enclosure_model":
+            return self.studio.get_enclosure_model(request.revision_id)
         if method == "backup":
             dest = getattr(request, "destination", None) if request else None
             backup_path = self.studio.backup_database(dest)
@@ -2947,4 +2959,6 @@ ROUTES.update(
     get_wcca_analysis=models.WccaGetQuery,
     calculate_pcb_thermal_field=models.PCBThermalQuery,
     get_pcb_thermal_field=models.PCBThermalQuery,
+    generate_enclosure_model=models.EnclosureQuery,
+    get_enclosure_model=models.EnclosureQuery,
 )

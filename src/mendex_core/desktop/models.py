@@ -320,3 +320,14 @@ class PCBThermalQuery(Model):
     revision_id: UUID
     ambient_c: float = 25.0
     copper_weight_oz: float = 2.0
+    chassis_cooling: bool = False
+    tim_conductivity_w_mk: float = 5.0
+    tim_thickness_mm: float = 1.5
+    tim_area_mm2: float = 400.0
+    chassis_r_th_c_w: float = 3.2
+
+
+class EnclosureQuery(Model):
+    idempotency_key: Optional[str] = None
+    revision_id: UUID
+    export_step: bool = True

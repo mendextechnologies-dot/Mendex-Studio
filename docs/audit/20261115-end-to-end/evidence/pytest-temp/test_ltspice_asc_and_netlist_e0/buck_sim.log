@@ -1,0 +1,16 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\Mendex studio\docs\audit\20261115-end-to-end\evidence\pytest-temp\test_ltspice_asc_and_netlist_e0\buck_sim.net
+Start Time: Sun Nov 15 14:27:17 2026
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 1.190 seconds.
+Total iterations: 140381
+
+Files loaded:
+C:\Mendex studio\docs\audit\20261115-end-to-end\evidence\pytest-temp\test_ltspice_asc_and_netlist_e0\buck_sim.net
+

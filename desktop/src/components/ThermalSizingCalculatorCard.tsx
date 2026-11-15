@@ -56,7 +56,7 @@ export const ThermalSizingCalculatorCard: React.FC<ThermalSizingCalculatorCardPr
       if (recordEvidence && res.record_id) {
         setNotification({
           type: 'success',
-          message: `Formal electro-thermal calculation recorded into engineering evidence repository (Record ID: ${res.record_id.slice(0, 8)}…).`,
+          message: 'Formal electro-thermal calculation recorded into engineering evidence repository.',
         });
         if (onRefresh) onRefresh();
       }

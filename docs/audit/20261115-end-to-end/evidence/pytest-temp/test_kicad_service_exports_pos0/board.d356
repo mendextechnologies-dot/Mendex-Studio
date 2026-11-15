@@ -1,0 +1,11 @@
+P  JOB   board                                                                  
+P  CODE  00                                                                     
+P  UNITS CUST 0                                                                 
+P  arrayDim   N                                                                 
+P  VER   IPC-D-356A                                                             
+P  IMAGE PRIMARY                                                                
+327GND              R1    -2          A01X+008248Y-007874X0394Y0512R000 S2      
+327GND              Q1    -1          A01X+014843Y-009843X0630Y1181R000 S2      
+327VCC              R1    -1          A01X+007500Y-007874X0394Y0512R000 S2      
+327VCC              Q1    -2          A01X+016654Y-009843X0630Y1181R000 S2      
+999                                                                             

@@ -1,0 +1,18 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "8d74fd5a-3c05-45b6-a757-3797e639ca40")
+	(paper "A4")
+	(title_block
+		(title "divider_ref")
+		(date "2026-11-15")
+		(rev "1")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

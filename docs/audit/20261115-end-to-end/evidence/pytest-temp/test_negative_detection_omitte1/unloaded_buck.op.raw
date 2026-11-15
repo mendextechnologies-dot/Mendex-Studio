@@ -1,0 +1,46 @@
+Title: C:\Mendex studio\docs\audit\20261115-end-to-end\evidence\pytest-temp\test_negative_detection_omitte1\unloaded_buck.net
+Date: Sun Nov 15 14:30:23 2026
+Plotname: Operating Point
+Flags: real
+No. Variables: 18
+No. Points:            1
+Offset:    0.0000000000000000e+00
+Command: Linear Technology Corporation LTspice
+Variables:
+	0	V(gate_hi)	voltage
+	1	V(gate_lo)	voltage
+	2	V(sw)	voltage
+	3	V(vin)	voltage
+	4	V(vout)	voltage
+	5	I(C1)	device_current
+	6	I(D_FW)	device_current
+	7	I(L1)	device_current
+	8	I(V1)	device_current
+	9	I(V_G1)	device_current
+	10	I(V_G2)	device_current
+	11	Id(M_Q1)	device_current
+	12	Id(M_Q2)	device_current
+	13	Ig(M_Q1)	device_current
+	14	Ig(M_Q2)	device_current
+	15	Is(M_Q1)	device_current
+	16	Is(M_Q2)	device_current
+	17	L1:flux	voltage
+Values:
+0		2.400989465666462e-05
+	0.000000000000000e+00
+	2.400989465666462e-05
+	1.200000000000000e+01
+	2.400989465666462e-05
+	1.128465048863237e-21
+	-2.400989468067451e-11
+	0.000000000000000e+00
+	-2.400995198007590e-11
+	0.000000000000000e+00
+	0.000000000000000e+00
+	1.200997598997073e-11
+	3.328837826325752e-17
+	0.000000000000000e+00
+	0.000000000000000e+00
+	-1.200997598997073e-11
+	-3.328837826325752e-17
+	0.000000000000000e+00

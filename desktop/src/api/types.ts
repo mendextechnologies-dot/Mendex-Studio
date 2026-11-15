@@ -455,6 +455,8 @@ export interface PCBThermalFieldReport {
   revision_id: string;
   ambient_c: number;
   copper_weight_oz: number;
+  chassis_cooling?: boolean;
+  cooling_mode?: 'CHASSIS_TIM_SINK' | 'BARE_PCB_STILL_AIR';
   total_board_loss_w: number;
   max_temperature_c: number;
   max_component: string;
@@ -463,10 +465,61 @@ export interface PCBThermalFieldReport {
   board_bbox: { min_x: number; min_y: number; max_x: number; max_y: number; width?: number; height?: number };
   hotspots: ThermalHotspot[];
   isotherms: ThermalIsotherm[];
+  tim_specification?: {
+    part_number: string;
+    alternate: string;
+    conductivity_w_mk: number;
+    nominal_thickness_mm: number;
+    compressed_thickness_mm: number;
+    pad_area_mm2: number;
+    r_th_tim_c_w: number;
+    r_th_chassis_c_w: number;
+    chassis_material: string;
+    bare_pcb_max_temp_c: number;
+    chassis_max_temp_c: number;
+    delta_t_reduction_c: number;
+  };
   standards_compliance: {
     ipc_9592b_derated: boolean;
     navmat_derating: boolean;
     max_allowable_junction_c: number;
   };
   report_sha256?: string;
+}
+
+export interface EnclosureModelReport {
+  success: boolean;
+  product_code: string;
+  revision_label: string;
+  revision_id: string;
+  dimensions: {
+    outer_length_mm: number;
+    outer_width_mm: number;
+    total_height_mm: number;
+    wall_thickness_mm: number;
+    standoff_height_mm: number;
+    material: string;
+    weight_approx_grams: number;
+  };
+  thermal_interface: {
+    tim_part: string;
+    tim_conductivity_w_mk: number;
+    tim_thickness_mm: number;
+    tim_dimensions_mm: string;
+    pedestal_height_mm: number;
+    junction_temp_bare_c: number;
+    junction_temp_chassis_c: number;
+    delta_t_benefit_c: number;
+  };
+  step_generated: boolean;
+  files: {
+    svg_drawing: string;
+    tim_specification: string;
+    freecad_script: string;
+    step_assembly: string | null;
+    step_base: string | null;
+    step_lid: string | null;
+  };
+  svg_drawing_content?: string;
+  tim_specification_content?: string;
 }

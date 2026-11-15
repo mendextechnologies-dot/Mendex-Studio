@@ -1,0 +1,53 @@
+{
+  "requested_reports": 8,
+  "inventory_rows": 70,
+  "gap_count": 17,
+  "broken_links": [],
+  "cutoff": "2026-11-15 14:40:18 Asia/Calcutta",
+  "files": {
+    "01_CAPABILITY_MATRIX.md": {
+      "bytes": 17275,
+      "sha256": "7afa75b59fbd19a1adf5fba5fe81ece0403ac7b3a6feea622782acc8ac03a303"
+    },
+    "02_ENGINEERING_WORKFLOW.md": {
+      "bytes": 14312,
+      "sha256": "33f04de3f9a8109e93c31c56fe274de00f078bea4383002e16e12dedba2637aa"
+    },
+    "03_ENGINEERING_SPECIFICATIONS.md": {
+      "bytes": 10035,
+      "sha256": "026059c37ec595b0d58fb8e411666b14274b3a4038eace0665b2b45a4be70fbd"
+    },
+    "04_MANUFACTURING_FILE_INVENTORY.md": {
+      "bytes": 24019,
+      "sha256": "99d8825a255ab3f31dd6a6d2007a9bd53d57f2646c60b8fe9457d7d3d70e7dd4"
+    },
+    "05_TEAM_HANDOVER_GUIDE.md": {
+      "bytes": 16470,
+      "sha256": "43fdfd09cb2c348af6cc95185a775930752742d74835ecd209022828765765d0"
+    },
+    "06_MANUFACTURING_READINESS.md": {
+      "bytes": 12913,
+      "sha256": "f152e588efd41bb3e11ecb4bec0c4bdb1800cfb9b0cb86d18ec9d01a25a4d728"
+    },
+    "07_GAP_ANALYSIS_ROADMAP.md": {
+      "bytes": 23876,
+      "sha256": "2683fe59cee831221c11f5838f9a444a2625ad805207766c77e8179b786d6806"
+    },
+    "08_EXECUTIVE_SUMMARY.md": {
+      "bytes": 6788,
+      "sha256": "38fe74b189ac25b9609453d07cd8e96a07234ffa109672495a412eeb255ebcb2"
+    },
+    "09_CLOSING_SOURCE_ADDENDUM.md": {
+      "bytes": 6467,
+      "sha256": "0a67037bf5693baabcfbbe5ad83ba4a45bdfc4f09685bbd1d448be6dfcbbccc1"
+    },
+    "manufacturing-file-inventory.csv": {
+      "bytes": 62679,
+      "sha256": "4f3d8a7bd2ec999e0adf5385ebd28bb201dea6414cd9f96f177eb373305bc531"
+    },
+    "README.md": {
+      "bytes": 5420,
+      "sha256": "7e3a23bcf8f81a6a326aa711ae1617ce230d393494226f3d87dc628cd10ccba2"
+    }
+  }
+}

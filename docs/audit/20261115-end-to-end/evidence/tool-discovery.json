@@ -1,0 +1,261 @@
+[
+  {
+    "tool_id": "ltspice",
+    "name": "LTspice",
+    "kind": "application",
+    "category": "core",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "26.1.1.0",
+    "license_name": "Proprietary Freeware (Analog Devices)",
+    "official_url": "https://www.analog.com/ltspice",
+    "capabilities": [
+      "batch_simulate",
+      "operating_point",
+      "transient"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\Program Files\\ADI\\LTspice\\LTspice.exe",
+    "diagnostic": "Executable found at C:\\Program Files\\ADI\\LTspice\\LTspice.exe (Version: 26.1.1.0)"
+  },
+  {
+    "tool_id": "python",
+    "name": "Python Runtime",
+    "kind": "runtime",
+    "category": "core",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "3.13.7",
+    "license_name": "PSF License",
+    "official_url": "https://www.python.org/",
+    "capabilities": [
+      "run_script",
+      "evaluate_formula"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\Mendex studio\\.venv\\Scripts\\python.exe",
+    "diagnostic": "Active Python interpreter 3.13.7 at C:\\Mendex studio\\.venv\\Scripts\\python.exe"
+  },
+  {
+    "tool_id": "git",
+    "name": "Git",
+    "kind": "application",
+    "category": "core",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "2.48.1.windows.1",
+    "license_name": "GPLv2",
+    "official_url": "https://git-scm.com/",
+    "capabilities": [
+      "status",
+      "rev_parse",
+      "hash_object"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\Program Files\\Git\\cmd\\git.EXE",
+    "diagnostic": "Git CLI available at C:\\Program Files\\Git\\cmd\\git.EXE (2.48.1.windows.1)"
+  },
+  {
+    "tool_id": "kicad",
+    "name": "KiCad CLI",
+    "kind": "application",
+    "category": "core",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "10.0.7.51283",
+    "license_name": "GPLv3+",
+    "official_url": "https://www.kicad.org/",
+    "capabilities": [
+      "erc",
+      "drc",
+      "export_gerber",
+      "export_step",
+      "render_3d",
+      "route",
+      "version"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+    "diagnostic": "Executable found at C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe (Version: 10.0.7.51283)"
+  },
+  {
+    "tool_id": "femm",
+    "name": "FEMM",
+    "kind": "application",
+    "category": "core",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "1.0.0.1",
+    "license_name": "Aladdin Free Public License",
+    "official_url": "https://www.femm.info/",
+    "capabilities": [
+      "solve_2d_magnetic",
+      "inductance_matrix",
+      "core_loss"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\femm42\\bin\\femm.exe",
+    "diagnostic": "Executable found at C:\\femm42\\bin\\femm.exe (Version: 1.0.0.1)"
+  },
+  {
+    "tool_id": "freecad",
+    "name": "FreeCAD",
+    "kind": "application",
+    "category": "core",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "1.1.4.0",
+    "license_name": "LGPLv2+",
+    "official_url": "https://www.freecad.org/",
+    "capabilities": [
+      "export_step",
+      "generate_bobbin",
+      "export_stl"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe",
+    "diagnostic": "Executable found at C:\\Program Files\\FreeCAD 1.1\\bin\\freecadcmd.exe (Version: 1.1.4.0)"
+  },
+  {
+    "tool_id": "qucs-s",
+    "name": "Qucs-S",
+    "kind": "application",
+    "category": "high",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": null,
+    "license_name": "GPLv2+",
+    "official_url": "https://ra3xdh.github.io/",
+    "capabilities": [
+      "batch_simulate",
+      "netlist_export"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\Users\\Sagar\\AppData\\Local\\Programs\\qucs-s\\bin\\qucs-s.exe",
+    "diagnostic": "Executable found at C:\\Users\\Sagar\\AppData\\Local\\Programs\\qucs-s\\bin\\qucs-s.exe"
+  },
+  {
+    "tool_id": "openmodelica",
+    "name": "OpenModelica",
+    "kind": "application",
+    "category": "high",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": null,
+    "license_name": "OSMC-PL",
+    "official_url": "https://openmodelica.org/",
+    "capabilities": [
+      "check_model",
+      "simulate_modelica",
+      "version"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\Program Files\\OpenModelica1.26.3-64bit\\bin\\omc.exe",
+    "diagnostic": "Executable found at C:\\Program Files\\OpenModelica1.26.3-64bit\\bin\\omc.exe"
+  },
+  {
+    "tool_id": "jupyter",
+    "name": "Jupyter Notebook",
+    "kind": "application",
+    "category": "high",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": null,
+    "license_name": "Modified BSD",
+    "official_url": "https://jupyter.org/",
+    "capabilities": [
+      "execute_notebook",
+      "export_html"
+    ],
+    "state": "READY",
+    "executable_path": "C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe",
+    "diagnostic": "Executable found at C:\\Mendex studio\\.venv\\Scripts\\jupyter.exe"
+  },
+  {
+    "tool_id": "switchlossdb",
+    "name": "SwitchLossDB",
+    "kind": "dataset",
+    "category": "dataset",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "1.0-dataset",
+    "license_name": "CC-BY-4.0",
+    "official_url": "https://github.com/switchloss/switchloss-db",
+    "capabilities": [
+      "query_device",
+      "import_csv",
+      "verify_checksum"
+    ],
+    "state": "READY",
+    "executable_path": null,
+    "diagnostic": "SwitchLossDB dataset interface ready for CSV/JSON ingestion"
+  },
+  {
+    "tool_id": "magnet-dataset",
+    "name": "MagNet Dataset",
+    "kind": "dataset",
+    "category": "dataset",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "2024.1",
+    "license_name": "CC-BY-4.0 / Academic",
+    "official_url": "https://www.princeton.edu/~minjie/magnet.html",
+    "capabilities": [
+      "query_material",
+      "import_waveform_data",
+      "verify_checksum"
+    ],
+    "state": "READY",
+    "executable_path": null,
+    "diagnostic": "MagNet dataset reader ready for core loss waveform ingestion"
+  },
+  {
+    "tool_id": "magnet-ml-benchmarks",
+    "name": "MagNet ML Benchmarks",
+    "kind": "benchmark",
+    "category": "benchmark",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "1.2-benchmarks",
+    "license_name": "Academic Open Source",
+    "official_url": "https://github.com/minjiechen/MagNet",
+    "capabilities": [
+      "evaluate_benchmark",
+      "compare_error_metrics"
+    ],
+    "state": "READY",
+    "executable_path": null,
+    "diagnostic": "Neural network benchmark metrics schema active"
+  },
+  {
+    "tool_id": "magnet-princeton",
+    "name": "MagNet (Princeton University)",
+    "kind": "research_resource",
+    "category": "research_resource",
+    "supported_os": [
+      "Windows"
+    ],
+    "version": "Reference-Hub",
+    "license_name": "Academic Research",
+    "official_url": "https://www.princeton.edu/~minjie/magnet.html",
+    "capabilities": [
+      "browse_publications",
+      "fetch_material_constants"
+    ],
+    "state": "READY",
+    "executable_path": null,
+    "diagnostic": "Princeton Power Electronics research hub reference entry"
+  }
+]

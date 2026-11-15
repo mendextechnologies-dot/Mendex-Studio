@@ -1,0 +1,12 @@
+{
+  "kicad": {
+    "command": [
+      "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+      "--version"
+    ],
+    "exit": 0,
+    "stdout": "10.0.7\n",
+    "stderr": ""
+  },
+  "ltspice_discovery": "{'exe_path': WindowsPath('C:/Program Files/ADI/LTspice/LTspice.exe')}"
+}

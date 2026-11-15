@@ -34,11 +34,13 @@ def _sha256_file(path: Path) -> str:
 def categorize_deliverable(filename: str) -> str:
     """Categorizes a deliverable file into an engineering discipline."""
     lower = filename.lower()
+    if "enclosure" in lower or "mechanical" in lower or "thermal_interface" in lower or lower.endswith(".step") or lower.endswith(".stp"):
+        return "mechanical"
     if lower.endswith(".kicad_sch") or lower.endswith(".kicad_pcb") or lower.endswith(".kicad_pro") or lower.endswith(".sch") or lower.endswith(".pcb"):
         return "cad"
     if lower.endswith(".gbr") or lower.endswith(".drl") or "gerber" in lower:
         return "fabrication"
-    if "cpl" in lower or "pos" in lower or lower.endswith(".png") or "assembly" in lower or lower.endswith(".step") or lower.endswith(".stp"):
+    if "cpl" in lower or "pos" in lower or lower.endswith(".png") or "assembly" in lower:
         return "assembly"
     if "bom" in lower or lower.endswith(".csv") and "cpl" not in lower and "pos" not in lower:
         return "bom"
@@ -74,8 +76,9 @@ def scan_workspace_candidates(ws_dir: Path) -> List[Path]:
         is_bom = name_lower in ["bom.json", "bom.csv"] or "bom_pricing" in name_lower
         is_doc = "assembly" in name_lower or "transformer" in name_lower or "test_plan" in name_lower or ext in [".pdf", ".html"]
         is_visual = ext == ".png" and ("3d" in name_lower or "render" in name_lower)
+        is_mech = "enclosure" in name_lower or "mechanical" in name_lower or "thermal_interface" in name_lower or ext in [".step", ".stp", ".svg"]
 
-        if is_cad or is_fab or is_cpl or is_bom or is_doc or is_visual:
+        if is_cad or is_fab or is_cpl or is_bom or is_doc or is_visual or is_mech:
             candidates.append(p)
 
     # Sort deterministically
@@ -119,6 +122,7 @@ def get_release_package(studio: Any, revision_id: UUID) -> Dict[str, Any]:
                 "assembly": [],
                 "bom": [],
                 "testing_qa": [],
+                "mechanical": [],
                 "other": [],
             },
             "available_candidates_count": len(candidates),
@@ -155,6 +159,7 @@ def get_release_package(studio: Any, revision_id: UUID) -> Dict[str, Any]:
         "assembly": [],
         "bom": [],
         "testing_qa": [],
+        "mechanical": [],
         "other": [],
     }
 
@@ -212,6 +217,7 @@ def build_release_package(studio: Any, revision_id: UUID, author: str = "Lead Sy
         "assembly": [],
         "bom": [],
         "testing_qa": [],
+        "mechanical": [],
         "other": [],
     }
 

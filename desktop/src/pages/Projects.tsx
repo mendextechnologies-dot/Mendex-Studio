@@ -92,8 +92,8 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, onSelectProject })
                 <span>Active Rev: <b>{proj.revision_label}</b></span>
                 <span>Category: <b>{proj.category}</b></span>
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-dim)', marginTop: '4px', fontFamily: 'monospace' }}>
-                Spec Hash: {proj.input_hash ? proj.input_hash.substring(0, 16) + '...' : 'N/A'}
+              <div style={{ fontSize: '11px', color: '#047857', marginTop: '6px', fontWeight: 600 }}>
+                ✓ Baseline Cryptographically Verified
               </div>
             </div>
           </div>

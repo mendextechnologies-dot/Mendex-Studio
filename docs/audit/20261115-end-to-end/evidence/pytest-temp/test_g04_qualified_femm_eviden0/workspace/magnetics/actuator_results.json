@@ -1,0 +1,1 @@
+{"actuator_model": "Qualified Buck Inductor", "peak_flux_density_b_max_t": 0.32, "core_saturation_threshold_t": 0.4, "saturation_margin_pct": 20.0, "core_saturated": false, "primary_turns": 25, "coil_excitation_current_a": 1.5, "ampere_turns": 37.5}

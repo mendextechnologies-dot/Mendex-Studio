@@ -1,0 +1,18 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "8dd3ca66-2d0f-4c4e-be57-c789c1f74f47")
+	(paper "A4")
+	(title_block
+		(title "power_4l_board")
+		(date "2026-11-15")
+		(rev "1")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

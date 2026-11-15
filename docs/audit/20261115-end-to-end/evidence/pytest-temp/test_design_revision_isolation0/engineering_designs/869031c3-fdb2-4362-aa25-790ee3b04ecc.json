@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.9.0",
+  "id": "869031c3-fdb2-4362-aa25-790ee3b04ecc",
+  "workspace_id": "d76eaa02-f4fb-47f2-a36f-3eb2011c5af7",
+  "title": "Design of Project B",
+  "category": "pcb",
+  "status": "DRAFT",
+  "active_revision_id": "5a8c020b-89fc-44d8-b811-d8bf678d82ed",
+  "product_id": "d76eaa02-f4fb-47f2-a36f-3eb2011c5af7",
+  "core_revision_id": "6bcd7165-a9fb-4778-af63-a28065709ced",
+  "requirements": [],
+  "candidates": [],
+  "revisions": [
+    {
+      "id": "5a8c020b-89fc-44d8-b811-d8bf678d82ed",
+      "design_id": "869031c3-fdb2-4362-aa25-790ee3b04ecc",
+      "revision_index": 1,
+      "label": "DRev B",
+      "ir": {
+        "schema_version": "1.9.0",
+        "id": "467f45d2-0d91-4bdd-9e10-53a0f8cc90b7",
+        "title": "Untitled Design",
+        "topology": "Generic",
+        "category": "power_electronics",
+        "parameters": {},
+        "components": [],
+        "nets": [],
+        "ports": [],
+        "magnetic_geometry": null,
+        "metadata": {}
+      },
+      "requirements_hash": "",
+      "summary": "Initial baseline",
+      "artifacts": [],
+      "created_at": "2026-11-15T08:57:14.205055+00:00",
+      "created_by": "Engineer"
+    }
+  ],
+  "created_at": "2026-11-15T08:57:14.205025+00:00",
+  "updated_at": "2026-11-15T08:57:14.205031+00:00"
+}

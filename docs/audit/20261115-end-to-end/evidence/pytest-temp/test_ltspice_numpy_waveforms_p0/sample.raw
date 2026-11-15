@@ -1,0 +1,17 @@
+Title: Sample Transient
+Date: Tue Nov 10 2026
+Plotname: Transient Analysis
+Flags: real forward
+No. Variables: 3
+No. Points: 2
+Variables:
+	0	time	time
+	1	V(in)	voltage
+	2	V(out)	voltage
+Values:
+0	0.0
+	10.0
+	0.0
+1	1e-3
+	10.0
+	5.0

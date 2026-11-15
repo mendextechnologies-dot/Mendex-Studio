@@ -1,0 +1,11 @@
+{
+  "src/mendex_core/service.py": "4ad8bf8bf8fe0f34a4125b1d14ca3f9bfcf279b338529944c4f241657dc68169",
+  "src/mendex_core/design/thermal_engine.py": "e304d0fb0313779c8f1239377c85717fc3cf92f0116149c807d4dd39d4c4a85f",
+  "src/mendex_core/design/wcca_engine.py": "20daef9d8fe9c63e55ec2136e71a5a55a2f762c0ab777ef7f5711a74889f0276",
+  "src/mendex_core/design/bom_pricing.py": "d177446a2178bee7f07c89d7be499494ffe740caff0d1e2c07cad8c44ec6621d",
+  "src/mendex_core/design/release_packager.py": "cca0cd26fb6b478437b12a178aa55ff2f3488c1b237458b9aeb348ed378a8e10",
+  "src/mendex_core/design/test_plan_generator.py": "3732b90c447460bb5679dc3085b3b953a13f6f970af4df0a3b9a04c34a2a9456",
+  "src/integrations/generators/enclosure_generator.py": "cbe1ac0d5a16d5a45668153f7ea853717a802d44f4a912b11224ffe7a34155e2",
+  "desktop/src/components/RecordFormView.tsx": "184ef2de99d10db5e9998f31e90934a68b8a8c9b82d1ec9c31af561d5cb46de4",
+  "desktop/src/pages/ProjectDetail.tsx": "d9a8f350e91ce2bc0dc43720654a50a0c6d612c9e390588de1987906732e5a83"
+}

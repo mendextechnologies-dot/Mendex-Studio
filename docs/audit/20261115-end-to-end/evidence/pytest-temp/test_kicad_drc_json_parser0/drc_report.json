@@ -1,0 +1,1 @@
+{"$schema": "https://schemas.kicad.org/drc.v1.json", "violations": [{"description": "Clearance violation", "type": "clearance"}, {"description": "Track width too narrow", "type": "width"}], "unconnected": [{"description": "Unconnected pad 1 to pad 2"}]}

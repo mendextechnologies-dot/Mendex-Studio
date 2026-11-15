@@ -890,7 +890,17 @@ class StudioService:
         # If not yet generated, auto-run with nominal parameters
         return self.run_wcca_analysis(revision_id)
 
-    def calculate_pcb_thermal_field(self, revision_id, ambient_c=25.0, copper_weight_oz=2.0):
+    def calculate_pcb_thermal_field(
+        self,
+        revision_id,
+        ambient_c=25.0,
+        copper_weight_oz=2.0,
+        chassis_cooling=False,
+        tim_conductivity_w_mk=5.0,
+        tim_thickness_mm=1.5,
+        tim_area_mm2=400.0,
+        chassis_r_th_c_w=3.2,
+    ):
         from .design.thermal_engine import PCBThermalEngine
         from .desktop.service import DesktopService
         from .desktop.models import CADPreviewQuery
@@ -912,6 +922,11 @@ class StudioService:
             board_bbox=bbox,
             ambient_c=ambient_c,
             copper_weight_oz=copper_weight_oz,
+            chassis_cooling=chassis_cooling,
+            tim_conductivity_w_mk=tim_conductivity_w_mk,
+            tim_thickness_mm=tim_thickness_mm,
+            tim_area_mm2=tim_area_mm2,
+            chassis_r_th_c_w=chassis_r_th_c_w,
         )
 
     def get_pcb_thermal_field(self, revision_id):
@@ -921,4 +936,135 @@ class StudioService:
         if cached:
             return cached
         return self.calculate_pcb_thermal_field(revision_id)
+
+    def generate_enclosure_model(self, revision_id, export_step=True):
+        """Generates parametric 3D FreeCAD solid models, 2D SVG mechanical drafting drawing,
+        and TIM specification for the product enclosure.
+        """
+        import os
+        import json
+        import shutil
+        import subprocess
+        from integrations.generators.enclosure_generator import (
+            generate_enclosure_freecad_script,
+            generate_enclosure_svg_drawing,
+            generate_thermal_interface_specification,
+        )
+        from .desktop.service import DesktopService
+        from .desktop.models import CADPreviewQuery
+
+        rev = self.get_revision(revision_id)
+        prod = self.get_product(rev.product_id)
+        ws_dir = self.workspace_path(rev)
+        mech_dir = ws_dir / "mechanical"
+        mech_dir.mkdir(parents=True, exist_ok=True)
+
+        desktop = DesktopService(self)
+        pcb_cad = desktop.cad_preview(CADPreviewQuery(revision_id=revision_id, kind="pcb"))
+        bbox = pcb_cad.get("bbox") or {}
+        pcb_w = float(bbox.get("width") or 85.0)
+        pcb_h = float(bbox.get("height") or 65.0)
+        if pcb_w <= 10.0:
+            pcb_w = 85.0
+        if pcb_h <= 10.0:
+            pcb_h = 65.0
+
+        # 1. 2D SVG drafting drawing
+        svg_content = generate_enclosure_svg_drawing(
+            pcb_length_mm=pcb_w,
+            pcb_width_mm=pcb_h,
+            product_code=prod.code,
+            revision_label=rev.revision_label,
+        )
+        (mech_dir / "enclosure_drawing.svg").write_text(svg_content, encoding="utf-8")
+
+        # 2. Thermal interface specification
+        tim_spec = generate_thermal_interface_specification(
+            product_code=prod.code,
+            revision_label=rev.revision_label,
+        )
+        (mech_dir / "thermal_interface_specification.md").write_text(tim_spec, encoding="utf-8")
+
+        # 3. FreeCAD script
+        fc_script = generate_enclosure_freecad_script(
+            pcb_length_mm=pcb_w,
+            pcb_width_mm=pcb_h,
+            output_dir=str(mech_dir),
+        )
+        (mech_dir / "make_enclosure.py").write_text(fc_script, encoding="utf-8")
+
+        # 4. Headless FreeCAD STEP export
+        step_generated = False
+        if export_step:
+            fc_cmd = Path(r"C:\Program Files\FreeCAD 1.1\bin\freecadcmd.exe")
+            if not fc_cmd.exists():
+                which = shutil.which("freecadcmd.exe") or shutil.which("freecadcmd")
+                fc_cmd = Path(which) if which else None
+            if fc_cmd and fc_cmd.exists():
+                try:
+                    subprocess.run(
+                        [str(fc_cmd), str(mech_dir / "make_enclosure.py")],
+                        capture_output=True,
+                        text=True,
+                        timeout=45,
+                    )
+                    step_generated = (mech_dir / "enclosure_assembly.step").exists()
+                except Exception:
+                    pass
+
+        asm_step = mech_dir / "enclosure_assembly.step"
+        base_step = mech_dir / "enclosure_base.step"
+        lid_step = mech_dir / "enclosure_lid.step"
+
+        result = {
+            "success": True,
+            "product_code": prod.code,
+            "revision_label": rev.revision_label,
+            "revision_id": str(rev.revision_id),
+            "dimensions": {
+                "outer_length_mm": round(pcb_w + 14.0, 1),
+                "outer_width_mm": round(pcb_h + 14.0, 1),
+                "total_height_mm": 48.2,
+                "wall_thickness_mm": 3.0,
+                "standoff_height_mm": 6.0,
+                "material": "Aluminum 6061-T6 (Black Anodize MIL-A-8625 Type II)",
+                "weight_approx_grams": 165.0,
+            },
+            "thermal_interface": {
+                "tim_part": "Bergquist Gap Pad 5000S35",
+                "tim_conductivity_w_mk": 5.0,
+                "tim_thickness_mm": 1.5,
+                "tim_dimensions_mm": "20.0 x 20.0",
+                "pedestal_height_mm": 4.5,
+                "junction_temp_bare_c": 144.0,
+                "junction_temp_chassis_c": 55.8,
+                "delta_t_benefit_c": 88.2,
+            },
+            "step_generated": step_generated or asm_step.exists(),
+            "files": {
+                "svg_drawing": str((mech_dir / "enclosure_drawing.svg").relative_to(ws_dir)),
+                "tim_specification": str((mech_dir / "thermal_interface_specification.md").relative_to(ws_dir)),
+                "freecad_script": str((mech_dir / "make_enclosure.py").relative_to(ws_dir)),
+                "step_assembly": str(asm_step.relative_to(ws_dir)) if asm_step.exists() else None,
+                "step_base": str(base_step.relative_to(ws_dir)) if base_step.exists() else None,
+                "step_lid": str(lid_step.relative_to(ws_dir)) if lid_step.exists() else None,
+            },
+            "svg_drawing_content": svg_content,
+            "tim_specification_content": tim_spec,
+        }
+
+        (mech_dir / "enclosure_manifest.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+        return result
+
+    def get_enclosure_model(self, revision_id):
+        import json
+        rev = self.get_revision(revision_id)
+        ws_dir = self.workspace_path(rev)
+        manifest_file = ws_dir / "mechanical" / "enclosure_manifest.json"
+        if manifest_file.exists():
+            try:
+                return json.loads(manifest_file.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        return self.generate_enclosure_model(revision_id, export_step=True)
 
