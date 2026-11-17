@@ -1,0 +1,9 @@
+{
+  "src/mendex_core/design/geometry.py": "b3d5600a7de776055c8c3805561e393ebe80090988deb009bd4a0a7dcae56d0f",
+  "src/mendex_core/desktop/service.py": "0775d1fe62de7c68f978cda73bd90e2e4a5bbcc2ea9f1e50300eb0742085de16",
+  "src/mendex_core/lifecycle/kicad_service.py": "5d912505d135c47c3faccb453d1c8bf12ddf250fa5b14f06ad379503582d5aa8",
+  "src/integrations/adapters/copper_kicad_adapter.py": "2332d87a9f88f0826380696d686f791d4033365719f0d2a4cd844991db1a9da8",
+  "desktop/src/components/CADPreviewCanvas.tsx": "ca59b03f96569c3ea92325658af86b049d999d56cd45d64853de789c710cd091",
+  "desktop/src/components/GerberLayerInspector.tsx": "5c21566cdeefe25a21b2ee9c40c829030f0eadef5293036720cadeade2b06214",
+  "desktop/src/components/Header.tsx": "49c426dc6019ee1f59657c1e9d67eac58fb6ca9946fd7c95eef4874ba5017660"
+}

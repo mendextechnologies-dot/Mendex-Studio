@@ -678,7 +678,7 @@ NATIVE_EXTENSIONS = {
     ".fem", ".ans", ".fee", ".step", ".stp", ".stl", ".fcstd", ".mo", ".moe",
     ".gbr", ".gtl", ".gbl", ".gts", ".gbs", ".gto", ".gbo", ".gm1", ".drl",
     ".txt", ".json", ".md", ".csv", ".html", ".htm", ".pdf", ".log",
-    ".lua", ".docx", ".xlsx", ".xml",
+    ".lua", ".docx", ".xlsx", ".xml", ".zip",
 }
 
 

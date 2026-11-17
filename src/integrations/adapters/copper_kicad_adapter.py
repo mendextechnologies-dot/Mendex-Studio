@@ -78,6 +78,10 @@ class CopperKiCadAdapter:
         stitch_pitch: float = 5.0,
         zone_clearance: float = 0.5,
         pour_layers: Optional[List[str]] = None,
+        net_currents: Optional[Dict[str, float]] = None,
+        copper_weight_oz: float = 1.0,
+        delta_t_c: float = 20.0,
+        routing_plan: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Routes all unrouted nets on a KiCad PCB layout using the internal guided router.
 
@@ -98,24 +102,40 @@ class CopperKiCadAdapter:
             "unrouted_after": -1,
             "tracks": 0,
             "vias": 0,
-            "drc_errors": 0,
+            "drc_errors": None,
             "netclasses": {},
             "messages": [],
         }
 
-        # Step 0: Power Electronics Net-Class Injection
+        # Step 0: Power Electronics Net-Class Injection & IPC-2152 Trace Sizing
         try:
+            effective_power_track = power_track
+            if net_currents:
+                from mendex_core.design.trace_sizing import calculate_ipc2152_trace_width
+                max_curr = max(net_currents.values()) if net_currents else 0.0
+                if max_curr > 0:
+                    effective_power_track = max(
+                        power_track,
+                        calculate_ipc2152_trace_width(
+                            current_a=max_curr,
+                            delta_t_c=delta_t_c,
+                            copper_weight_oz=copper_weight_oz,
+                            min_width_mm=default_track,
+                        ),
+                    )
+
             pr = P.resolve(board_file)
-            p_pats = power_patterns or ["*HV*", "*DRAIN*", "*PRI*", "*SEC*", "*VOUT*", "*VIN*"]
+            p_pats = power_patterns or ["*HV*", "*DRAIN*", "*PRI*", "*SEC*", "*VOUT*", "*VIN*", "*SW*", "*PHASE*", "*COIL*"]
             nc_info = rules.set_netclasses(
                 pr,
                 default_track=default_track,
-                power_track=power_track,
+                power_track=effective_power_track,
                 extra_power=p_pats,
                 write=True,
+                while_open="force",
             )
             res_summary["netclasses"] = nc_info
-            res_summary["messages"].append(f"Netclasses configured: Default={default_track}mm, Power={power_track}mm")
+            res_summary["messages"].append(f"Netclasses configured: Default={default_track}mm, Power={effective_power_track}mm (IPC-2152 compliant)")
         except Exception as e:
             res_summary["messages"].append(f"Netclass setup notice: {e}")
 
@@ -163,11 +183,39 @@ class CopperKiCadAdapter:
                 text_err = _extract_text(pour_res)
                 res_summary["messages"].append(f"Pour notice: {text_err}")
 
-        # Step 2: Deterministic Guided Routing
-        route_res = call_tool("pcb_route_guided", {
+        # Step 2: Deterministic Guided Routing with Power Electronics Heuristics
+        plan_to_use = routing_plan
+        if plan_to_use is None:
+            try:
+                from mendex_core.design.trace_sizing import generate_power_routing_plan
+                nets_read = call_tool("pcb_read", {"project": str(board_file), "what": ["nets"]})
+                board_nets = None
+                if not nets_read.get("isError"):
+                    nets_sc = nets_read.get("structuredContent") or {}
+                    raw_nets = nets_sc.get("nets", [])
+                    board_nets = [n.get("name", "") if isinstance(n, dict) else str(n) for n in raw_nets]
+                if not board_nets:
+                    try:
+                        import re
+                        btxt = board_file.read_text(encoding="utf-8", errors="ignore")
+                        board_nets = [m for m in re.findall(r'\(net\s+(?:\d+\s+)?"([^"]+)"\)', btxt) if m]
+                    except Exception:
+                        board_nets = None
+                plan_to_use = generate_power_routing_plan(
+                    available_nets=board_nets,
+                    power_nets=power_patterns,
+                )
+            except Exception:
+                plan_to_use = None
+
+        guided_args: Dict[str, Any] = {
             "project": str(board_file),
-            "ripup": ripup
-        })
+            "ripup": ripup,
+        }
+        if plan_to_use:
+            guided_args["plan"] = plan_to_use
+
+        route_res = call_tool("pcb_route_guided", guided_args)
 
         if route_res.get("isError"):
             err_msg = _extract_text(route_res)
@@ -175,20 +223,24 @@ class CopperKiCadAdapter:
             res_summary["routing_completed"] = False
         else:
             route_data = route_res.get("structuredContent") or {}
-            unrouted = route_data.get("unrouted", 0)
+            unrouted = route_data.get("unrouted_after")
+            if unrouted is None:
+                unrouted = route_data.get("unrouted")
+            if unrouted is None:
+                unrouted = len(route_data.get("failed", [])) if "failed" in route_data else -1
             res_summary["unrouted_after"] = unrouted
             res_summary["routing_completed"] = (unrouted == 0)
 
         # Step 3: Inspect post-routing structure
-        stats_res = call_tool("pcb_read", {
-            "project": str(board_file),
-            "what": ["summary"]
-        })
-        stats_data = stats_res.get("structuredContent") or {}
-        res_summary["tracks"] = stats_data.get("tracks", 0)
-        res_summary["vias"] = stats_data.get("vias", 0)
-        if "unrouted" in stats_data:
-            res_summary["unrouted_after"] = stats_data.get("unrouted", 0)
+        try:
+            from mendex_core.design.geometry import extract_pcb_geometry
+            geom = extract_pcb_geometry(board_file)
+            res_summary["tracks"] = len(geom.get("tracks", []))
+            res_summary["vias"] = len(geom.get("vias", []))
+        except Exception:
+            route_data = route_res.get("structuredContent") or {}
+            res_summary["tracks"] = route_data.get("routed", 0)
+            res_summary["vias"] = route_data.get("vias", 0)
 
         # Step 4: Verify DRC
         drc_res = call_tool("verify", {
@@ -196,11 +248,25 @@ class CopperKiCadAdapter:
             "what": ["drc"],
             "refill": True
         })
-        drc_data = (drc_res.get("structuredContent") or {}).get("drc") or {}
-        res_summary["drc_errors"] = drc_data.get("errors", 0)
-        res_summary["drc_warnings"] = drc_data.get("warnings", 0)
+        from mendex_core.design.cad_state import drc_summary
+        check = drc_summary(drc_res)
+        res_summary["drc"] = check
+        res_summary["drc_available"] = check['available']
+        res_summary["drc_errors"] = check['errors']
+        res_summary["drc_warnings"] = check['warnings']
+
+        # Authoritative unrouted count from KiCad DRC ratsnest
+        if check.get("available") and check.get("unconnected") is not None:
+            res_summary["unrouted_after"] = check["unconnected"]
+
         res_summary["routing_completed"] = (not route_res.get("isError")) and (res_summary["unrouted_after"] == 0)
-        res_summary["success"] = res_summary["routing_completed"] and (res_summary["drc_errors"] == 0)
+        res_summary["success"] = bool(
+            res_summary["routing_completed"]
+            and check['available']
+            and check['errors'] == 0
+            and check['unconnected'] == 0
+            and (not pour_ground or res_summary['pour_completed'])
+        )
 
         return res_summary
 
@@ -421,8 +487,10 @@ class CopperKiCadAdapter:
         # Step 5: Run DRC check
         drc_res = self.run_drc(board_file)
 
+        from mendex_core.design.cad_state import drc_summary
+        check = drc_summary(drc_res)
         return {
-            "success": True,
+            "success": results['in1_gnd_poured'] and results['in2_pwr_poured'],
             "pcb_path": str(board_file),
             "in1_gnd_poured": results["in1_gnd_poured"],
             "in2_pwr_poured": results["in2_pwr_poured"],
@@ -430,7 +498,7 @@ class CopperKiCadAdapter:
             "pwr_net": target_pwr,
             "layers": ["F.Cu", "In1.Cu", "In2.Cu", "B.Cu"],
             "messages": results["messages"],
-            "drc": drc_res,
+            "drc": check,
         }
 
     def mill_isolation_slot(
@@ -484,14 +552,17 @@ class CopperKiCadAdapter:
             board_file.write_text(new_content, encoding="utf-8")
 
         # Refill copper zones so pours automatically back off from the slot boundary
-        call_tool("pcb_pour", {"project": str(board_file), "fill_only": True})
+        refill_result = call_tool("pcb_pour", {"project": str(board_file), "fill_only": True})
 
         # Run DRC verification post-milling
         drc_res = self.run_drc(board_file)
 
+        from mendex_core.design.cad_state import drc_summary
+        check = drc_summary(drc_res)
         return {
-            "success": True,
+            "success": not refill_result.get('isError') and (not check['available'] or check['errors'] == 0),
             "pcb_path": str(board_file),
+            "refill_completed": not refill_result.get('isError'),
             "slot_geometry": {
                 "start": [sx1, sy1],
                 "end": [sx2, sy2],
@@ -499,7 +570,7 @@ class CopperKiCadAdapter:
                 "length_mm": length,
                 "layer": "Edge.Cuts",
             },
-            "drc": drc_res,
+            "drc": check,
         }
 
     def apply_schematic(

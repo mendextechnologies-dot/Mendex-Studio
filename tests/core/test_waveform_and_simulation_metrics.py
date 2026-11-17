@@ -143,3 +143,20 @@ def test_emc100_electromagnet_pulse_waveform_and_metrics(desktop_service):
 
     # Verify switch voltage withstand is well below IGBT 650V rating
     assert metrics["V(coil_sw)"]["max"] < 400.0
+
+
+def test_emc100_waveform_json_serialization_no_nan(desktop_service):
+    import json
+    rev_id = "db8689f3-d4fe-4dca-a71c-3fa9788b5f95"
+    raw_rel = "simulations/electromagnet_pulse.raw"
+
+    res = desktop_service.waveform(WaveformQuery(
+        revision_id=rev_id,
+        relative_path=raw_rel,
+    ))
+
+    # Must serialize strictly to RFC 8259 JSON without any NaN or Inf
+    json_text = json.dumps(res, allow_nan=False)
+    assert len(json_text) > 1000
+    assert "NaN" not in json_text
+    assert "Infinity" not in json_text

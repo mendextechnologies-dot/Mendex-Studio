@@ -1,5 +1,21 @@
 # Architecture v0.1
 
+Power analysis update (16 November 2026): `StudioService.analyze_power_thermal`
+provides the single analytical device-comparison path for desktop, CLI and MCP.
+`power_analysis.py` owns strict sourced models, bounded loss-table interpolation,
+steady thermal balance, complete-path Foster load cycles and conditional supplied
+fatigue-model estimates. Previews are read-only; durable calculations reuse the
+existing guarded append-only engineering record service. No device ratings or
+vendor lifetime model are bundled. See `docs/POWER_THERMAL_ANALYSIS.md`.
+
+Dynamic extension: optional complete voltage grids add trilinear interpolation.
+`power_context.py` reads revision-confined BOM and explicitly linked active IR,
+resolves supplied models by exact identity, and supplies source/concurrency hashes.
+Read-only desktop previews and scoped CLI/MCP calls use the same resolver; guarded
+recording checks that context and historical views expose component staleness.
+The UI debounces applied input changes and uses existing revision refresh for
+component synchronization. It does not watch raw native files or run solvers.
+
 Local manual review update (13 November 2026): at the user's direction, desktop
 engineering review uses a supplied reviewer name and required comments, without
 profiles or passphrases. `StudioService.reviews.record_manual_decision` applies the

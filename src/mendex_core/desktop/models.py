@@ -4,12 +4,26 @@ from uuid import UUID
 from pydantic import Field, model_validator
 
 from ..models import Model
+from ..engineering_records.models import CalculationWrite
 
 PROTOCOL_VERSION = "3.1.0"
 
 
 class Empty(Model):
     pass
+
+
+class PowerAnalysisQuery(Model):
+    revision_id: UUID
+    parameters: dict
+
+
+class PowerAnalysisRecordQuery(CalculationWrite):
+    calculation: Literal["power_thermal"] = "power_thermal"
+
+
+class PowerLossCSVQuery(Model):
+    text: str = Field(min_length=1, max_length=200000)
 
 
 class ProjectQuery(Model):
@@ -88,6 +102,9 @@ class AutoRouteQuery(Model):
     stitch_pitch: float = 5.0
     zone_clearance: float = 0.5
     pour_layers: Optional[list[str]] = None
+    net_currents: Optional[dict[str, float]] = None
+    copper_weight_oz: float = 1.0
+    delta_t_c: float = 20.0
 
 
 class IsolationSlotQuery(Model):

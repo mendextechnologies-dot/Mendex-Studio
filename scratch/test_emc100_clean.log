@@ -1,0 +1,22 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\Mendex studio\scratch\test_emc100_clean.net
+Start Time: Mon Nov 16 18:46:39 2026
+Options:plotwinsize=0 numdgt=7
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+WARNING: Node nc_01 is floating.
+
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.220 seconds.
+Total iterations: 10034
+
+Files loaded:
+C:\Mendex studio\scratch\test_emc100_clean.net
+
+C:\Mendex studio\scratch\test_emc100_clean.net(17): Voltage not found.
+.meas tran v_gate_max MAX V(GATE)
+                          ^^^^^^^

@@ -1,0 +1,106 @@
+{
+  "revision_id": "6b5fd25a-e8f1-4218-9655-8bcd8789b15e",
+  "before": {
+    "segment": 0,
+    "via": 0,
+    "zone": 3,
+    "footprint": 32
+  },
+  "note": "Only isolated copy deliberately stripped of tracks/vias. Not a live design change.",
+  "route_result": {
+    "success": true,
+    "routing_completed": true,
+    "filename": "sv1000.kicad_pcb",
+    "tracks": 145,
+    "vias": 24,
+    "unrouted_after": 0,
+    "pour_completed": true,
+    "drc_errors": 0,
+    "drc_warnings": 52,
+    "messages": [
+      "Netclasses configured: Default=0.4mm, Power=1.2mm",
+      "Ground copper pour filled on ['B.Cu'] (thermal_spoke=0.5mm, thermal_gap=0.5mm, pad_conn=tht_thermal)"
+    ],
+    "netclasses": {
+      "Default": {
+        "track": 0.4,
+        "clearance": 0.2,
+        "via": [
+          0.6,
+          0.3
+        ]
+      },
+      "Power": {
+        "track": 1.2,
+        "clearance": 0.2,
+        "via": [
+          0.8,
+          0.4
+        ],
+        "patterns": [
+          "*HV*",
+          "*DRAIN*",
+          "*PRI*",
+          "*SEC*",
+          "*VOUT*",
+          "*VIN*"
+        ]
+      }
+    },
+    "receipt": {
+      "operation_id": "e358beed-bc7e-4553-8f1b-b0276f047b4c",
+      "operation_type": "auto_route_pcb",
+      "revision_id": "6b5fd25a-e8f1-4218-9655-8bcd8789b15e",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-15T09:32:59.054503+00:00",
+      "unrouted_count": 0,
+      "drc_errors": 0,
+      "idempotency_key": null
+    }
+  },
+  "seconds": 31.661,
+  "after": {
+    "segment": 145,
+    "via": 24,
+    "zone": 3,
+    "footprint": 32
+  },
+  "board_sha256": "0ad9cf02620cabad173e822d47471f96f9bd095d7db0511c9fd028894217818a",
+  "native_drc": {
+    "exit_code": 0,
+    "output_report": "C:\\Mendex studio\\docs\\audit\\20261115-cad-controls\\evidence\\route-from-zero-drc.json",
+    "stdout": "Found 16 violations\nFound 0 unconnected items\nSaved DRC Report to C:/Mendex studio/docs/audit/20261115-cad-controls/evidence/route-from-zero-drc.json\n",
+    "stderr": "",
+    "parsed": {
+      "violation_count": 16,
+      "unconnected_count": 0,
+      "parity_count": 0,
+      "total_issues": 16
+    },
+    "command": [
+      "C:\\Program Files\\KiCad\\10.0\\bin\\kicad-cli.exe",
+      "pcb",
+      "drc",
+      "--output",
+      "C:\\Mendex studio\\docs\\audit\\20261115-cad-controls\\evidence\\route-from-zero-drc.json",
+      "--format",
+      "json",
+      "C:\\Mendex studio\\docs\\audit\\20261115-cad-controls\\isolated\\products\\330ba68e-3095-4d20-a95d-d247236fe0f3\\revisions\\6b5fd25a-e8f1-4218-9655-8bcd8789b15e\\pcb\\sv1000.kicad_pcb"
+    ],
+    "diagnostic": "",
+    "structure": {
+      "symbol": 0,
+      "wire": 0,
+      "sheet": 0,
+      "footprint": 32,
+      "segment": 145,
+      "arc": 0,
+      "zone": 3,
+      "pads": 81,
+      "populated": true,
+      "reason": ""
+    },
+    "evaluation": "FAILED",
+    "passed": false
+  }
+}

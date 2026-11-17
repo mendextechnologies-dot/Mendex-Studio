@@ -1,0 +1,101 @@
+import subprocess
+from pathlib import Path
+
+asc_emc = """Version 4
+SHEET 1 1280 800
+WIRE 64 80 64 16
+WIRE 64 16 176 16
+WIRE 176 80 176 16
+WIRE 176 16 288 16
+WIRE 288 80 288 16
+WIRE 288 16 416 16
+WIRE 416 80 416 16
+WIRE 416 16 544 16
+WIRE 544 80 544 16
+WIRE 64 176 64 480
+WIRE 288 144 288 480
+WIRE 64 480 288 480
+WIRE 288 480 672 480
+WIRE 416 176 416 224
+WIRE 416 224 544 224
+WIRE 544 144 544 224
+WIRE 544 224 672 224
+WIRE 672 80 672 224
+WIRE 672 224 672 288
+WIRE 672 352 672 400
+WIRE 672 480 672 400
+FLAG 64 480 0
+FLAG 176 16 HV_DC
+FLAG 288 16 HV_BUS
+FLAG 416 224 COIL_SW
+FLAG 544 224 COIL_MID
+FLAG 672 400 SENSE
+FLAG 160 304 GATE
+FLAG 160 384 0
+WIRE 64 368 64 304
+WIRE 64 304 112 304
+WIRE 160 304 112 304
+WIRE 64 448 64 480
+SYMBOL voltage 64 64 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName V_HV
+SYMATTR Value 325
+SYMBOL res 160 64 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName R_BUS_ESR
+SYMATTR Value 0.1
+SYMBOL cap 272 80 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName C_BULK
+SYMATTR Value 940u
+SYMATTR SpiceLine IC=325
+SYMBOL ind 400 64 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName L_COIL
+SYMATTR Value 15m
+SYMBOL res 528 64 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName R_COIL_DCR
+SYMATTR Value 3.5
+SYMBOL sw 640 288 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName S_IGBT
+SYMATTR Value S_PWR
+SYMBOL res 656 384 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName R_SENSE
+SYMATTR Value 1.0
+SYMBOL voltage 64 352 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName V_GATE_SIG
+SYMATTR Value PULSE(0 15 0.5m 1u 1u 100u 10m)
+SYMBOL res 96 288 R90
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName R_GATE
+SYMATTR Value 47
+TEXT 40 540 Left 2 !.model S_PWR SW(Ron=0.08 Roff=1e6 Vt=5.0 Vh=0.5)
+TEXT 40 570 Left 2 !.model D_FAST D(Is=1e-8 Rs=0.05 N=1.2 Cjo=150p Bv=1200 Ibv=10u)
+TEXT 40 600 Left 2 !.tran 0 5m 0 1u UIC
+TEXT 40 630 Left 2 !.meas tran i_peak MAX I(L_COIL)
+TEXT 40 660 Left 2 !.meas tran v_switch_max MAX V(COIL_MID)
+"""
+
+test_asc = Path("scratch/test_emc100.asc")
+test_asc.write_text(asc_emc, encoding="utf-8")
+
+ltspice_exe = Path(r"C:\Program Files\ADI\LTspice\LTspice.exe")
+cmd = [str(ltspice_exe), "-b", "-ascii", str(test_asc.resolve())]
+res = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+print("EMC Return code:", res.returncode)
+log = test_asc.with_suffix(".log")
+if log.exists():
+    print("EMC Log:\n", log.read_text()[:500])

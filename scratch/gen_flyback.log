@@ -1,0 +1,21 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\Mendex studio\scratch\gen_flyback.net
+Start Time: Mon Nov 16 18:42:42 2026
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.331 seconds.
+Total iterations: 69665
+
+Files loaded:
+C:\Mendex studio\scratch\gen_flyback.net
+C:\Users\Sagar\AppData\Local\LTspice\lib\cmp\standard.dio
+C:\Users\Sagar\AppData\Local\LTspice\lib\cmp\standard.mos
+
+C:\Mendex studio\scratch\gen_flyback.net(29): Voltage not found.
+.meas TRAN Pri_Vds_pk MAX V(PRI_DRAIN) FROM 1.8m TO 2m
+                          ^^^^^^^^^^^^

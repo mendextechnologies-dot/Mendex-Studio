@@ -89,7 +89,7 @@ class RequirementsWrite(StageWrite):
 
 
 class CalculationWrite(StageWrite):
-    calculation: Literal["dowell", "losses", "steinmetz", "flyback", "semiconductor_thermal", "magnetic_thermal", "ipc2152_thermal"]
+    calculation: Literal["dowell", "losses", "steinmetz", "flyback", "semiconductor_thermal", "magnetic_thermal", "ipc2152_thermal", "power_thermal"]
     parameters: dict
     assumptions: list[Text] = Field(min_length=1, max_length=100)
 

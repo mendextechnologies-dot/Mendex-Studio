@@ -687,6 +687,8 @@ class MendexEngineeringController:
 
     def run_calculation(self, calc_type: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """Executes deterministic analytical calculations. Every numeric input must be supplied explicitly."""
+        if calc_type.lower().strip() == "power_thermal":
+            return self.service.analyze_power_thermal(params)
         calc = self.CALCULATION_ALIASES.get(calc_type.lower().strip())
         if calc is None:
             raise ValueError(

@@ -24,12 +24,22 @@ interface BOMPricingScheduleCardProps {
   revisionId: string;
   projectCode: string;
   projectName: string;
+  onOpenProjectFile?: (rel: string) => void;
+  onRebuildBom?: () => void;
+  isRebuildingBom?: boolean;
+  pdfFile?: string | null;
+  docxFile?: string | null;
 }
 
 export const BOMPricingScheduleCard: React.FC<BOMPricingScheduleCardProps> = ({
   revisionId,
   projectCode,
   projectName,
+  onOpenProjectFile,
+  onRebuildBom,
+  isRebuildingBom = false,
+  pdfFile,
+  docxFile,
 }) => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -242,6 +252,43 @@ export const BOMPricingScheduleCard: React.FC<BOMPricingScheduleCardProps> = ({
 
         {/* Header Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {pdfFile && onOpenProjectFile && (
+            <button
+              onClick={() => onOpenProjectFile(pdfFile)}
+              className="btn btn-primary"
+              style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px', background: '#1d4ed8', color: '#fff', border: 'none' }}
+              title="Open publication-grade vector PDF Bill of Materials"
+            >
+              <FileText size={12} />
+              <span>Open PDF BOM</span>
+            </button>
+          )}
+
+          {docxFile && onOpenProjectFile && (
+            <button
+              onClick={() => onOpenProjectFile(docxFile)}
+              className="btn btn-secondary"
+              style={{ fontSize: '11px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '5px', borderColor: '#2563eb', color: '#1e40af' }}
+              title="Open editable Word Bill of Materials"
+            >
+              <FileSpreadsheet size={12} />
+              <span>Open Word BOM</span>
+            </button>
+          )}
+
+          {onRebuildBom && (
+            <button
+              onClick={onRebuildBom}
+              disabled={isRebuildingBom}
+              className="btn btn-secondary"
+              style={{ fontSize: '11px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}
+              title="Re-run automated BOM derivation and compilation"
+            >
+              <RefreshCw size={12} className={isRebuildingBom ? 'spin' : ''} />
+              <span>{isRebuildingBom ? 'Rebuilding…' : 'Re-Generate BOM'}</span>
+            </button>
+          )}
+
           <button
             onClick={handleRefresh}
             disabled={refreshing || loading}
@@ -256,7 +303,7 @@ export const BOMPricingScheduleCard: React.FC<BOMPricingScheduleCardProps> = ({
           <button
             onClick={handleDownloadCsv}
             disabled={!pricingData}
-            className="btn btn-primary"
+            className="btn btn-secondary"
             style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
             title="Download complete procurement CSV"
           >

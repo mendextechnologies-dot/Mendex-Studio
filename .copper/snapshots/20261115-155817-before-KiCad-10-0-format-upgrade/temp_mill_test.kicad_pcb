@@ -1,0 +1,7 @@
+(kicad_pcb
+  (version 20240108)
+  (general (thickness 1.6))
+  (gr_rect (start 0.0 0.0) (end 100.0 60.0) (stroke (width 0.15) (type solid)) (layer "Edge.Cuts"))
+  (segment (start 10.0 10.0) (end 20.0 10.0) (width 0.5) (layer "F.Cu") (net 1))
+  (gr_rect (start 48.5 12.5) (end 51.5 47.5) (stroke (width 0.1) (type solid)) (fill none) (layer "Edge.Cuts"))
+)

@@ -94,8 +94,16 @@ class BaseToolAdapter:
 
         if resolved_exe:
             version = read_pe_version(resolved_exe)
-            state = ToolState.DETECTED if not self.verify_executable(resolved_exe) else ToolState.READY
-            diag = f"Executable found at {resolved_exe}"
+            has_execute_impl = type(self).execute != BaseToolAdapter.execute
+            if not self.verify_executable(resolved_exe):
+                state = ToolState.DETECTED
+                diag = f"Executable found at {resolved_exe} but usability check failed."
+            elif not has_execute_impl and self.kind == ToolKind.APPLICATION:
+                state = ToolState.DETECTED
+                diag = f"Executable discovered at {resolved_exe}. Automated execution is not implemented in this adapter."
+            else:
+                state = ToolState.READY
+                diag = f"Executable found at {resolved_exe}"
             if version:
                 diag += f" (Version: {version})"
         else:
@@ -126,8 +134,8 @@ class BaseToolAdapter:
         return self._descriptor.state in (ToolState.READY, ToolState.DETECTED)
 
     def execute(self, request: JobRequest, workdir: Path | None = None) -> JobResult:
+        now_iso = datetime.now(timezone.utc).isoformat()
         if self._descriptor.state in (ToolState.NOT_INSTALLED, ToolState.OPTIONAL_UNLICENSED):
-            now_iso = datetime.now(timezone.utc).isoformat()
             return JobResult(
                 job_id=request.job_id,
                 tool_id=self.tool_id,
@@ -138,4 +146,13 @@ class BaseToolAdapter:
                 error_message=f"Cannot execute job: {self.name} is {self._descriptor.state.value}",
                 diagnostics=[self._descriptor.diagnostic],
             )
-        raise NotImplementedError(f"Operation '{request.operation}' not implemented for {self.name}")
+        return JobResult(
+            job_id=request.job_id,
+            tool_id=self.tool_id,
+            status=JobState.FAILED,
+            start_time=now_iso,
+            end_time=now_iso,
+            exit_code=1,
+            error_message=f"Operation '{request.operation}' not implemented or qualified for {self.name}",
+            diagnostics=[f"{self.name} adapter does not provide operational execution for '{request.operation}'."],
+        )

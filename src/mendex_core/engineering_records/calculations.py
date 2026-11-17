@@ -84,8 +84,10 @@ class IPC2152ThermalInputs(Model):
 
 
 def catalog():
+    from .. import power_analysis
     from integrations.calculations import power_losses, thermal_sizing, transformer_design, winding_losses
     entries = {
+        "power_thermal": (power_analysis.AnalysisRequest, power_analysis, "analyze_power_thermal", "Bilinear loss tables; bounded electrothermal balance; complete-path Foster transient; optional sourced Miner fatigue", ["User-supplied models, no extrapolation, no vendor qualification. Independent thermal paths. Lifetime needs external cycle counts and matching fatigue conditions. Engineering status NOT_EVALUATED."]),
         "dowell": (DowellInputs, winding_losses, "calculate_dowell_ac_resistance", "Dowell 1D analytical AC/DC resistance factor", ["Copper properties are implementation constants; 1D model limits apply."]),
         "losses": (LossInputs, power_losses, "calculate_semiconductor_losses", "I_rms^2 * R_ds * duty + (E_on + E_off) * f", ["Switching energies and resistance are caller-supplied; test-condition applicability is not independently verified."]),
         "steinmetz": (SteinmetzInputs, power_losses, "calculate_core_loss_steinmetz", "Implementation: k * (f_hz/1000)^alpha * B_t^beta * 1000", ["Coefficient conventions must match this implementation; no material dataset verification is inferred."]),

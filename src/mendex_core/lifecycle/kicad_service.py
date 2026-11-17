@@ -223,6 +223,11 @@ class KiCadLifecycleService:
 
         out_dir = output_dir.resolve() if output_dir else (board.parent / "gerbers").resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
+        from ..design.cad_state import enabled_copper
+        copper = enabled_copper(board)
+        requested = layers.split(',') if layers else copper + ['F.Paste','B.Paste','F.SilkS','B.SilkS','F.Mask','B.Mask','Edge.Cuts']
+        if not set(copper).issubset(requested):
+            raise ValueError('Gerber export must include every enabled copper layer')
         cmd = [
             str(self.kicad_cli),
             "pcb",
@@ -230,7 +235,7 @@ class KiCadLifecycleService:
             "gerbers",
             "--no-protel-ext",
             "--layers",
-            layers or "F.Cu,B.Cu,F.Paste,B.Paste,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts",
+            ','.join(requested),
             "--output",
             str(out_dir),
             str(board),
@@ -271,6 +276,8 @@ class KiCadLifecycleService:
             str(board),
         ]
         subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
+        if not out_pos.exists() or out_pos.stat().st_size == 0:
+            raise RuntimeError(f"KiCad pos export produced an empty or missing output file: {out_pos}")
         return out_pos
 
     def export_ipcd356(
@@ -297,6 +304,8 @@ class KiCadLifecycleService:
             str(board),
         ]
         subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
+        if not out_d356.exists() or out_d356.stat().st_size == 0:
+            raise RuntimeError(f"KiCad ipcd356 export produced an empty or missing output file: {out_d356}")
         return out_d356
 
     def export_stats(
@@ -326,6 +335,8 @@ class KiCadLifecycleService:
             str(board),
         ]
         subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
+        if not out_stats.exists() or out_stats.stat().st_size == 0:
+            raise RuntimeError(f"KiCad stats export produced an empty or missing output file: {out_stats}")
         return out_stats
 
     def export_drill(
@@ -485,6 +496,9 @@ class KiCadLifecycleService:
         stitch_pitch: float = 5.0,
         zone_clearance: float = 0.5,
         pour_layers: Optional[List[str]] = None,
+        net_currents: Optional[Dict[str, float]] = None,
+        copper_weight_oz: float = 1.0,
+        delta_t_c: float = 20.0,
     ) -> Dict[str, Any]:
         """Routes unrouted PCB tracks and pours ground planes with customizable thermal spokes and zone clearances."""
         from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
@@ -505,6 +519,9 @@ class KiCadLifecycleService:
             stitch_pitch=stitch_pitch,
             zone_clearance=zone_clearance,
             pour_layers=pour_layers,
+            net_currents=net_currents,
+            copper_weight_oz=copper_weight_oz,
+            delta_t_c=delta_t_c,
         )
 
     def mill_isolation_slot(

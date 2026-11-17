@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="30" time="39.786" timestamp="2026-11-15T15:00:40.526188+05:30" hostname="LAPTOP-00P5DJUV"><testcase classname="tests.core.test_cad_preview_and_reports" name="test_cad_preview_extracts_pcb_and_drc_summary" time="0.520"><failure message="UnboundLocalError: cannot access local variable 'content' where it is not associated with a value">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/mx-cad-controls-20261115/test_cad_preview_extracts_pcb_0')
+
+    def test_cad_preview_extracts_pcb_and_drc_summary(tmp_path):
+        controller = MendexEngineeringController(tmp_path)
+        proj = controller.create_project("CAD Test Proj", code="CTP", auto_enroll=True)
+        studio = controller.service
+        product = studio.get_product(proj["project_id"])
+        rev = studio.get_revision(product.active_revision_id)
+        ws = studio.workspace_path(rev)
+        pcb_dir = ws / "pcb"
+        pcb_dir.mkdir(parents=True, exist_ok=True)
+    
+        # 1. Write sample .kicad_pcb
+        sample_pcb = """(kicad_pcb
+      (version 20240108)
+      (general (thickness 1.6))
+      (gr_line (start 10.0 10.0) (end 110.0 10.0) (stroke (width 0.15) (type solid)) (layer "Edge.Cuts"))
+      (gr_line (start 110.0 10.0) (end 110.0 80.0) (stroke (width 0.15) (type solid)) (layer "Edge.Cuts"))
+      (segment (start 20.0 20.0) (end 30.0 20.0) (width 0.5) (layer "F.Cu") (net 1))
+      (footprint "Package_TO_SOT_SMD:TO-252-2" (layer "F.Cu")
+        (at 50.0 40.0)
+        (property "Reference" "Q1")
+        (property "Value" "C3M0065090J")
+        (model "${KICAD10_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/TO-252-2.step" (offset (xyz 0 0 0)))
+        (pad "1" smd roundrect (at -2.3 0.0) (size 1.6 3.0))
+        (pad "2" smd roundrect (at 2.3 0.0) (size 1.6 3.0))
+      )
+    )"""
+        (pcb_dir / "board.kicad_pcb").write_text(sample_pcb, encoding="utf-8")
+    
+        # 2. Write sample drc_report.json
+        drc_payload = {
+            "date": "2026-11-14T12:00:00",
+            "violations": [
+                {"severity": "warning", "type": "lib_footprint_mismatch", "description": "Footprint warning"},
+                {"severity": "error", "type": "clearance", "description": "Track too close to pad"}
+            ],
+            "unconnected_items": []
+        }
+        (pcb_dir / "drc_report.json").write_text(json.dumps(drc_payload), encoding="utf-8")
+    
+        desktop = DesktopService(studio)
+&gt;       res = desktop.cad_preview(CADPreviewQuery(revision_id=rev.revision_id, kind="pcb"))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_cad_preview_and_reports.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;mendex_core.desktop.service.DesktopService object at 0x000002077E73B4D0&gt;
+request = CADPreviewQuery(idempotency_key=None, revision_id=UUID('3b10afa5-c6bf-4e94-82b7-ba49fa9b13aa'), kind='pcb', view='iso')
+
+    def cad_preview(self, request):
+        """Parses native KiCad PCB or Schematic files into visual vector geometry."""
+        import math
+        import re
+        revision = self.studio.get_revision(request.revision_id)
+        ws_dir = self.studio.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+    
+        kind = getattr(request, "kind", "pcb").lower()
+        if kind == "3d":
+            view_angle = (getattr(request, "view", "iso") or "iso").lower()
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"kind": "3d", "available": False, "error": "No .kicad_pcb file found in this revision"}
+    
+            pcb_path = pcb_files[0]
+            render_filename = "board_3d_render.png" if view_angle == "iso" else f"board_3d_{view_angle}.png"
+            render_png = pcb_path.parent / render_filename
+    
+            # Check alternative render names if primary does not exist
+            if not render_png.exists() or render_png.stat().st_size == 0:
+                for alt_name in [f"pcb-3d-{view_angle}.png", f"{pcb_path.stem}_3d_{view_angle}.png", f"render/pcb-3d-{view_angle}.png", "board_3d_render.png"]:
+                    alt_path = pcb_path.parent / alt_name
+                    if alt_path.exists() and alt_path.stat().st_size &gt; 0:
+                        render_png = alt_path
+                        break
+    
+            # Check outside preview cache first
+            cache_dir = self.studio.root / ".mendex" / "previews" / str(revision.revision_id)
+            cache_png = cache_dir / render_filename
+            if (not render_png.exists() or render_png.stat().st_size == 0) and cache_png.exists() and cache_png.stat().st_size &gt; 0:
+                render_png = cache_png
+    
+            # Trigger KiCad 3D Raytracer via CopperKiCadAdapter if not yet rendered
+            if not render_png.exists() or render_png.stat().st_size == 0:
+                try:
+                    from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+                    adapter = CopperKiCadAdapter()
+                    status_val = getattr(revision.lifecycle_status, "value", revision.lifecycle_status)
+                    if status_val != "draft":
+                        cache_dir.mkdir(parents=True, exist_ok=True)
+                        target_out = cache_png
+                    else:
+                        target_out = render_png
+                    rendered = adapter.render_3d(pcb_path, output_png=target_out, view=view_angle)
+                    if Path(rendered).exists() and Path(rendered).stat().st_size &gt; 0:
+                        render_png = Path(rendered)
+                except Exception:
+                    pass
+    
+            step_file = pcb_path.parent / f"{pcb_path.stem}.step"
+            step_available = step_file.exists() and step_file.stat().st_size &gt; 0
+            step_bytes = step_file.stat().st_size if step_available else 0
+            step_sha256 = _file_sha256(step_file) if step_available else None
+    
+            if render_png.exists() and render_png.stat().st_size &gt; 0:
+                import base64
+                b64_img = base64.b64encode(render_png.read_bytes()).decode("ascii")
+                view_labels = {
+                    "iso": "Isometric Perspective",
+                    "top": "Top View (Component Placement)",
+                    "bottom": "Bottom View (Solder / Ground Plane)",
+                    "iso_bottom": "Isometric Underside View",
+                }
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                return {
+                    "kind": "3d",
+                    "view": view_angle,
+                    "available": True,
+                    "filename": pcb_path.name,
+                    "render_image": f"data:image/png;base64,{b64_img}",
+                    "render_bytes": render_png.stat().st_size,
+                    "title": f"{pcb_path.stem} 3D Assembly ({view_labels.get(view_angle, view_angle.upper())})",
+                    "has_step": step_available,
+                    "step_filename": f"{pcb_path.stem}.step",
+                    "step_bytes": step_bytes,
+                    "step_sha256": step_sha256,
+                    **mech_metrics,
+                }
+            else:
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                return {
+                    "kind": "3d",
+                    "view": view_angle,
+                    "available": False,
+                    "filename": pcb_path.name,
+                    "error": f"KiCad 10 raytraced 3D render ({view_angle}) could not be generated.",
+                    **mech_metrics,
+                }
+    
+        elif kind == "pcb":
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"kind": "pcb", "available": False, "error": "No .kicad_pcb file found in this revision"}
+    
+            pcb_path = pcb_files[0]
+            from ..design.geometry import extract_pcb_geometry
+            geom = extract_pcb_geometry(pcb_path)
+            edge_cuts = geom.get("edge_cuts", [])
+            tracks = geom.get("tracks", [])
+            footprints = geom.get("footprints", [])
+            bbox = geom.get("bbox", {})
+            min_x = bbox.get("min_x", 0.0) - 8.0 if bbox.get("width", 0) &gt; 0 else 0.0
+            max_x = bbox.get("max_x", 100.0) + 8.0 if bbox.get("width", 0) &gt; 0 else 100.0
+            min_y = bbox.get("min_y", 0.0) - 8.0 if bbox.get("height", 0) &gt; 0 else 0.0
+            max_y = bbox.get("max_y", 100.0) + 8.0 if bbox.get("height", 0) &gt; 0 else 100.0
+    
+            # DRC Report Summary
+            drc_file = pcb_dir / "drc_report.json" if pcb_dir.exists() else ws_dir / "pcb" / "drc_report.json"
+            drc_summary = None
+            if drc_file.exists():
+                try:
+                    drc_data = json.loads(drc_file.read_text(encoding="utf-8"))
+                    violations = drc_data.get("violations", [])
+                    err_c = sum(1 for v in violations if v.get("severity") == "error")
+                    warn_c = sum(1 for v in violations if v.get("severity") == "warning")
+                    unconn_c = len(drc_data.get("unconnected_items", []))
+                    drc_summary = {
+                        "available": True,
+                        "errors": err_c,
+                        "warnings": warn_c,
+                        "unconnected": unconn_c,
+                        "status": "PASS" if err_c == 0 and unconn_c == 0 else "FAIL",
+                        "date": drc_data.get("date"),
+                    }
+                except Exception:
+                    pass
+    
+            # Check for existing Gerber release package
+            gerber_zip = None
+            gerber_out_dir = pcb_path.parent / "gerbers"
+            cand_zips = [
+                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / "gerbers.zip",
+            ]
+            for cz in cand_zips:
+                if cz.exists() and cz.stat().st_size &gt; 0:
+                    gerber_zip = cz
+                    break
+    
+            has_gerbers = gerber_zip is not None
+            gerber_sha256 = _file_sha256(gerber_zip) if has_gerbers else None
+            gerber_bytes = gerber_zip.stat().st_size if has_gerbers else 0
+            gerber_rel_path = (
+                str(gerber_zip.relative_to(ws_dir).as_posix())
+                if has_gerbers and gerber_zip.is_relative_to(ws_dir)
+                else (
+                    str(gerber_zip.relative_to(self.studio.root).as_posix())
+                    if has_gerbers and gerber_zip.is_relative_to(self.studio.root)
+                    else str(gerber_zip) if has_gerbers else None
+                )
+            )
+    
+            # Internal / copper plane zones &amp; 4-layer detection
+&gt;           is_4layer = '"In1.Cu"' in content and '"In2.Cu"' in content
+                                      ^^^^^^^
+E           UnboundLocalError: cannot access local variable 'content' where it is not associated with a value
+
+src\mendex_core\desktop\service.py:930: UnboundLocalError</failure></testcase><testcase classname="tests.core.test_cad_preview_and_reports" name="test_cad_preview_extracts_schematic_and_erc_summary" time="0.485" /><testcase classname="tests.core.test_cad_preview_and_reports" name="test_cad_preview_extracts_3d_render" time="0.250" /><testcase classname="tests.core.test_cad_preview_and_reports" name="test_cad_preview_multi_angle_3d_render" time="0.278" /><testcase classname="tests.core.test_cad_preview_and_reports" name="test_export_cad_step_service_and_metadata" time="1.528" /><testcase classname="tests.core.test_cad_preview_and_reports" name="test_generate_report_dispatch_and_dossier" time="3.566" /><testcase classname="tests.core.test_cad_preview_and_reports" name="test_export_gerbers_dispatch_and_zip" time="1.425" /><testcase classname="tests.core.test_cad_preview_and_reports" name="test_auto_route_heavy_copper_thermal_relief_rpc" time="1.013" /><testcase classname="tests.core.test_cad_preview_and_reports" name="test_mill_isolation_slot_dispatch_and_cad_preview" time="4.017"><failure message="UnboundLocalError: cannot access local variable 'content' where it is not associated with a value">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/mx-cad-controls-20261115/test_mill_isolation_slot_dispa0')
+
+    def test_mill_isolation_slot_dispatch_and_cad_preview(tmp_path):
+        """Verifies physical Edge.Cuts isolation air slot milling and detection by 2D CAD preview."""
+        controller = MendexEngineeringController(tmp_path)
+        proj = controller.create_project("Isolation Proj", code="ISOP", auto_enroll=True)
+        studio = controller.service
+        product = studio.get_product(proj["project_id"])
+        rev = studio.get_revision(product.active_revision_id)
+        ws = studio.workspace_path(rev)
+        pcb_dir = ws / "pcb"
+        pcb_dir.mkdir(parents=True, exist_ok=True)
+    
+        sample_pcb = """(kicad_pcb
+      (version 20240108)
+      (general (thickness 1.6))
+      (gr_rect (start 0.0 0.0) (end 100.0 60.0) (stroke (width 0.15) (type solid)) (layer "Edge.Cuts"))
+      (segment (start 10.0 10.0) (end 20.0 10.0) (width 0.5) (layer "F.Cu") (net 1))
+    )"""
+        pcb_file = pcb_dir / "board.kicad_pcb"
+        pcb_file.write_text(sample_pcb, encoding="utf-8")
+    
+        desktop = DesktopService(studio)
+    
+        # 1. Dispatch mill_isolation_slot
+        res = desktop.dispatch("mill_isolation_slot", {
+            "revision_id": str(rev.revision_id),
+            "slot_width": 3.0,
+            "slot_length": 35.0,
+            "center_x": 50.0,
+            "center_y": 30.0,
+        })
+    
+        assert res["success"] is True
+        assert res["slot_geometry"]["width_mm"] == 3.0
+        assert res["slot_geometry"]["length_mm"] == 35.0
+        assert res["slot_geometry"]["start"] == [48.5, 12.5]
+        assert res["slot_geometry"]["end"] == [51.5, 47.5]
+    
+        # Verify physical file updated
+        pcb_updated = pcb_file.read_text(encoding="utf-8")
+        assert '48.5 12.5' in pcb_updated and '51.5 47.5' in pcb_updated
+        assert '"Edge.Cuts"' in pcb_updated
+    
+        # 2. Verify CAD Preview detects the isolation slot
+&gt;       preview = desktop.cad_preview(CADPreviewQuery(revision_id=rev.revision_id, kind="pcb"))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_cad_preview_and_reports.py:394: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;mendex_core.desktop.service.DesktopService object at 0x0000020714431B50&gt;
+request = CADPreviewQuery(idempotency_key=None, revision_id=UUID('25d022fc-1d8b-408d-827d-2efcf41e6785'), kind='pcb', view='iso')
+
+    def cad_preview(self, request):
+        """Parses native KiCad PCB or Schematic files into visual vector geometry."""
+        import math
+        import re
+        revision = self.studio.get_revision(request.revision_id)
+        ws_dir = self.studio.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+    
+        kind = getattr(request, "kind", "pcb").lower()
+        if kind == "3d":
+            view_angle = (getattr(request, "view", "iso") or "iso").lower()
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"kind": "3d", "available": False, "error": "No .kicad_pcb file found in this revision"}
+    
+            pcb_path = pcb_files[0]
+            render_filename = "board_3d_render.png" if view_angle == "iso" else f"board_3d_{view_angle}.png"
+            render_png = pcb_path.parent / render_filename
+    
+            # Check alternative render names if primary does not exist
+            if not render_png.exists() or render_png.stat().st_size == 0:
+                for alt_name in [f"pcb-3d-{view_angle}.png", f"{pcb_path.stem}_3d_{view_angle}.png", f"render/pcb-3d-{view_angle}.png", "board_3d_render.png"]:
+                    alt_path = pcb_path.parent / alt_name
+                    if alt_path.exists() and alt_path.stat().st_size &gt; 0:
+                        render_png = alt_path
+                        break
+    
+            # Check outside preview cache first
+            cache_dir = self.studio.root / ".mendex" / "previews" / str(revision.revision_id)
+            cache_png = cache_dir / render_filename
+            if (not render_png.exists() or render_png.stat().st_size == 0) and cache_png.exists() and cache_png.stat().st_size &gt; 0:
+                render_png = cache_png
+    
+            # Trigger KiCad 3D Raytracer via CopperKiCadAdapter if not yet rendered
+            if not render_png.exists() or render_png.stat().st_size == 0:
+                try:
+                    from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+                    adapter = CopperKiCadAdapter()
+                    status_val = getattr(revision.lifecycle_status, "value", revision.lifecycle_status)
+                    if status_val != "draft":
+                        cache_dir.mkdir(parents=True, exist_ok=True)
+                        target_out = cache_png
+                    else:
+                        target_out = render_png
+                    rendered = adapter.render_3d(pcb_path, output_png=target_out, view=view_angle)
+                    if Path(rendered).exists() and Path(rendered).stat().st_size &gt; 0:
+                        render_png = Path(rendered)
+                except Exception:
+                    pass
+    
+            step_file = pcb_path.parent / f"{pcb_path.stem}.step"
+            step_available = step_file.exists() and step_file.stat().st_size &gt; 0
+            step_bytes = step_file.stat().st_size if step_available else 0
+            step_sha256 = _file_sha256(step_file) if step_available else None
+    
+            if render_png.exists() and render_png.stat().st_size &gt; 0:
+                import base64
+                b64_img = base64.b64encode(render_png.read_bytes()).decode("ascii")
+                view_labels = {
+                    "iso": "Isometric Perspective",
+                    "top": "Top View (Component Placement)",
+                    "bottom": "Bottom View (Solder / Ground Plane)",
+                    "iso_bottom": "Isometric Underside View",
+                }
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                return {
+                    "kind": "3d",
+                    "view": view_angle,
+                    "available": True,
+                    "filename": pcb_path.name,
+                    "render_image": f"data:image/png;base64,{b64_img}",
+                    "render_bytes": render_png.stat().st_size,
+                    "title": f"{pcb_path.stem} 3D Assembly ({view_labels.get(view_angle, view_angle.upper())})",
+                    "has_step": step_available,
+                    "step_filename": f"{pcb_path.stem}.step",
+                    "step_bytes": step_bytes,
+                    "step_sha256": step_sha256,
+                    **mech_metrics,
+                }
+            else:
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                return {
+                    "kind": "3d",
+                    "view": view_angle,
+                    "available": False,
+                    "filename": pcb_path.name,
+                    "error": f"KiCad 10 raytraced 3D render ({view_angle}) could not be generated.",
+                    **mech_metrics,
+                }
+    
+        elif kind == "pcb":
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"kind": "pcb", "available": False, "error": "No .kicad_pcb file found in this revision"}
+    
+            pcb_path = pcb_files[0]
+            from ..design.geometry import extract_pcb_geometry
+            geom = extract_pcb_geometry(pcb_path)
+            edge_cuts = geom.get("edge_cuts", [])
+            tracks = geom.get("tracks", [])
+            footprints = geom.get("footprints", [])
+            bbox = geom.get("bbox", {})
+            min_x = bbox.get("min_x", 0.0) - 8.0 if bbox.get("width", 0) &gt; 0 else 0.0
+            max_x = bbox.get("max_x", 100.0) + 8.0 if bbox.get("width", 0) &gt; 0 else 100.0
+            min_y = bbox.get("min_y", 0.0) - 8.0 if bbox.get("height", 0) &gt; 0 else 0.0
+            max_y = bbox.get("max_y", 100.0) + 8.0 if bbox.get("height", 0) &gt; 0 else 100.0
+    
+            # DRC Report Summary
+            drc_file = pcb_dir / "drc_report.json" if pcb_dir.exists() else ws_dir / "pcb" / "drc_report.json"
+            drc_summary = None
+            if drc_file.exists():
+                try:
+                    drc_data = json.loads(drc_file.read_text(encoding="utf-8"))
+                    violations = drc_data.get("violations", [])
+                    err_c = sum(1 for v in violations if v.get("severity") == "error")
+                    warn_c = sum(1 for v in violations if v.get("severity") == "warning")
+                    unconn_c = len(drc_data.get("unconnected_items", []))
+                    drc_summary = {
+                        "available": True,
+                        "errors": err_c,
+                        "warnings": warn_c,
+                        "unconnected": unconn_c,
+                        "status": "PASS" if err_c == 0 and unconn_c == 0 else "FAIL",
+                        "date": drc_data.get("date"),
+                    }
+                except Exception:
+                    pass
+    
+            # Check for existing Gerber release package
+            gerber_zip = None
+            gerber_out_dir = pcb_path.parent / "gerbers"
+            cand_zips = [
+                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / "gerbers.zip",
+            ]
+            for cz in cand_zips:
+                if cz.exists() and cz.stat().st_size &gt; 0:
+                    gerber_zip = cz
+                    break
+    
+            has_gerbers = gerber_zip is not None
+            gerber_sha256 = _file_sha256(gerber_zip) if has_gerbers else None
+            gerber_bytes = gerber_zip.stat().st_size if has_gerbers else 0
+            gerber_rel_path = (
+                str(gerber_zip.relative_to(ws_dir).as_posix())
+                if has_gerbers and gerber_zip.is_relative_to(ws_dir)
+                else (
+                    str(gerber_zip.relative_to(self.studio.root).as_posix())
+                    if has_gerbers and gerber_zip.is_relative_to(self.studio.root)
+                    else str(gerber_zip) if has_gerbers else None
+                )
+            )
+    
+            # Internal / copper plane zones &amp; 4-layer detection
+&gt;           is_4layer = '"In1.Cu"' in content and '"In2.Cu"' in content
+                                      ^^^^^^^
+E           UnboundLocalError: cannot access local variable 'content' where it is not associated with a value
+
+src\mendex_core\desktop\service.py:930: UnboundLocalError</failure></testcase><testcase classname="tests.core.test_cad_preview_and_reports" name="test_setup_four_layer_power_planes_dispatch_and_cad_preview" time="16.887"><failure message="UnboundLocalError: cannot access local variable 'content' where it is not associated with a value">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/mx-cad-controls-20261115/test_setup_four_layer_power_pl0')
+
+    def test_setup_four_layer_power_planes_dispatch_and_cad_preview(tmp_path):
+        """Verifies IPC-2152 compliant 4-layer internal copper plane setup (In1.Cu GND + In2.Cu VIN) and CAD preview detection."""
+        controller = MendexEngineeringController(tmp_path)
+        proj = controller.create_project("FourLayer Proj", code="FLAY", auto_enroll=True)
+        studio = controller.service
+        product = studio.get_product(proj["project_id"])
+        rev = studio.get_revision(product.active_revision_id)
+        ws = studio.workspace_path(rev)
+        pcb_dir = ws / "pcb"
+        pcb_dir.mkdir(parents=True, exist_ok=True)
+    
+        # Standard 2-layer board with PRI_GND and VIN nets
+        sample_pcb = """(kicad_pcb
+      (version 20240108)
+      (general (thickness 1.6))
+      (layers
+        (0 "F.Cu" signal)
+        (31 "B.Cu" signal)
+        (25 "Edge.Cuts" user)
+      )
+      (net 0 "")
+      (net 1 "PRI_GND")
+      (net 2 "VIN")
+      (gr_rect (start 0.0 0.0) (end 100.0 60.0) (stroke (width 0.15) (type solid)) (layer "Edge.Cuts"))
+      (footprint "Resistor_SMD:R_0805_2012Metric" (layer "F.Cu")
+        (at 20 20)
+        (property "Reference" "R1" (at 0 -1.5 0) (layer "F.SilkS"))
+        (property "Value" "10k" (at 0 1.5 0) (layer "F.Fab"))
+        (pad "1" smd roundrect (at -0.95 0) (size 1 1.3) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25) (net 1 "PRI_GND"))
+        (pad "2" smd roundrect (at 0.95 0) (size 1 1.3) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25) (net 2 "VIN"))
+      )
+      (segment (start 10.0 10.0) (end 20.0 10.0) (width 0.5) (layer "F.Cu") (net 1))
+    )"""
+        pcb_file = pcb_dir / "board.kicad_pcb"
+        pcb_file.write_text(sample_pcb, encoding="utf-8")
+    
+        desktop = DesktopService(studio)
+    
+        # 1. Dispatch setup_4layer_planes
+        res = desktop.dispatch("setup_4layer_planes", {
+            "revision_id": str(rev.revision_id),
+            "gnd_net": "PRI_GND",
+            "pwr_net": "VIN",
+            "zone_clearance": 0.5,
+            "thermal_spoke": 0.6,
+            "pad_connection": "tht_thermal",
+        })
+    
+        assert res["success"] is True
+        assert res["layers"] == ["F.Cu", "In1.Cu", "In2.Cu", "B.Cu"]
+        assert res["in1_gnd_poured"] is True
+        assert res["in2_pwr_poured"] is True
+        assert res["gnd_net"] == "PRI_GND"
+        assert res["pwr_net"] == "VIN"
+    
+        # 2. Verify physical .kicad_pcb file updated with In1.Cu and In2.Cu
+        pcb_updated = pcb_file.read_text(encoding="utf-8")
+        assert '"In1.Cu"' in pcb_updated
+        assert '"In2.Cu"' in pcb_updated
+    
+        # 3. Verify CAD Preview detects 4-layer stackup and zones
+&gt;       preview = desktop.cad_preview(CADPreviewQuery(revision_id=rev.revision_id, kind="pcb"))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_cad_preview_and_reports.py:466: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;mendex_core.desktop.service.DesktopService object at 0x00000207144A1C50&gt;
+request = CADPreviewQuery(idempotency_key=None, revision_id=UUID('380741f3-042c-4ee4-9a44-e5dd29d8ff9c'), kind='pcb', view='iso')
+
+    def cad_preview(self, request):
+        """Parses native KiCad PCB or Schematic files into visual vector geometry."""
+        import math
+        import re
+        revision = self.studio.get_revision(request.revision_id)
+        ws_dir = self.studio.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+    
+        kind = getattr(request, "kind", "pcb").lower()
+        if kind == "3d":
+            view_angle = (getattr(request, "view", "iso") or "iso").lower()
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"kind": "3d", "available": False, "error": "No .kicad_pcb file found in this revision"}
+    
+            pcb_path = pcb_files[0]
+            render_filename = "board_3d_render.png" if view_angle == "iso" else f"board_3d_{view_angle}.png"
+            render_png = pcb_path.parent / render_filename
+    
+            # Check alternative render names if primary does not exist
+            if not render_png.exists() or render_png.stat().st_size == 0:
+                for alt_name in [f"pcb-3d-{view_angle}.png", f"{pcb_path.stem}_3d_{view_angle}.png", f"render/pcb-3d-{view_angle}.png", "board_3d_render.png"]:
+                    alt_path = pcb_path.parent / alt_name
+                    if alt_path.exists() and alt_path.stat().st_size &gt; 0:
+                        render_png = alt_path
+                        break
+    
+            # Check outside preview cache first
+            cache_dir = self.studio.root / ".mendex" / "previews" / str(revision.revision_id)
+            cache_png = cache_dir / render_filename
+            if (not render_png.exists() or render_png.stat().st_size == 0) and cache_png.exists() and cache_png.stat().st_size &gt; 0:
+                render_png = cache_png
+    
+            # Trigger KiCad 3D Raytracer via CopperKiCadAdapter if not yet rendered
+            if not render_png.exists() or render_png.stat().st_size == 0:
+                try:
+                    from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+                    adapter = CopperKiCadAdapter()
+                    status_val = getattr(revision.lifecycle_status, "value", revision.lifecycle_status)
+                    if status_val != "draft":
+                        cache_dir.mkdir(parents=True, exist_ok=True)
+                        target_out = cache_png
+                    else:
+                        target_out = render_png
+                    rendered = adapter.render_3d(pcb_path, output_png=target_out, view=view_angle)
+                    if Path(rendered).exists() and Path(rendered).stat().st_size &gt; 0:
+                        render_png = Path(rendered)
+                except Exception:
+                    pass
+    
+            step_file = pcb_path.parent / f"{pcb_path.stem}.step"
+            step_available = step_file.exists() and step_file.stat().st_size &gt; 0
+            step_bytes = step_file.stat().st_size if step_available else 0
+            step_sha256 = _file_sha256(step_file) if step_available else None
+    
+            if render_png.exists() and render_png.stat().st_size &gt; 0:
+                import base64
+                b64_img = base64.b64encode(render_png.read_bytes()).decode("ascii")
+                view_labels = {
+                    "iso": "Isometric Perspective",
+                    "top": "Top View (Component Placement)",
+                    "bottom": "Bottom View (Solder / Ground Plane)",
+                    "iso_bottom": "Isometric Underside View",
+                }
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                return {
+                    "kind": "3d",
+                    "view": view_angle,
+                    "available": True,
+                    "filename": pcb_path.name,
+                    "render_image": f"data:image/png;base64,{b64_img}",
+                    "render_bytes": render_png.stat().st_size,
+                    "title": f"{pcb_path.stem} 3D Assembly ({view_labels.get(view_angle, view_angle.upper())})",
+                    "has_step": step_available,
+                    "step_filename": f"{pcb_path.stem}.step",
+                    "step_bytes": step_bytes,
+                    "step_sha256": step_sha256,
+                    **mech_metrics,
+                }
+            else:
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                return {
+                    "kind": "3d",
+                    "view": view_angle,
+                    "available": False,
+                    "filename": pcb_path.name,
+                    "error": f"KiCad 10 raytraced 3D render ({view_angle}) could not be generated.",
+                    **mech_metrics,
+                }
+    
+        elif kind == "pcb":
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"kind": "pcb", "available": False, "error": "No .kicad_pcb file found in this revision"}
+    
+            pcb_path = pcb_files[0]
+            from ..design.geometry import extract_pcb_geometry
+            geom = extract_pcb_geometry(pcb_path)
+            edge_cuts = geom.get("edge_cuts", [])
+            tracks = geom.get("tracks", [])
+            footprints = geom.get("footprints", [])
+            bbox = geom.get("bbox", {})
+            min_x = bbox.get("min_x", 0.0) - 8.0 if bbox.get("width", 0) &gt; 0 else 0.0
+            max_x = bbox.get("max_x", 100.0) + 8.0 if bbox.get("width", 0) &gt; 0 else 100.0
+            min_y = bbox.get("min_y", 0.0) - 8.0 if bbox.get("height", 0) &gt; 0 else 0.0
+            max_y = bbox.get("max_y", 100.0) + 8.0 if bbox.get("height", 0) &gt; 0 else 100.0
+    
+            # DRC Report Summary
+            drc_file = pcb_dir / "drc_report.json" if pcb_dir.exists() else ws_dir / "pcb" / "drc_report.json"
+            drc_summary = None
+            if drc_file.exists():
+                try:
+                    drc_data = json.loads(drc_file.read_text(encoding="utf-8"))
+                    violations = drc_data.get("violations", [])
+                    err_c = sum(1 for v in violations if v.get("severity") == "error")
+                    warn_c = sum(1 for v in violations if v.get("severity") == "warning")
+                    unconn_c = len(drc_data.get("unconnected_items", []))
+                    drc_summary = {
+                        "available": True,
+                        "errors": err_c,
+                        "warnings": warn_c,
+                        "unconnected": unconn_c,
+                        "status": "PASS" if err_c == 0 and unconn_c == 0 else "FAIL",
+                        "date": drc_data.get("date"),
+                    }
+                except Exception:
+                    pass
+    
+            # Check for existing Gerber release package
+            gerber_zip = None
+            gerber_out_dir = pcb_path.parent / "gerbers"
+            cand_zips = [
+                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / "gerbers.zip",
+            ]
+            for cz in cand_zips:
+                if cz.exists() and cz.stat().st_size &gt; 0:
+                    gerber_zip = cz
+                    break
+    
+            has_gerbers = gerber_zip is not None
+            gerber_sha256 = _file_sha256(gerber_zip) if has_gerbers else None
+            gerber_bytes = gerber_zip.stat().st_size if has_gerbers else 0
+            gerber_rel_path = (
+                str(gerber_zip.relative_to(ws_dir).as_posix())
+                if has_gerbers and gerber_zip.is_relative_to(ws_dir)
+                else (
+                    str(gerber_zip.relative_to(self.studio.root).as_posix())
+                    if has_gerbers and gerber_zip.is_relative_to(self.studio.root)
+                    else str(gerber_zip) if has_gerbers else None
+                )
+            )
+    
+            # Internal / copper plane zones &amp; 4-layer detection
+&gt;           is_4layer = '"In1.Cu"' in content and '"In2.Cu"' in content
+                                      ^^^^^^^
+E           UnboundLocalError: cannot access local variable 'content' where it is not associated with a value
+
+src\mendex_core\desktop\service.py:930: UnboundLocalError</failure></testcase><testcase classname="tests.core.test_artifact_ingestion_and_3d_preview" name="test_export_gerbers_ingests_artifact_with_sha256" time="1.078" /><testcase classname="tests.core.test_artifact_ingestion_and_3d_preview" name="test_export_cad_step_ingests_step_solid_artifact" time="0.663" /><testcase classname="tests.core.test_artifact_ingestion_and_3d_preview" name="test_cad_preview_3d_includes_step_sha256" time="0.309" /><testcase classname="tests.core.test_artifact_ingestion_and_3d_preview" name="test_artifact_ingestion_idempotency" time="2.191" /><testcase classname="tests.core.test_artifact_ingestion_and_3d_preview" name="test_kicad_service_export_fab_pack" time="0.021" /><testcase classname="tests.core.test_artifact_ingestion_and_3d_preview" name="test_download_gerbers_and_pcb_preview_detection" time="0.256"><failure message="UnboundLocalError: cannot access local variable 'content' where it is not associated with a value">tmp_path = WindowsPath('C:/Users/Sagar/AppData/Local/Temp/mx-cad-controls-20261115/test_download_gerbers_and_pcb_0')
+
+    def test_download_gerbers_and_pcb_preview_detection(tmp_path):
+        """Verifies download_gerbers RPC returns valid base64 data URI and PCB preview detects Gerber package."""
+        import base64
+        controller, studio, product, core_rev, design, pcb_dir = _create_test_environment(tmp_path)
+    
+        pcb_path = pcb_dir / "board.kicad_pcb"
+        pcb_path.write_text("(kicad_pcb (segment (start 0 0) (end 10 10) (width 0.4) (layer F.Cu) (net 1)))", encoding="utf-8")
+    
+        def fake_export_gerbers(board, **kwargs):
+            out_dir = board.parent / "gerbers"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            (out_dir / "board-F_Cu.gbr").write_bytes(b"G04 Copper Top*")
+            return out_dir
+    
+        def fake_export_drill(board, **kwargs):
+            out_dir = board.parent / "gerbers"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            (out_dir / "board.drl").write_bytes(b"M48 Drill*")
+            return out_dir
+    
+        desktop = DesktopService(studio)
+    
+        # 1. Initially no gerbers exist
+&gt;       preview_before = desktop.cad_preview(CADPreviewQuery(revision_id=core_rev.revision_id, kind="pcb"))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\core\test_artifact_ingestion_and_3d_preview.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;mendex_core.desktop.service.DesktopService object at 0x0000020714402000&gt;
+request = CADPreviewQuery(idempotency_key=None, revision_id=UUID('3d327f3f-87d9-45ec-8f6a-afbf61ce2fe7'), kind='pcb', view='iso')
+
+    def cad_preview(self, request):
+        """Parses native KiCad PCB or Schematic files into visual vector geometry."""
+        import math
+        import re
+        revision = self.studio.get_revision(request.revision_id)
+        ws_dir = self.studio.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+    
+        kind = getattr(request, "kind", "pcb").lower()
+        if kind == "3d":
+            view_angle = (getattr(request, "view", "iso") or "iso").lower()
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"kind": "3d", "available": False, "error": "No .kicad_pcb file found in this revision"}
+    
+            pcb_path = pcb_files[0]
+            render_filename = "board_3d_render.png" if view_angle == "iso" else f"board_3d_{view_angle}.png"
+            render_png = pcb_path.parent / render_filename
+    
+            # Check alternative render names if primary does not exist
+            if not render_png.exists() or render_png.stat().st_size == 0:
+                for alt_name in [f"pcb-3d-{view_angle}.png", f"{pcb_path.stem}_3d_{view_angle}.png", f"render/pcb-3d-{view_angle}.png", "board_3d_render.png"]:
+                    alt_path = pcb_path.parent / alt_name
+                    if alt_path.exists() and alt_path.stat().st_size &gt; 0:
+                        render_png = alt_path
+                        break
+    
+            # Check outside preview cache first
+            cache_dir = self.studio.root / ".mendex" / "previews" / str(revision.revision_id)
+            cache_png = cache_dir / render_filename
+            if (not render_png.exists() or render_png.stat().st_size == 0) and cache_png.exists() and cache_png.stat().st_size &gt; 0:
+                render_png = cache_png
+    
+            # Trigger KiCad 3D Raytracer via CopperKiCadAdapter if not yet rendered
+            if not render_png.exists() or render_png.stat().st_size == 0:
+                try:
+                    from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
+                    adapter = CopperKiCadAdapter()
+                    status_val = getattr(revision.lifecycle_status, "value", revision.lifecycle_status)
+                    if status_val != "draft":
+                        cache_dir.mkdir(parents=True, exist_ok=True)
+                        target_out = cache_png
+                    else:
+                        target_out = render_png
+                    rendered = adapter.render_3d(pcb_path, output_png=target_out, view=view_angle)
+                    if Path(rendered).exists() and Path(rendered).stat().st_size &gt; 0:
+                        render_png = Path(rendered)
+                except Exception:
+                    pass
+    
+            step_file = pcb_path.parent / f"{pcb_path.stem}.step"
+            step_available = step_file.exists() and step_file.stat().st_size &gt; 0
+            step_bytes = step_file.stat().st_size if step_available else 0
+            step_sha256 = _file_sha256(step_file) if step_available else None
+    
+            if render_png.exists() and render_png.stat().st_size &gt; 0:
+                import base64
+                b64_img = base64.b64encode(render_png.read_bytes()).decode("ascii")
+                view_labels = {
+                    "iso": "Isometric Perspective",
+                    "top": "Top View (Component Placement)",
+                    "bottom": "Bottom View (Solder / Ground Plane)",
+                    "iso_bottom": "Isometric Underside View",
+                }
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                return {
+                    "kind": "3d",
+                    "view": view_angle,
+                    "available": True,
+                    "filename": pcb_path.name,
+                    "render_image": f"data:image/png;base64,{b64_img}",
+                    "render_bytes": render_png.stat().st_size,
+                    "title": f"{pcb_path.stem} 3D Assembly ({view_labels.get(view_angle, view_angle.upper())})",
+                    "has_step": step_available,
+                    "step_filename": f"{pcb_path.stem}.step",
+                    "step_bytes": step_bytes,
+                    "step_sha256": step_sha256,
+                    **mech_metrics,
+                }
+            else:
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                return {
+                    "kind": "3d",
+                    "view": view_angle,
+                    "available": False,
+                    "filename": pcb_path.name,
+                    "error": f"KiCad 10 raytraced 3D render ({view_angle}) could not be generated.",
+                    **mech_metrics,
+                }
+    
+        elif kind == "pcb":
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"kind": "pcb", "available": False, "error": "No .kicad_pcb file found in this revision"}
+    
+            pcb_path = pcb_files[0]
+            from ..design.geometry import extract_pcb_geometry
+            geom = extract_pcb_geometry(pcb_path)
+            edge_cuts = geom.get("edge_cuts", [])
+            tracks = geom.get("tracks", [])
+            footprints = geom.get("footprints", [])
+            bbox = geom.get("bbox", {})
+            min_x = bbox.get("min_x", 0.0) - 8.0 if bbox.get("width", 0) &gt; 0 else 0.0
+            max_x = bbox.get("max_x", 100.0) + 8.0 if bbox.get("width", 0) &gt; 0 else 100.0
+            min_y = bbox.get("min_y", 0.0) - 8.0 if bbox.get("height", 0) &gt; 0 else 0.0
+            max_y = bbox.get("max_y", 100.0) + 8.0 if bbox.get("height", 0) &gt; 0 else 100.0
+    
+            # DRC Report Summary
+            drc_file = pcb_dir / "drc_report.json" if pcb_dir.exists() else ws_dir / "pcb" / "drc_report.json"
+            drc_summary = None
+            if drc_file.exists():
+                try:
+                    drc_data = json.loads(drc_file.read_text(encoding="utf-8"))
+                    violations = drc_data.get("violations", [])
+                    err_c = sum(1 for v in violations if v.get("severity") == "error")
+                    warn_c = sum(1 for v in violations if v.get("severity") == "warning")
+                    unconn_c = len(drc_data.get("unconnected_items", []))
+                    drc_summary = {
+                        "available": True,
+                        "errors": err_c,
+                        "warnings": warn_c,
+                        "unconnected": unconn_c,
+                        "status": "PASS" if err_c == 0 and unconn_c == 0 else "FAIL",
+                        "date": drc_data.get("date"),
+                    }
+                except Exception:
+                    pass
+    
+            # Check for existing Gerber release package
+            gerber_zip = None
+            gerber_out_dir = pcb_path.parent / "gerbers"
+            cand_zips = [
+                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
+                pcb_path.parent / "gerbers.zip",
+            ]
+            for cz in cand_zips:
+                if cz.exists() and cz.stat().st_size &gt; 0:
+                    gerber_zip = cz
+                    break
+    
+            has_gerbers = gerber_zip is not None
+            gerber_sha256 = _file_sha256(gerber_zip) if has_gerbers else None
+            gerber_bytes = gerber_zip.stat().st_size if has_gerbers else 0
+            gerber_rel_path = (
+                str(gerber_zip.relative_to(ws_dir).as_posix())
+                if has_gerbers and gerber_zip.is_relative_to(ws_dir)
+                else (
+                    str(gerber_zip.relative_to(self.studio.root).as_posix())
+                    if has_gerbers and gerber_zip.is_relative_to(self.studio.root)
+                    else str(gerber_zip) if has_gerbers else None
+                )
+            )
+    
+            # Internal / copper plane zones &amp; 4-layer detection
+&gt;           is_4layer = '"In1.Cu"' in content and '"In2.Cu"' in content
+                                      ^^^^^^^
+E           UnboundLocalError: cannot access local variable 'content' where it is not associated with a value
+
+src\mendex_core\desktop\service.py:930: UnboundLocalError</failure></testcase><testcase classname="tests.core.test_artifact_ingestion_and_3d_preview" name="test_export_fab_pack_auto_ingests_into_design" time="0.217" /><testcase classname="tests.core.test_gerber_inspector_rpc" name="test_inspect_gerber_layers_rpc" time="0.377" /><testcase classname="tests.core.test_gerber_inspector_rpc" name="test_parse_excellon_file_direct" time="0.002" /><testcase classname="tests.core.test_render_3d_rpc" name="test_render_3d_pcb_rpc_success" time="0.299" /><testcase classname="tests.core.test_render_3d_rpc" name="test_render_3d_pcb_all_angles" time="0.254" /><testcase classname="tests.core.test_render_3d_rpc" name="test_render_3d_pcb_no_pcb_file" time="0.253" /><testcase classname="tests.core.test_render_3d_rpc" name="test_render_3d_pcb_with_step_metadata" time="0.269" /><testcase classname="tests.core.test_native_launch_preservation" name="test_gui_launch_preserves_recovery_and_lock_files[freecad]" time="0.031" /><testcase classname="tests.core.test_native_launch_preservation" name="test_gui_launch_preserves_recovery_and_lock_files[eeschema]" time="0.007" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_frozen_revision_rejects_all_mutators_before_adapter_execution" time="0.297" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_cad_preview_on_archived_revision_writes_to_cache_outside_workspace" time="0.273" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_design_revision_isolation_strictness" time="0.407" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_gerber_export_gate_blocks_failing_and_unrouted_boards" time="0.277" /><testcase classname="tests.core.test_milestone1_revision_integrity_and_export_gates" name="test_routing_failures_propagate_truthfully_to_desktop" time="1.384" /></testsuite></testsuites>

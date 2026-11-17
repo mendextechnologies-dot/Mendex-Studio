@@ -32,6 +32,11 @@ def main(argv=None):
     parser.add_argument("--json", action="store_true", help="Ensure JSON output")
 
     commands = parser.add_subparsers(dest="command", required=True)
+    power = commands.add_parser("power-analysis", help="Sourced loss/thermal device comparison, sweeps and mission profiles")
+    power.add_argument("request", type=Path, help="AnalysisRequest JSON; SI units and model sources required")
+    power.add_argument("--revision", type=UUID, default=None)
+    power_context = commands.add_parser("power-components", help="Read current revision part identities and power model context")
+    power_context.add_argument("revision", type=UUID)
 
     # -------------------------------------------------------------------------
     # LEGACY COMMANDS (PRESERVED FOR BACKWARD COMPATIBILITY)
@@ -376,6 +381,13 @@ def _parse_json_or_file(text: str) -> Dict[str, Any]:
 def execute(args):
     root = getattr(args, "doctor_root", None) or args.root or default_data_root()
     service = StudioService(root)
+    if args.command == "power-components":
+        print(json.dumps(service.power_analysis_context(args.revision), indent=2, allow_nan=False))
+        return 0
+    if args.command == "power-analysis":
+        parameters = json.loads(args.request.read_text(encoding="utf-8-sig"))
+        print(json.dumps(service.analyze_power_thermal(parameters, args.revision), indent=2, allow_nan=False))
+        return 0
     if args.command == "review":
         from .engineering_reviews.api import dispatch
         arguments = json.loads(args.request.read_text(encoding="utf-8-sig")) if args.request else {}

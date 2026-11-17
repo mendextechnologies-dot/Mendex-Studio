@@ -1,0 +1,35 @@
+{
+  "broken_report_links": [],
+  "browser_ui_status": "NOT_VERIFIED",
+  "application_fixes_applied_by_audit": false,
+  "artifacts": {
+    "CONTROL_CHECK_REPORT.md": {
+      "sha256": "87a5e1ba364b1fc75573518b56fa63434d52607b3ea60a176e27a3875325abbb",
+      "bytes": 13305
+    },
+    "evidence\\results.json": {
+      "sha256": "09c1a2084de171ec130481c8e6db8dfa17618e57ad6be029dcb4679aeda0da1e",
+      "bytes": 281556
+    },
+    "evidence\\diagnostics.json": {
+      "sha256": "16fc6edcaef0b62fc0253b895c6e40deca99e617d52bb244eb90a1e8d4911837",
+      "bytes": 4916
+    },
+    "evidence\\route-from-zero.json": {
+      "sha256": "fd000d6a1b12cdafdfea6c5c854f34c27c379f394a5b1138ff602fbe95088799",
+      "bytes": 2987
+    },
+    "evidence\\pytest.xml": {
+      "sha256": "ee7b0dbcb880f8520ca1a180a1ce4c21f90fecd284af62ed41c4b1bcc452a2ed",
+      "bytes": 50228
+    },
+    "evidence\\native-render.png": {
+      "sha256": "135b612ec5b734e45afd603248edf6b6d5e2d1c14c5490bc2973ad05d809e3b2",
+      "bytes": 73824
+    },
+    "evidence\\actual-routed-tracks.svg": {
+      "sha256": "6f3894ca773351b136c65cc35946388294b058adf1e27b753ad17f077c80d2ff",
+      "bytes": 20550
+    }
+  }
+}

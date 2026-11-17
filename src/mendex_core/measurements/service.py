@@ -104,6 +104,14 @@ class MeasurementService:
         revision_id: Optional[UUID] = None,
     ) -> MeasurementRecord:
         """Records an authentic physical laboratory test measurement with verification comparison."""
+        if not test_name or not str(test_name).strip():
+            raise ValueError("test_name cannot be empty.")
+        if not measured_parameter or not str(measured_parameter).strip():
+            raise ValueError("measured_parameter cannot be empty.")
+        if not math.isfinite(measured_value):
+            raise ValueError(f"measured_value must be a finite number (got {measured_value}).")
+        if not operator or not str(operator).strip():
+            raise ValueError("operator must be identified for laboratory measurement traceability.")
         error_pct = None
         if simulated_value is not None and simulated_value != 0:
             error_pct = abs(measured_value - simulated_value) / abs(simulated_value) * 100.0

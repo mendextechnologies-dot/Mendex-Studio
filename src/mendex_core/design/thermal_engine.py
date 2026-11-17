@@ -246,10 +246,13 @@ class PCBThermalEngine:
 
         max_spot = hotspots[0] if hotspots else None
         max_temp_c = max_spot["t_junction_c"] if max_spot else ambient_c
-        max_comp = max_spot["ref"] if max_spot else "N/A"
-        min_margin = min([h["thermal_margin_c"] for h in hotspots]) if hotspots else 50.0
+        max_comp = max_spot["ref"] if max_spot else None
+        min_margin = min([h["thermal_margin_c"] for h in hotspots]) if hotspots else None
 
-        overall_status = "PASS" if min_margin >= 15.0 else "WARNING"
+        if not hotspots:
+            overall_status = "NOT_EVALUATED"
+        else:
+            overall_status = "PASS" if (min_margin is not None and min_margin >= 15.0) else "WARNING"
 
         # Isothermal gradient rings
         isotherms = [
@@ -258,6 +261,12 @@ class PCBThermalEngine:
             {"temp_c": 40.0, "color": "#84cc16", "label": "Elevated (40°C)"},
             {"temp_c": 30.0, "color": "#06b6d4", "label": "Cool (<35°C)"},
         ]
+
+        compliance_note = (
+            "No active heat dissipating components detected on board; thermal compliance not evaluated."
+            if not hotspots
+            else "Analytical 2D spreading approximation only. Physical thermocouple / IR camera measurements required for standards compliance under operating load."
+        )
 
         result = {
             "success": True,
@@ -289,9 +298,11 @@ class PCBThermalEngine:
                 "delta_t_reduction_c": round(t_j_q1_bare - t_j_q1_chassis, 1),
             } if (chassis_cooling or q1_fp) else None,
             "standards_compliance": {
-                "ipc_9592b_derated": True,
-                "navmat_derating": True,
+                "ipc_9592b_derated": False,
+                "navmat_derating": False,
+                "evaluation_status": "NOT_EVALUATED",
                 "max_allowable_junction_c": derated_semi_limit_c,
+                "note": compliance_note,
             },
         }
 

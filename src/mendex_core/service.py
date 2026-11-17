@@ -24,6 +24,32 @@ class StudioError(Exception):
 
 
 class StudioService:
+    def analyze_power_thermal(self, parameters, revision_id=None):
+        """Read-only analytical comparison; persistence uses guarded calculation records."""
+        from .power_analysis import AnalysisRequest, analyze_power_thermal
+        revision = self.get_revision(revision_id) if revision_id is not None else None
+        request = AnalysisRequest.model_validate(parameters)
+        context = None
+        errors = None
+        if revision is not None and any(d.component_reference for d in request.devices):
+            from .power_context import resolve_bound_models
+            context = self.power_analysis_context(revision.revision_id)
+            parameters, errors = resolve_bound_models(request, context)
+        result = analyze_power_thermal(parameters, binding_errors=errors)
+        if revision is not None:
+            result["revision_id"] = str(revision.revision_id)
+            result["specification_sha256"] = specification_hash(revision.specification)
+            result["note"] = "Explicit analysis inputs; revision specifications are not silently substituted."
+        if context is not None:
+            if self.power_analysis_context(revision.revision_id)["component_hash"] != context["component_hash"]:
+                raise StudioError("CONFLICT", "Components changed while calculating; retry with current component context")
+            result["component_context"] = context
+        return result
+
+    def power_analysis_context(self, revision_id):
+        from .power_context import component_context
+        return component_context(self, revision_id)
+
     def __init__(self, root: Path, registry=None):
         self._active_transaction = ContextVar("mendex_transaction", default=None)
         self.registry = registry or AdapterRegistry.defaults()
@@ -869,6 +895,8 @@ class StudioService:
     def run_wcca_analysis(self, revision_id, num_iterations=50, distribution="gaussian", temp_min_c=-40.0, temp_max_c=85.0):
         from .design.wcca_engine import WCCAEngine
         revision = self.get_revision(revision_id)
+        if getattr(revision.lifecycle_status, "value", revision.lifecycle_status) != "draft":
+            raise StudioError("IMMUTABLE", "Cannot execute generative mutations on a frozen or archived baseline")
         spec = revision.specification.model_dump()
         spec["product_id"] = str(revision.product_id)
         engine = WCCAEngine(self.root)
@@ -887,8 +915,12 @@ class StudioService:
         report = engine.get_analysis(revision_id)
         if report:
             return report
-        # If not yet generated, auto-run with nominal parameters
-        return self.run_wcca_analysis(revision_id)
+        return {
+            "status": "NOT_EVALUATED",
+            "available": False,
+            "overall_readiness": "NOT_EVALUATED",
+            "message": "WCCA tolerance analysis has not been executed for this revision baseline.",
+        }
 
     def calculate_pcb_thermal_field(
         self,
@@ -902,17 +934,23 @@ class StudioService:
         chassis_r_th_c_w=3.2,
     ):
         from .design.thermal_engine import PCBThermalEngine
-        from .desktop.service import DesktopService
-        from .desktop.models import CADPreviewQuery
+        from .design.geometry import extract_pcb_geometry
         revision = self.get_revision(revision_id)
+        if getattr(revision.lifecycle_status, "value", revision.lifecycle_status) != "draft":
+            raise StudioError("IMMUTABLE", "Cannot execute generative mutations on a frozen or archived baseline")
         spec = revision.specification.model_dump()
         spec["product_id"] = str(revision.product_id)
 
-        # Retrieve PCB footprints and bounding box from CAD preview
-        desktop = DesktopService(self)
-        pcb_cad = desktop.cad_preview(CADPreviewQuery(revision_id=revision_id, kind="pcb"))
-        footprints = pcb_cad.get("footprints", [])
-        bbox = pcb_cad.get("bbox", {"min_x": 0, "min_y": 0, "max_x": 100, "max_y": 80})
+        ws_dir = self.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+        pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+        if not pcb_files:
+            pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+        pcb_path = pcb_files[0] if pcb_files else None
+
+        geom = extract_pcb_geometry(pcb_path)
+        footprints = geom.get("footprints", [])
+        bbox = geom.get("bbox", {"min_x": 0, "min_y": 0, "max_x": 0, "max_y": 0, "width": 0, "height": 0})
 
         engine = PCBThermalEngine(self.root)
         return engine.calculate_thermal_field(
@@ -935,7 +973,12 @@ class StudioService:
         cached = engine.get_thermal_field(revision_id)
         if cached:
             return cached
-        return self.calculate_pcb_thermal_field(revision_id)
+        return {
+            "status": "NOT_EVALUATED",
+            "available": False,
+            "overall_status": "NOT_EVALUATED",
+            "message": "PCB thermal analysis has not been calculated for this revision baseline.",
+        }
 
     def generate_enclosure_model(self, revision_id, export_step=True):
         """Generates parametric 3D FreeCAD solid models, 2D SVG mechanical drafting drawing,
@@ -950,24 +993,34 @@ class StudioService:
             generate_enclosure_svg_drawing,
             generate_thermal_interface_specification,
         )
-        from .desktop.service import DesktopService
-        from .desktop.models import CADPreviewQuery
+        from .design.geometry import extract_pcb_geometry
 
         rev = self.get_revision(revision_id)
+        if getattr(rev.lifecycle_status, "value", rev.lifecycle_status) != "draft":
+            raise StudioError("IMMUTABLE", "Cannot execute generative mutations on a frozen or archived baseline")
         prod = self.get_product(rev.product_id)
         ws_dir = self.workspace_path(rev)
         mech_dir = ws_dir / "mechanical"
         mech_dir.mkdir(parents=True, exist_ok=True)
 
-        desktop = DesktopService(self)
-        pcb_cad = desktop.cad_preview(CADPreviewQuery(revision_id=revision_id, kind="pcb"))
-        bbox = pcb_cad.get("bbox") or {}
-        pcb_w = float(bbox.get("width") or 85.0)
-        pcb_h = float(bbox.get("height") or 65.0)
-        if pcb_w <= 10.0:
+        pcb_dir = ws_dir / "pcb"
+        pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+        if not pcb_files:
+            pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+        pcb_path = pcb_files[0] if pcb_files else None
+
+        geom = extract_pcb_geometry(pcb_path)
+        bbox = geom.get("bbox") or {}
+        has_actual_board = geom.get("is_valid", False) and float(bbox.get("width", 0)) > 5.0 and float(bbox.get("height", 0)) > 5.0
+
+        if has_actual_board:
+            pcb_w = float(bbox.get("width"))
+            pcb_h = float(bbox.get("height"))
+            fit_status = "ESTIMATED_FIT"
+        else:
             pcb_w = 85.0
-        if pcb_h <= 10.0:
             pcb_h = 65.0
+            fit_status = "NOT_EVALUATED"
 
         # 1. 2D SVG drafting drawing
         svg_content = generate_enclosure_svg_drawing(
@@ -1016,11 +1069,26 @@ class StudioService:
         base_step = mech_dir / "enclosure_base.step"
         lid_step = mech_dir / "enclosure_lid.step"
 
+        # Extract thermal numbers from actual calculated thermal report if available
+        cached_th = self.get_pcb_thermal_field(revision_id)
+        if cached_th and cached_th.get("available") is not False and cached_th.get("overall_status") != "NOT_EVALUATED":
+            tim_info = cached_th.get("tim_specification") or {}
+            bare_temp = tim_info.get("bare_pcb_max_temp_c", 144.0)
+            chassis_temp = tim_info.get("chassis_max_temp_c", 55.8)
+            delta_t = tim_info.get("delta_t_reduction_c", 88.2)
+            th_eval = "CALCULATED"
+        else:
+            bare_temp = 144.0
+            chassis_temp = 55.8
+            delta_t = 88.2
+            th_eval = "ANALYTICAL_REFERENCE_MODEL"
+
         result = {
             "success": True,
             "product_code": prod.code,
             "revision_label": rev.revision_label,
             "revision_id": str(rev.revision_id),
+            "fit_evaluation": fit_status,
             "dimensions": {
                 "outer_length_mm": round(pcb_w + 14.0, 1),
                 "outer_width_mm": round(pcb_h + 14.0, 1),
@@ -1029,6 +1097,7 @@ class StudioService:
                 "standoff_height_mm": 6.0,
                 "material": "Aluminum 6061-T6 (Black Anodize MIL-A-8625 Type II)",
                 "weight_approx_grams": 165.0,
+                "is_default_estimate": not has_actual_board,
             },
             "thermal_interface": {
                 "tim_part": "Bergquist Gap Pad 5000S35",
@@ -1036,9 +1105,10 @@ class StudioService:
                 "tim_thickness_mm": 1.5,
                 "tim_dimensions_mm": "20.0 x 20.0",
                 "pedestal_height_mm": 4.5,
-                "junction_temp_bare_c": 144.0,
-                "junction_temp_chassis_c": 55.8,
-                "delta_t_benefit_c": 88.2,
+                "junction_temp_bare_c": bare_temp,
+                "junction_temp_chassis_c": chassis_temp,
+                "delta_t_benefit_c": delta_t,
+                "thermal_status": th_eval,
             },
             "step_generated": step_generated or asm_step.exists(),
             "files": {
@@ -1051,6 +1121,7 @@ class StudioService:
             },
             "svg_drawing_content": svg_content,
             "tim_specification_content": tim_spec,
+            "governance_note": "DRAFT_PARAMETRIC_GENERATION — Physical fit, fastener torque, and thermal dissipation require prototype measurement per AGENTS.md",
         }
 
         (mech_dir / "enclosure_manifest.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
@@ -1066,5 +1137,11 @@ class StudioService:
                 return json.loads(manifest_file.read_text(encoding="utf-8"))
             except Exception:
                 pass
-        return self.generate_enclosure_model(revision_id, export_step=True)
+        return {
+            "status": "NOT_EVALUATED",
+            "available": False,
+            "step_generated": False,
+            "files": {},
+            "message": "Mechanical enclosure model has not been generated for this revision baseline.",
+        }
 

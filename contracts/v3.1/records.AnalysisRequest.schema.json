@@ -1,0 +1,643 @@
+{
+  "$defs": {
+    "DeviceModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "mpn": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mpn"
+        },
+        "manufacturer": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Manufacturer"
+        },
+        "component_reference": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Component Reference"
+        },
+        "source": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "gate_conditions": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Gate Conditions",
+          "type": "string"
+        },
+        "loss_scope": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Loss Scope",
+          "type": "string"
+        },
+        "reference_voltage_v": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Reference Voltage V",
+          "type": "number"
+        },
+        "frequency_min_hz": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Frequency Min Hz",
+          "type": "number"
+        },
+        "frequency_max_hz": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Frequency Max Hz",
+          "type": "number"
+        },
+        "max_junction_temp_c": {
+          "exclusiveMinimum": -273.15,
+          "maximum": 1000,
+          "title": "Max Junction Temp C",
+          "type": "number"
+        },
+        "loss_points": {
+          "items": {
+            "$ref": "#/$defs/LossPoint"
+          },
+          "maxItems": 400,
+          "minItems": 4,
+          "title": "Loss Points",
+          "type": "array"
+        },
+        "thermal_source": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Thermal Source",
+          "type": "string"
+        },
+        "boundary": {
+          "enum": [
+            "ambient",
+            "case"
+          ],
+          "title": "Boundary",
+          "type": "string"
+        },
+        "foster": {
+          "items": {
+            "$ref": "#/$defs/FosterBranch"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Foster",
+          "type": "array"
+        },
+        "fatigue": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FatigueModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "name",
+        "source",
+        "gate_conditions",
+        "loss_scope",
+        "reference_voltage_v",
+        "frequency_min_hz",
+        "frequency_max_hz",
+        "max_junction_temp_c",
+        "loss_points",
+        "thermal_source",
+        "boundary",
+        "foster"
+      ],
+      "title": "DeviceModel",
+      "type": "object"
+    },
+    "FatigueModel": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "conditions": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Conditions",
+          "type": "string"
+        },
+        "mean_temp_min_c": {
+          "exclusiveMinimum": -273.15,
+          "maximum": 1000,
+          "title": "Mean Temp Min C",
+          "type": "number"
+        },
+        "mean_temp_max_c": {
+          "exclusiveMinimum": -273.15,
+          "maximum": 1000,
+          "title": "Mean Temp Max C",
+          "type": "number"
+        },
+        "heating_time_min_s": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Heating Time Min S",
+          "type": "number"
+        },
+        "heating_time_max_s": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Heating Time Max S",
+          "type": "number"
+        },
+        "curve": {
+          "items": {
+            "$ref": "#/$defs/FatiguePoint"
+          },
+          "maxItems": 100,
+          "minItems": 2,
+          "title": "Curve",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source",
+        "conditions",
+        "mean_temp_min_c",
+        "mean_temp_max_c",
+        "heating_time_min_s",
+        "heating_time_max_s",
+        "curve"
+      ],
+      "title": "FatigueModel",
+      "type": "object"
+    },
+    "FatiguePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "delta_t_k": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Delta T K",
+          "type": "number"
+        },
+        "cycles_to_failure": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Cycles To Failure",
+          "type": "number"
+        }
+      },
+      "required": [
+        "delta_t_k",
+        "cycles_to_failure"
+      ],
+      "title": "FatiguePoint",
+      "type": "object"
+    },
+    "FosterBranch": {
+      "additionalProperties": false,
+      "properties": {
+        "resistance_k_w": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Resistance K W",
+          "type": "number"
+        },
+        "tau_s": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Tau S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "resistance_k_w",
+        "tau_s"
+      ],
+      "title": "FosterBranch",
+      "type": "object"
+    },
+    "LoadSegment": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_s": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "current_a": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "Current A",
+          "type": "number"
+        },
+        "output_power_w": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "Output Power W",
+          "type": "number"
+        },
+        "frequency_hz": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Frequency Hz",
+          "type": "number"
+        },
+        "duty_cycle": {
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "title": "Duty Cycle",
+          "type": "number"
+        },
+        "other_losses_w": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "Other Losses W",
+          "type": "number"
+        }
+      },
+      "required": [
+        "duration_s",
+        "current_a",
+        "output_power_w",
+        "frequency_hz",
+        "duty_cycle",
+        "other_losses_w"
+      ],
+      "title": "LoadSegment",
+      "type": "object"
+    },
+    "LossPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "voltage_v": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 1000000000000.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Voltage V"
+        },
+        "current_a": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "Current A",
+          "type": "number"
+        },
+        "junction_temp_c": {
+          "exclusiveMinimum": -273.15,
+          "maximum": 1000,
+          "title": "Junction Temp C",
+          "type": "number"
+        },
+        "on_voltage_v": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "On Voltage V",
+          "type": "number"
+        },
+        "e_on_j": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "E On J",
+          "type": "number"
+        },
+        "e_off_j": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "E Off J",
+          "type": "number"
+        }
+      },
+      "required": [
+        "current_a",
+        "junction_temp_c",
+        "on_voltage_v",
+        "e_on_j",
+        "e_off_j"
+      ],
+      "title": "LossPoint",
+      "type": "object"
+    },
+    "OperatingPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "voltage_v": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Voltage V",
+          "type": "number"
+        },
+        "gate_conditions": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Gate Conditions",
+          "type": "string"
+        },
+        "current_a": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "Current A",
+          "type": "number"
+        },
+        "output_power_w": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Output Power W",
+          "type": "number"
+        },
+        "duty_cycle": {
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "title": "Duty Cycle",
+          "type": "number"
+        },
+        "frequency_hz": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Frequency Hz",
+          "type": "number"
+        },
+        "boundary_temp_c": {
+          "exclusiveMinimum": -273.15,
+          "maximum": 1000,
+          "title": "Boundary Temp C",
+          "type": "number"
+        },
+        "other_losses_w": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "title": "Other Losses W",
+          "type": "number"
+        },
+        "quantity": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Quantity",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "voltage_v",
+        "gate_conditions",
+        "current_a",
+        "output_power_w",
+        "duty_cycle",
+        "frequency_hz",
+        "boundary_temp_c",
+        "other_losses_w",
+        "quantity"
+      ],
+      "title": "OperatingPoint",
+      "type": "object"
+    },
+    "Sweep": {
+      "additionalProperties": false,
+      "properties": {
+        "load_factors": {
+          "items": {
+            "exclusiveMinimum": 0,
+            "maximum": 1000000000000.0,
+            "type": "number"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Load Factors",
+          "type": "array"
+        },
+        "frequencies_hz": {
+          "items": {
+            "exclusiveMinimum": 0,
+            "maximum": 1000000000000.0,
+            "type": "number"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Frequencies Hz",
+          "type": "array"
+        },
+        "boundary_temperatures_c": {
+          "items": {
+            "exclusiveMinimum": -273.15,
+            "maximum": 1000,
+            "type": "number"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Boundary Temperatures C",
+          "type": "array"
+        }
+      },
+      "required": [
+        "load_factors",
+        "frequencies_hz",
+        "boundary_temperatures_c"
+      ],
+      "title": "Sweep",
+      "type": "object"
+    },
+    "ThermalCycle": {
+      "additionalProperties": false,
+      "properties": {
+        "delta_t_k": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Delta T K",
+          "type": "number"
+        },
+        "mean_temp_c": {
+          "exclusiveMinimum": -273.15,
+          "maximum": 1000,
+          "title": "Mean Temp C",
+          "type": "number"
+        },
+        "heating_time_s": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Heating Time S",
+          "type": "number"
+        },
+        "count": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Count",
+          "type": "number"
+        },
+        "conditions": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Conditions",
+          "type": "string"
+        }
+      },
+      "required": [
+        "delta_t_k",
+        "mean_temp_c",
+        "heating_time_s",
+        "count",
+        "conditions"
+      ],
+      "title": "ThermalCycle",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "assumptions": {
+      "items": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 30,
+      "minItems": 1,
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "devices": {
+      "items": {
+        "$ref": "#/$defs/DeviceModel"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "title": "Devices",
+      "type": "array"
+    },
+    "model_library": {
+      "items": {
+        "$ref": "#/$defs/DeviceModel"
+      },
+      "maxItems": 50,
+      "title": "Model Library",
+      "type": "array"
+    },
+    "expected_component_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Component Hash"
+    },
+    "operating_point": {
+      "$ref": "#/$defs/OperatingPoint"
+    },
+    "sweeps": {
+      "$ref": "#/$defs/Sweep"
+    },
+    "load_cycle": {
+      "items": {
+        "$ref": "#/$defs/LoadSegment"
+      },
+      "maxItems": 200,
+      "title": "Load Cycle",
+      "type": "array"
+    },
+    "repeat_cycles": {
+      "default": 1,
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Repeat Cycles",
+      "type": "integer"
+    },
+    "samples_per_segment": {
+      "default": 10,
+      "maximum": 50,
+      "minimum": 1,
+      "title": "Samples Per Segment",
+      "type": "integer"
+    },
+    "thermal_cycles": {
+      "items": {
+        "$ref": "#/$defs/ThermalCycle"
+      },
+      "maxItems": 200,
+      "title": "Thermal Cycles",
+      "type": "array"
+    },
+    "cycle_count_source": {
+      "anyOf": [
+        {
+          "maxLength": 2000,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cycle Count Source"
+    }
+  },
+  "required": [
+    "assumptions",
+    "devices",
+    "operating_point",
+    "sweeps"
+  ],
+  "title": "AnalysisRequest",
+  "type": "object"
+}

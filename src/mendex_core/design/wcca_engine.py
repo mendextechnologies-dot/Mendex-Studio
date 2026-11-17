@@ -38,7 +38,9 @@ class WCCAEngine:
     ) -> Dict[str, Any]:
         """Runs Monte Carlo tolerance sweep and EVA corner analysis for a product revision."""
         # 1. Extract electrical parameters from specification
-        vout_nom = float(specification.get("vout_v") or specification.get("vout_nominal_v") or 1000.0)
+        raw_vout = specification.get("vout_v") or specification.get("vout_nominal_v")
+        is_unspecified = (raw_vout is None)
+        vout_nom = float(raw_vout or 1000.0)
         vin_nom = float(specification.get("vin_nom_v") or specification.get("vin_nominal_v") or 24.0)
         vin_min = float(specification.get("vin_min_v") or vin_nom * 0.85)
         vin_max = float(specification.get("vin_max_v") or vin_nom * 1.15)
@@ -129,6 +131,11 @@ class WCCAEngine:
                 "vsw_peak_v": round(vsw_pk_i, 2),
                 "temperature_c": round(temp_c, 1),
                 "vin_v": round(vin_val, 2),
+                "delta_r1": float(delta_r1),
+                "delta_r2": float(delta_r2),
+                "delta_vref": float(delta_vref),
+                "delta_cout": float(delta_cout),
+                "delta_lm": float(delta_lm),
             })
 
         # 4. Statistical Distributions & 3-Sigma Metrics
@@ -200,16 +207,42 @@ class WCCAEngine:
             },
         ]
 
-        # 7. Component Sensitivity Ranking (Pareto)
-        sensitivities = [
-            {"component": "R1 (Feedback Upper Divider)", "parameter": "Resistance", "tolerance_pct": 1.0, "sensitivity_pct": 48.2},
-            {"component": "R2 (Feedback Lower Divider)", "parameter": "Resistance", "tolerance_pct": 1.0, "sensitivity_pct": 36.4},
-            {"component": "U1 (Bandgap Reference)", "parameter": "Vref Drift", "tolerance_pct": 1.0, "sensitivity_pct": 11.2},
-            {"component": "Cout (Filter Capacitance)", "parameter": "Capacitance & ESR", "tolerance_pct": 10.0, "sensitivity_pct": 2.8},
-            {"component": "T1 (Transformer Magnetizing Inductance)", "parameter": "Lm", "tolerance_pct": 10.0, "sensitivity_pct": 1.4},
-        ]
+        # 7. Dynamic Component Sensitivity Ranking (Pareto derived from Monte Carlo correlation)
+        def _calc_corr(x, y):
+            sx, sy = np.std(x), np.std(y)
+            if sx == 0 or sy == 0:
+                return 0.0
+            return float(abs(np.corrcoef(x, y)[0, 1]))
 
-        overall_readiness = "PRODUCTION_READY" if cpk >= 1.33 and yield_percent >= 99.0 else "MARGINAL_REQUIRES_TRIMMING"
+        r1_pert = [m.get("delta_r1", 0.0) for m in mc_runs]
+        r2_pert = [m.get("delta_r2", 0.0) for m in mc_runs]
+        vref_pert = [m.get("delta_vref", 0.0) for m in mc_runs]
+        cout_pert = [m.get("delta_cout", 0.0) for m in mc_runs]
+        lm_pert = [m.get("delta_lm", 0.0) for m in mc_runs]
+
+        c_r1 = _calc_corr(r1_pert, v_arr) if len(r1_pert) == len(v_arr) else 0.48
+        c_r2 = _calc_corr(r2_pert, v_arr) if len(r2_pert) == len(v_arr) else 0.36
+        c_vref = _calc_corr(vref_pert, v_arr) if len(vref_pert) == len(v_arr) else 0.12
+        c_cout = _calc_corr(cout_pert, v_arr) if len(cout_pert) == len(v_arr) else 0.03
+        c_lm = _calc_corr(lm_pert, v_arr) if len(lm_pert) == len(v_arr) else 0.01
+
+        tot_corr = c_r1 + c_r2 + c_vref + c_cout + c_lm
+        if tot_corr <= 0:
+            tot_corr = 1.0
+
+        raw_sens = [
+            {"component": "R1 (Feedback Upper Divider)", "parameter": "Resistance", "tolerance_pct": 1.0, "sensitivity_pct": round((c_r1 / tot_corr) * 100.0, 1)},
+            {"component": "R2 (Feedback Lower Divider)", "parameter": "Resistance", "tolerance_pct": 1.0, "sensitivity_pct": round((c_r2 / tot_corr) * 100.0, 1)},
+            {"component": "U1 (Bandgap Reference)", "parameter": "Vref Drift", "tolerance_pct": 1.0, "sensitivity_pct": round((c_vref / tot_corr) * 100.0, 1)},
+            {"component": "Cout (Filter Capacitance)", "parameter": "Capacitance & ESR", "tolerance_pct": 10.0, "sensitivity_pct": round((c_cout / tot_corr) * 100.0, 1)},
+            {"component": "T1 (Transformer Magnetizing Inductance)", "parameter": "Lm", "tolerance_pct": 10.0, "sensitivity_pct": round((c_lm / tot_corr) * 100.0, 1)},
+        ]
+        sensitivities = sorted(raw_sens, key=lambda s: s["sensitivity_pct"], reverse=True)
+
+        if is_unspecified:
+            overall_readiness = "NOT_EVALUATED"
+        else:
+            overall_readiness = "PRODUCTION_READY" if cpk >= 1.33 and yield_percent >= 99.0 else "MARGINAL_REQUIRES_TRIMMING"
 
         result = {
             "success": True,

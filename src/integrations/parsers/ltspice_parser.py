@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -138,9 +139,17 @@ def parse_ascii_raw_waveforms(raw_path: Path) -> dict[str, Any]:
         var_names: list[str] = []
         num_points = 0
         in_vars = False
+        is_double = False
+        is_complex = False
         for line in header_text.splitlines():
             line_s = line.strip()
-            if line_s.startswith("No. Points:"):
+            if line_s.startswith("Flags:"):
+                flags = line_s.split(":", 1)[1].strip().lower()
+                if "double" in flags:
+                    is_double = True
+                if "complex" in flags:
+                    is_complex = True
+            elif line_s.startswith("No. Points:"):
                 try:
                     num_points = int(line_s.split(":", 1)[1].strip())
                 except ValueError:
@@ -157,7 +166,17 @@ def parse_ascii_raw_waveforms(raw_path: Path) -> dict[str, Any]:
             return {}
 
         n_vars = len(var_names)
-        point_bytes = 8 + (n_vars - 1) * 4
+        avail_bytes = len(raw_bytes) - data_start
+        if not is_double and not is_complex and avail_bytes >= num_points * n_vars * 8:
+            is_double = True
+
+        if is_double:
+            point_bytes = n_vars * 8
+            dt = np.dtype([(name, "<f8") for name in var_names])
+        else:
+            point_bytes = 8 + (n_vars - 1) * 4
+            dt = np.dtype([("time", "<f8")] + [(name, "<f4") for name in var_names[1:]])
+
         total_data_bytes = num_points * point_bytes
         if data_start + total_data_bytes > len(raw_bytes):
             available_points = (len(raw_bytes) - data_start) // point_bytes
@@ -166,11 +185,13 @@ def parse_ascii_raw_waveforms(raw_path: Path) -> dict[str, Any]:
         if num_points == 0:
             return {}
 
-        dt = np.dtype([("time", "<f8")] + [(name, "<f4") for name in var_names[1:]])
         arr = np.frombuffer(raw_bytes[data_start:data_start + num_points * point_bytes], dtype=dt, count=num_points)
-        result: dict[str, Any] = {"time": np.array(arr["time"], dtype=np.float64)}
-        for name in var_names[1:]:
-            result[name] = np.array(arr[name], dtype=np.float64)
+        result: dict[str, Any] = {}
+        for name in var_names:
+            col = np.array(arr[name], dtype=np.float64)
+            if np.isnan(col).any() or np.isinf(col).any():
+                col = np.nan_to_num(col, nan=0.0, posinf=0.0, neginf=0.0)
+            result[name] = col
         return result
 
     # Otherwise ASCII format (Values:)
@@ -219,6 +240,8 @@ def parse_ascii_raw_waveforms(raw_path: Path) -> dict[str, Any]:
         all_floats = all_floats[:pts * n_vars]
 
     arr = np.array(all_floats, dtype=np.float64).reshape(-1, n_vars)
+    if np.isnan(arr).any() or np.isinf(arr).any():
+        arr = np.nan_to_num(arr, nan=0.0, posinf=0.0, neginf=0.0)
     return {name: arr[:, i] for i, name in enumerate(var_names)}
 
 
@@ -239,7 +262,11 @@ def calculate_waveform_metrics(waveforms: dict[str, Any], steady_state_ratio: fl
     # G07 fix: Base steady-state settling window on time domain rather than sample count
     t_threshold = t_start + (1.0 - steady_state_ratio) * (t_end - t_start)
     ss_indices = np.where(time_arr >= t_threshold)[0]
-    if len(ss_indices) == 0:
+    # G17 fix: If fewer than 2 samples fall in the steady-state window, fall back to full signal
+    # to avoid single-point singularity where p2p is 0 and dt_total is 0.
+    if len(ss_indices) < 2 and len(time_arr) >= 2:
+        ss_indices = np.arange(len(time_arr))
+    elif len(ss_indices) == 0:
         ss_indices = np.arange(len(time_arr))
 
     ss_time = time_arr[ss_indices]
@@ -261,16 +288,25 @@ def calculate_waveform_metrics(waveforms: dict[str, Any], steady_state_ratio: fl
             else:
                 tw_mean = float(np.mean(ss_signal))
 
+            def _clean_val(v: Any) -> float:
+                try:
+                    f = float(v)
+                    if math.isnan(f) or math.isinf(f):
+                        return 0.0
+                    return f
+                except (ValueError, TypeError):
+                    return 0.0
+
             metrics[name] = {
-                "rms": float(np.sqrt(np.mean(ss_signal**2))),
-                "p2p": float(np.ptp(ss_signal)),
-                "mean": tw_mean,
-                "min": float(np.min(signal)),
-                "max": float(np.max(signal)),
-                "ss_min": float(np.min(ss_signal)),
-                "ss_max": float(np.max(ss_signal)),
-                "sample_mean": float(np.mean(ss_signal)),
-                "window_start_time": float(ss_time[0]) if len(ss_time) > 0 else 0.0,
-                "window_end_time": float(ss_time[-1]) if len(ss_time) > 0 else 0.0,
+                "rms": _clean_val(np.sqrt(np.mean(ss_signal**2))),
+                "p2p": _clean_val(np.ptp(ss_signal)),
+                "mean": _clean_val(tw_mean),
+                "min": _clean_val(np.min(signal)),
+                "max": _clean_val(np.max(signal)),
+                "ss_min": _clean_val(np.min(ss_signal)),
+                "ss_max": _clean_val(np.max(ss_signal)),
+                "sample_mean": _clean_val(np.mean(ss_signal)),
+                "window_start_time": _clean_val(ss_time[0]) if len(ss_time) > 0 else 0.0,
+                "window_end_time": _clean_val(ss_time[-1]) if len(ss_time) > 0 else 0.0,
             }
     return metrics

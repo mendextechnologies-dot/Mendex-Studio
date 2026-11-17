@@ -1,0 +1,365 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-15T15:03:01",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.7",
+    "schematic_parity": [],
+    "source": "sv1000.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Silkscreen clipped by board edge",
+            "items": [
+                {
+                    "description": "Rectangle on Edge.Cuts",
+                    "pos": {
+                        "x": 140.8,
+                        "y": 104.0
+                    },
+                    "uuid": "35ff2b4a-ed51-43cf-af6e-9ecf57e75907"
+                },
+                {
+                    "description": "Reference field of DAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 133.893
+                    },
+                    "uuid": "ec776525-b5a9-4fa7-9e14-0032d9d69df7"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "Silkscreen clipped by board edge",
+            "items": [
+                {
+                    "description": "Rectangle on Edge.Cuts",
+                    "pos": {
+                        "x": 140.8,
+                        "y": 104.0
+                    },
+                    "uuid": "35ff2b4a-ed51-43cf-af6e-9ecf57e75907"
+                },
+                {
+                    "description": "Reference field of ROPTOPULL",
+                    "pos": {
+                        "x": 137.5,
+                        "y": 119.5
+                    },
+                    "uuid": "96476ce2-2360-4070-9a37-89cd701c5bb1"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "Silkscreen clipped by board edge",
+            "items": [
+                {
+                    "description": "Rectangle on Edge.Cuts",
+                    "pos": {
+                        "x": 140.8,
+                        "y": 104.0
+                    },
+                    "uuid": "35ff2b4a-ed51-43cf-af6e-9ecf57e75907"
+                },
+                {
+                    "description": "Reference field of CAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 132.757
+                    },
+                    "uuid": "776c8aa2-e1b0-4a8a-94f9-f4946cf010b2"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD'",
+            "items": [
+                {
+                    "description": "Footprint Q1",
+                    "pos": {
+                        "x": 135.0,
+                        "y": 139.5
+                    },
+                    "uuid": "01f1ce2f-63cf-46fc-b4b8-2d6146a990a1"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'",
+            "items": [
+                {
+                    "description": "Footprint H1",
+                    "pos": {
+                        "x": 103.5,
+                        "y": 103.5
+                    },
+                    "uuid": "11111111-0000-0000-0000-000000000001"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'",
+            "items": [
+                {
+                    "description": "Footprint H2",
+                    "pos": {
+                        "x": 181.5,
+                        "y": 103.5
+                    },
+                    "uuid": "11111111-0000-0000-0000-000000000002"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'",
+            "items": [
+                {
+                    "description": "Footprint H3",
+                    "pos": {
+                        "x": 103.5,
+                        "y": 161.5
+                    },
+                    "uuid": "11111111-0000-0000-0000-000000000003"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'",
+            "items": [
+                {
+                    "description": "Footprint H4",
+                    "pos": {
+                        "x": 181.5,
+                        "y": 161.5
+                    },
+                    "uuid": "11111111-0000-0000-0000-000000000004"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Segment of DAUX on F.Silkscreen",
+                    "pos": {
+                        "x": 146.5,
+                        "y": 132.86
+                    },
+                    "uuid": "3bc5e1fd-527a-4b01-a23c-f0b3a8f7e5e0"
+                },
+                {
+                    "description": "Reference field of CAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 132.757
+                    },
+                    "uuid": "776c8aa2-e1b0-4a8a-94f9-f4946cf010b2"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Reference field of CAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 132.757
+                    },
+                    "uuid": "776c8aa2-e1b0-4a8a-94f9-f4946cf010b2"
+                },
+                {
+                    "description": "Reference field of DAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 133.893
+                    },
+                    "uuid": "ec776525-b5a9-4fa7-9e14-0032d9d69df7"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Reference field of CAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 132.757
+                    },
+                    "uuid": "776c8aa2-e1b0-4a8a-94f9-f4946cf010b2"
+                },
+                {
+                    "description": "Segment of DAUX on F.Silkscreen",
+                    "pos": {
+                        "x": 146.5,
+                        "y": 132.86
+                    },
+                    "uuid": "a2aef053-aa79-4430-adfa-b5531dfcaae0"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Reference field of CAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 132.757
+                    },
+                    "uuid": "776c8aa2-e1b0-4a8a-94f9-f4946cf010b2"
+                },
+                {
+                    "description": "Segment of DAUX on F.Silkscreen",
+                    "pos": {
+                        "x": 148.5,
+                        "y": 132.86
+                    },
+                    "uuid": "875f69f5-b8b6-4a0e-b60d-61e1cc33c7e2"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of DAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 133.893
+                    },
+                    "uuid": "ec776525-b5a9-4fa7-9e14-0032d9d69df7"
+                },
+                {
+                    "description": "Pad 1 [VCC] of CAUX on F.Cu",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 134.55
+                    },
+                    "uuid": "fb0b6519-64d6-4f18-ae39-4c255ebe7e00"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of ROPTOPULL",
+                    "pos": {
+                        "x": 137.5,
+                        "y": 119.5
+                    },
+                    "uuid": "96476ce2-2360-4070-9a37-89cd701c5bb1"
+                },
+                {
+                    "description": "PTH pad 1 [/OPTO_A] of U1",
+                    "pos": {
+                        "x": 136.5,
+                        "y": 120.0
+                    },
+                    "uuid": "dfacdeff-5ecb-4ce2-932d-3088e630acb4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of ROPTOPULL",
+                    "pos": {
+                        "x": 137.5,
+                        "y": 119.5
+                    },
+                    "uuid": "96476ce2-2360-4070-9a37-89cd701c5bb1"
+                },
+                {
+                    "description": "PTH pad 2 [/SEC_GND] of U1",
+                    "pos": {
+                        "x": 133.96,
+                        "y": 120.0
+                    },
+                    "uuid": "dd031dbc-8825-4d20-926f-673230afe1fd"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of CAUX",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 132.757
+                    },
+                    "uuid": "776c8aa2-e1b0-4a8a-94f9-f4946cf010b2"
+                },
+                {
+                    "description": "Pad 1 [VCC] of DAUX on F.Cu",
+                    "pos": {
+                        "x": 147.5,
+                        "y": 132.15
+                    },
+                    "uuid": "ab43e94a-6669-4d7c-8a2e-c889338768b1"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        }
+    ]
+}

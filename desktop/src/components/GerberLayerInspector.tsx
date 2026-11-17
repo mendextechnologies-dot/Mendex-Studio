@@ -1,3 +1,5 @@
+import { PCBGeometry } from './PCBGeometry';
+import { downloadCandidate } from '../downloadCandidate';
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { api } from '../api/client';
 import {
@@ -40,81 +42,10 @@ export interface MeasurementPoint {
   type?: 'pad' | 'drill' | 'track' | 'edge' | 'free';
 }
 
-export interface ClearanceRule {
-  minVoltage: number;
-  maxVoltage: number;
-  ipc2221_external_bare: number; // mm
-  ipc2221_internal: number; // mm
-  iec60664_basic: number; // mm (Material Group IIIa, PD2)
-  iec60664_reinforced: number; // mm
-}
-
-export const CLEARANCE_RULES: ClearanceRule[] = [
-  { minVoltage: 0, maxVoltage: 15, ipc2221_external_bare: 0.10, ipc2221_internal: 0.05, iec60664_basic: 0.80, iec60664_reinforced: 1.60 },
-  { minVoltage: 16, maxVoltage: 30, ipc2221_external_bare: 0.10, ipc2221_internal: 0.05, iec60664_basic: 1.00, iec60664_reinforced: 2.00 },
-  { minVoltage: 31, maxVoltage: 50, ipc2221_external_bare: 0.60, ipc2221_internal: 0.10, iec60664_basic: 1.20, iec60664_reinforced: 2.40 },
-  { minVoltage: 51, maxVoltage: 100, ipc2221_external_bare: 0.60, ipc2221_internal: 0.10, iec60664_basic: 1.40, iec60664_reinforced: 2.80 },
-  { minVoltage: 101, maxVoltage: 150, ipc2221_external_bare: 0.60, ipc2221_internal: 0.20, iec60664_basic: 1.60, iec60664_reinforced: 3.20 },
-  { minVoltage: 151, maxVoltage: 250, ipc2221_external_bare: 1.25, ipc2221_internal: 0.20, iec60664_basic: 2.50, iec60664_reinforced: 5.00 },
-  { minVoltage: 251, maxVoltage: 325, ipc2221_external_bare: 1.25, ipc2221_internal: 0.25, iec60664_basic: 3.20, iec60664_reinforced: 6.40 },
-  { minVoltage: 326, maxVoltage: 500, ipc2221_external_bare: 2.50, ipc2221_internal: 0.25, iec60664_basic: 5.00, iec60664_reinforced: 10.00 },
-  { minVoltage: 501, maxVoltage: 800, ipc2221_external_bare: 6.25, ipc2221_internal: 0.50, iec60664_basic: 8.00, iec60664_reinforced: 16.00 },
-  { minVoltage: 801, maxVoltage: 1000, ipc2221_external_bare: 12.50, ipc2221_internal: 0.80, iec60664_basic: 10.00, iec60664_reinforced: 20.00 },
-];
-
-export interface ClearanceEvaluation {
-  voltage: number;
-  insulationType: 'basic' | 'reinforced';
-  requiredIecMm: number;
-  requiredIpcMm: number;
-  actualDistanceMm: number;
-  actualDistanceMils: number;
-  marginMm: number;
-  isIecCompliant: boolean;
-  isIpcCompliant: boolean;
-  verdict: 'COMPLIANT' | 'MARGINAL' | 'VIOLATION';
-  notes: string;
-}
-
-export function evaluateClearance(
-  distanceMm: number,
-  voltage: number = 230,
-  insulationType: 'basic' | 'reinforced' = 'basic'
-): ClearanceEvaluation {
-  const rule = CLEARANCE_RULES.find((r) => voltage >= r.minVoltage && voltage <= r.maxVoltage)
-    || CLEARANCE_RULES[CLEARANCE_RULES.length - 1];
-
-  const reqIec = insulationType === 'reinforced' ? rule.iec60664_reinforced : rule.iec60664_basic;
-  const reqIpc = rule.ipc2221_external_bare;
-  const distMils = distanceMm * 39.3701;
-  const marginMm = distanceMm - reqIec;
-
-  let verdict: 'COMPLIANT' | 'MARGINAL' | 'VIOLATION' = 'COMPLIANT';
-  if (marginMm < 0) {
-    verdict = 'VIOLATION';
-  } else if (marginMm < 0.5) {
-    verdict = 'MARGINAL';
-  }
-
-  const notes = verdict === 'COMPLIANT'
-    ? `Meets IEC 60664-1 (${reqIec.toFixed(2)} mm) and IPC-2221B (${reqIpc.toFixed(2)} mm) at ${voltage}V with +${marginMm.toFixed(2)} mm margin.`
-    : verdict === 'MARGINAL'
-    ? `Compliant with tight safety margin (+${marginMm.toFixed(2)} mm) for ${voltage}V ${insulationType} insulation.`
-    : `Creepage/clearance violation: Deficit of ${Math.abs(marginMm).toFixed(2)} mm below ${reqIec.toFixed(2)} mm limit for ${voltage}V.`;
-
-  return {
-    voltage,
-    insulationType,
-    requiredIecMm: reqIec,
-    requiredIpcMm: reqIpc,
-    actualDistanceMm: distanceMm,
-    actualDistanceMils: distMils,
-    marginMm,
-    isIecCompliant: marginMm >= 0,
-    isIpcCompliant: distanceMm >= reqIpc,
-    verdict,
-    notes,
-  };
+export function evaluateClearance(distanceMm: number, voltage = 0, insulationType: 'basic'|'reinforced' = 'basic') {
+  return {actualDistanceMm:distanceMm,actualDistanceMils:distanceMm*39.3701,voltage,insulationType,
+    requiredIecMm:0,requiredIpcMm:0,marginMm:0,isIecCompliant:false,isIpcCompliant:false,
+    verdict:'NOT_EVALUATED',notes:'Geometric measurement only. No qualified standards rule or safety acceptance supplied.'};
 }
 
 interface GerberLayerInspectorProps {
@@ -196,13 +127,6 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
           setDiffLayerB('In1.Cu');
         }
 
-        // Set voltage preset matching design
-        const bName = (res.board_name || '').toLowerCase();
-        if (bName.includes('sv1000') || bName.includes('1000')) {
-          setTargetVoltageV(1000);
-        } else if (bName.includes('pcb') || bName.includes('emc')) {
-          setTargetVoltageV(325);
-        }
       } else {
         setError(res.error || 'Failed to inspect Gerber layers');
       }
@@ -275,13 +199,8 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
     try {
       const res = await api.downloadGerbers(revisionId, 'gerber');
       if (res.success && res.data_uri) {
-        const link = document.createElement('a');
-        link.href = res.data_uri;
-        link.download = res.filename || 'gerbers.zip';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setActionMessage(`Downloaded ${res.filename} (${(res.size_bytes / 1024).toFixed(1)} KB)`);
+        await downloadCandidate(res);
+        setActionMessage(`Save requested for ${res.filename} (${(res.size_bytes / 1024).toFixed(1)} KB)`);
       } else {
         setActionMessage(`Download failed: ${res.error}`);
       }
@@ -298,13 +217,8 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
     try {
       const res = await api.downloadGerbers(revisionId, 'turnkey');
       if (res.success && res.data_uri) {
-        const link = document.createElement('a');
-        link.href = res.data_uri;
-        link.download = res.filename || 'turnkey_manufacturing.zip';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setActionMessage(`Downloaded turnkey manufacturing package ${res.filename} (${(res.size_bytes / 1024).toFixed(1)} KB)`);
+        await downloadCandidate(res);
+        setActionMessage(`Save requested for assembly candidate ${res.filename} (${(res.size_bytes / 1024).toFixed(1)} KB)`);
       } else {
         setActionMessage(`Turnkey download failed: ${res.error}`);
       }
@@ -508,7 +422,7 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
     return (
       <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>
         <RefreshCw size={24} className="spin" style={{ marginBottom: 12 }} />
-        <div>Inspecting RS-274X Gerber Layers & Excellon Drill schedule...</div>
+        <div>Inspecting Native PCB layer geometry; exported RS-274X file inventory Layers & Excellon Drill schedule...</div>
       </div>
     );
   }
@@ -516,7 +430,7 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
   if (error && !data) {
     return (
       <div style={{ padding: 30, background: '#1e1014', border: '1px solid #e11d48', borderRadius: 8, color: '#fecdd3' }}>
-        <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>Gerber Layer Inspector Error</div>
+        <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>Native PCB Layer Inspector Error</div>
         <div>{error}</div>
         <button
           onClick={() => loadData(true)}
@@ -545,7 +459,7 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Layers size={18} style={{ color: '#38bdf8' }} />
             <span style={{ fontWeight: 700, fontSize: 14, color: '#f8fafc' }}>
-              RS-274X Gerber & Drill Inspector
+              Native PCB layer geometry; exported RS-274X file inventory & Drill Inspector
             </span>
             <span style={{ fontSize: 11, background: data?.is_4layer ? '#0e7490' : '#1e293b', color: '#38bdf8', padding: '2px 8px', borderRadius: 4, fontWeight: 600 }}>
               {data?.is_4layer ? '4-Layer Multilayer FR4' : '2-Layer Standard FR4'}
@@ -1145,43 +1059,7 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
                 </div>
               </div>
 
-              {/* Center: Live Measurement & Compliance Scorecard */}
-              {currentMeasurement && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#0b1329', padding: '4px 10px', borderRadius: 6, border: '1px solid #1e293b' }}>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                    <span style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase', fontWeight: 700 }}>Clearance:</span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#f8fafc', fontFamily: 'monospace' }}>
-                      {currentMeasurement.actualDistanceMm.toFixed(3)} mm
-                    </span>
-                    <span style={{ fontSize: 10, color: '#94a3b8', fontFamily: 'monospace' }}>
-                      ({currentMeasurement.actualDistanceMils.toFixed(1)} mil)
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 5,
-                      padding: '2px 8px',
-                      borderRadius: 4,
-                      fontSize: 11,
-                      fontWeight: 700,
-                      background: currentMeasurement.verdict === 'COMPLIANT' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
-                      border: `1px solid ${currentMeasurement.verdict === 'COMPLIANT' ? '#10b981' : '#f43f5e'}`,
-                      color: currentMeasurement.verdict === 'COMPLIANT' ? '#10b981' : '#f43f5e',
-                    }}
-                    title={currentMeasurement.notes}
-                  >
-                    {currentMeasurement.verdict === 'COMPLIANT' ? <ShieldCheck size={13} /> : <AlertTriangle size={13} />}
-                    <span>
-                      {currentMeasurement.verdict === 'COMPLIANT'
-                        ? `PASS @ ${targetVoltageV}V (Req: ${currentMeasurement.requiredIecMm.toFixed(2)}mm, +${currentMeasurement.marginMm.toFixed(2)}mm)`
-                        : `VIOLATION @ ${targetVoltageV}V: Req ${currentMeasurement.requiredIecMm.toFixed(2)}mm (${Math.abs(currentMeasurement.marginMm).toFixed(2)}mm deficit)`}
-                    </span>
-                  </div>
-                </div>
-              )}
+              {currentMeasurement && <div style={{color:'#e2e8f0',padding:8}}>Distance {currentMeasurement.actualDistanceMm.toFixed(3)} mm · Safety NOT_EVALUATED</div>}
 
               {/* Right: Controls & Presets */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -1341,202 +1219,12 @@ export const GerberLayerInspector: React.FC<GerberLayerInspectorProps> = ({ revi
                 rx={1}
               />
 
-              {/* Edge.Cuts Outline */}
-              {layerStates['Edge.Cuts']?.visible && (
-                <g opacity={layerStates['Edge.Cuts']?.opacity || 1.0}>
-                  {(data?.edge_cuts || []).map((e: any, i: number) => {
-                    if (e.type === 'rect') {
-                      return (
-                        <rect
-                          key={`ec-${i}`}
-                          x={e.x1}
-                          y={e.y1}
-                          width={e.x2 - e.x1}
-                          height={e.y2 - e.y1}
-                          fill="none"
-                          stroke="#eab308"
-                          strokeWidth={0.35}
-                        />
-                      );
-                    }
-                    return (
-                      <line
-                        key={`ec-${i}`}
-                        x1={e.x1}
-                        y1={e.y1}
-                        x2={e.x2}
-                        y2={e.y2}
-                        stroke="#eab308"
-                        strokeWidth={0.35}
-                        strokeLinecap="round"
-                      />
-                    );
-                  })}
-                </g>
-              )}
+              <PCBGeometry data={data} states={mode==='stack' ? layerStates : Object.fromEntries(Object.keys(layerStates).map(k=>[k,{visible:[diffLayerA,diffLayerB,'Edge.Cuts'].includes(k),opacity:.9}]))} colorOverride={mode==='differential' ? layer => layer===diffLayerA ? '#10b981' : layer===diffLayerB ? '#ec4899' : '#facc15' : undefined}/>
 
-              {/* Bottom Copper Tracks & Fills (B.Cu) */}
-              {(mode === 'stack' ? layerStates['B.Cu']?.visible : (diffLayerA === 'B.Cu' || diffLayerB === 'B.Cu')) && (
-                <g
-                  opacity={
-                    mode === 'differential'
-                      ? 0.9
-                      : layerStates['B.Cu']?.opacity || 0.85
-                  }
-                >
-                  {(data?.tracks || []).filter((t: any) => t.layer === 'B.Cu').map((t: any, i: number) => {
-                    const strokeColor =
-                      mode === 'differential'
-                        ? diffLayerA === 'B.Cu' ? '#10b981' : '#ec4899'
-                        : '#3b82f6';
-                    return (
-                      <line
-                        key={`bcu-t-${i}`}
-                        x1={t.x1}
-                        y1={t.y1}
-                        x2={t.x2}
-                        y2={t.y2}
-                        stroke={strokeColor}
-                        strokeWidth={t.width || 0.4}
-                        strokeLinecap="round"
-                        onMouseEnter={() => setHoverItem({ type: 'track', layer: 'B.Cu', net: t.net, width: t.width })}
-                        onMouseLeave={() => setHoverItem(null)}
-                      />
-                    );
-                  })}
-                </g>
-              )}
-
-              {/* Top Copper Tracks & Fills (F.Cu) */}
-              {(mode === 'stack' ? layerStates['F.Cu']?.visible : (diffLayerA === 'F.Cu' || diffLayerB === 'F.Cu')) && (
-                <g
-                  opacity={
-                    mode === 'differential'
-                      ? 0.9
-                      : layerStates['F.Cu']?.opacity || 0.85
-                  }
-                >
-                  {(data?.tracks || []).filter((t: any) => t.layer === 'F.Cu').map((t: any, i: number) => {
-                    const strokeColor =
-                      mode === 'differential'
-                        ? diffLayerA === 'F.Cu' ? '#10b981' : '#ec4899'
-                        : '#ef4444';
-                    return (
-                      <line
-                        key={`fcu-t-${i}`}
-                        x1={t.x1}
-                        y1={t.y1}
-                        x2={t.x2}
-                        y2={t.y2}
-                        stroke={strokeColor}
-                        strokeWidth={t.width || 0.4}
-                        strokeLinecap="round"
-                        onMouseEnter={() => setHoverItem({ type: 'track', layer: 'F.Cu', net: t.net, width: t.width })}
-                        onMouseLeave={() => setHoverItem(null)}
-                      />
-                    );
-                  })}
-                </g>
-              )}
-
-              {/* Footprint Pads (Through-Hole & SMD) */}
-              {(data?.footprints || []).map((fp: any, fpi: number) => (
-                <g key={`fp-${fpi}`}>
-                  {(fp.pads || []).map((p: any, pi: number) => {
-                    const isThru = p.type === 'thru_hole' || p.type === 'np_thru_hole';
-                    const padColor = isThru ? '#f59e0b' : '#ef4444';
-                    const showPad =
-                      mode === 'differential'
-                        ? true
-                        : isThru
-                        ? layerStates['F.Cu']?.visible || layerStates['B.Cu']?.visible
-                        : layerStates['F.Cu']?.visible;
-
-                    if (!showPad) return null;
-
-                    return (
-                      <rect
-                        key={`p-${pi}`}
-                        x={p.x - p.sx / 2}
-                        y={p.y - p.sy / 2}
-                        width={p.sx}
-                        height={p.sy}
-                        rx={p.shape === 'circle' ? p.sx / 2 : 0.2}
-                        fill={padColor}
-                        opacity={0.9}
-                        stroke="#fff"
-                        strokeWidth={0.08}
-                        onMouseEnter={() =>
-                          setHoverItem({
-                            type: 'pad',
-                            ref: fp.ref,
-                            pin: p.number,
-                            shape: p.shape,
-                            sx: p.sx,
-                            sy: p.sy,
-                            drill: p.drill,
-                            isThru,
-                          })
-                        }
-                        onMouseLeave={() => setHoverItem(null)}
-                      />
-                    );
-                  })}
-                </g>
-              ))}
-
-              {/* Silkscreen Layer (F.SilkS) */}
-              {mode === 'stack' && layerStates['F.SilkS']?.visible && (
-                <g opacity={layerStates['F.SilkS']?.opacity || 0.6}>
-                  {(data?.footprints || []).map((fp: any, fpi: number) => (
-                    <g key={`silk-${fpi}`}>
-                      {(fp.silks || []).map((s: any, si: number) => {
-                        if (s.type === 'rect') {
-                          return (
-                            <rect
-                              key={`sr-${si}`}
-                              x={s.x1}
-                              y={s.y1}
-                              width={s.x2 - s.x1}
-                              height={s.y2 - s.y1}
-                              fill="none"
-                              stroke="#ffffff"
-                              strokeWidth={0.12}
-                            />
-                          );
-                        }
-                        return (
-                          <line
-                            key={`sl-${si}`}
-                            x1={s.x1}
-                            y1={s.y1}
-                            x2={s.x2}
-                            y2={s.y2}
-                            stroke="#ffffff"
-                            strokeWidth={0.12}
-                          />
-                        );
-                      })}
-                      {/* Component Reference Label */}
-                      <text
-                        x={fp.x}
-                        y={fp.y - 1.5}
-                        fill="#ffffff"
-                        fontSize={1.2}
-                        textAnchor="middle"
-                        fontWeight="bold"
-                        opacity={0.85}
-                      >
-                        {fp.ref}
-                      </text>
-                    </g>
-                  ))}
-                </g>
-              )}
 
               {/* Excellon Drill Layer (Drill Holes & Crosshairs) */}
               {(mode === 'stack' ? layerStates['Drill']?.visible : true) && (
-                <g opacity={layerStates['Drill']?.opacity || 0.95}>
+                <g opacity={layerStates['Drill']?.opacity ?? 0.95}>
                   {(data?.drill_hits || []).map((h: any, hi: number) => {
                     const r = (h.diameter || 0.8) / 2;
                     return (

@@ -5003,19 +5003,19 @@
           "created_at": "2026-11-14T21:05:28.349969+00:00"
         },
         {
-          "id": "a4fae716-9dba-4eb4-b9a5-2f19b1d914e2",
+          "id": "09c08007-2825-493b-ab88-500a0d00f3e9",
           "design_id": "5badf992-8f2e-405a-a38e-9cefa4e3a63c",
           "revision_id": "4457219e-309b-41e1-af76-3e3b4cb95d33",
           "kind": "step_solid",
           "name": "pcb.step",
           "path": "products/5b0852dd-7920-4451-b869-049f46254387/revisions/db8689f3-d4fe-4dca-a71c-3fa9788b5f95/pcb/pcb.step",
           "format": "step",
-          "sha256": "9e6714654ee17061c7e3818a1641fba5bfa2b041a295a7ad50067152b98fdef8",
+          "sha256": "03f45c7102df03ea7c21e72a43348ed877076ce63d354a5ceddfaa0a6f4da781",
           "source_service": "KiCadLifecycleService",
           "parent_ids": [],
           "edit_provenance": "KiCad CLI 3D Solid Model",
           "is_external_modified": false,
-          "created_at": "2026-11-14T21:06:06.069305+00:00"
+          "created_at": "2026-11-16T17:19:43.142702+00:00"
         }
       ],
       "created_at": "2026-11-14T21:04:59.248714+00:00",

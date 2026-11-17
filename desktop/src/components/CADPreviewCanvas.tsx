@@ -1,5 +1,7 @@
+import { PCBGeometry } from './PCBGeometry';
+import { downloadCandidate } from '../downloadCandidate';
 import { GerberLayerInspector } from './GerberLayerInspector';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { api } from '../api/client';
 import { Layers, Eye, RefreshCw, ExternalLink, Box, ZoomIn, ZoomOut, CheckCircle2, Zap, Package, Camera, Download, Folder, Scissors } from 'lucide-react';
 
@@ -14,6 +16,11 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
   onOpenPCB,
   onOpenSchematic,
 }) => {
+  const requestGeneration = useRef(0);
+  const activeRevision = useRef(revisionId); activeRevision.current = revisionId;
+  const sourceIdentity = useRef<string | null>(null);
+  const [previewEpoch, setPreviewEpoch] = useState(0);
+  const busy = useRef(false);
   const [viewMode, setViewMode] = useState<'pcb' | 'schematic' | '3d' | 'gerber'>('pcb');
   const [render3dData, setRender3dData] = useState<any>(null);
   const [sub3dMode, setSub3dMode] = useState<'raytrace' | 'orbit'>('raytrace');
@@ -48,13 +55,13 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
       const data = await api.calculatePcbThermalField({
         revisionId,
         chassisCooling: nextCooling,
-        copperWeightOz: 2.0,
+        copperWeightOz: copperWeight === '2oz' ? 2.0 : 1.0,
       });
       if (data && data.success) {
         setThermalData(data);
       }
     } catch (err) {
-      console.warn('Could not recalculate thermal field with chassis cooling:', err);
+      setRouteStatus({type:'error',text:String(err)});
     } finally {
       setLoadingThermal(false);
     }
@@ -68,14 +75,14 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
       try {
         const data = await api.calculatePcbThermalField({
           revisionId,
-          chassisCooling: true,
-          copperWeightOz: 2.0,
+          chassisCooling,
+          copperWeightOz: copperWeight === '2oz' ? 2.0 : 1.0,
         });
         if (data && data.success) {
           setThermalData(data);
         }
       } catch (err) {
-        console.warn('Could not load PCB thermal field:', err);
+        setRouteStatus({type:'error',text:String(err)});
       } finally {
         setLoadingThermal(false);
       }
@@ -95,38 +102,13 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
   const handleDownloadGerbers = async () => {
     setDownloadingGerbers(true);
     try {
-      let dataUri = gerberInfo?.dataUri;
-      let filename = gerberInfo?.filename || 'gerbers.zip';
-      if (!dataUri) {
-        const res = await api.downloadGerbers(revisionId);
-        if (res.success && res.data_uri) {
-          dataUri = res.data_uri;
-          filename = res.filename || filename;
-          setGerberInfo({
-            available: true,
-            filename: res.filename,
-            zipPath: res.relative_path,
-            sha256: res.sha256,
-            bytes: res.size_bytes,
-            dataUri: res.data_uri,
-          });
-        } else {
-          setRouteStatus({ type: 'error', text: res.error || 'Failed to download Gerber package' });
-          return;
-        }
-      }
-
-      // Trigger standard browser download
-      const link = document.createElement('a');
-      link.href = dataUri;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
+      const res = await api.downloadGerbers(revisionId);
+      if (!res.success) throw new Error(res.error || 'No current package. Re-export Gerbers.');
+      await downloadCandidate(res);
+      const filename=res.filename;
       setRouteStatus({
         type: 'success',
-        text: `Downloaded ${filename} successfully. Cryptographic release verified with SHA-256.`,
+        text: `Save requested for ${filename}; payload SHA-256 matches. Browser save completion is not observed.`,
       });
     } catch (err: any) {
       setRouteStatus({ type: 'error', text: `Download failed: ${err.message || String(err)}` });
@@ -164,7 +146,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
         });
         setRouteStatus({
           type: 'success',
-          text: `Manufacturing release package generated: ${res.file_count} Gerber & drill files exported to ${res.output_dir}${res.sha256 ? ` (SHA-256: ${res.sha256.slice(0, 12)}...)` : ''}`,
+          text: `Candidate fabrication files generated: ${res.file_count} Gerber & drill files exported to ${res.output_dir}${res.sha256 ? ` (SHA-256: ${res.sha256.slice(0, 12)}...)` : ''}`,
         });
         loadData();
       } else {
@@ -199,8 +181,8 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
         setRouteStatus({
           type: 'success',
           text: openNative && res?.opened
-            ? `Exported ${res.filename} (${(res.size_bytes / 1024 / 1024).toFixed(2)} MB${res.sha256 ? `, SHA: ${res.sha256.slice(0, 12)}...` : ''}) and launched in FreeCAD / 3D CAD Viewer.`
-            : `3D STEP CAD Model exported successfully: ${res.filename} (${(res.size_bytes / 1024 / 1024).toFixed(2)} MB${res.sha256 ? `, SHA: ${res.sha256.slice(0, 12)}...` : ''}).`,
+            ? `Exported ${res.filename} (${(res.size_bytes / 1024 / 1024).toFixed(2)} MB) and launched in FreeCAD. (Tip: Press 'V' then 'F' in FreeCAD to fit the model to screen)`
+            : `3D STEP CAD Model exported successfully: ${res.filename} (${(res.size_bytes / 1024 / 1024).toFixed(2)} MB).`,
         });
         load3d(d3View);
       } else {
@@ -268,7 +250,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
     setConfiguringPlanes(true);
     setRouteStatus({
       type: 'info',
-      text: 'Configuring IPC-2152 4-layer internal planes (In1.Cu GND shield + In2.Cu VIN power plane)...',
+      text: 'Configuring native four-layer copper planes...',
     });
     try {
       const res = await api.setup4LayerPlanes({
@@ -282,7 +264,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
       if (res.success) {
         setRouteStatus({
           type: 'success',
-          text: `IPC-2152 4-Layer stackup active: In1.Cu (${res.gnd_net}) ${res.in1_gnd_poured ? 'poured' : 'pending'}, In2.Cu (${res.pwr_net}) ${res.in2_pwr_poured ? 'poured' : 'pending'}. DRC: ${res.drc?.errors ?? 0} errors.`,
+          text: `4-Layer configuration: In1.Cu (${res.gnd_net}) ${res.in1_gnd_poured ? 'poured' : 'pending'}, In2.Cu (${res.pwr_net}) ${res.in2_pwr_poured ? 'poured' : 'pending'}. DRC: ${res.drc?.errors ?? 'unavailable'} errors, ${res.drc?.warnings ?? 'unavailable'} warnings. No standards qualification implied.`,
         });
         loadData();
       } else {
@@ -305,14 +287,14 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
     setMillingSlot(true);
     setRouteStatus({
       type: 'info',
-      text: 'Milling physical 2.5mm Edge.Cuts isolation air slot between primary and secondary domains...',
+      text: 'Adding 2.5mm Edge.Cuts slot geometry between primary and secondary domains...',
     });
     try {
       const res = await api.millIsolationSlot(revisionId, 2.5);
       if (res.success) {
         setRouteStatus({
           type: 'success',
-          text: `Isolation slot milled on Edge.Cuts (${res.slot_geometry.width_mm}mm × ${res.slot_geometry.length_mm}mm). Copper zones automatically refilled with clearance back-off. DRC: ${res.drc.errors} errors.`,
+          text: `Slot geometry added on Edge.Cuts (${res.slot_geometry.width_mm}mm × ${res.slot_geometry.length_mm}mm). Copper zones automatically refilled with clearance back-off. DRC: ${res.drc?.errors ?? 'unavailable'} errors, ${res.drc?.warnings ?? 'unavailable'} warnings.`,
         });
         loadData();
       } else {
@@ -346,13 +328,13 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
       if (res.success) {
         setRouteStatus({
           type: 'success',
-          text: `Auto-routing completed (${copperWeight}): ${res.tracks} copper tracks, ${res.vias} vias, DRC: ${res.drc_errors} errors. Ground pour filled on B.Cu (spoke=${thermalSpoke}mm).`,
+          text: `Auto-routing completed (${copperWeight}): ${res.tracks} copper tracks, ${res.vias} vias, DRC: ${res.drc_errors} errors. Unconnected: ${res.unrouted_after ?? 'unavailable'}, warnings: ${res.drc_warnings ?? 'unavailable'}. Ground fill: ${res.pour_completed ? 'completed' : 'not completed'}. `,
         });
         loadData();
       } else {
         setRouteStatus({
           type: 'error',
-          text: `Routing notice: ${res.messages?.join(', ') || res.error || 'Routing did not complete.'}`,
+          text: `Routing incomplete or unverified: ${res.unrouted_after ?? 'unknown'} unconnected; DRC: ${res.drc_errors ?? 'unavailable'} errors. ${res.messages?.join(', ') || res.error || ''}`,
         });
         loadData();
       }
@@ -366,37 +348,35 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
     }
   };
 
-  const loadData = () => {
-    setLoading(true);
+  busy.current = routing || exportingGerbers || millingSlot || configuringPlanes;
+  const loadData = async (silent = false) => {
+    if (silent && busy.current) return;
+    const generation=++requestGeneration.current;
+    const revision=revisionId;
+    if (!silent) setLoading(true);
     setError(null);
-    Promise.all([
-      api.cadPreview(revisionId, 'pcb'),
-      api.cadPreview(revisionId, 'schematic'),
-      api.cadPreview(revisionId, '3d', d3View),
-    ])
-      .then(([pcb, sch, d3]) => {
-        setPcbData(pcb);
-        setSchData(sch);
-        setRender3dData(d3);
-        if (pcb?.has_gerbers) {
-          setGerberInfo({
-            available: true,
-            filename: pcb.gerber_filename,
-            zipPath: pcb.gerber_zip_path,
-            sha256: pcb.gerber_sha256,
-            bytes: pcb.gerber_bytes,
-          });
-        }
-      })
-      .catch((err: any) => {
-        setError(err.message || String(err));
-      })
-      .finally(() => setLoading(false));
+    const result=await Promise.allSettled([api.cadPreview(revision,'pcb'),api.cadPreview(revision,'schematic')]);
+    if (activeRevision.current!==revision || generation!==requestGeneration.current) return;
+    const pcb=result[0].status==='fulfilled' ? result[0].value : {available:false,error:String(result[0].reason)};
+    const sch=result[1].status==='fulfilled' ? result[1].value : {available:false,error:String(result[1].reason)};
+    if (sourceIdentity.current !== pcb.source_hash) {
+      sourceIdentity.current=pcb.source_hash || null;
+      setThermalData(null);setShowThermalOverlay(false);setRender3dData(null);
+    }
+    setPcbData(pcb);setSchData(sch);
+    setGerberInfo(pcb.has_gerbers ? {available:true,filename:pcb.gerber_filename,zipPath:pcb.gerber_zip_path,sha256:pcb.gerber_sha256,bytes:pcb.gerber_bytes} : null);
+    if (!silent) setPreviewEpoch(e=>e+1);
+    setLoading(false);
   };
-
   useEffect(() => {
+    ++requestGeneration.current;sourceIdentity.current=null;
+    setPcbData(null);setSchData(null);setRender3dData(null);setGerberInfo(null);setThermalData(null);setShowThermalOverlay(false);setRouteStatus(null);
     loadData();
+    const timer=setInterval(()=>{ if (!document.hidden) loadData(true); },4000);
+    return ()=>{clearInterval(timer);++requestGeneration.current;};
   }, [revisionId]);
+  useEffect(()=>{setThermalData(null);setShowThermalOverlay(false);},[copperWeight]);
+  useEffect(()=>{if(viewMode==='3d') load3d(d3View);},[viewMode,pcbData?.source_hash]);
 
   const activeData = viewMode === 'pcb' ? pcbData : schData;
   const bbox = activeData?.bbox || { min_x: 0, min_y: 0, max_x: 200, max_y: 150, width: 200, height: 150 };
@@ -542,9 +522,9 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
               <span
                 style={{
                   fontSize: 11,
-                  background: activeData.drc_summary.status === 'PASS' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                  color: activeData.drc_summary.status === 'PASS' ? '#34d399' : '#f87171',
-                  border: `1px solid ${activeData.drc_summary.status === 'PASS' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+                  background: activeData.drc_summary.status === 'CLEAR' ? 'rgba(16, 185, 129, 0.15)' : activeData.drc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  color: activeData.drc_summary.status === 'CLEAR' ? '#34d399' : activeData.drc_summary.status === 'WARNINGS' ? '#fbbf24' : '#f87171',
+                  border: `1px solid ${activeData.drc_summary.status === 'CLEAR' ? 'rgba(16, 185, 129, 0.4)' : activeData.drc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
                   padding: '2px 8px',
                   borderRadius: 4,
                   fontWeight: 600,
@@ -553,16 +533,16 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                   gap: 4,
                 }}
               >
-                DRC: {activeData.drc_summary.status} ({activeData.drc_summary.errors} errors, {activeData.drc_summary.warnings} warnings)
+                DRC: {activeData.drc_summary.status} ({activeData.drc_summary.errors ?? 'unknown'} errors, {activeData.drc_summary.warnings ?? 'unknown'} warnings, {activeData.drc_summary.unconnected ?? 'unknown'} unconnected)
               </span>
             )}
             {viewMode === 'schematic' && activeData?.erc_summary && (
               <span
                 style={{
                   fontSize: 11,
-                  background: activeData.erc_summary.status === 'PASS' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                  color: activeData.erc_summary.status === 'PASS' ? '#34d399' : '#f87171',
-                  border: `1px solid ${activeData.erc_summary.status === 'PASS' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+                  background: activeData.erc_summary.status === 'CLEAR' ? 'rgba(16, 185, 129, 0.15)' : activeData.erc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  color: activeData.erc_summary.status === 'CLEAR' ? '#34d399' : activeData.erc_summary.status === 'WARNINGS' ? '#fbbf24' : '#f87171',
+                  border: `1px solid ${activeData.erc_summary.status === 'CLEAR' ? 'rgba(16, 185, 129, 0.4)' : activeData.erc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
                   padding: '2px 8px',
                   borderRadius: 4,
                   fontWeight: 600,
@@ -654,7 +634,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
           </div>
 
           <button
-            onClick={loadData}
+            onClick={() => loadData()}
             disabled={loading}
             style={{
               background: '#1e293b',
@@ -755,7 +735,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                   gap: 6,
                   boxShadow: '0 2px 8px rgba(2, 132, 199, 0.4)',
                 }}
-                title="Configures IPC-2152 compliant 4-layer internal copper plane zones (In1.Cu GND shield + In2.Cu VIN plane)"
+                title="Configure native internal copper planes; this does not qualify a standard or safety requirement"
               >
                 <Layers size={13} className={configuringPlanes ? 'spin' : ''} />
                 {configuringPlanes ? 'Configuring Planes...' : pcbData?.is_4layer ? '🥞 4-Layer Active' : '🥞 4-Layer Planes'}
@@ -950,7 +930,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
 
           {viewMode === 'gerber' && (
         <div style={{ marginTop: 6 }}>
-          <GerberLayerInspector revisionId={revisionId} />
+          <GerberLayerInspector key={`${revisionId}:${pcbData?.source_hash}:${previewEpoch}`} revisionId={revisionId} />
         </div>
       )}
 
@@ -1238,6 +1218,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
               <g>
                 {/* 1. Edge.Cuts Outlines and Isolation Slots */}
                 {(pcbData.edge_cuts || []).map((e: any, i: number) => {
+                  if (e.points) return <polyline key={`ec-${i}`} points={e.points.map((p:number[])=>p.join(',')).join(' ')} fill="none" stroke="#facc15" strokeWidth={.6}/>;
                   if (e.type === 'rect') {
                     const isSlot = (e.x2 - e.x1) <= 6.0 && (e.y2 - e.y1) > 20.0;
                     return (
@@ -1282,27 +1263,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                   );
                 })}
 
-                {/* 2. Copper Tracks */}
-                {(pcbData.tracks || []).map((t: any, i: number) => (
-                  <line
-                    key={`tr-${i}`}
-                    x1={t.x1}
-                    y1={t.y1}
-                    x2={t.x2}
-                    y2={t.y2}
-                    stroke={
-                      t.layer === 'In1.Cu'
-                        ? '#a855f7'
-                        : t.layer === 'In2.Cu'
-                        ? '#06b6d4'
-                        : t.layer === 'B.Cu'
-                        ? '#3b82f6'
-                        : '#f59e0b'
-                    }
-                    strokeWidth={t.width || 0.4}
-                    strokeLinecap="round"
-                  />
-                ))}
+                <PCBGeometry data={pcbData} copperOnly />
 
                 {/* 3. Placed Footprints */}
                 {(pcbData.footprints || []).map((fp: any, idx: number) => {
@@ -1310,7 +1271,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                   return (
                     <g
                       key={`fp-${idx}`}
-                      transform={`translate(${fp.x}, ${fp.y}) rotate(${fp.rot || 0})`}
+                      transform={`translate(${fp.x}, ${fp.y}) rotate(${-(fp.rot || 0)})`}
                       onMouseEnter={() => setHoverItem(fp)}
                       onMouseLeave={() => setHoverItem(null)}
                       style={{ cursor: 'pointer' }}
@@ -1377,10 +1338,11 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                       {/* Copper Pads */}
                       {(fp.pads || []).map((p: any, pi: number) => {
                         const isThru = p.type === 'thru_hole';
+                        const padRot = (p.rot || 0) - (fp.rot || 0);
                         const px = p.ox - (p.sx / 2);
                         const py = p.oy - (p.sy / 2);
                         return (
-                          <g key={`p-${pi}`}>
+                          <g key={`p-${pi}`} transform={padRot ? `rotate(${-padRot} ${p.ox} ${p.oy})` : undefined}>
                             <rect
                               x={px}
                               y={py}
@@ -1637,7 +1599,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                 <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
                   Peak PCB Hotspot (Tj,max)
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: thermalData.overall_status === 'PASS' ? '#22c55e' : '#f59e0b' }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: thermalData.overall_status === 'CLEAR' ? '#22c55e' : '#f59e0b' }}>
                   {thermalData.max_temperature_c.toFixed(1)}°C on {thermalData.max_component}
                 </div>
               </div>
@@ -1891,125 +1853,12 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
             )}
           </div>
 
-          {sub3dMode === 'orbit' ? (
-            <div
-              style={{
-                width: '100%',
-                height: '380px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                perspective: '1200px',
-                userSelect: 'none',
-                cursor: isOrbitDragging ? 'grabbing' : 'grab',
-                overflow: 'hidden',
-                background: 'radial-gradient(circle, #0f172a 0%, #020617 100%)',
-                borderRadius: 8,
-                border: '1px solid #1e293b',
-              }}
-              onMouseDown={(e) => {
-                setIsOrbitDragging(true);
-                setOrbitDragStart({ x: e.clientX, y: e.clientY });
-              }}
-              onMouseMove={(e) => {
-                if (!isOrbitDragging) return;
-                const deltaX = e.clientX - orbitDragStart.x;
-                const deltaY = e.clientY - orbitDragStart.y;
-                setOrbitRotZ((prev) => (prev + deltaX * 0.5) % 360);
-                setOrbitRotX((prev) => Math.max(10, Math.min(85, prev - deltaY * 0.5)));
-                setOrbitDragStart({ x: e.clientX, y: e.clientY });
-              }}
-              onMouseUp={() => setIsOrbitDragging(false)}
-              onMouseLeave={() => setIsOrbitDragging(false)}
-              onWheel={(e) => {
-                e.preventDefault();
-                setOrbitZoom((prev) => Math.max(0.5, Math.min(2.5, prev - e.deltaY * 0.0015)));
-              }}
-              onDoubleClick={() => { setOrbitRotX(55); setOrbitRotZ(25); setOrbitZoom(1.0); }}
-            >
-              <div
-                style={{
-                  transform: `rotateX(${orbitRotX}deg) rotateZ(${orbitRotZ}deg) scale(${orbitZoom})`,
-                  transformStyle: 'preserve-3d',
-                  transition: isOrbitDragging ? 'none' : 'transform 0.15s ease-out',
-                  width: '340px',
-                  height: '240px',
-                  position: 'relative',
-                  borderRadius: '6px',
-                  backgroundColor: '#0a3622',
-                  border: '3px solid #15803d',
-                  boxShadow: '0 25px 60px rgba(0,0,0,0.85), inset 0 0 25px rgba(0,0,0,0.5)',
-                }}
-              >
-                {/* 5mm HV Isolation Barrier Milling Slot */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '12px',
-                    bottom: '12px',
-                    left: '50%',
-                    width: '12px',
-                    transform: 'translateX(-50%) translateZ(1px)',
-                    backgroundColor: '#020617',
-                    border: '1.5px dashed #f8fafc',
-                    borderRadius: '3px',
-                    boxShadow: 'inset 0 0 8px rgba(0,0,0,0.95)',
-                  }}
-                  title="5.0mm High-Voltage Isolation Barrier (Edge.Cuts)"
-                />
-
-                {/* Silk Screen Labels */}
-                <div style={{ position: 'absolute', top: 10, left: 14, color: '#f8fafc', fontSize: 9, fontWeight: 800, letterSpacing: 0.5, transform: 'translateZ(2px)' }}>
-                  PRIMARY HV (400V)
-                </div>
-                <div style={{ position: 'absolute', top: 10, right: 14, color: '#38bdf8', fontSize: 9, fontWeight: 800, letterSpacing: 0.5, transform: 'translateZ(2px)' }}>
-                  SELV ISOLATED (48V)
-                </div>
-
-                {/* 3D Component Blocks */}
-                {/* Transformer T1 */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    width: '54px',
-                    height: '66px',
-                    transform: 'translate(-50%, -50%) translateZ(16px)',
-                    backgroundColor: '#1e293b',
-                    border: '2px solid #eab308',
-                    borderRadius: '4px',
-                    boxShadow: '0 8px 16px rgba(0,0,0,0.7)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#f8fafc',
-                    fontSize: 9,
-                    fontWeight: 700,
-                  }}
-                >
-                  <span>T1</span>
-                  <span style={{ fontSize: 7, color: '#eab308' }}>PQ32/30</span>
-                </div>
-
-                {/* Primary Switches Q1-Q4 */}
-                <div style={{ position: 'absolute', top: '45px', left: '38px', width: '22px', height: '26px', backgroundColor: '#0f172a', border: '1px solid #94a3b8', borderRadius: 2, transform: 'translateZ(8px)', color: '#fff', fontSize: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Q1</div>
-                <div style={{ position: 'absolute', top: '90px', left: '38px', width: '22px', height: '26px', backgroundColor: '#0f172a', border: '1px solid #94a3b8', borderRadius: 2, transform: 'translateZ(8px)', color: '#fff', fontSize: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Q2</div>
-                <div style={{ position: 'absolute', top: '135px', left: '38px', width: '22px', height: '26px', backgroundColor: '#0f172a', border: '1px solid #94a3b8', borderRadius: 2, transform: 'translateZ(8px)', color: '#fff', fontSize: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Q3</div>
-                <div style={{ position: 'absolute', top: '180px', left: '38px', width: '22px', height: '26px', backgroundColor: '#0f172a', border: '1px solid #94a3b8', borderRadius: 2, transform: 'translateZ(8px)', color: '#fff', fontSize: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Q4</div>
-
-                {/* Secondary Rectifiers & Output Filter */}
-                <div style={{ position: 'absolute', top: '55px', right: '42px', width: '24px', height: '28px', backgroundColor: '#0f172a', border: '1px solid #38bdf8', borderRadius: 2, transform: 'translateZ(8px)', color: '#38bdf8', fontSize: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>D1</div>
-                <div style={{ position: 'absolute', top: '105px', right: '42px', width: '24px', height: '28px', backgroundColor: '#0f172a', border: '1px solid #38bdf8', borderRadius: 2, transform: 'translateZ(8px)', color: '#38bdf8', fontSize: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>D2</div>
-                <div style={{ position: 'absolute', top: '155px', right: '38px', width: '32px', height: '32px', backgroundColor: '#1e293b', border: '2px solid #38bdf8', borderRadius: '50%', transform: 'translateZ(14px)', color: '#fff', fontSize: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>C1</div>
-
-                {/* Gold Edge Connector Pads */}
-                <div style={{ position: 'absolute', bottom: '6px', left: '20px', width: '36px', height: '8px', backgroundColor: '#eab308', borderRadius: 1 }} />
-                <div style={{ position: 'absolute', bottom: '6px', right: '20px', width: '36px', height: '8px', backgroundColor: '#eab308', borderRadius: 1 }} />
-              </div>
+          {sub3dMode === 'orbit' && pcbData?.available && (
+            <div style={{width:'100%',height:380,perspective:1000,display:'grid',placeItems:'center'}} onWheel={e=>setOrbitZoom(z=>Math.max(.4,Math.min(3,z+(e.deltaY<0?.1:-.1))))} onMouseDown={e=>{setIsOrbitDragging(true);setOrbitDragStart({x:e.clientX,y:e.clientY});}} onMouseUp={()=>setIsOrbitDragging(false)} onMouseLeave={()=>setIsOrbitDragging(false)} onMouseMove={e=>{if(isOrbitDragging){setOrbitRotZ(z=>z+(e.clientX-orbitDragStart.x)*.3);setOrbitRotX(x=>Math.max(0,Math.min(85,x+(e.clientY-orbitDragStart.y)*.3)));setOrbitDragStart({x:e.clientX,y:e.clientY});}}}>
+              <svg width="75%" height="80%" viewBox={`${pcbData.bbox.min_x-4} ${pcbData.bbox.min_y-4} ${pcbData.bbox.width+8} ${pcbData.bbox.height+8}`} style={{background:'#071a18',transform:`rotateX(${orbitRotX}deg) rotateZ(${orbitRotZ}deg) scale(${orbitZoom})`}}><PCBGeometry data={pcbData}/></svg>
+              <small>Projection of actual PCB geometry; use STEP for solid mechanical models.</small>
             </div>
-          ) : null}
+          )}
 
           {sub3dMode === 'raytrace' && (
             render3dData?.available && render3dData?.render_image ? (
@@ -2116,20 +1965,20 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <span style={{ width: 10, height: 10, borderRadius: 2, background: '#38bdf8' }} />
-              IEC 61010-1 Isolation Slot
+              Edge.Cuts Slot
             </span>
           </div>
 
           <div style={{ color: '#94a3b8', fontFamily: 'monospace' }}>
             Dimensions: {bbox.width.toFixed(1)} × {bbox.height.toFixed(1)} mm •{' '}
             {pcbData?.tracks?.length > 0
-              ? `Routed (${pcbData.tracks.length} tracks${pcbData?.drc_summary ? `, DRC: ${pcbData.drc_summary.status}` : ''})`
-              : 'Placement Only (Unrouted)'}
+              ? `Copper: ${pcbData.tracks.length} displayed / ${pcbData.native_track_count} native tracks, ${pcbData.vias?.length || 0} vias; connectivity: ${pcbData.connectivity_status}`
+              : 'No copper tracks found; connectivity NOT_EVALUATED'}
             {' · '}
             {pcbData?.is_4layer ? (
-              <span style={{ color: '#38bdf8', fontWeight: 700 }}>🥞 4-Layer IPC-2152 Stackup (In1.Cu GND · In2.Cu Power)</span>
+              <span style={{ color: '#38bdf8', fontWeight: 700 }}>🥞 4-Layer Copper Stackup</span>
             ) : (
-              <span style={{ color: '#94a3b8' }}>2-Layer Standard (F.Cu / B.Cu)</span>
+              <span style={{ color: '#94a3b8' }}>{pcbData.layer_count} enabled copper layers</span>
             )}
           </div>
         </div>

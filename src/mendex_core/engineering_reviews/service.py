@@ -22,6 +22,7 @@ def is_ephemeral_workspace_file(rel: str) -> bool:
     parts = rel.replace("\\", "/").split("/")
     ignored_dirs = {
         ".copper",
+        "copper-out",
         "tests",
         "release_package",
         "node_modules",
@@ -31,15 +32,54 @@ def is_ephemeral_workspace_file(rel: str) -> bool:
         "scratch",
         "exports",
         "reports",
+        "simulations",
+        "gerbers",
+        "svg",
+        ".history",
     }
     if any(p in ignored_dirs for p in parts):
         return True
-    fname = parts[-1]
-    if fname.endswith(".lck") or fname.endswith(".tmp") or fname.endswith(".log") or fname.startswith("~"):
+    fname = parts[-1].lower()
+    if (
+        fname.endswith((".lck", ".tmp", ".log", ".raw", ".ans", ".db", ".png", ".jpg", ".svg", ".step", ".drl", ".gbr", ".gbrjob", ".zip", ".rpt", ".kicad_prl", ".bak", "-bak"))
+        or fname.startswith("~")
+    ):
         return True
-    if "thermal_analysis.json" in fname or "wcca_analysis.json" in fname:
+    if (
+        fname in ("drc_report.json", "erc_report.json", "thermal_analysis.json", "wcca_analysis.json")
+        or "drc" in fname
+        or "erc" in fname
+    ):
         return True
     return False
+
+STAGE_DOCUMENT_SCOPES = {
+    "project_initialization": set(),
+    "requirements": {"requirements", "specs", "specification", "architecture"},
+    "feasibility": {"feasibility", "architecture", "requirements", "magnetics"},
+    "calculations": {"calculations", "magnetics", "circuit", "requirements"},
+    "design_development": {"pcb", "circuit", "mechanical", "magnetics", "assembly"},
+    "simulation": {"simulations", "pcb", "circuit", "magnetics"},
+    "verification": {"verification", "validation", "simulations", "measurements", "pcb", "circuit"},
+    "prototype_testing": {"measurements", "laboratory", "validation"},
+    "documentation": {"bom", "assembly", "mechanical", "documentation", "pcb"},
+}
+
+
+def is_stage_document(rel: str, stage_id: str) -> bool:
+    """Returns True if the document path is within the scope of the given lifecycle stage."""
+    if not stage_id or stage_id not in STAGE_DOCUMENT_SCOPES:
+        return True
+    allowed_scopes = STAGE_DOCUMENT_SCOPES[stage_id]
+    parts = rel.replace("\\", "/").split("/")
+    top_dir = parts[0].lower() if len(parts) > 1 else ""
+    fname = parts[-1].lower()
+
+    if top_dir:
+        return any(s in top_dir for s in allowed_scopes)
+
+    return fname.endswith((".txt", ".md", ".json", ".csv", ".pdf", ".docx"))
+
 
 class EngineeringReviewService:
     def __init__(self, studio):
@@ -113,14 +153,14 @@ class EngineeringReviewService:
         # 3. Missing requirements analysis
         missing_info = self.studio.engineering_records.missing_requirements(revision.revision_id)
 
-        # 4. Workspace document hashes
+        # 4. Workspace document hashes scoped to this stage
         ws_path = self.studio.workspace_path(revision)
         doc_hashes = {}
         if ws_path.exists():
             for f in sorted(ws_path.glob("**/*")):
                 if f.is_file() and f.stat().st_size <= MAX_FILE:
                     rel = f.relative_to(ws_path).as_posix()
-                    if not is_ephemeral_workspace_file(rel):
+                    if not is_ephemeral_workspace_file(rel) and is_stage_document(rel, stage_id):
                         doc_hashes[rel] = file_hash(f)
 
         # 5. Evidence hashes attached to current attempt

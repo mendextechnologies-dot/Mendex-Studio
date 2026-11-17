@@ -6,20 +6,13 @@ import {
   CheckCircle2,
   AlertTriangle,
   Clock,
-  Play,
   RotateCcw,
   Plus,
   FileText,
-  Layers,
-  Cpu,
   ChevronRight,
   ChevronDown,
   ShieldCheck,
-  Check,
   X,
-  ExternalLink,
-  Sliders,
-  Activity,
   Zap,
 } from 'lucide-react';
 
@@ -52,7 +45,6 @@ export interface ECRItem {
 export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
   data,
   onRefresh,
-  onOpenFile,
 }) => {
   const [ecrs, setEcrs] = useState<ECRItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -69,7 +61,7 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
   const [newReason, setNewReason] = useState('');
   const [newImpact, setNewImpact] = useState('');
   const [newRequestedBy, setNewRequestedBy] = useState('Senior Power Electronics Design Engineer');
-  const [selectedStages, setSelectedStages] = useState<string[]>([
+  const [selectedStages] = useState<string[]>([
     'calculations',
     'simulation',
     'schematic_design',
@@ -84,7 +76,7 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
   // Review Modal
   const [reviewModalEcr, setReviewModalEcr] = useState<ECRItem | null>(null);
   const [reviewerName, setReviewerName] = useState('Lead Power Systems Engineer (Human Reviewer)');
-  const [reviewDecision, setReviewDecision] = useState<'APPROVED' | 'REJECTED' | 'UNDER_REVIEW'>('APPROVED');
+  const [reviewDecision, setReviewDecision] = useState<'APPROVED' | 'REJECTED' | 'UNDER_REVIEW' | 'IMPLEMENTED'>('APPROVED');
   const [reviewNotes, setReviewNotes] = useState('Approved after electrical tolerance and creepage margin verification.');
 
   // Applying ECO State
@@ -186,10 +178,18 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
 
   // Handle Apply Schematic & Forward Annotate PCB
   const handleApplyECO = async (ecr: ECRItem) => {
+    if (!ecr.schematic_ops || ecr.schematic_ops.length === 0) {
+      setError(`ECR ${ecr.ecr_number} has no automated schematic operations defined. Complete implementation via Review / Sign-off.`);
+      return;
+    }
     setApplyingEcrId(ecr.ecr_id);
     setError(null);
     try {
       const res = await api.applyECRSchematic(ecr.ecr_id, reviewerName, true);
+      if (res && res.success === false) {
+        setError(res.error || 'Failed to apply ECO forward annotation');
+        return;
+      }
       setEcoResults((prev) => ({ ...prev, [ecr.ecr_id]: res }));
       setSuccessMessage(`ECO successfully applied to schematic & PCB for ${ecr.ecr_number}!`);
       await fetchECRs();
@@ -216,31 +216,31 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
     switch (status) {
       case 'IMPLEMENTED':
         return (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc', fontSize: 11, fontWeight: 700 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: '#f3e8ff', color: '#6b21a8', border: '1px solid #d8b4fe', fontSize: 11, fontWeight: 700 }}>
             <CheckCircle2 size={13} /> IMPLEMENTED
           </span>
         );
       case 'APPROVED':
         return (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontSize: 11, fontWeight: 700 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0', fontSize: 11, fontWeight: 700 }}>
             <CheckCircle2 size={13} /> APPROVED
           </span>
         );
       case 'UNDER_REVIEW':
         return (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontSize: 11, fontWeight: 700 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', fontSize: 11, fontWeight: 700 }}>
             <Clock size={13} /> UNDER REVIEW
           </span>
         );
       case 'REJECTED':
         return (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontSize: 11, fontWeight: 700 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca', fontSize: 11, fontWeight: 700 }}>
             <AlertTriangle size={13} /> REJECTED
           </span>
         );
       default:
         return (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: 'rgba(148, 163, 184, 0.15)', color: '#94a3b8', fontSize: 11, fontWeight: 600 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 4, background: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1', fontSize: 11, fontWeight: 600 }}>
             <FileText size={13} /> DRAFT
           </span>
         );
@@ -253,33 +253,34 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
       <div
         className="card"
         style={{
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.7) 100%)',
-          border: '1px solid rgba(168, 85, 247, 0.3)',
+          background: '#ffffff',
+          border: '1px solid var(--border)',
           borderRadius: 8,
           padding: 20,
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
+          boxShadow: '0 1px 3px rgba(23, 32, 51, 0.05)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div
               style={{
-                background: 'rgba(168, 85, 247, 0.2)',
-                borderRadius: 6,
+                background: '#f3e8ff',
+                border: '1px solid #e9d5ff',
+                borderRadius: 8,
                 padding: 10,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#c084fc',
+                color: '#7e22ce',
               }}
             >
               <GitPullRequest size={24} />
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>
                 Engineering Change Management & Forward Annotation (ECR/ECO)
               </h3>
-              <p style={{ margin: '4px 0 0 0', fontSize: 12, color: 'var(--text-muted)' }}>
+              <p style={{ margin: '4px 0 0 0', fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.4 }}>
                 Closed-loop Engineering Change Requests, schematic modification operations, and atomic PCB forward annotation for {data.product.code}
               </p>
             </div>
@@ -311,10 +312,11 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
               marginTop: 14,
               padding: '10px 14px',
               borderRadius: 6,
-              background: 'rgba(239, 68, 68, 0.15)',
-              border: '1px solid rgba(239, 68, 68, 0.4)',
-              color: '#ef4444',
+              background: '#fef2f2',
+              border: '1px solid #fecaca',
+              color: '#b91c1c',
               fontSize: 12,
+              fontWeight: 500,
               display: 'flex',
               alignItems: 'center',
               gap: 8,
@@ -331,10 +333,11 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
               marginTop: 14,
               padding: '10px 14px',
               borderRadius: 6,
-              background: 'rgba(16, 185, 129, 0.15)',
-              border: '1px solid rgba(16, 185, 129, 0.4)',
-              color: '#10b981',
+              background: '#ecfdf5',
+              border: '1px solid #a7f3d0',
+              color: '#047857',
               fontSize: 12,
+              fontWeight: 500,
               display: 'flex',
               alignItems: 'center',
               gap: 8,
@@ -353,32 +356,32 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
             gap: 12,
             marginTop: 18,
             paddingTop: 16,
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid var(--border)',
           }}
         >
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '10px 14px', borderRadius: 6 }}>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total ECRs</span>
-            <div style={{ fontSize: 22, fontWeight: 800, marginTop: 4, color: '#f8fafc' }}>{metrics.total}</div>
+          <div style={{ background: '#f8fafc', padding: '10px 14px', borderRadius: 6, border: '1px solid #e2e8f0' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total ECRs</span>
+            <div style={{ fontSize: 24, fontWeight: 800, marginTop: 4, color: '#0f172a' }}>{metrics.total}</div>
           </div>
 
-          <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '10px 14px', borderRadius: 6, borderLeft: '3px solid #10b981' }}>
-            <span style={{ fontSize: 11, color: '#10b981', textTransform: 'uppercase' }}>Approved</span>
-            <div style={{ fontSize: 22, fontWeight: 800, marginTop: 4, color: '#10b981' }}>{metrics.approved}</div>
+          <div style={{ background: '#ecfdf5', padding: '10px 14px', borderRadius: 6, border: '1px solid #a7f3d0', borderLeft: '4px solid #10b981' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#047857', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Approved</span>
+            <div style={{ fontSize: 24, fontWeight: 800, marginTop: 4, color: '#047857' }}>{metrics.approved}</div>
           </div>
 
-          <div style={{ background: 'rgba(168, 85, 247, 0.05)', padding: '10px 14px', borderRadius: 6, borderLeft: '3px solid #a855f7' }}>
-            <span style={{ fontSize: 11, color: '#c084fc', textTransform: 'uppercase' }}>Implemented</span>
-            <div style={{ fontSize: 22, fontWeight: 800, marginTop: 4, color: '#c084fc' }}>{metrics.implemented}</div>
+          <div style={{ background: '#f5f3ff', padding: '10px 14px', borderRadius: 6, border: '1px solid #ddd6fe', borderLeft: '4px solid #8b5cf6' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#6b21a8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Implemented</span>
+            <div style={{ fontSize: 24, fontWeight: 800, marginTop: 4, color: '#7e22ce' }}>{metrics.implemented}</div>
           </div>
 
-          <div style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '10px 14px', borderRadius: 6, borderLeft: '3px solid #3b82f6' }}>
-            <span style={{ fontSize: 11, color: '#60a5fa', textTransform: 'uppercase' }}>Under Review</span>
-            <div style={{ fontSize: 22, fontWeight: 800, marginTop: 4, color: '#60a5fa' }}>{metrics.underReview}</div>
+          <div style={{ background: '#eff6ff', padding: '10px 14px', borderRadius: 6, border: '1px solid #bfdbfe', borderLeft: '4px solid #3b82f6' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#1d4ed8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Under Review</span>
+            <div style={{ fontSize: 24, fontWeight: 800, marginTop: 4, color: '#1d4ed8' }}>{metrics.underReview}</div>
           </div>
 
-          <div style={{ background: 'rgba(148, 163, 184, 0.05)', padding: '10px 14px', borderRadius: 6, borderLeft: '3px solid #94a3b8' }}>
-            <span style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase' }}>Drafts</span>
-            <div style={{ fontSize: 22, fontWeight: 800, marginTop: 4, color: '#94a3b8' }}>{metrics.draft}</div>
+          <div style={{ background: '#f8fafc', padding: '10px 14px', borderRadius: 6, border: '1px solid #e2e8f0', borderLeft: '4px solid #94a3b8' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Drafts</span>
+            <div style={{ fontSize: 24, fontWeight: 800, marginTop: 4, color: '#334155' }}>{metrics.draft}</div>
           </div>
         </div>
       </div>
@@ -402,24 +405,29 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
                 style={{
                   padding: 18,
                   borderRadius: 8,
-                  border: isExpanded ? '1px solid rgba(168, 85, 247, 0.4)' : '1px solid var(--border)',
-                  background: isExpanded ? 'rgba(30, 41, 59, 0.5)' : 'var(--surface)',
+                  border: isExpanded ? '1.5px solid #8b5cf6' : '1px solid var(--border)',
+                  background: '#ffffff',
+                  boxShadow: isExpanded ? '0 4px 16px rgba(139, 92, 246, 0.08)' : '0 1px 3px rgba(23, 32, 51, 0.04)',
                   transition: 'all 0.2s ease',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
                   <div style={{ flex: '1 1 400px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                      <strong style={{ fontFamily: 'monospace', fontSize: 14, color: '#c084fc' }}>{ecr.ecr_number}</strong>
+                      <strong style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, color: '#7e22ce', background: '#f5f3ff', padding: '2px 8px', borderRadius: 4, border: '1px solid #ddd6fe' }}>
+                        {ecr.ecr_number}
+                      </strong>
                       {getStatusBadge(ecr.status)}
-                      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>by {ecr.requested_by}</span>
+                      <span style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+                        by <strong style={{ color: '#334155' }}>{ecr.requested_by}</strong>
+                      </span>
                       {ecr.created_at && (
                         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                           · {new Date(ecr.created_at).toLocaleDateString()}
                         </span>
                       )}
                     </div>
-                    <h4 style={{ margin: '6px 0 0 0', fontSize: 15, fontWeight: 600, color: 'var(--text)' }}>
+                    <h4 style={{ margin: '8px 0 0 0', fontSize: 16, fontWeight: 700, color: '#0f172a' }}>
                       {ecr.title}
                     </h4>
                   </div>
@@ -437,35 +445,58 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
                     )}
 
                     {ecr.status === 'APPROVED' && (
-                      <button
-                        onClick={() => handleApplyECO(ecr)}
-                        disabled={isApplying}
-                        className="btn btn-primary"
-                        style={{
-                          fontSize: 11,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 5,
-                          background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-                          border: 'none',
-                        }}
-                      >
-                        {isApplying ? (
-                          <>
-                            <RotateCcw size={13} className="animate-spin" /> Annotating PCB...
-                          </>
-                        ) : (
-                          <>
-                            <Zap size={13} /> Apply ECO to PCB
-                          </>
-                        )}
-                      </button>
+                      ecr.schematic_ops && ecr.schematic_ops.length > 0 ? (
+                        <button
+                          onClick={() => handleApplyECO(ecr)}
+                          disabled={isApplying}
+                          className="btn btn-primary"
+                          style={{
+                            fontSize: 11,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 5,
+                            background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                            border: 'none',
+                          }}
+                        >
+                          {isApplying ? (
+                            <>
+                              <RotateCcw size={13} className="animate-spin" /> Annotating PCB...
+                            </>
+                          ) : (
+                            <>
+                              <Zap size={13} /> Apply ECO to PCB
+                            </>
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setReviewModalEcr(ecr);
+                            setReviewDecision('IMPLEMENTED');
+                            setReviewNotes('Manual engineering verification complete; recorded as implemented.');
+                          }}
+                          className="btn btn-primary"
+                          style={{
+                            fontSize: 11,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 5,
+                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                            border: 'none',
+                          }}
+                          title="This ECR has no automated CAD operations; complete sign-off manually"
+                        >
+                          <CheckCircle2 size={13} /> Complete Sign-off
+                        </button>
+                      )
                     )}
 
                     <button
                       onClick={() => setExpandedId(isExpanded ? null : ecr.ecr_id)}
                       className="btn btn-outline"
                       style={{ fontSize: 11, padding: '4px 8px' }}
+                      title={isExpanded ? 'Collapse details' : 'Expand details'}
                     >
                       {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                     </button>
@@ -473,25 +504,26 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
                 </div>
 
                 {/* Description & Impact Summary */}
-                <p style={{ margin: '10px 0 0 0', fontSize: 12, color: '#cbd5e1', lineHeight: 1.4 }}>
+                <p style={{ margin: '10px 0 0 0', fontSize: 13, color: '#334155', lineHeight: 1.5 }}>
                   {ecr.description}
                 </p>
 
                 {/* Affected Lifecycle Stages */}
                 {ecr.affected_stages && ecr.affected_stages.length > 0 && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Affected Stages:</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-dim)' }}>Affected Stages:</span>
                     {ecr.affected_stages.map((st) => (
                       <span
                         key={st}
                         style={{
-                          padding: '2px 7px',
-                          borderRadius: 3,
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          border: '1px solid rgba(255, 255, 255, 0.1)',
-                          fontSize: 10,
+                          padding: '3px 8px',
+                          borderRadius: 4,
+                          background: '#f1f5f9',
+                          border: '1px solid #cbd5e1',
+                          fontSize: 11,
                           fontFamily: 'monospace',
-                          color: '#93c5fd',
+                          fontWeight: 600,
+                          color: '#1e293b',
                         }}
                       >
                         {st}
@@ -506,33 +538,33 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
                     style={{
                       marginTop: 16,
                       paddingTop: 16,
-                      borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderTop: '1px solid #e2e8f0',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: 14,
                     }}
                   >
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
-                      <div style={{ background: 'rgba(0, 0, 0, 0.2)', padding: 12, borderRadius: 6 }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: '#60a5fa', marginBottom: 4, textTransform: 'uppercase' }}>
+                      <div style={{ background: '#f8fafc', padding: 14, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#1d4ed8', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                           Technical Justification
                         </div>
-                        <div style={{ fontSize: 12, color: 'var(--text)', lineHeight: 1.4 }}>{ecr.reason || 'None provided'}</div>
+                        <div style={{ fontSize: 13, color: '#0f172a', lineHeight: 1.5 }}>{ecr.reason || 'None provided'}</div>
                       </div>
 
-                      <div style={{ background: 'rgba(0, 0, 0, 0.2)', padding: 12, borderRadius: 6 }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: '#f59e0b', marginBottom: 4, textTransform: 'uppercase' }}>
+                      <div style={{ background: '#f8fafc', padding: 14, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#b45309', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                           Impact Analysis
                         </div>
-                        <div style={{ fontSize: 12, color: 'var(--text)', lineHeight: 1.4 }}>{ecr.impact_analysis || 'None provided'}</div>
+                        <div style={{ fontSize: 13, color: '#0f172a', lineHeight: 1.5 }}>{ecr.impact_analysis || 'None provided'}</div>
                       </div>
                     </div>
 
                     {/* Schematic Changes Ops */}
                     {ecr.schematic_ops && ecr.schematic_ops.length > 0 && (
-                      <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 6, border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: '#c084fc', marginBottom: 8, textTransform: 'uppercase' }}>
-                          ⚡ Schematic Operations Payload ({ecr.schematic_ops.length} atomic ops)
+                      <div style={{ background: '#0f172a', padding: 14, borderRadius: 6, border: '1px solid #1e293b' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#c084fc', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <Zap size={14} /> Schematic Operations Payload ({ecr.schematic_ops.length} atomic ops)
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                           {ecr.schematic_ops.map((op, opIdx) => (
@@ -541,17 +573,18 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
                               style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 10,
-                                fontSize: 11,
+                                gap: 12,
+                                fontSize: 12,
                                 fontFamily: 'monospace',
-                                background: 'rgba(0, 0, 0, 0.3)',
-                                padding: '6px 10px',
+                                background: '#1e293b',
+                                padding: '8px 12px',
                                 borderRadius: 4,
+                                border: '1px solid #334155',
                               }}
                             >
                               <span style={{ color: '#38bdf8', fontWeight: 700 }}>{op.op}</span>
-                              <span style={{ color: '#facc15' }}>ref: {op.ref}</span>
-                              {op.field && <span style={{ color: '#94a3b8' }}>field: {op.field}</span>}
+                              <span style={{ color: '#facc15', fontWeight: 600 }}>ref: {op.ref}</span>
+                              {op.field && <span style={{ color: '#cbd5e1' }}>field: <strong style={{ color: '#f8fafc' }}>{op.field}</strong></span>}
                               {op.value && <span style={{ color: '#4ade80' }}>value: "{op.value}"</span>}
                             </div>
                           ))}
@@ -563,14 +596,14 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
                     {eco && (
                       <div
                         style={{
-                          background: 'rgba(16, 185, 129, 0.06)',
-                          border: '1px solid rgba(16, 185, 129, 0.3)',
+                          background: '#f0fdf4',
+                          border: '1px solid #86efac',
                           padding: 14,
                           borderRadius: 6,
                         }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#10b981', fontSize: 12, fontWeight: 700 }}>
-                          <CheckCircle2 size={15} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#15803d', fontSize: 13, fontWeight: 700 }}>
+                          <CheckCircle2 size={16} />
                           <span>ECO Forward Annotation Execution Scorecard</span>
                         </div>
                         <div
@@ -579,17 +612,18 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
                             gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
                             gap: 10,
                             marginTop: 10,
-                            fontSize: 11,
+                            fontSize: 12,
+                            color: '#166534',
                           }}
                         >
-                          <div><strong>Status:</strong> {eco.status || 'IMPLEMENTED'}</div>
-                          <div><strong>Added Parts:</strong> {eco.eco?.added_count ?? 0}</div>
-                          <div><strong>Updated Parts:</strong> {eco.eco?.updated_count ?? eco.ops_applied ?? 2}</div>
-                          <div><strong>Tracks Preserved:</strong> {eco.eco?.tracks_preserved !== false ? '100% (✓)' : 'Refilled'}</div>
-                          <div><strong>DRC Status:</strong> {eco.erc?.errors === 0 ? '0 ERC/DRC Errors' : 'Clean'}</div>
+                          <div><strong style={{ color: '#14532d' }}>Status:</strong> {eco.status || 'IMPLEMENTED'}</div>
+                          <div><strong style={{ color: '#14532d' }}>Added Parts:</strong> {eco.eco?.added_count ?? 0}</div>
+                          <div><strong style={{ color: '#14532d' }}>Updated Parts:</strong> {eco.eco?.updated_count ?? eco.ops_applied ?? 2}</div>
+                          <div><strong style={{ color: '#14532d' }}>Tracks Preserved:</strong> {eco.eco?.tracks_preserved !== false ? '100% (✓)' : 'Refilled'}</div>
+                          <div><strong style={{ color: '#14532d' }}>DRC Status:</strong> {eco.erc?.errors === 0 ? '0 ERC/DRC Errors' : 'Clean'}</div>
                         </div>
                         {eco.checkpoint && (
-                          <div style={{ marginTop: 8, fontSize: 10, color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+                          <div style={{ marginTop: 8, fontSize: 11, color: '#15803d', fontFamily: 'monospace' }}>
                             Applied Checkpoint: {eco.checkpoint}
                           </div>
                         )}
@@ -598,8 +632,8 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
 
                     {/* Review Notes */}
                     {ecr.approved_by && (
-                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                        Approved by <strong>{ecr.approved_by}</strong>: <em>"{ecr.review_notes || 'All checks verified'}"</em>
+                      <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '10px 14px', borderRadius: 6, fontSize: 12, color: '#334155' }}>
+                        Approved by <strong style={{ color: '#0f172a' }}>{ecr.approved_by}</strong>: <em>"{ecr.review_notes || 'All checks verified'}"</em>
                       </div>
                     )}
                   </div>
@@ -616,7 +650,8 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.75)',
+            background: 'rgba(15, 23, 42, 0.6)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -631,83 +666,92 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
               maxWidth: 580,
               maxHeight: '90vh',
               overflowY: 'auto',
-              background: '#0f172a',
-              border: '1px solid rgba(168, 85, 247, 0.4)',
-              borderRadius: 8,
+              background: '#ffffff',
+              border: '1px solid #cbd5e1',
+              borderRadius: 10,
+              boxShadow: '0 20px 60px rgba(15, 23, 42, 0.2)',
               padding: 24,
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <GitPullRequest size={20} color="#c084fc" />
-                <h3 style={{ margin: 0, fontSize: 16 }}>New Engineering Change Request (ECR)</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, borderBottom: '1px solid #e2e8f0', paddingBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ background: '#f3e8ff', padding: 8, borderRadius: 6, color: '#7e22ce' }}>
+                  <GitPullRequest size={20} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a' }}>New Engineering Change Request (ECR)</h3>
+                  <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>Formal design revision modification</div>
+                </div>
               </div>
-              <button onClick={() => setCreateModalOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+              <button
+                onClick={() => setCreateModalOpen(false)}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}
+              >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleCreateECR} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 4 }}>Title *</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#334155', marginBottom: 4 }}>Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Upgrade Snubber Damping Resistor R1"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  style={{ width: '100%', padding: '7px 10px', borderRadius: 4, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 12 }}
+                  style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 12 }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 4 }}>Description</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#334155', marginBottom: 4 }}>Description</label>
                 <textarea
                   rows={2}
                   placeholder="Summary of proposed modification..."
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  style={{ width: '100%', padding: '7px 10px', borderRadius: 4, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 12 }}
+                  style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 12 }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 4 }}>Technical Reason</label>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#334155', marginBottom: 4 }}>Technical Reason</label>
                   <input
                     type="text"
                     placeholder="e.g. Damp switch-node overshoot"
                     value={newReason}
                     onChange={(e) => setNewReason(e.target.value)}
-                    style={{ width: '100%', padding: '7px 10px', borderRadius: 4, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 12 }}
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 12 }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 4 }}>Requested By *</label>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#334155', marginBottom: 4 }}>Requested By *</label>
                   <input
                     type="text"
                     required
                     value={newRequestedBy}
                     onChange={(e) => setNewRequestedBy(e.target.value)}
-                    style={{ width: '100%', padding: '7px 10px', borderRadius: 4, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 12 }}
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 12 }}
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 4 }}>Impact Analysis</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#334155', marginBottom: 4 }}>Impact Analysis</label>
                 <input
                   type="text"
                   placeholder="e.g. Reduces peak Vds by 12V; increases dissipation by 0.1W"
                   value={newImpact}
                   onChange={(e) => setNewImpact(e.target.value)}
-                  style={{ width: '100%', padding: '7px 10px', borderRadius: 4, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 12 }}
+                  style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 12 }}
                 />
               </div>
 
               {/* Schematic Ops Switcher */}
-              <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: 12, borderRadius: 6, border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', marginBottom: 10 }}>
+              <div style={{ background: '#f8fafc', padding: 14, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: '#1e293b', cursor: 'pointer', marginBottom: 10 }}>
                   <input
                     type="checkbox"
                     checked={hasSchematicOps}
@@ -719,39 +763,39 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
                 {hasSchematicOps && (
                   <div style={{ display: 'grid', gridTemplateColumns: '80px 100px 1fr 1fr', gap: 8, fontSize: 11 }}>
                     <div>
-                      <span style={{ display: 'block', color: 'var(--text-muted)' }}>Ref:</span>
+                      <span style={{ display: 'block', color: 'var(--text-dim)', marginBottom: 2, fontWeight: 600 }}>Ref:</span>
                       <input
                         type="text"
                         value={opRef}
                         onChange={(e) => setOpRef(e.target.value)}
-                        style={{ width: '100%', padding: 4, borderRadius: 3, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 11 }}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 11 }}
                       />
                     </div>
                     <div>
-                      <span style={{ display: 'block', color: 'var(--text-muted)' }}>Field:</span>
+                      <span style={{ display: 'block', color: 'var(--text-dim)', marginBottom: 2, fontWeight: 600 }}>Field:</span>
                       <input
                         type="text"
                         value={opField}
                         onChange={(e) => setOpField(e.target.value)}
-                        style={{ width: '100%', padding: 4, borderRadius: 3, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 11 }}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 11 }}
                       />
                     </div>
                     <div>
-                      <span style={{ display: 'block', color: 'var(--text-muted)' }}>New Value:</span>
+                      <span style={{ display: 'block', color: 'var(--text-dim)', marginBottom: 2, fontWeight: 600 }}>New Value:</span>
                       <input
                         type="text"
                         value={opVal}
                         onChange={(e) => setOpVal(e.target.value)}
-                        style={{ width: '100%', padding: 4, borderRadius: 3, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 11 }}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 11 }}
                       />
                     </div>
                     <div>
-                      <span style={{ display: 'block', color: 'var(--text-muted)' }}>New MPN:</span>
+                      <span style={{ display: 'block', color: 'var(--text-dim)', marginBottom: 2, fontWeight: 600 }}>New MPN:</span>
                       <input
                         type="text"
                         value={opMpn}
                         onChange={(e) => setOpMpn(e.target.value)}
-                        style={{ width: '100%', padding: 4, borderRadius: 3, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 11 }}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 11 }}
                       />
                     </div>
                   </div>
@@ -777,7 +821,8 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.75)',
+            background: 'rgba(15, 23, 42, 0.6)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -790,54 +835,64 @@ export const ECRManagementCard: React.FC<ECRManagementCardProps> = ({
             style={{
               width: '100%',
               maxWidth: 480,
-              background: '#0f172a',
-              border: '1px solid rgba(16, 185, 129, 0.4)',
-              borderRadius: 8,
+              background: '#ffffff',
+              border: '1px solid #cbd5e1',
+              borderRadius: 10,
+              boxShadow: '0 20px 60px rgba(15, 23, 42, 0.2)',
               padding: 22,
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <ShieldCheck size={20} color="#10b981" />
-                <h3 style={{ margin: 0, fontSize: 16 }}>Formal ECR Review: {reviewModalEcr.ecr_number}</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '1px solid #e2e8f0', paddingBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ background: '#ecfdf5', padding: 8, borderRadius: 6, color: '#047857' }}>
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a' }}>Formal ECR Review: {reviewModalEcr.ecr_number}</h3>
+                  <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>Authorized engineering change sign-off</div>
+                </div>
               </div>
-              <button onClick={() => setReviewModalEcr(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+              <button
+                onClick={() => setReviewModalEcr(null)}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}
+              >
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleReviewSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <form onSubmit={handleReviewSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 4 }}>Reviewer Identity *</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#334155', marginBottom: 4 }}>Reviewer Identity *</label>
                 <input
                   type="text"
                   required
                   value={reviewerName}
                   onChange={(e) => setReviewerName(e.target.value)}
-                  style={{ width: '100%', padding: '7px 10px', borderRadius: 4, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 12 }}
+                  style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 12 }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 4 }}>Review Decision *</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#334155', marginBottom: 4 }}>Review Decision *</label>
                 <select
                   value={reviewDecision}
                   onChange={(e) => setReviewDecision(e.target.value as any)}
-                  style={{ width: '100%', padding: '7px 10px', borderRadius: 4, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 12 }}
+                  style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 12 }}
                 >
                   <option value="APPROVED">✓ APPROVED (Authorizes Schematic / Layout Forward Annotation)</option>
+                  <option value="IMPLEMENTED">✓ IMPLEMENTED (Sign-off as completed & verified)</option>
                   <option value="UNDER_REVIEW">⏳ UNDER REVIEW (Needs Additional Engineering Analysis)</option>
                   <option value="REJECTED">⚠️ REJECTED (Change will not be implemented)</option>
                 </select>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 4 }}>Review Notes & Verification Rationale</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#334155', marginBottom: 4 }}>Review Notes & Verification Rationale</label>
                 <textarea
                   rows={3}
                   value={reviewNotes}
                   onChange={(e) => setReviewNotes(e.target.value)}
-                  style={{ width: '100%', padding: '7px 10px', borderRadius: 4, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 12 }}
+                  style={{ width: '100%', padding: '8px 12px', borderRadius: 4, border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: 12 }}
                 />
               </div>
 

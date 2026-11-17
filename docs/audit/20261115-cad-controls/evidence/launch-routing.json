@@ -1,0 +1,24 @@
+{
+  "open_pcb": {
+    "result": {
+      "opened": "C:\\Mendex studio\\docs\\audit\\20261115-cad-controls\\isolated\\products\\616db9a3-cc70-4833-bf82-c0da0893d718\\revisions\\372853fa-ba12-4614-9933-db4922163b59\\pcb\\sv1000.kicad_pcb"
+    }
+  },
+  "open_schematic": {
+    "result": {
+      "opened": "C:\\Mendex studio\\docs\\audit\\20261115-cad-controls\\isolated\\products\\616db9a3-cc70-4833-bf82-c0da0893d718\\revisions\\372853fa-ba12-4614-9933-db4922163b59\\pcb\\sv1000.kicad_sch"
+    }
+  },
+  "explorer_correct_path": {
+    "result": {
+      "revealed": "C:\\Mendex studio\\docs\\audit\\20261115-cad-controls\\isolated\\products\\616db9a3-cc70-4833-bf82-c0da0893d718\\revisions\\372853fa-ba12-4614-9933-db4922163b59\\pcb\\gerbers"
+    }
+  },
+  "explorer_export_returned_path": {
+    "error": "Choose an existing file or folder inside this revision workspace"
+  },
+  "launch_calls_intercepted": {
+    "native": 2,
+    "explorer": 1
+  }
+}

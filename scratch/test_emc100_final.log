@@ -1,0 +1,21 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\Mendex studio\scratch\test_emc100_final.net
+Start Time: Mon Nov 16 18:47:52 2026
+Options:plotwinsize=0 numdgt=7
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = trap
+AsciiRawFile = true
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 0.231 seconds.
+Total iterations: 10136
+
+Files loaded:
+C:\Mendex studio\scratch\test_emc100_final.net
+
+i_peak: MAX(I(L_COIL))=2.1616904756 FROM 0 TO 0.005
+v_gate_max: MAX(V(GATE))=15 FROM 0 TO 0.005
+v_sense_max: MAX(V(SENSE))=2.1616904756 FROM 0 TO 0.005
+v_switch_max: MAX(V(COIL_MID))=1022152.09898 FROM 0 TO 0.005

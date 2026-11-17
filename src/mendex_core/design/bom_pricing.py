@@ -48,8 +48,20 @@ def _classify_category(desc: str, mpn: str, package: str) -> str:
     return "Passive & Electromechanical"
 
 
-def _estimate_component_pricing(category: str, desc: str, mpn: str, voltage_str: str) -> dict[str, Any]:
-    """Generates realistic market-aligned price breaks, lead times, and distributor data."""
+def _estimate_component_pricing(category: str, desc: str, mpn: str, voltage_str: str, raw_item: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+    """Generates realistic market-aligned price breaks, lead times, and distributor data.
+    
+    If the MPN is unknown or unsourced, sets distributor and lead time to None and
+    lifecycle to UNSOURCED rather than fabricating vendor facts.
+    """
+    raw_item = raw_item or {}
+    mpn_str = (mpn or "").strip()
+    is_unsourced = (
+        not mpn_str
+        or mpn_str.upper() in ("UNKNOWN", "TBD", "NONE", "?", "N/A", "UNSOURCED")
+        or mpn_str.upper().startswith("CUSTOM")
+    )
+
     v_num = 0.0
     try:
         import re
@@ -202,16 +214,28 @@ def _estimate_component_pricing(category: str, desc: str, mpn: str, voltage_str:
         pkg = "Cut Tape"
         risk = "LOW"
 
+    if is_unsourced:
+        final_dist = None
+        final_lead = None
+        final_risk = "NOT_EVALUATED"
+        final_lifecycle = "UNSOURCED"
+    else:
+        final_dist = raw_item.get("distributor") or dist
+        final_lead = raw_item.get("lead_time") or lead
+        final_risk = raw_item.get("sourcing_risk") or risk
+        final_lifecycle = raw_item.get("lifecycle") or "ACTIVE"
+
     return {
         "p1": p1,
         "p25": p25,
         "p100": p100,
         "p1000": p1000,
-        "distributor": dist,
-        "lead_time": lead,
-        "packaging": pkg,
-        "sourcing_risk": risk,
-        "lifecycle": "ACTIVE",
+        "distributor": final_dist,
+        "lead_time": final_lead,
+        "packaging": raw_item.get("package") or pkg,
+        "sourcing_risk": final_risk,
+        "lifecycle": final_lifecycle,
+        "price_source": "PARAMETRIC_MODEL",
     }
 
 
@@ -219,6 +243,9 @@ def generate_bom_pricing_schedule(studio, revision_id: UUID | str, currency: str
     """Generates an authoritative volume BOM cost rollup and purchasing intelligence report."""
     rev_uuid = UUID(str(revision_id))
     rev = studio.get_revision(rev_uuid)
+    if getattr(rev.lifecycle_status, "value", rev.lifecycle_status) != "draft":
+        raise StudioError("IMMUTABLE", "Cannot generate BOM pricing schedule for a frozen or archived baseline")
+
     product = studio.get_product(rev.product_id)
     ws_dir = studio.workspace_path(rev)
     bom_file = ws_dir / "bom" / "bom.json"
@@ -254,7 +281,7 @@ def generate_bom_pricing_schedule(studio, revision_id: UUID | str, currency: str
         volt = itm.get("voltage_rating", "")
 
         cat = _classify_category(desc, mpn, pkg)
-        p_info = _estimate_component_pricing(cat, desc, mpn, volt)
+        p_info = _estimate_component_pricing(cat, desc, mpn, volt, raw_item=itm)
 
         # Extended costs for this line item
         ext_1 = round(qty * p_info["p1"], 2)
@@ -287,6 +314,7 @@ def generate_bom_pricing_schedule(studio, revision_id: UUID | str, currency: str
             "packaging": p_info["packaging"],
             "lead_time_weeks": p_info["lead_time"],
             "sourcing_risk": p_info["sourcing_risk"],
+            "price_source": p_info.get("price_source", "PARAMETRIC_MODEL"),
             "pricing_tiers": {
                 "tier_1": {"unit_price": p_info["p1"], "ext_price": ext_1},
                 "tier_25": {"unit_price": p_info["p25"], "ext_price": ext_25},
@@ -567,7 +595,7 @@ def generate_bom_pricing_schedule(studio, revision_id: UUID | str, currency: str
 
 
 def get_bom_pricing_schedule(studio, revision_id: UUID | str) -> dict[str, Any]:
-    """Retrieves or generates on-demand the BOM pricing schedule for the revision."""
+    """Retrieves existing BOM pricing schedule for the revision. Strictly read-only."""
     rev_uuid = UUID(str(revision_id))
     rev = studio.get_revision(rev_uuid)
     ws_dir = studio.workspace_path(rev)
@@ -598,4 +626,9 @@ def get_bom_pricing_schedule(studio, revision_id: UUID | str) -> dict[str, Any]:
         except Exception:
             pass
 
-    return generate_bom_pricing_schedule(studio, revision_id)
+    return {
+        "success": False,
+        "status": "NOT_EVALUATED",
+        "available": False,
+        "message": "BOM pricing schedule has not been generated for this revision baseline.",
+    }

@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 from uuid import UUID
 from datetime import datetime, timezone
 
@@ -19,31 +19,61 @@ from ..service import StudioError
 from ..evidence import digest
 
 
+def _fmt(val: Optional[float], fmt: str = ".1f", unit: str = "") -> str:
+    """Safely formats numerical values without raising TypeError on None."""
+    if val is None:
+        return "NOT_SPECIFIED"
+    try:
+        formatted = f"{float(val):{fmt}}"
+        return f"{formatted} {unit}".strip() if unit else formatted
+    except Exception:
+        return "NOT_EVALUATED"
+
+
 def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, Any]:
     """Generates an authoritative laboratory bring-up protocol and printable documentation."""
     rev_uuid = UUID(str(revision_id))
     rev = studio.get_revision(rev_uuid)
+    if getattr(rev.lifecycle_status, "value", rev.lifecycle_status) != "draft":
+        raise StudioError("IMMUTABLE", "Cannot generate test plans for a frozen or archived baseline")
+
     product = studio.get_product(rev.product_id)
     spec = rev.specification
     ws_dir = studio.workspace_path(rev)
 
-    vin_nom = getattr(spec, "vin_nom_v", 230.0) or 230.0
-    vin_max = getattr(spec, "vin_max_v", vin_nom * 1.15) or (vin_nom * 1.15)
-    vout = getattr(spec, "vout_v", 325.0) or 325.0
-    iout = getattr(spec, "iout_a", 2.36) or 2.36
-    fsw = getattr(spec, "switching_frequency_hz", 100000.0) or 100000.0
-    pout = vout * iout
-    topology = getattr(spec, "topology", "") or "High Voltage Power Converter"
-    isolation = getattr(spec, "isolation_requirement", "") or "Galvanic Isolation"
+    raw_vin_nom = getattr(spec, "vin_nom_v", None)
+    raw_vin_min = getattr(spec, "vin_min_v", None)
+    raw_vin_max = getattr(spec, "vin_max_v", None)
+    raw_vout = getattr(spec, "vout_v", None)
+    raw_iout = getattr(spec, "iout_a", None)
+    raw_fsw = getattr(spec, "switching_frequency_hz", None)
+
+    # Derived values with fallback representations
+    vin_nom = float(raw_vin_nom) if raw_vin_nom is not None else None
+    vin_max = float(raw_vin_max) if raw_vin_max is not None else (vin_nom * 1.15 if vin_nom else None)
+    vin_min = float(raw_vin_min) if raw_vin_min is not None else (vin_nom * 0.85 if vin_nom else None)
+    vout = float(raw_vout) if raw_vout is not None else None
+    iout = float(raw_iout) if raw_iout is not None else None
+    fsw = float(raw_fsw) if raw_fsw is not None else None
+    pout = (vout * iout) if (vout is not None and iout is not None) else None
+
+    topology = getattr(spec, "topology", "") or "Unspecified Topology"
+    isolation = getattr(spec, "isolation_requirement", "") or "Unspecified Galvanic Isolation"
 
     # Determine safety hazard classification
-    max_voltage = max(vin_max, vout)
+    known_voltages = [v for v in (vin_max, vout) if v is not None]
+    max_voltage = max(known_voltages) if known_voltages else 0.0
     is_high_voltage = max_voltage >= 60.0
     is_extreme_hv = max_voltage >= 500.0
 
-    safety_category = "CAT III / High Voltage Hazard" if is_high_voltage else "Standard Bench (SELV)"
-    if is_extreme_hv:
+    if not known_voltages:
+        safety_category = "UNSPECIFIED / NOT_EVALUATED"
+    elif is_extreme_hv:
         safety_category = "CAT III / Extreme High Voltage (>500V)"
+    elif is_high_voltage:
+        safety_category = "CAT III / High Voltage Hazard"
+    else:
+        safety_category = "Standard Bench (SELV)"
 
     protocol_id = f"LTP-{product.code}-{rev.revision_label}"
     created_at = datetime.now(timezone.utc).isoformat()
@@ -105,7 +135,7 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
             "signal": "Gate Drive V_GS",
             "test_point": "TP_GATE (Gate of primary switch Q1)",
             "reference": "TP_SRC (Source / Emitter of Q1)",
-            "expected": f"Clean 0V to +15V square pulse, rise time tr < 150ns, no spurious ringing",
+            "expected": "Clean 0V to +15V square pulse, rise time tr < 150ns, no spurious ringing",
             "probe_type": "10:1 Passive Probe or Low-Voltage Differential",
         },
         {
@@ -113,7 +143,7 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
             "signal": "Switch Node V_SW / V_DS",
             "test_point": "TP_DRAIN (Drain / Collector of Q1)",
             "reference": "TP_GND_PRI (Primary Ground)",
-            "expected": f"Peak voltage <= {vin_max * 1.3:.1f}V during turn-off (snubber clamped)",
+            "expected": f"Peak voltage <= {_fmt(vin_max * 1.3 if vin_max else None, '.1f', 'V')} during turn-off (snubber clamped)",
             "probe_type": "100:1 / 1000:1 High-Voltage Differential Probe",
         },
         {
@@ -121,7 +151,7 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
             "signal": "Inductive Current I_SENSE",
             "test_point": "R_SENSE / Actuator Loop",
             "reference": "Series loop / current clamp",
-            "expected": f"Linear current ramp peaking at {iout:.2f}A without saturation curvature",
+            "expected": f"Linear current ramp peaking at {_fmt(iout, '.2f', 'A')} without saturation curvature",
             "probe_type": "High-Frequency AC/DC Current Probe (100 mV/A)",
         },
         {
@@ -129,12 +159,22 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
             "signal": "Output Voltage V_OUT",
             "test_point": "TP_VOUT (Output Terminal J2)",
             "reference": "TP_GND_SEC (Secondary Ground)",
-            "expected": f"Nominal {vout:.1f}V DC, ripple pk-pk < {max(0.1, vout * 0.02):.2f}V",
+            "expected": f"Nominal {_fmt(vout, '.1f', 'V')} DC, ripple pk-pk < {_fmt(max(0.1, vout * 0.02) if vout else None, '.2f', 'V')}",
             "probe_type": "10:1 Passive Probe (AC-coupled, 20 MHz BW limit)",
         },
     ]
 
     # Staged bring-up procedure (4 phases)
+    phase3_step1_detail = f"Inject {_fmt(vin_nom * 0.10 if vin_nom else None, '.1f', 'V')} into main input with 100mA supply current limit. Trigger single pulse and observe switch node on CH2."
+    phase3_step2_detail = f"Increase input to {_fmt(vin_nom * 0.25 if vin_nom else None, '.1f', 'V')}. Measure peak turn-off overshoot and verify snubber damping ratio."
+    phase3_step2_crit = f"V_DS spike < {_fmt(vin_nom * 0.25 * 1.35 if vin_nom else None, '.1f', 'V')}; ringing damped within 3 cycles."
+    phase3_step3_detail = f"Increase input to {_fmt(vin_nom * 0.50 if vin_nom else None, '.1f', 'V')}. Monitor current ramp slope dI/dt with current probe on CH3."
+    phase3_step4_detail = f"Increase input to nominal {_fmt(vin_nom, '.1f', 'V')} with rated current limit. Verify full output charging and regulation."
+    phase3_step4_crit = f"V_OUT reaches nominal {_fmt(vout, '.1f', 'V')}; peak current reaches {_fmt(iout, '.2f', 'A')}."
+
+    phase4_step1_detail = f"Operate board under nominal conditions ({_fmt(vin_nom, '.1f', 'V')} in, {_fmt(vout, '.1f', 'V')} out, {_fmt(iout, '.2f', 'A')} load, {_fmt(pout, '.1f', 'W')}) continuously for 15 minutes."
+    phase4_step3_crit = f"V_OUT ripple pk-pk <= {_fmt(max(0.1, vout * 0.02) if vout else None, '.2f', 'V')}."
+
     phases = [
         {
             "phase_num": 1,
@@ -149,8 +189,8 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
                 {
                     "step": "1.2",
                     "action": "Galvanic Isolation Barrier Hi-Pot / Megohmmeter Test",
-                    "detail": "Apply 1000V DC between Primary Ground (PRI_GND) and Secondary Ground (SEC_GND) across the 5.0mm isolation barrier slot.",
-                    "criteria": "Insulation resistance R_iso >= 100 M-Ohm; leakage current < 50 uA.",
+                    "detail": "Apply verified test potential across isolation barrier between Primary Ground (PRI_GND) and Secondary Ground (SEC_GND). Do not apply generic voltages without verified requirements.",
+                    "criteria": "Insulation resistance R_iso >= 100 M-Ohm; leakage current within specification limits.",
                 },
                 {
                     "step": "1.3",
@@ -167,13 +207,13 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
                 {
                     "step": "2.1",
                     "action": "Auxiliary Rail Power-Up",
-                    "detail": "Apply auxiliary low voltage only (18VAC / 24VDC aux). Leave high-voltage main rail disconnected.",
+                    "detail": "Apply auxiliary low voltage only. Leave high-voltage main rail disconnected.",
                     "criteria": "+15V rail within 14.25V-15.75V (+-5%); +5V rail within 4.75V-5.25V (+-5%).",
                 },
                 {
                     "step": "2.2",
                     "action": "Timing Logic & Multivibrator Pulse Check",
-                    "detail": "Apply test trigger pulse to input header (J1 / SW1). Monitor 74HC123 monostable pulse output.",
+                    "detail": "Apply test trigger pulse to input header (J1 / SW1). Monitor monostable/PWM pulse output.",
                     "criteria": "Deterministic pulse output with measured duration matching timing network +-10%.",
                 },
                 {
@@ -191,26 +231,26 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
                 {
                     "step": "3.1",
                     "action": "10% Voltage Soak (SELV Verification)",
-                    "detail": f"Inject {vin_nom * 0.10:.1f}V into main input with 100mA supply current limit. Trigger single pulse and observe switch node on CH2.",
+                    "detail": phase3_step1_detail,
                     "criteria": "Clean switching edge; no shoot-through current; supply current < 50mA quiescent.",
                 },
                 {
                     "step": "3.2",
                     "action": "25% Voltage Step & Snubber Damping",
-                    "detail": f"Increase input to {vin_nom * 0.25:.1f}V. Measure peak turn-off overshoot and verify snubber damping ratio.",
-                    "criteria": f"V_DS spike < {vin_nom * 0.25 * 1.35:.1f}V; ringing damped within 3 cycles.",
+                    "detail": phase3_step2_detail,
+                    "criteria": phase3_step2_crit,
                 },
                 {
                     "step": "3.3",
                     "action": "50% Voltage Step & Magnetics Linearity",
-                    "detail": f"Increase input to {vin_nom * 0.50:.1f}V. Monitor current ramp slope dI/dt with current probe on CH3.",
+                    "detail": phase3_step3_detail,
                     "criteria": "Linear current ramp without upward saturation curvature; peak flux within safe B_peak margin.",
                 },
                 {
                     "step": "3.4",
                     "action": "100% Full Nominal Voltage Bring-Up",
-                    "detail": f"Increase input to nominal {vin_nom:.1f}V with rated current limit. Verify full output charging and regulation.",
-                    "criteria": f"V_OUT reaches nominal {vout:.1f}V; peak current reaches {iout:.2f}A.",
+                    "detail": phase3_step4_detail,
+                    "criteria": phase3_step4_crit,
                 },
             ],
         },
@@ -221,7 +261,7 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
                 {
                     "step": "4.1",
                     "action": "15-Minute Full-Power Soak",
-                    "detail": f"Operate board under nominal conditions ({vin_nom:.1f}V in, {vout:.1f}V out, {iout:.2f}A load, {pout:.1f}W) continuously for 15 minutes.",
+                    "detail": phase4_step1_detail,
                     "criteria": "Stable operation with zero component failure or voltage drift > 2%.",
                 },
                 {
@@ -234,7 +274,7 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
                     "step": "4.3",
                     "action": "Output Ripple & Noise Characterization",
                     "detail": "Measure output ripple with 20 MHz bandwidth limit and tip-and-barrel ground spring at full rated load.",
-                    "criteria": f"V_OUT ripple pk-pk <= {max(0.1, vout * 0.02):.2f}V.",
+                    "criteria": phase4_step3_crit,
                 },
             ],
         },
@@ -280,14 +320,15 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
         f"**Date Generated:** {created_at} | **Safety Category:** `{safety_category}`",
         "",
         "> [!IMPORTANT]",
-        "> **Physical Laboratory Execution Gate (G16 / G17 / G23):**",
-        "> Generating this protocol does **not** claim or imply that physical testing has occurred or that hardware is approved.",
+        "> **Physical Laboratory Execution Gate (G06 / G14 / AGENTS.md):**",
+        "> Generating this draft protocol does **not** claim or imply that physical testing has occurred, nor does it",
+        "> authorize energization or physical hardware operation. Missing or unverified requirements remain NOT_EVALUATED.",
         "> Authentic laboratory execution requires an accredited engineer, calibrated test assets, and signed measurement records.",
         "",
         "## 1. Operating Design Envelope & Nominal Ratings",
-        f"- **Nominal Input Voltage:** {vin_nom:.1f} V (Range: {getattr(spec, 'vin_min_v', vin_nom*0.8):.1f} V to {vin_max:.1f} V)",
-        f"- **Nominal Output Voltage:** {vout:.1f} V (Nominal Power: {pout:.1f} W at {iout:.2f} A)",
-        f"- **Switching Frequency:** {fsw/1000.0:.1f} kHz",
+        f"- **Nominal Input Voltage:** {_fmt(vin_nom, '.1f', 'V')} (Range: {_fmt(vin_min, '.1f', 'V')} to {_fmt(vin_max, '.1f', 'V')})",
+        f"- **Nominal Output Voltage:** {_fmt(vout, '.1f', 'V')} (Nominal Power: {_fmt(pout, '.1f', 'W')} at {_fmt(iout, '.2f', 'A')})",
+        f"- **Switching Frequency:** {_fmt(fsw / 1000.0 if fsw else None, '.1f', 'kHz')}",
         f"- **Topology:** {topology}",
         f"- **Galvanic Isolation:** {isolation}",
         "",
@@ -381,16 +422,16 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
 </div>
 
 <div class="disclaimer">
-  <b>Authoritative Physical Laboratory Testing Gate (G16 / G17 / G23):</b><br>
-  This protocol governs physical laboratory testing. Generating this document does <b>not</b> claim or imply that physical testing has occurred or that hardware is approved for production.
+  <b>Authoritative Physical Laboratory Testing Gate (G06 / G14 / AGENTS.md):</b><br>
+  This protocol governs physical laboratory testing. Generating this draft document does <b>not</b> claim or imply that physical testing has occurred or that hardware is approved for production. It does not authorize energization.
 </div>
 
 <h2>1. Operating Design Envelope</h2>
 <table>
   <tr><th>Parameter</th><th>Value</th><th>Parameter</th><th>Value</th></tr>
-  <tr><td>Nominal Input Voltage</td><td>{vin_nom:.1f} V</td><td>Nominal Output Voltage</td><td>{vout:.1f} V</td></tr>
-  <tr><td>Input Voltage Range</td><td>{getattr(spec, 'vin_min_v', vin_nom*0.8):.1f} V to {vin_max:.1f} V</td><td>Full Load Output Power</td><td>{pout:.1f} W ({iout:.2f} A)</td></tr>
-  <tr><td>Switching Frequency</td><td>{fsw/1000.0:.1f} kHz</td><td>Topology</td><td>{topology}</td></tr>
+  <tr><td>Nominal Input Voltage</td><td>{_fmt(vin_nom, '.1f', 'V')}</td><td>Nominal Output Voltage</td><td>{_fmt(vout, '.1f', 'V')}</td></tr>
+  <tr><td>Input Voltage Range</td><td>{_fmt(vin_min, '.1f', 'V')} to {_fmt(vin_max, '.1f', 'V')}</td><td>Full Load Output Power</td><td>{_fmt(pout, '.1f', 'W')} ({_fmt(iout, '.2f', 'A')})</td></tr>
+  <tr><td>Switching Frequency</td><td>{_fmt(fsw / 1000.0 if fsw else None, '.1f', 'kHz')}</td><td>Topology</td><td>{topology}</td></tr>
   <tr><td>Galvanic Isolation</td><td>{isolation}</td><td>Safety Classification</td><td>{safety_category}</td></tr>
 </table>
 
@@ -411,60 +452,59 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
 </ul>
 
 <div class="scorecard">
-  <h3 style="margin-top: 0; color: #0f766e;">Attributable Physical Test Sign-Off Scorecard</h3>
-  <table style="border: none;">
-    <tr><td><b>Test Station ID:</b> ____________________</td><td><b>Calibration Due:</b> ____________________</td></tr>
-    <tr><td><b>Lead Test Engineer:</b> ____________________</td><td><b>Attributable Signature:</b> ____________________</td></tr>
-    <tr><td><b>Physical Execution Date:</b> ____________________</td><td><b>Overall Verdict:</b> [ ] PASS &nbsp;&nbsp; [ ] FAIL</td></tr>
+  <h2 style="color: #0f766e; margin-top: 0; border-bottom: 1px solid #99f6e4;">5. Attributable Physical Test Sign-Off Scorecard</h2>
+  <p style="font-size: 9pt; color: #475569;">To be completed in physical ink by the Lead Test Engineer during physical chamber testing.</p>
+  <table style="background: transparent; margin-bottom: 6px;">
+    <tr><td><b>Test Station Asset ID:</b> ____________________</td><td><b>Calibration Expiry:</b> ____________________</td></tr>
+    <tr><td><b>Lead Test Engineer:</b> ____________________</td><td><b>Signature:</b> ____________________</td></tr>
+    <tr><td><b>Physical Test Date:</b> ____________________</td><td><b>Overall Verdict:</b> [ ] PASS &nbsp;&nbsp; [ ] FAIL</td></tr>
   </table>
-  <div style="font-size: 9pt; color: #64748b; margin-top: 8px;">
-    Raw oscilloscope CSV captures and thermal FLIR images must be cryptographically hashed and recorded into StudioService.measurements.
-  </div>
 </div>
+
 </body>
 </html>
 """
 
-    # Persist files into revision workspace
+    # Persist files to revision workspace
     test_dir = ws_dir / "tests" / "laboratory_test_plan"
     test_dir.mkdir(parents=True, exist_ok=True)
+
     json_path = test_dir / "test_plan.json"
     md_path = test_dir / "test_plan.md"
     html_path = test_dir / "test_plan.html"
 
-    plan_data = {
+    plan_payload = {
         "protocol_id": protocol_id,
-        "product_id": str(product.product_id),
-        "product_name": product.name,
         "product_code": product.code,
-        "revision_id": str(rev.revision_id),
         "revision_label": rev.revision_label,
         "created_at": created_at,
         "safety_category": safety_category,
         "is_high_voltage": is_high_voltage,
-        "operating_envelope": {
+        "is_extreme_hv": is_extreme_hv,
+        "nominal_ratings": {
             "vin_nom_v": vin_nom,
+            "vin_min_v": vin_min,
             "vin_max_v": vin_max,
             "vout_v": vout,
             "iout_a": iout,
             "pout_w": pout,
-            "fsw_hz": fsw,
+            "switching_frequency_hz": fsw,
             "topology": topology,
             "isolation": isolation,
         },
-        "equipment_checklist": equipment,
+        "equipment": equipment,
         "ppe_checklist": ppe_checklist,
         "test_points": test_points,
         "phases": phases,
         "abort_criteria": abort_criteria,
+        "scorecard": scorecard_template,
         "scorecard_template": scorecard_template,
     }
 
-    json_path.write_text(json.dumps(plan_data, indent=2), encoding="utf-8")
+    json_bytes = json.dumps(plan_payload, indent=2).encode("utf-8")
+    json_path.write_bytes(json_bytes)
     md_path.write_text(md_text, encoding="utf-8")
     html_path.write_text(html_text, encoding="utf-8")
-
-    plan_digest = digest(json_path.read_bytes())
 
     return {
         "success": True,
@@ -475,15 +515,15 @@ def generate_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, 
         "json_path": str(json_path.relative_to(ws_dir).as_posix()),
         "markdown_path": str(md_path.relative_to(ws_dir).as_posix()),
         "html_path": str(html_path.relative_to(ws_dir).as_posix()),
-        "sha256": plan_digest,
+        "sha256": digest(json_bytes),
         "markdown_content": md_text,
         "html_content": html_text,
-        "test_plan": plan_data,
+        "test_plan": plan_payload,
     }
 
 
 def get_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, Any]:
-    """Retrieves existing test plan or generates one if not yet present."""
+    """Retrieves existing test plan. Strictly read-only; does not mutate baseline."""
     rev_uuid = UUID(str(revision_id))
     rev = studio.get_revision(rev_uuid)
     ws_dir = studio.workspace_path(rev)
@@ -512,5 +552,9 @@ def get_laboratory_test_plan(studio, revision_id: UUID | str) -> dict[str, Any]:
         except Exception:
             pass
 
-    return generate_laboratory_test_plan(studio, revision_id)
-
+    return {
+        "success": False,
+        "status": "NOT_EVALUATED",
+        "available": False,
+        "message": "Laboratory test plan has not been generated for this revision baseline.",
+    }

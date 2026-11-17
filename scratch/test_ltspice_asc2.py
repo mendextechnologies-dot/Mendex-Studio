@@ -1,0 +1,109 @@
+import subprocess
+from pathlib import Path
+
+asc_content = """Version 4
+SHEET 1 1280 800
+WIRE 64 80 64 16
+WIRE 64 16 256 16
+WIRE 256 16 256 80
+WIRE 256 16 416 16
+WIRE 416 16 416 80
+WIRE 64 176 64 240
+WIRE 256 176 256 224
+WIRE 416 144 416 192
+WIRE 416 192 256 192
+WIRE 256 192 256 224
+WIRE 208 304 160 304
+WIRE 160 304 160 368
+WIRE 160 448 160 480
+WIRE 256 320 256 480
+WIRE 64 240 64 480
+WIRE 64 480 160 480
+WIRE 160 480 256 480
+WIRE 672 80 672 16
+WIRE 672 16 800 16
+WIRE 800 16 800 80
+WIRE 672 176 672 320
+WIRE 672 320 800 320
+WIRE 800 144 800 208
+WIRE 800 208 928 208
+WIRE 928 208 928 256
+WIRE 928 320 928 384
+WIRE 1056 208 1056 256
+WIRE 928 208 1056 208
+WIRE 1056 336 1056 384
+WIRE 928 384 1056 384
+WIRE 800 320 800 384
+WIRE 800 384 928 384
+FLAG 64 480 0
+FLAG 800 384 0
+FLAG 256 16 IN
+FLAG 256 192 PRI_DRAIN
+FLAG 160 304 GATE
+FLAG 800 80 SEC_ANODE
+FLAG 928 208 VOUT
+FLAG 416 192 SNUB_NODE
+SYMBOL voltage 64 64 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName V1
+SYMATTR Value 24
+SYMBOL voltage 160 352 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName VG
+SYMATTR Value PULSE(0 10 0 10n 10n 4.08u 10u)
+SYMBOL ind 240 64 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName L1
+SYMATTR Value 474.42u
+SYMBOL ind 656 64 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName L2
+SYMATTR Value 1.61H
+SYMBOL nmos 208 224 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName M1
+SYMATTR Value NMOS_SW
+SYMATTR Prefix M
+SYMBOL diode 400 80 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName D_SNUB
+SYMATTR Value DFAST
+SYMBOL cap 912 256 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName C_OUT
+SYMATTR Value 220n
+SYMATTR SpiceLine IC=1000
+SYMBOL res 1040 240 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName R_LOAD
+SYMATTR Value 1Meg
+SYMBOL diode 784 80 R0
+WINDOW 123 0 0 Left 2
+WINDOW 39 0 0 Left 2
+SYMATTR InstName D1
+SYMATTR Value HVSiC
+TEXT 40 520 Left 2 !K1 L1 L2 0.998
+TEXT 40 550 Left 2 !.model NMOS_SW VDMOS(Ron=0.003 Qg=32n Vto=2.5)
+TEXT 40 580 Left 2 !.model DFAST D(Is=1e-9 Rs=0.1 Cjo=5p Bv=600)
+TEXT 40 610 Left 2 !.model HVSiC D(Is=1e-12 Rs=0.5 Cjo=10p Bv=3300)
+TEXT 40 640 Left 2 !.tran 0 100u 0 100n uic
+"""
+
+test_asc = Path("scratch/test_flyback.asc")
+test_asc.write_text(asc_content, encoding="utf-8")
+
+ltspice_exe = Path(r"C:\Program Files\ADI\LTspice\LTspice.exe")
+cmd = [str(ltspice_exe), "-b", "-ascii", str(test_asc.resolve())]
+res = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+print("Return code:", res.returncode)
+log = test_asc.with_suffix(".log")
+if log.exists():
+    print("Log content:\n", log.read_text()[:600])

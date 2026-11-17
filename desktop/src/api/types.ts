@@ -122,6 +122,7 @@ export interface ProjectDetailData {
   calculations: any[];
   requirements: any[];
   registered_artifacts: any[];
+  workspace_path?: string;
   files: Array<{
     relative_path: string;
     name: string;

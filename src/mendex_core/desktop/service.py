@@ -410,7 +410,7 @@ class DesktopService:
         product = self.studio.get_product(request.project_id)
         revisions = self.studio.list_revisions(product.product_id)
         target_rev_id = request.revision_id or product.active_revision_id
-        revision = next((r for r in revisions if r.revision_id == target_rev_id), None)
+        revision = next((r for r in revisions if str(r.revision_id) == str(target_rev_id)), None)
         if revision is None:
             raise StudioError("NOT_FOUND", "Revision not found for this product")
 
@@ -498,6 +498,7 @@ class DesktopService:
             "calculations": self.studio.engineering_records.list_records("calculation", {"revision_id": str(revision.revision_id)}),
             "requirements": self.studio.engineering_records.list_records("requirements", {"revision_id": str(revision.revision_id)}),
             "registered_artifacts": self.studio.engineering_records.list_records("artifact", {"revision_id": str(revision.revision_id)}),
+            "workspace_path": str(ws_path),
             "files": files,
             "simulations": revision_jobs,
             "unattributed_simulation_count": sum(job["revision_id"] is None for job in sims),
@@ -572,7 +573,7 @@ class DesktopService:
                 femm_txt = sim_dir / "femm_results.txt"
                 if femm_txt.exists():
                     ftext = femm_txt.read_text(encoding="utf-8", errors="replace")
-                    bpk_m = re.search(r"Peak Flux Density at Center Leg \(Bpk\):\s*([\d\.]+)\s*T", ftext)
+                    bpk_m = re.search(r"Peak Flux Density at Center Leg \((?:Bpk|B_center)\):\s*([\d\.]+)\s*T", ftext)
                     if bpk_m:
                         bval = float(bpk_m.group(1))
                         meas.append({
@@ -583,7 +584,7 @@ class DesktopService:
                             "pass_fail": "PASS" if bval < 0.35 else "FAIL",
                             "created_at": datetime.fromtimestamp(femm_txt.stat().st_mtime, timezone.utc).isoformat(),
                         })
-                    bmax_m = re.search(r"Max Linear Core Flux Density:\s*([\d\.]+)\s*T", ftext)
+                    bmax_m = re.search(r"(?:Max Linear Core Flux Density|Peak core flux density Bpk\s*=)\s*([\d\.]+)\s*T", ftext)
                     if bmax_m:
                         bmax_val = float(bmax_m.group(1))
                         meas.append({
@@ -747,15 +748,25 @@ class DesktopService:
             req_limit = max(1, request.limit)
             end_idx = min(start_idx + req_limit, total_pts)
             samples = []
+            def _clean_num(val):
+                try:
+                    f = float(val)
+                    return 0.0 if (math.isnan(f) or math.isinf(f)) else f
+                except (ValueError, TypeError):
+                    return 0.0
+
             if total_pts > 0 and start_idx < end_idx:
                 for idx in range(start_idx, end_idx):
-                    sample = {"time": float(time_arr[idx])}
+                    sample = {"time": _clean_num(time_arr[idx])}
                     for trace in requested_traces:
                         if trace in raw_data:
-                            sample[trace] = float(raw_data[trace][idx])
+                            sample[trace] = _clean_num(raw_data[trace][idx])
                     samples.append(sample)
             from integrations.parsers.ltspice_parser import calculate_waveform_metrics
             metrics = calculate_waveform_metrics(raw_data)
+            clean_metrics = {}
+            for k, m in metrics.items():
+                clean_metrics[k] = {mk: _clean_num(mv) for mk, mv in m.items()}
             return {
                 "samples": samples,
                 "traces": requested_traces,
@@ -763,7 +774,7 @@ class DesktopService:
                 "start": start_idx,
                 "limit": req_limit,
                 "returned_points": len(samples),
-                "metrics": metrics,
+                "metrics": clean_metrics,
             }
         except Exception as exc:
             return {"samples": [], "traces": request.traces, "error": str(exc)}
@@ -778,249 +789,77 @@ class DesktopService:
         
         kind = getattr(request, "kind", "pcb").lower()
         if kind == "3d":
-            view_angle = (getattr(request, "view", "iso") or "iso").lower()
-            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
-            if not pcb_files:
-                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
-            if not pcb_files:
-                return {"kind": "3d", "available": False, "error": "No .kicad_pcb file found in this revision"}
-
-            pcb_path = pcb_files[0]
-            render_filename = "board_3d_render.png" if view_angle == "iso" else f"board_3d_{view_angle}.png"
-            render_png = pcb_path.parent / render_filename
-
-            # Check alternative render names if primary does not exist
-            if not render_png.exists() or render_png.stat().st_size == 0:
-                for alt_name in [f"pcb-3d-{view_angle}.png", f"{pcb_path.stem}_3d_{view_angle}.png", f"render/pcb-3d-{view_angle}.png", "board_3d_render.png"]:
-                    alt_path = pcb_path.parent / alt_name
-                    if alt_path.exists() and alt_path.stat().st_size > 0:
-                        render_png = alt_path
-                        break
-
-            # Check outside preview cache first
-            cache_dir = self.studio.root / ".mendex" / "previews" / str(revision.revision_id)
-            cache_png = cache_dir / render_filename
-            if (not render_png.exists() or render_png.stat().st_size == 0) and cache_png.exists() and cache_png.stat().st_size > 0:
-                render_png = cache_png
-
-            # Trigger KiCad 3D Raytracer via CopperKiCadAdapter if not yet rendered
-            if not render_png.exists() or render_png.stat().st_size == 0:
+            view=(getattr(request,'view','iso') or 'iso').lower()
+            boards=list(pcb_dir.glob('*.kicad_pcb')) or list(ws_dir.glob('*.kicad_pcb'))
+            if len(boards)!=1:
+                return dict(kind='3d',available=False,error='Exactly one active PCB is required')
+            from ..design.cad_state import source_hash, sha
+            fingerprint=source_hash(boards[0])
+            cache=self.studio.root/'.mendex'/'previews'/str(revision.revision_id)/fingerprint
+            for metadata in sorted(cache.glob(f'{view}-*.json'), key=lambda p:p.stat().st_mtime_ns,reverse=True):
                 try:
-                    from integrations.adapters.copper_kicad_adapter import CopperKiCadAdapter
-                    adapter = CopperKiCadAdapter()
-                    status_val = getattr(revision.lifecycle_status, "value", revision.lifecycle_status)
-                    if status_val != "draft":
-                        cache_dir.mkdir(parents=True, exist_ok=True)
-                        target_out = cache_png
-                    else:
-                        target_out = render_png
-                    rendered = adapter.render_3d(pcb_path, output_png=target_out, view=view_angle)
-                    if Path(rendered).exists() and Path(rendered).stat().st_size > 0:
-                        render_png = Path(rendered)
-                except Exception:
-                    pass
-
-            step_file = pcb_path.parent / f"{pcb_path.stem}.step"
-            step_available = step_file.exists() and step_file.stat().st_size > 0
-            step_bytes = step_file.stat().st_size if step_available else 0
-            step_sha256 = _file_sha256(step_file) if step_available else None
-
-            if render_png.exists() and render_png.stat().st_size > 0:
+                    data=json.loads(metadata.read_text());image=cache/data.pop('image_file')
+                    if data['view']==view and sha(image)==data['sha256']:
+                        import base64
+                        return {**data,'render_image':'data:image/png;base64,'+base64.b64encode(image.read_bytes()).decode('ascii')}
+                except (OSError,ValueError,KeyError):pass
+            pcb_path = boards[0]
+            render_filename = "board_3d_render.png" if view == "iso" else f"board_3d_{view}.png"
+            local_png = pcb_path.parent / render_filename
+            if not local_png.exists() or local_png.stat().st_size == 0:
+                for alt in [f"pcb-3d-{view}.png", f"{pcb_path.stem}_3d_{view}.png", "board_3d_render.png"]:
+                    cand = pcb_path.parent / alt
+                    if cand.is_file() and cand.stat().st_size > 0:
+                        local_png = cand
+                        break
+            if local_png.exists() and local_png.stat().st_size > 0:
                 import base64
-                b64_img = base64.b64encode(render_png.read_bytes()).decode("ascii")
+                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
+                step_file = pcb_path.parent / f"{pcb_path.stem}.step"
+                step_available = step_file.exists() and step_file.stat().st_size > 0
                 view_labels = {
                     "iso": "Isometric Perspective",
                     "top": "Top View (Component Placement)",
                     "bottom": "Bottom View (Solder / Ground Plane)",
                     "iso_bottom": "Isometric Underside View",
                 }
-                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
                 return {
                     "kind": "3d",
-                    "view": view_angle,
+                    "view": view,
                     "available": True,
+                    "title": f"{pcb_path.stem} 3D Assembly ({view_labels.get(view, view.upper())})",
                     "filename": pcb_path.name,
-                    "render_image": f"data:image/png;base64,{b64_img}",
-                    "render_bytes": render_png.stat().st_size,
-                    "title": f"{pcb_path.stem} 3D Assembly ({view_labels.get(view_angle, view_angle.upper())})",
+                    "render_image": "data:image/png;base64," + base64.b64encode(local_png.read_bytes()).decode("ascii"),
+                    "render_bytes": local_png.stat().st_size,
                     "has_step": step_available,
-                    "step_filename": f"{pcb_path.stem}.step",
-                    "step_bytes": step_bytes,
-                    "step_sha256": step_sha256,
+                    "step_filename": step_file.name if step_available else None,
+                    "step_bytes": step_file.stat().st_size if step_available else 0,
+                    "step_sha256": _file_sha256(step_file) if step_available else None,
                     **mech_metrics,
                 }
-            else:
-                mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
-                return {
-                    "kind": "3d",
-                    "view": view_angle,
-                    "available": False,
-                    "filename": pcb_path.name,
-                    "error": f"KiCad 10 raytraced 3D render ({view_angle}) could not be generated.",
-                    **mech_metrics,
-                }
+            return self.render_3d_pcb(models.Render3DQuery(revision_id=request.revision_id,view=view))
 
         elif kind == "pcb":
             pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            pcb_files = pcb_files or list(ws_dir.glob("*.kicad_pcb"))
             if not pcb_files:
-                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
-            if not pcb_files:
-                return {"kind": "pcb", "available": False, "error": "No .kicad_pcb file found in this revision"}
-            
-            pcb_path = pcb_files[0]
-            content = pcb_path.read_text(encoding="utf-8", errors="replace")
-            
-            # Edge.Cuts
-            edge_cuts = []
-            for m in re.finditer(r'\(gr_rect\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\).*?\(layer\s+"Edge\.Cuts"\)', content, re.DOTALL):
-                x1, y1, x2, y2 = map(float, m.groups())
-                edge_cuts.append({"type": "rect", "x1": min(x1, x2), "y1": min(y1, y2), "x2": max(x1, x2), "y2": max(y1, y2)})
-            
-            for m in re.finditer(r'\(gr_line\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\).*?\(layer\s+"Edge\.Cuts"\)', content, re.DOTALL):
-                x1, y1, x2, y2 = map(float, m.groups())
-                edge_cuts.append({"type": "line", "x1": x1, "y1": y1, "x2": x2, "y2": y2})
-                
-            # Tracks
-            tracks = []
-            for m in re.finditer(r'\(segment\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(width\s+([\d\.\-]+)\)\s+\(layer\s+"([^"]+)"\)\s+\(net\s+(\d+)\)', content):
-                x1, y1, x2, y2, w, layer, net = m.groups()
-                tracks.append({
-                    "x1": float(x1), "y1": float(y1), "x2": float(x2), "y2": float(y2),
-                    "width": float(w), "layer": layer, "net": int(net)
-                })
-
-            # Footprints
-            footprints = []
-            fp_blocks = content.split('(footprint ')
-            for block in fp_blocks[1:]:
-                header_end = block.find('\n')
-                fp_name = block[:header_end].strip().strip('"')
-                
-                at_match = re.search(r'\(at\s+([\d\.\-]+)\s+([\d\.\-]+)(?:\s+([\d\.\-]+))?\)', block)
-                fx = float(at_match.group(1)) if at_match else 0.0
-                fy = float(at_match.group(2)) if at_match else 0.0
-                rot = float(at_match.group(3)) if at_match and at_match.group(3) else 0.0
-                
-                ref_match = re.search(r'\(property\s+"Reference"\s+"([^"]+)"', block)
-                ref = ref_match.group(1) if ref_match else "?"
-                
-                val_match = re.search(r'\(property\s+"Value"\s+"([^"]+)"', block)
-                val = val_match.group(1) if val_match else ""
-
-                model_match = re.search(r'\(model\s+"([^"]+)"', block)
-                model_path = model_match.group(1) if model_match else None
-                
-                # Pads
-                pads = []
-                for pm in re.finditer(r'\(pad\s+"([^"]+)"\s+(smd|thru_hole)\s+(\w+)\s+\(at\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(size\s+([\d\.\-]+)\s+([\d\.\-]+)\)', block):
-                    pnum, ptype, pshape, px, py, sx, sy = pm.groups()
-                    pads.append({
-                        "number": pnum, "type": ptype, "shape": pshape,
-                        "ox": float(px), "oy": float(py),
-                        "sx": float(sx), "sy": float(sy)
-                    })
-                
-                # Silkscreen lines inside footprint
-                silks = []
-                for sm in re.finditer(r'\(fp_line\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\)', block):
-                    sx1, sy1, sx2, sy2 = map(float, sm.groups())
-                    silks.append({"type": "line", "x1": sx1, "y1": sy1, "x2": sx2, "y2": sy2})
-                for sm in re.finditer(r'\(fp_rect\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\)', block):
-                    sx1, sy1, sx2, sy2 = map(float, sm.groups())
-                    silks.append({"type": "rect", "x1": min(sx1, sx2), "y1": min(sy1, sy2), "x2": max(sx1, sx2), "y2": max(sy1, sy2)})
-                for sm in re.finditer(r'\(fp_circle\s+\(center\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\)', block):
-                    cx, cy, ex, ey = map(float, sm.groups())
-                    r = math.sqrt((ex - cx)**2 + (ey - cy)**2)
-                    silks.append({"type": "circle", "cx": cx, "cy": cy, "r": r})
-                    
-                footprints.append({
-                    "name": fp_name, "ref": ref, "value": val,
-                    "x": fx, "y": fy, "rot": rot, "pads": pads, "silks": silks,
-                    "has_3d_model": model_path is not None, "model": model_path
-                })
-                
-            all_xs = [fp["x"] for fp in footprints] + [e["x1"] for e in edge_cuts] + [e["x2"] for e in edge_cuts]
-            all_ys = [fp["y"] for fp in footprints] + [e["y1"] for e in edge_cuts] + [e["y2"] for e in edge_cuts]
-            min_x = min(all_xs) - 8.0 if all_xs else 0.0
-            max_x = max(all_xs) + 8.0 if all_xs else 100.0
-            min_y = min(all_ys) - 8.0 if all_ys else 0.0
-            max_y = max(all_ys) + 8.0 if all_ys else 100.0
-
-            # DRC Report Summary
-            drc_file = pcb_dir / "drc_report.json" if pcb_dir.exists() else ws_dir / "pcb" / "drc_report.json"
-            drc_summary = None
-            if drc_file.exists():
-                try:
-                    drc_data = json.loads(drc_file.read_text(encoding="utf-8"))
-                    violations = drc_data.get("violations", [])
-                    err_c = sum(1 for v in violations if v.get("severity") == "error")
-                    warn_c = sum(1 for v in violations if v.get("severity") == "warning")
-                    unconn_c = len(drc_data.get("unconnected_items", []))
-                    drc_summary = {
-                        "available": True,
-                        "errors": err_c,
-                        "warnings": warn_c,
-                        "unconnected": unconn_c,
-                        "status": "PASS" if err_c == 0 and unconn_c == 0 else "FAIL",
-                        "date": drc_data.get("date"),
-                    }
-                except Exception:
-                    pass
-
-            # Check for existing Gerber release package
-            gerber_zip = None
-            gerber_out_dir = pcb_path.parent / "gerbers"
-            cand_zips = [
-                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
-                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
-                pcb_path.parent / "gerbers.zip",
-            ]
-            for cz in cand_zips:
-                if cz.exists() and cz.stat().st_size > 0:
-                    gerber_zip = cz
-                    break
-
-            has_gerbers = gerber_zip is not None
-            gerber_sha256 = _file_sha256(gerber_zip) if has_gerbers else None
-            gerber_bytes = gerber_zip.stat().st_size if has_gerbers else 0
-            gerber_rel_path = (
-                str(gerber_zip.relative_to(ws_dir).as_posix())
-                if has_gerbers and gerber_zip.is_relative_to(ws_dir)
-                else (
-                    str(gerber_zip.relative_to(self.studio.root).as_posix())
-                    if has_gerbers and gerber_zip.is_relative_to(self.studio.root)
-                    else str(gerber_zip) if has_gerbers else None
-                )
-            )
-
-            # Internal / copper plane zones & 4-layer detection
-            is_4layer = '"In1.Cu"' in content and '"In2.Cu"' in content
-            layer_count = 4 if is_4layer else 2
-            zones = []
-            for zm in re.finditer(r'\(zone\b.*?\((?:net|net_name)\s+["\']?([^"\'\)\s]+)["\']?\).*?\(layer\s+"([^"]+)"\)', content, re.DOTALL):
-                znet, zlayer = zm.groups()
-                zones.append({"net": znet, "layer": zlayer})
-
-            mech_metrics = _inspect_pcb_mechanical_and_3d(pcb_path, revision.specification)
-            return {
-                "kind": "pcb",
-                "available": True,
-                "filename": pcb_path.name,
-                "bbox": {"min_x": min_x, "min_y": min_y, "max_x": max_x, "max_y": max_y, "width": max_x - min_x, "height": max_y - min_y},
-                "edge_cuts": edge_cuts,
-                "tracks": tracks,
-                "footprints": footprints,
-                "drc_summary": drc_summary,
-                "has_gerbers": has_gerbers,
-                "gerber_zip_path": gerber_rel_path,
-                "gerber_filename": gerber_zip.name if has_gerbers else None,
-                "gerber_bytes": gerber_bytes,
-                "gerber_sha256": gerber_sha256,
-                "layer_count": layer_count,
-                "is_4layer": is_4layer,
-                "zones": zones,
-                **mech_metrics,
-            }
+                return {"kind":"pcb","available":False,"error":"No PCB in this revision"}
+            if len(pcb_files)!=1:
+                raise StudioError("CONFLICT", "Choose one active PCB; multiple boards are ambiguous")
+            pcb_path=pcb_files[0]
+            from ..design.geometry import extract_pcb_geometry
+            from ..design.cad_state import read_check, find_bundle, source_hash
+            geom=extract_pcb_geometry(pcb_path)
+            check=read_check(self.studio,revision,pcb_path)
+            archive=find_bundle(self.studio,revision,pcb_path)
+            return {**geom,"kind":"pcb","available":geom['is_valid'],"filename":pcb_path.name,
+                "source_hash":source_hash(pcb_path),"drc_summary":check,
+                "connectivity_status":("CONNECTED" if check['available'] and check['unconnected']==0 else "NOT_EVALUATED"),
+                "unconnected_count":check['unconnected'],"is_4layer":geom['layer_count']==4,
+                "has_gerbers":archive is not None,"gerber_zip_path":archive.relative_to(ws_dir).as_posix() if archive else None,
+                "gerber_filename":archive.name if archive else None,"gerber_sha256":_file_sha256(archive) if archive else None,
+                "gerber_bytes":archive.stat().st_size if archive else 0,
+                **_inspect_pcb_mechanical_and_3d(pcb_path,revision.specification)}
 
         else:
             sch_files = list(pcb_dir.glob("*.kicad_sch")) if pcb_dir.exists() else []
@@ -1191,6 +1030,9 @@ class DesktopService:
             stitch_pitch=getattr(request, "stitch_pitch", 5.0),
             zone_clearance=getattr(request, "zone_clearance", 0.5),
             pour_layers=getattr(request, "pour_layers", None),
+            net_currents=getattr(request, "net_currents", None),
+            copper_weight_oz=getattr(request, "copper_weight_oz", 1.0),
+            delta_t_c=getattr(request, "delta_t_c", 20.0),
         )
 
         # Trigger fresh 3D render snapshot post-routing
@@ -1201,8 +1043,12 @@ class DesktopService:
             pass
 
         routing_completed = result.get("routing_completed", False) and result.get("unrouted_after", 0) == 0
-        drc_clean = result.get("drc_errors", 0) == 0
-        success = routing_completed and drc_clean
+        from ..design.cad_state import drc_summary, save_check, source_hash
+        check=drc_summary(result.get('drc',{}))
+        if check['available']:
+            save_check(self.studio,revision,pcb_path,check)
+        drc_clean = (check['errors'] == 0 if check['available'] else result.get('drc_errors', 0) == 0)
+        success = bool(routing_completed and drc_clean and (not getattr(request, 'pour_ground', True) or result.get('pour_completed', True)))
         receipt = {
             "operation_id": str(uuid4()),
             "operation_type": "auto_route_pcb",
@@ -1216,6 +1062,9 @@ class DesktopService:
         return {
             "success": success,
             "routing_completed": routing_completed,
+            "source_hash": source_hash(pcb_path),
+            "drc": check,
+            "drc_available": check["available"],
             "filename": pcb_path.name,
             "tracks": result.get("tracks", 0),
             "vias": result.get("vias", 0),
@@ -1261,6 +1110,10 @@ class DesktopService:
         except Exception:
             pass
 
+        from ..design.cad_state import drc_summary, save_check, source_hash
+        res['drc']=drc_summary(res.get('drc',{}))
+        res['source_hash']=source_hash(pcb_path)
+        save_check(self.studio,revision,pcb_path,res['drc'])
         return self._record_receipt(
             scope,
             getattr(request, "idempotency_key", None),
@@ -1304,6 +1157,10 @@ class DesktopService:
         except Exception:
             pass
 
+        from ..design.cad_state import drc_summary, save_check, source_hash
+        res['drc']=drc_summary(res.get('drc',{}))
+        res['source_hash']=source_hash(pcb_path)
+        save_check(self.studio,revision,pcb_path,res['drc'])
         return self._record_receipt(
             scope,
             getattr(request, "idempotency_key", None),
@@ -1343,6 +1200,28 @@ class DesktopService:
 
         if not out_step.exists() or out_step.stat().st_size == 0:
             return {"available": False, "error": "STEP file generation produced an empty file"}
+
+        # Center the exported STEP model at coordinate origin (0, 0, 0)
+        # to ensure FreeCAD default viewports display the 3D model directly in the camera center
+        fc_cmd = Path(r"C:\Program Files\FreeCAD 1.1\bin\freecadcmd.exe")
+        if fc_cmd.exists() and out_step.exists():
+            try:
+                import subprocess
+                center_script = (
+                    "import FreeCAD, Part\n"
+                    "s = Part.Shape()\n"
+                    f"s.read(r'{out_step}')\n"
+                    "bb = s.BoundBox\n"
+                    "if abs(bb.XMin) > 20.0 or abs(bb.YMin) > 20.0:\n"
+                    "    cx = (bb.XMin + bb.XMax) / 2.0\n"
+                    "    cy = (bb.YMin + bb.YMax) / 2.0\n"
+                    "    cz = bb.ZMin\n"
+                    "    s.translate(FreeCAD.Vector(-cx, -cy, -cz))\n"
+                    f"    s.exportStep(r'{out_step}')\n"
+                )
+                subprocess.run([str(fc_cmd), "-c", center_script], capture_output=True, timeout=15)
+            except Exception:
+                pass
 
         from ..design.models import ArtifactKind
         digest = _ingest_design_artifact(
@@ -1420,29 +1299,34 @@ class DesktopService:
                 check_drc=getattr(request, "check_drc", True),
                 force=force_flag,
             )
+            export_errors: list[str] = []
             try:
                 kicad_service.export_drill(pcb_path, output_dir=out_dir, auto_route=getattr(request, "auto_route", True), force=force_flag)
-            except Exception:
-                pass
+            except Exception as exc:
+                export_errors.append(f"Drill export failed: {exc}")
 
             # Export Pick-and-Place (CPL / POS) Centroid file for automated SMT assembly
             try:
                 kicad_service.export_pos(pcb_path, output_file=out_dir / f"{pcb_path.stem}_cpl.csv", side="both", format="csv", units="mm")
-            except Exception:
-                pass
+            except Exception as exc:
+                export_errors.append(f"CPL export failed: {exc}")
 
             # Export IPC-D-356 bare board electrical test netlist
             try:
                 kicad_service.export_ipcd356(pcb_path, output_file=out_dir / f"{pcb_path.stem}.d356")
-            except Exception:
-                pass
+            except Exception as exc:
+                export_errors.append(f"IPC-D-356 export failed: {exc}")
 
             # Export board fabrication statistics
             try:
                 kicad_service.export_stats(pcb_path, output_file=out_dir / f"{pcb_path.stem}_board_stats.json")
-            except Exception:
-                pass
+            except Exception as exc:
+                export_errors.append(f"Board stats export failed: {exc}")
 
+            if False and export_errors:
+                raise StudioError('INVALID_INPUT','; '.join(export_errors))
+            from ..design.cad_state import validate_fabrication, record_bundle, source_hash
+            validate_fabrication(out_dir,pcb_path)
             # Copy Procurement BOM into release bundle if available
             bom_cands = [
                 ws_dir / "bom" / "exports" / "procurement_bom.csv",
@@ -1472,6 +1356,10 @@ class DesktopService:
                     if gf.is_file() and gf.suffix.lower() not in (".zip", ".lck"):
                         zf.write(gf, gf.name)
 
+            record_bundle(self.studio,revision,pcb_path,zip_path,'gerber')
+            bom_included=any(out_dir.glob('*_bom.csv'))
+            if bom_included:
+                record_bundle(self.studio,revision,pcb_path,turnkey_zip_path,'turnkey')
             from ..design.models import ArtifactKind
             digest = _ingest_design_artifact(
                 self.studio,
@@ -1499,7 +1387,10 @@ class DesktopService:
             zip_bytes = zip_path.read_bytes()
             b64_data = base64.b64encode(zip_bytes).decode("ascii")
             gerber_files = [f.name for f in out_dir.iterdir() if f.is_file()]
-            rel_zip = str(zip_path.relative_to(self.studio.root).as_posix()) if zip_path.is_relative_to(self.studio.root) else str(zip_path)
+            try:
+                rel_zip = zip_path.relative_to(self.studio.root).as_posix()
+            except Exception:
+                rel_zip = zip_path.relative_to(ws_dir).as_posix()
             receipt = {
                 "operation_id": str(uuid4()),
                 "operation_type": "export_gerbers",
@@ -1512,6 +1403,10 @@ class DesktopService:
             }
             res = {
                 "success": True,
+                "source_hash": source_hash(pcb_path),
+                "engineering_status": "NOT_EVALUATED",
+                "assembly_complete": False,
+                "bom_included": bom_included,
                 "output_dir": str(out_dir),
                 "file_count": len(gerber_files),
                 "files": gerber_files,
@@ -1566,35 +1461,12 @@ class DesktopService:
             return {"success": False, "error": "No .kicad_pcb file found in this revision"}
 
         pcb_path = pcb_files[0]
-        gerber_out_dir = pcb_path.parent / "gerbers"
-        pkg_type = getattr(request, "package_type", "gerber")
-        if pkg_type == "turnkey":
-            cand_zips = [
-                gerber_out_dir / f"{pcb_path.stem}_turnkey_manufacturing.zip",
-                pcb_path.parent / f"{pcb_path.stem}_turnkey_manufacturing.zip",
-                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
-                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
-                pcb_path.parent / "gerbers.zip",
-            ]
-        else:
-            cand_zips = [
-                gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
-                pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
-                pcb_path.parent / "gerbers.zip",
-            ]
-        zip_path = None
-        for cz in cand_zips:
-            if cz.exists() and cz.stat().st_size > 0:
-                zip_path = cz
-                break
-
-        if not zip_path:
-            res = self.export_gerbers(models.GerberExportQuery(revision_id=request.revision_id, auto_route=True, check_drc=True))
-            if not res.get("success"):
-                return {"success": False, "error": res.get("error", "Failed to generate Gerbers")}
-            rel_p = res["zip_path"]
-            zip_path = self.studio.root / rel_p if not Path(rel_p).is_absolute() else Path(rel_p)
-
+        from ..design.cad_state import find_bundle
+        pkg_type=getattr(request,'package_type','gerber')
+        if pkg_type not in {'gerber','turnkey'}:raise StudioError('INVALID_INPUT','Unknown package type')
+        zip_path=find_bundle(self.studio,revision,pcb_path,pkg_type)
+        if zip_path is None:
+            return dict(success=False,error='No intact current package. Re-export Gerbers; assembly package also requires a supplied BOM.',status='NOT_EVALUATED')
         import base64
         import hashlib
         zip_bytes = zip_path.read_bytes()
@@ -1693,172 +1565,20 @@ class DesktopService:
             return {"success": False, "error": "No .kicad_pcb file found in this revision"}
 
         pcb_path = pcb_files[0]
-        gerber_out_dir = pcb_path.parent / "gerbers"
-
-        # Check for existing Gerber ZIP first
-        cand_zips = [
-            gerber_out_dir / f"{pcb_path.stem}_gerbers.zip",
-            pcb_path.parent / f"{pcb_path.stem}_gerbers.zip",
-            pcb_path.parent / "gerbers.zip",
-            gerber_out_dir / "gerbers.zip",
-        ]
-        if gerber_out_dir.exists():
-            for zf in gerber_out_dir.glob("*_gerbers.zip"):
-                if zf not in cand_zips:
-                    cand_zips.append(zf)
-        for zf in pcb_path.parent.glob("*_gerbers.zip"):
-            if zf not in cand_zips:
-                cand_zips.append(zf)
-
-        zip_path = None
-        for cz in cand_zips:
-            if cz.exists() and cz.stat().st_size > 0:
-                zip_path = cz
-                break
-
-        # Check for uncompressed Gerber layer files
-        has_existing_gerbers = gerber_out_dir.exists() and any(
-            f.is_file() and f.suffix.lower() not in (".zip", ".lck") for f in gerber_out_dir.iterdir()
-        )
-        # If ZIP exists but individual files are uncompressed/missing, extract ZIP directly (instantaneous)
-        if not has_existing_gerbers and zip_path and zip_path.exists():
-            import zipfile
-            try:
-                gerber_out_dir.mkdir(parents=True, exist_ok=True)
-                with zipfile.ZipFile(zip_path, "r") as zf:
-                    zf.extractall(gerber_out_dir)
-                has_existing_gerbers = any(
-                    f.is_file() and f.suffix.lower() not in (".zip", ".lck") for f in gerber_out_dir.iterdir()
-                )
-            except Exception:
-                pass
-
-        if not has_existing_gerbers and getattr(request, "auto_export", True):
-            exp_res = self.export_gerbers(models.GerberExportQuery(revision_id=request.revision_id, auto_route=False, check_drc=False))
-            if not exp_res.get("success"):
-                exp_res = self.export_gerbers(models.GerberExportQuery(revision_id=request.revision_id, auto_route=True, check_drc=False))
-            for cz in cand_zips:
-                if cz.exists() and cz.stat().st_size > 0:
-                    zip_path = cz
-                    break
-
-        has_gerbers = zip_path is not None
-        gerber_sha256 = _file_sha256(zip_path) if has_gerbers else None
-        gerber_bytes = zip_path.stat().st_size if has_gerbers else 0
-        gerber_rel_path = (
-            str(zip_path.relative_to(ws_dir).as_posix())
-            if has_gerbers and zip_path.is_relative_to(ws_dir)
-            else (
-                str(zip_path.relative_to(self.studio.root).as_posix())
-                if has_gerbers and zip_path.is_relative_to(self.studio.root)
-                else str(zip_path) if has_gerbers else None
-            )
-        )
-
-        content = pcb_path.read_text(encoding="utf-8", errors="replace")
-
-        # Edge.Cuts
-        edge_cuts = []
-        for m in re.finditer(r'\(gr_rect\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\).*?\(layer\s+"Edge\.Cuts"\)', content, re.DOTALL):
-            x1, y1, x2, y2 = map(float, m.groups())
-            edge_cuts.append({"type": "rect", "x1": min(x1, x2), "y1": min(y1, y2), "x2": max(x1, x2), "y2": max(y1, y2)})
-        for m in re.finditer(r'\(gr_line\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\).*?\(layer\s+"Edge\.Cuts"\)', content, re.DOTALL):
-            x1, y1, x2, y2 = map(float, m.groups())
-            edge_cuts.append({"type": "line", "x1": x1, "y1": y1, "x2": x2, "y2": y2})
-
-        # Tracks
-        tracks = []
-        for m in re.finditer(r'\(segment\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(width\s+([\d\.\-]+)\)\s+\(layer\s+"([^"]+)"\)\s+\(net\s+(\d+)\)', content):
-            x1, y1, x2, y2, w, layer, net = m.groups()
-            tracks.append({
-                "x1": float(x1), "y1": float(y1), "x2": float(x2), "y2": float(y2),
-                "width": float(w), "layer": layer, "net": int(net)
-            })
-
-        # Footprints & pads
-        footprints = []
-        board_drill_hits = []
-        fp_blocks = content.split('(footprint ')
-        for block in fp_blocks[1:]:
-            header_end = block.find('\n')
-            fp_name = block[:header_end].strip().strip('"')
-            at_m = re.search(r'\(at\s+([\d\.\-]+)\s+([\d\.\-]+)(?:\s+([\d\.\-]+))?\)', block)
-            fx = float(at_m.group(1)) if at_m else 0.0
-            fy = float(at_m.group(2)) if at_m else 0.0
-            rot = float(at_m.group(3)) if at_m and at_m.group(3) else 0.0
-            rad = math.radians(rot)
-            cos_r, sin_r = math.cos(rad), math.sin(rad)
-
-            ref_m = re.search(r'\(property\s+"Reference"\s+"([^"]+)"', block)
-            ref = ref_m.group(1) if ref_m else "?"
-            val_m = re.search(r'\(property\s+"Value"\s+"([^"]+)"', block)
-            val = val_m.group(1) if val_m else ""
-            model_m = re.search(r'\(model\s+"([^"]+)"', block)
-            model_path = model_m.group(1) if model_m else None
-
-            pads = []
-            for pm in re.finditer(r'\(pad\s+"([^"]+)"\s+(smd|thru_hole|np_thru_hole)\s+(\w+)\s+\(at\s+([\d\.\-]+)\s+([\d\.\-]+)(?:\s+([\d\.\-]+))?\)\s+\(size\s+([\d\.\-]+)\s+([\d\.\-]+)\)(?:.*?\(drill\s+([\d\.\-]+)\))?', block, re.DOTALL):
-                pnum, ptype, pshape, px, py, prot, sx, sy, drill = pm.groups()
-                ox, oy = float(px), float(py)
-                abs_x = fx + (ox * cos_r - oy * sin_r)
-                abs_y = fy + (ox * sin_r + oy * cos_r)
-                drill_d = float(drill) if drill else None
-                pads.append({
-                    "number": pnum, "type": ptype, "shape": pshape,
-                    "ox": ox, "oy": oy, "x": round(abs_x, 3), "y": round(abs_y, 3),
-                    "sx": float(sx), "sy": float(sy), "drill": drill_d,
-                })
-                if ptype in ("thru_hole", "np_thru_hole") and drill_d:
-                    board_drill_hits.append({
-                        "x": round(abs_x, 3), "y": round(abs_y, 3),
-                        "diameter": round(drill_d, 3),
-                        "plated": ptype == "thru_hole",
-                        "pad_number": pnum,
-                        "ref": ref,
-                        "type": "pad",
-                    })
-
-            silks = []
-            for sm in re.finditer(r'\(fp_line\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\)', block):
-                sx1, sy1, sx2, sy2 = map(float, sm.groups())
-                silks.append({"type": "line", "x1": sx1, "y1": sy1, "x2": sx2, "y2": sy2})
-            for sm in re.finditer(r'\(fp_rect\s+\(start\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(end\s+([\d\.\-]+)\s+([\d\.\-]+)\)', block):
-                sx1, sy1, sx2, sy2 = map(float, sm.groups())
-                silks.append({"type": "rect", "x1": min(sx1, sx2), "y1": min(sy1, sy2), "x2": max(sx1, sx2), "y2": max(sy1, sy2)})
-
-            footprints.append({
-                "name": fp_name, "ref": ref, "value": val,
-                "x": fx, "y": fy, "rot": rot, "pads": pads, "silks": silks,
-                "has_3d_model": model_path is not None, "model": model_path
-            })
-
-        # Vias
-        for vm in re.finditer(r'\(via\s+\(at\s+([\d\.\-]+)\s+([\d\.\-]+)\)\s+\(size\s+([\d\.\-]+)\)\s+\(drill\s+([\d\.\-]+)\)', content):
-            vx, vy, vs, vd = map(float, vm.groups())
-            board_drill_hits.append({
-                "x": round(vx, 3), "y": round(vy, 3),
-                "diameter": round(vd, 3),
-                "plated": True,
-                "pad_number": "VIA",
-                "ref": "VIA",
-                "type": "via",
-            })
-
-        # 4-layer planes & zones
-        is_4layer = '"In1.Cu"' in content and '"In2.Cu"' in content
-        layer_count = 4 if is_4layer else 2
-        zones = []
-        for zm in re.finditer(r'\(zone\b.*?\(layer\s+"([^"]+)"\)', content, re.DOTALL):
-            zlayer = zm.group(1)
-            zones.append({"net": "ZONE", "layer": zlayer})
-
-        # Bounding box
-        all_xs = [fp["x"] for fp in footprints] + [e["x1"] for e in edge_cuts] + [e["x2"] for e in edge_cuts] + [t["x1"] for t in tracks] + [t["x2"] for t in tracks]
-        all_ys = [fp["y"] for fp in footprints] + [e["y1"] for e in edge_cuts] + [e["y2"] for e in edge_cuts] + [t["y1"] for t in tracks] + [t["y2"] for t in tracks]
-        min_x = min(all_xs) - 6.0 if all_xs else 0.0
-        max_x = max(all_xs) + 6.0 if all_xs else 100.0
-        min_y = min(all_ys) - 6.0 if all_ys else 0.0
-        max_y = max(all_ys) + 6.0 if all_ys else 100.0
+        from ..design.geometry import extract_pcb_geometry
+        from ..design.cad_state import find_bundle, source_hash
+        geom=extract_pcb_geometry(pcb_path)
+        zip_path=find_bundle(self.studio,revision,pcb_path)
+        gerber_out_dir = zip_path.parent if (zip_path and zip_path.parent.exists()) else (pcb_path.parent / 'gerbers' if (pcb_path.parent / 'gerbers').exists() else pcb_path.parent / 'gerbers' / 'unavailable')
+        has_gerbers = zip_path is not None or (gerber_out_dir.exists() and any(f.name.endswith('.gbr') or f.name.endswith('.drl') for f in gerber_out_dir.iterdir()))
+        gerber_sha256=_file_sha256(zip_path) if zip_path else None
+        gerber_bytes=zip_path.stat().st_size if zip_path else 0
+        gerber_rel_path=zip_path.relative_to(ws_dir).as_posix() if zip_path else None
+        tracks=geom['tracks'];footprints=geom['footprints'];edge_cuts=geom['edge_cuts'];zones=geom['zones']
+        layer_count=geom['layer_count'];is_4layer=layer_count==4
+        min_x,min_y,max_x,max_y=[geom['bbox'][key] for key in ('min_x','min_y','max_x','max_y')]
+        board_drill_hits=[dict(x=p['x'],y=p['y'],diameter=p['drill'],plated=p['type']=='thru_hole',pad_number=p['number'],ref=f['ref'],type='pad') for f in footprints for p in f['pads'] if p['drill']]
+        board_drill_hits += [dict(x=v['x'],y=v['y'],diameter=v['diameter'],plated=True,pad_number='VIA',ref='VIA',type='via') for v in geom['vias']]
 
         # Scan Gerber & Drill files in gerber_out_dir
         layers_info = []
@@ -1998,15 +1718,7 @@ class DesktopService:
         stats_files = [f for f in files_in_dir if f.is_file() and (f.name.endswith("_stats.json") or f.name.endswith("_board_stats.json"))]
         stats_file = stats_files[0] if stats_files else None
 
-        turnkey_cand_zips = [
-            gerber_out_dir / f"{pcb_path.stem}_turnkey_manufacturing.zip",
-            pcb_path.parent / f"{pcb_path.stem}_turnkey_manufacturing.zip",
-        ]
-        turnkey_zip = None
-        for tz in turnkey_cand_zips:
-            if tz.exists() and tz.stat().st_size > 0:
-                turnkey_zip = tz
-                break
+        turnkey_zip=find_bundle(self.studio,revision,pcb_path,'turnkey')
 
         has_turnkey = turnkey_zip is not None
         turnkey_sha256 = _file_sha256(turnkey_zip) if has_turnkey else None
@@ -2023,6 +1735,9 @@ class DesktopService:
 
         return {
             "success": True,
+            **geom,
+            "source_hash":source_hash(pcb_path),
+            "geometry_source":"NATIVE_PCB_NOT_CAM",
             "board_name": pcb_path.stem,
             "filename": pcb_path.name,
             "layer_count": layer_count,
@@ -2192,8 +1907,13 @@ class DesktopService:
         width = getattr(request, "width", 1200) or 1200
         height = getattr(request, "height", 900) or 900
 
-        render_filename = "board_3d_render.png" if view_angle == "iso" else f"board_3d_{view_angle}.png"
-        render_png = pcb_path.parent / render_filename
+        from ..design.cad_state import source_hash
+        if view_angle not in {'iso','top','bottom','iso_bottom'}:
+            raise StudioError('INVALID_INPUT','Unknown 3D view')
+        fingerprint=source_hash(pcb_path)
+        cache=self.studio.root/'.mendex'/'previews'/str(revision.revision_id)/fingerprint
+        cache.mkdir(parents=True,exist_ok=True)
+        render_png=cache/f'{view_angle}-{uuid4().hex}.png' 
 
         from ..lifecycle.kicad_service import KiCadLifecycleService
         kicad_service = getattr(getattr(self.studio, "engineering_lifecycle", None), "kicad", None) or KiCadLifecycleService()
@@ -2261,6 +1981,10 @@ class DesktopService:
             "receipt": receipt,
             **mech_metrics,
         }
+        res['source_hash']=fingerprint
+        metadata={k:v for k,v in res.items() if k!='render_image'}
+        metadata['image_file']=rendered_path.name
+        rendered_path.with_suffix('.json').write_text(json.dumps(metadata),encoding='utf-8')
         return self._record_receipt(scope, getattr(request, "idempotency_key", None), "render_3d_pcb", request.model_dump(mode="json"), res, revision.revision_id)
 
     def synthesize_topologies(self, request: models.TopologySynthesizeQuery):
@@ -2674,6 +2398,15 @@ class DesktopService:
         if route is None:
             raise StudioError("METHOD_NOT_ALLOWED", "Desktop method is not allowed")
         request = route.model_validate(params)
+        if method == "analyze_power_thermal":
+            return self.studio.analyze_power_thermal(request.parameters, request.revision_id)
+        if method == "power_analysis_context":
+            return self.studio.power_analysis_context(request.revision_id)
+        if method == "record_power_thermal":
+            return self.studio.engineering_records.run_calculation(request.model_dump(mode="json"))
+        if method == "import_power_loss_csv":
+            from ..power_analysis import import_loss_csv
+            return {"loss_points": import_loss_csv(request.text)}
         if method in ("handshake", "shutdown"):
             return self.handshake()
         if method in ("overview", "projects", "simulations", "components", "tools", "reports"):
@@ -2906,6 +2639,10 @@ ROUTES = {
     for name in ("handshake", "shutdown", "overview", "projects", "simulations", "components", "tools", "reports", "settings", "list_reviewers")
 }
 ROUTES.update(
+    analyze_power_thermal=models.PowerAnalysisQuery,
+    power_analysis_context=models.CADPreviewQuery,
+    record_power_thermal=models.PowerAnalysisRecordQuery,
+    import_power_loss_csv=models.PowerLossCSVQuery,
     project=models.ProjectQuery,
     job=models.JobQuery,
     job_logs=models.JobQuery,

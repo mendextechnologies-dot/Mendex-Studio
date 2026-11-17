@@ -478,14 +478,16 @@ class AdapterBridgeV15Connector:
     def supported_operations(self) -> list[Capability]:
         caps = []
         ops = self.adapter.supported_operations() if hasattr(self.adapter, "supported_operations") else []
+        from integrations.adapters.base import BaseToolAdapter
+        has_impl = type(self.adapter).execute != BaseToolAdapter.execute
         for op in ops:
             caps.append(
                 Capability(
                     operation=op,
-                    supported=True,
-                    tested_version=self.version,
-                    verification_evidence="docs/ADAPTER_TEST_EVIDENCE.md",
-                    diagnostic=f"{self.name} operation {op} supported",
+                    supported=has_impl,
+                    tested_version=self.version if has_impl else None,
+                    verification_evidence="docs/ADAPTER_TEST_EVIDENCE.md" if has_impl else None,
+                    diagnostic=f"{self.name} operation {op} supported" if has_impl else f"{self.name} operation {op} advertised but execution not implemented in adapter",
                 )
             )
         return caps
@@ -512,14 +514,19 @@ class AdapterBridgeV15Connector:
         cfg_path = getattr(configuration, "executable_path", None)
         desc = self.adapter.detect(configured_path=cfg_path)
         if desc.executable_path and Path(desc.executable_path).exists():
+            from integrations.adapters.base import BaseToolAdapter
+            has_impl = type(self.adapter).execute != BaseToolAdapter.execute
             ops = self.adapter.supported_operations() if hasattr(self.adapter, "supported_operations") else []
+            state = "READY" if has_impl else "DETECTED"
+            verified_ops = ops if has_impl else []
+            diag = f"{self.name} {self.version} verified on host" if has_impl else f"{self.name} executable discovered at {desc.executable_path}. Solver execution not implemented in this adapter."
             return ToolHealth(
                 tool_id=self.tool_id,
-                state="READY",
+                state=state,
                 version=self.version,
                 executable_path=str(Path(desc.executable_path).resolve()),
-                diagnostic=f"{self.name} {self.version} verified on host",
-                verified_operations=ops,
+                diagnostic=diag,
+                verified_operations=verified_ops,
             )
         return self.detect(configuration)
 
@@ -561,6 +568,9 @@ class AdapterBridgeV15Connector:
                 outputs.append(rel)
 
         status = "SUCCEEDED" if adapter_res.status == "SUCCEEDED" or (hasattr(adapter_res.status, "value") and adapter_res.status.value == "SUCCEEDED") else "FAILED"
+        diags = []
+        if status == "FAILED" and getattr(adapter_res, "error_message", None):
+            diags.append(Diagnostic(code="EXECUTION_FAILED", message=adapter_res.error_message))
 
         return JobResult(
             schema_version="1.5.0",
@@ -571,7 +581,7 @@ class AdapterBridgeV15Connector:
             started_at=start_time,
             ended_at=end_time,
             exit_code=adapter_res.exit_code,
-            diagnostics=[],
+            diagnostics=diags,
             outputs=outputs,
             evidence_paths=evidence_paths,
         )

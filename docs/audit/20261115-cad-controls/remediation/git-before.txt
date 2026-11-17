@@ -1,0 +1,22 @@
+ M desktop/src/components/CADPreviewCanvas.tsx
+ M desktop/src/components/RecordFormView.tsx
+ M docs/implementation-checklist.md
+ M pyproject.toml
+ M src/integrations/parsers/ltspice_parser.py
+ M src/mendex_core/bom_generator.py
+ M src/mendex_core/design/bom_pricing.py
+ M src/mendex_core/design/release_packager.py
+ M src/mendex_core/design/test_plan_generator.py
+ M src/mendex_core/design/thermal_engine.py
+ M src/mendex_core/design/wcca_engine.py
+ M src/mendex_core/desktop/service.py
+ M src/mendex_core/lifecycle/kicad_service.py
+ M src/mendex_core/service.py
+ M tests/core/test_bom_export_integrity.py
+?? docs/audit/20261115-cad-controls/
+?? scratch/
+?? src/mendex_core/design/assembly_reconciliation.py
+?? src/mendex_core/design/geometry.py
+?? temp_femm_test/
+?? test_eval.lua
+?? test_eval2.lua

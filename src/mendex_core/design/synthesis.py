@@ -340,7 +340,7 @@ class CandidateSynthesisEngine:
             )
             candidates.append(cand_psfb)
 
-        # Stamp readiness status and applicability metadata per G13
+        # Stamp readiness status and applicability metadata per G12 / G13
         for cand in candidates:
             top_key = cand.topology.lower()
             matched_key = None
@@ -351,6 +351,13 @@ class CandidateSynthesisEngine:
             app = TOPOLOGY_APPLICABILITY_MATRIX.get(matched_key, {})
             cand.readiness_status = app.get("readiness", "EXPERIMENTAL")
             cand.qualification_notes = list(app.get("qualification_notes", ["Unqualified experimental topology."]))
+            if cand.readiness_status == "EXPERIMENTAL":
+                cand.constraints_satisfied = True  # Analytical sizing satisfies nominal equations
+                if "[EXPERIMENTAL / DRAFT TOPOLOGY" not in cand.rationale:
+                    cand.rationale += " [EXPERIMENTAL / DRAFT TOPOLOGY — Sizing is analytical; closed-loop stability, parasitics, and full operating envelope require independent physical qualification; NOT_EVALUATED for production readiness.]"
+            elif cand.readiness_status == "QUALIFIED_REFERENCE":
+                if "[QUALIFIED REFERENCE" not in cand.rationale:
+                    cand.rationale += " [QUALIFIED REFERENCE DESIGN — Verified nominal DC-DC reference envelope.]"
 
         # Sort by feasibility score descending
         candidates.sort(key=lambda c: c.feasibility_score, reverse=True)

@@ -121,6 +121,14 @@ class EngineeringRecordService:
             raise StudioError("STORAGE_ERROR", "Engineering record digest mismatch")
         revision = self.studio.get_revision(record["revision_id"])
         record.update(sequence=sequence, stale=record["input_hash"] != specification_hash(revision.specification))
+        if record.get("kind") == "calculation" and record.get("calculation") == "power_thermal":
+            previous = (record.get("result") or {}).get("component_context")
+            if previous:
+                try:
+                    changed = self.studio.power_analysis_context(revision.revision_id)["component_hash"] != previous["component_hash"]
+                except (OSError, ValueError, StudioError):
+                    changed = True
+                record.update(component_context_stale=changed, stale=record["stale"] or changed)
         if record["kind"] == "artifact":
             record.update(self._artifact_integrity(record))
         record["effective_status"] = "NOT_EVALUATED" if record["stale"] or record.get("snapshot_integrity") is False or record.get("original_integrity") is False else "RECORDED"
@@ -174,7 +182,9 @@ class EngineeringRecordService:
             from ..controller import MendexEngineeringController
             result, error = None, None
             try:
-                result = MendexEngineeringController(service=self.studio).run_calculation(request.calculation, parameters)
+                result = (self.studio.analyze_power_thermal(parameters, revision.revision_id)
+                          if request.calculation == "power_thermal" else
+                          MendexEngineeringController(service=self.studio).run_calculation(request.calculation, parameters))
                 canonical(result)  # Reject non-finite/non-JSON results before claiming execution success.
             except (ArithmeticError, ValueError) as exc:
                 result, error = None, str(exc)

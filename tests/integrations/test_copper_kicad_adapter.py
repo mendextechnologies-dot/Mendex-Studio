@@ -53,6 +53,11 @@ def reference_project(tmp_path_factory):
 
     # 3. Synchronize netlist to PCB layout (leaves footprints unplaced beside board)
     call_tool("pcb_sync", {"project": str(proj_dir)})
+    for lck in list(proj_dir.glob("~*")) + list(proj_dir.glob("*.lck")):
+        try:
+            lck.unlink()
+        except OSError:
+            pass
 
     return {
         "dir": proj_dir,
@@ -67,6 +72,11 @@ def disposable_project(reference_project, tmp_path):
     """Provides each test with an isolated, disposable copy of the reference KiCad project."""
     target_dir = tmp_path / "disposable_circuit"
     shutil.copytree(reference_project["dir"], target_dir)
+    for lck in list(target_dir.glob("~*")) + list(target_dir.glob("*.lck")):
+        try:
+            lck.unlink()
+        except OSError:
+            pass
     return {
         "dir": target_dir,
         "pro": target_dir / "divider_ref.kicad_pro",
@@ -279,9 +289,17 @@ def test_calculate_iec60664_creepage_analytical_margins():
     assert CopperKiCadAdapter.calculate_iec60664_creepage(400.0, insulation_type="reinforced") == 8.0
 
 
-def test_mill_isolation_slot_with_iec60664_creepage(reference_project, adapter):
+def test_mill_isolation_slot_with_iec60664_creepage(tmp_path, adapter):
     """Verify physical Edge.Cuts isolation slot milling with analytical IEC 60664-1 voltage input."""
-    pcb_path = reference_project["pcb"]
+    proj_dir = tmp_path / "slot_proj"
+    proj_dir.mkdir(parents=True, exist_ok=True)
+    call_tool("project_create", {
+        "name": "slot_proj",
+        "dir": str(proj_dir),
+        "board_size": [50.0, 35.0],
+        "fab": "jlcpcb",
+    })
+    pcb_path = proj_dir / "slot_proj.kicad_pcb"
     res = adapter.mill_isolation_slot(pcb_path, working_voltage_v=400.0)
 
     assert res["success"] is True

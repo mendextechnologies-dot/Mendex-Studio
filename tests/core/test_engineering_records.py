@@ -61,7 +61,7 @@ PARAMETERS = {
 def test_discovery_does_not_install_records_schema(tmp_path):
     studio = StudioService(tmp_path)
     capabilities = studio.engineering_records.calculation_capabilities()
-    assert {c["calculation"] for c in capabilities} == set(PARAMETERS)
+    assert {c["calculation"] for c in capabilities} == set(PARAMETERS) | {"power_thermal"}
     assert all(c["input_schema"]["additionalProperties"] is False for c in capabilities)
     with studio.connection() as db:
         assert not storage.installed(db)

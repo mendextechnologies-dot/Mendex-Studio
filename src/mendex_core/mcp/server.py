@@ -255,8 +255,14 @@ class MendexMCPServer:
 
             # 4. Analytical Calculations
             {
+                "name": "get_power_analysis_context",
+                "description": "Read exact saved revision component identities and source hashes for bound power/thermal calculations; no hardware or approvals.",
+                "inputSchema": {"type": "object", "properties": {"revision_id": {"type": "string", "format": "uuid"}},
+                                "required": ["revision_id"], "additionalProperties": False},
+            },
+            {
                 "name": "run_engineering_calculations",
-                "description": "Executes first-principles deterministic engineering calculations: 'dowell' (winding losses), 'losses' (MOSFET switching/conduction), 'steinmetz' (core loss), 'flyback' (transformer sizing), 'semiconductor_thermal' (junction-to-ambient heatsink sizing), 'magnetic_thermal' (transformer temperature rise), or 'ipc2152_thermal' (copper trace sizing).",
+                "description": "Executes deterministic engineering calculations: dowell, losses, steinmetz, flyback, semiconductor_thermal, magnetic_thermal, ipc2152_thermal, or power_thermal (sourced device comparison, loss/efficiency/temperature sweeps, Foster load cycles and optional sourced fatigue estimates). Use calculation capability discovery for strict input schemas. Results do not imply engineering qualification.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {
@@ -270,6 +276,7 @@ class MendexMCPServer:
                                 "semiconductor_thermal",
                                 "magnetic_thermal",
                                 "ipc2152_thermal",
+                                 "power_thermal",
                             ],
                             "description": "Type of calculation to execute",
                         },
@@ -277,6 +284,7 @@ class MendexMCPServer:
                             "type": "object",
                             "description": "Parameters for the calculation",
                         },
+                        "revision_id": {"type": "string", "format": "uuid", "description": "Optional revision context for power_thermal component bindings"},
                     },
                     "required": ["calc_type", "params"],
                 },
@@ -778,7 +786,13 @@ class MendexMCPServer:
         elif name == "list_design_candidates":
             return ctrl.list_design_candidates(args["design_id"])
         elif name == "run_engineering_calculations":
+            if args.get("revision_id") is not None:
+                if args["calc_type"] != "power_thermal":
+                    raise ValueError("Revision-scoped calculation preview is supported only for power_thermal")
+                return ctrl.service.analyze_power_thermal(args.get("params", {}), args["revision_id"])
             return ctrl.run_calculation(args["calc_type"], args.get("params", {}))
+        elif name == "get_power_analysis_context":
+            return ctrl.service.power_analysis_context(args["revision_id"])
         elif name == "run_simulation":
             return ctrl.run_simulation(
                 workspace_id=args.get("project_id") or args.get("workspace_id"),

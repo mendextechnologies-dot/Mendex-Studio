@@ -225,7 +225,17 @@ class ECRService:
             )
 
         if not ecr.schematic_ops:
-            raise ValueError(f"ECR {ecr.ecr_number} has no schematic operations defined")
+            return {
+                "success": False,
+                "ecr_id": str(ecr.ecr_id),
+                "ecr_number": ecr.ecr_number,
+                "error": (
+                    f"ECR {ecr.ecr_number} has no schematic operations defined. "
+                    "For administrative, documentation, or manual hardware changes, "
+                    "complete sign-off via 'Review / Sign-off'."
+                ),
+                "ops_applied": 0,
+            }
 
         # Determine target schematic path
         target_sch: Optional[Path] = None

@@ -1,3 +1,4 @@
+
 """Draft BOM exports from explicit revision data; no example parts or approvals."""
 from __future__ import annotations
 import csv
@@ -10,6 +11,16 @@ from uuid import UUID, uuid4
 from .evidence import digest
 from .service import StudioError
 logger = logging.getLogger(__name__)
+
+def to_safe_windows_path(path) -> str:
+    r"""Prepends Windows extended-length prefix \\?\ if path length >= 240 characters."""
+    import os
+    resolved = Path(path).resolve()
+    str_path = str(resolved)
+    if os.name == "nt" and len(str_path) >= 240 and not str_path.startswith("\\\\?\\"):
+        return "\\\\?\\" + str_path
+    return str_path
+
 
 
 def build_bom_docx(output_path: Path, items: list[dict], project_code: str, project_name: str,
@@ -30,7 +41,10 @@ def build_bom_docx(output_path: Path, items: list[dict], project_code: str, proj
         for cell, (field, _) in zip(table.add_row().cells, fields):
             cell.text = str(item[field]) if item.get(field) not in (None, '') else 'Unknown'
     document.add_paragraph('Ratings, exact ordering codes, derating, footprints, source assertions and model compatibility require independent application review. No automatic verification or approval is asserted.')
-    document.save(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    str_path = to_safe_windows_path(output_path)
+    import os
+    document.save(str_path)
     return output_path
 
 

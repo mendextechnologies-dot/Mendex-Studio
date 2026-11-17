@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from mendex_core.engineering_records import calculations, models
+from mendex_core.power_analysis import AnalysisRequest
 
 MODEL_NAMES = ("ProjectQuery", "ProjectUpdate", "RevisionQuery", "RecordList", "RecordQuery", "Requirement",
                "RequirementsWrite", "CalculationWrite", "ArtifactWrite", "ValidationWrite", "JobQuery",
@@ -16,7 +17,7 @@ def main():
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     destination = Path(__file__).resolve().parents[1] / "contracts" / "v3.1"
-    entries = [getattr(models, name) for name in MODEL_NAMES] + [getattr(calculations, name) for name in CALCULATOR_NAMES]
+    entries = [getattr(models, name) for name in MODEL_NAMES] + [getattr(calculations, name) for name in CALCULATOR_NAMES] + [AnalysisRequest]
     for model in entries:
         path = destination / ("records." + model.__name__ + ".schema.json")
         text = json.dumps(model.model_json_schema(), indent=2) + "\n"

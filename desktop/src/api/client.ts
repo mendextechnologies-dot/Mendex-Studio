@@ -268,7 +268,7 @@ export const api = {
   reviewECR: (params: {
     ecr_id: string;
     reviewer: string;
-    status: 'APPROVED' | 'REJECTED' | 'UNDER_REVIEW' | 'DRAFT';
+    status: 'APPROVED' | 'REJECTED' | 'UNDER_REVIEW' | 'DRAFT' | 'IMPLEMENTED';
     review_notes?: string;
   }) => rpcCall<any>('review_ecr', params),
   applyECRSchematic: (ecrId: string, implementedBy?: string, forwardAnnotate: boolean = true) =>

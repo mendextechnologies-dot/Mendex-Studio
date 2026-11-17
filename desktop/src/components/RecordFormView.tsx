@@ -499,51 +499,71 @@ export const RecordFormView: React.FC<RecordFormViewProps> = ({
             </div>
           </div>
 
-          {/* Section 2: Cryptographic Provenance & Snapshot Integrity (Product-Focused) */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '10px 14px',
-              background: snapshot_integrity === false ? '#fef2f2' : '#f0fdf4',
-              border: `1px solid ${snapshot_integrity === false ? '#fca5a5' : '#bbf7d0'}`,
-              borderRadius: 6,
-              flexWrap: 'wrap',
-              gap: 10,
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              {snapshot_integrity === false ? (
-                <ShieldAlert size={16} color="#dc2626" />
-              ) : (
-                <ShieldCheck size={16} color="#059669" />
-              )}
-              <div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: snapshot_integrity === false ? '#991b1b' : '#166534' }}>
-                  {snapshot_integrity === false ? 'Cryptographic Integrity Warning' : 'Cryptographic Integrity Verified'}
-                </span>
-                <span style={{ fontSize: 11, color: snapshot_integrity === false ? '#b91c1c' : '#15803d', marginLeft: 8 }}>
-                  {snapshot_integrity === false
-                    ? 'Baseline evidence has been altered or tampered'
-                    : 'Immutable baseline snapshot is valid & unaltered'}
+          {/* Section 2: Content Digest Integrity & Provenance (Product-Focused) */}
+          {(() => {
+            const isFailed = snapshot_integrity === false;
+            const isValid = snapshot_integrity === true;
+            const bg = isFailed ? '#fef2f2' : isValid ? '#f0fdf4' : '#fffbeb';
+            const border = isFailed ? '1px solid #fca5a5' : isValid ? '1px solid #bbf7d0' : '1px solid #fde68a';
+            const textColor = isFailed ? '#991b1b' : isValid ? '#166534' : '#92400e';
+            const subColor = isFailed ? '#b91c1c' : isValid ? '#15803d' : '#b45309';
+            const badgeBg = isFailed ? '#fee2e2' : isValid ? '#dcfce7' : '#fef3c7';
+            const badgeBorder = isFailed ? '1px solid #f87171' : isValid ? '1px solid #86efac' : '1px solid #fcd34d';
+            const badgeText = isFailed ? 'INTEGRITY FAILED' : isValid ? 'INTEGRITY VALID' : 'INTEGRITY NOT_EVALUATED';
+            const title = isFailed ? 'Content Integrity Warning' : isValid ? 'Content Integrity Digest (SHA-256) Verified' : 'Integrity Not Evaluated';
+            const desc = isFailed
+              ? 'Baseline evidence has been altered or digest mismatch'
+              : isValid
+              ? 'Immutable baseline snapshot matches recorded content digest'
+              : 'No snapshot content digest evaluated for this record';
+
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  background: bg,
+                  border: border,
+                  borderRadius: 6,
+                  flexWrap: 'wrap',
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {isFailed ? (
+                    <ShieldAlert size={16} color="#dc2626" />
+                  ) : isValid ? (
+                    <ShieldCheck size={16} color="#059669" />
+                  ) : (
+                    <ShieldAlert size={16} color="#d97706" />
+                  )}
+                  <div>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: textColor }}>
+                      {title}
+                    </span>
+                    <span style={{ fontSize: 11, color: subColor, marginLeft: 8 }}>
+                      {desc}
+                    </span>
+                  </div>
+                </div>
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: '3px 8px',
+                    borderRadius: 4,
+                    background: badgeBg,
+                    color: textColor,
+                    border: badgeBorder,
+                  }}
+                >
+                  {badgeText}
                 </span>
               </div>
-            </div>
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                padding: '3px 8px',
-                borderRadius: 4,
-                background: snapshot_integrity === false ? '#fee2e2' : '#dcfce7',
-                color: snapshot_integrity === false ? '#dc2626' : '#15803d',
-                border: `1px solid ${snapshot_integrity === false ? '#f87171' : '#86efac'}`,
-              }}
-            >
-              {snapshot_integrity === false ? 'INTEGRITY FAILED' : 'INTEGRITY VALID'}
-            </span>
-          </div>
+            );
+          })()}
 
           {/* Section 3: Specification Parameters (if present) */}
           {specification && typeof specification === 'object' && (

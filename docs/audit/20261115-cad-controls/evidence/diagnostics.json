@@ -1,0 +1,125 @@
+{
+  "utc": "2026-11-15T09:31:52.032659+00:00",
+  "source_sha256": {
+    "src/mendex_core/desktop/service.py": "92daed07fcbb91421056a44a56bf37f28f9fbb27f05a1c4f10f324d28f4c4227",
+    "src/mendex_core/design/geometry.py": "b3d5600a7de776055c8c3805561e393ebe80090988deb009bd4a0a7dcae56d0f",
+    "src/integrations/adapters/copper_kicad_adapter.py": "2332d87a9f88f0826380696d686f791d4033365719f0d2a4cd844991db1a9da8",
+    "desktop/src/components/CADPreviewCanvas.tsx": "ca59b03f96569c3ea92325658af86b049d999d56cd45d64853de789c710cd091",
+    "desktop/src/components/GerberLayerInspector.tsx": "5c21566cdeefe25a21b2ee9c40c829030f0eadef5293036720cadeade2b06214",
+    "desktop/src/components/Header.tsx": "49c426dc6019ee1f59657c1e9d67eac58fb6ca9946fd7c95eef4874ba5017660",
+    "desktop/src/api/client.ts": "f396511bb2e762df951bb17bdc077735236fb7d79cdb308c6ca6c4873a249031"
+  },
+  "cad_preview": {
+    "error": "cannot access local variable 'content' where it is not associated with a value",
+    "error_type": "UnboundLocalError"
+  },
+  "render_3d_pcb": {
+    "success": true,
+    "available": true,
+    "kind": "3d",
+    "view": "iso",
+    "filename": "sv1000.kicad_pcb",
+    "render_image": "<image omitted>",
+    "render_bytes": 73824,
+    "sha256": "135b612ec5b734e45afd603248edf6b6d5e2d1c14c5490bc2973ad05d809e3b2",
+    "width": 640,
+    "height": 480,
+    "title": "sv1000 3D Assembly (Isometric Perspective)",
+    "has_step": true,
+    "step_filename": "sv1000.step",
+    "step_bytes": 1392199,
+    "step_sha256": "cb2d09d57e66ec80393e92e5217667a420e41ed82c8682f41e548c93ed635640",
+    "receipt": {
+      "operation_id": "6a413439-9632-41b8-ba34-5ae21659d009",
+      "operation_type": "render_3d_pcb",
+      "revision_id": "372853fa-ba12-4614-9933-db4922163b59",
+      "status": "COMPLETED",
+      "timestamp": "2026-11-15T09:31:52.738362+00:00",
+      "view": "iso",
+      "sha256": "135b612ec5b734e45afd603248edf6b6d5e2d1c14c5490bc2973ad05d809e3b2",
+      "idempotency_key": null,
+      "created_at": "2026-11-15T09:31:52.738427+00:00"
+    },
+    "board_width_mm": 85.0,
+    "board_height_mm": 65.0,
+    "envelope_compliance": "NOT_EVALUATED",
+    "envelope_details": "No maximum PCB dimensions specified in requirements",
+    "total_components": 32,
+    "components_with_3d": 27,
+    "missing_3d_models": [
+      {
+        "ref": "Q1",
+        "footprint": "Package_TO_SOT_SMD:TO-252-2"
+      },
+      {
+        "ref": "H1",
+        "footprint": "MountingHole:MountingHole_3.2mm_M3"
+      },
+      {
+        "ref": "H2",
+        "footprint": "MountingHole:MountingHole_3.2mm_M3"
+      },
+      {
+        "ref": "H3",
+        "footprint": "MountingHole:MountingHole_3.2mm_M3"
+      },
+      {
+        "ref": "H4",
+        "footprint": "MountingHole:MountingHole_3.2mm_M3"
+      }
+    ],
+    "model_coverage_pct": 84.4,
+    "model_coverage_status": "PARTIAL",
+    "mechanical_verification_status": "NOT_EVALUATED",
+    "mechanical_disclaimer": "Mechanical verification: VISUAL_RENDER_ONLY. Collision detection with chassis, mounting standoffs, and heatsink mechanical interference remain NOT_EVALUATED."
+  },
+  "fault_injection_route_failed_drc_and_pour": {
+    "pcb_path": "C:\\Mendex studio\\docs\\audit\\20261115-cad-controls\\isolated\\products\\616db9a3-cc70-4833-bf82-c0da0893d718\\revisions\\372853fa-ba12-4614-9933-db4922163b59\\pcb\\sv1000.kicad_pcb",
+    "pour_completed": false,
+    "routing_completed": true,
+    "unrouted_before": -1,
+    "unrouted_after": 0,
+    "tracks": 145,
+    "vias": 24,
+    "drc_errors": 0,
+    "netclasses": {},
+    "messages": [
+      "Netclasses configured: Default=0.4mm, Power=1.2mm",
+      "Pour notice: AUDIT INJECTED FAILURE: no native evidence"
+    ],
+    "drc_warnings": 0,
+    "success": true
+  },
+  "fault_injection_planes_failed_pours": {
+    "success": true,
+    "pcb_path": "C:\\Mendex studio\\docs\\audit\\20261115-cad-controls\\isolated\\products\\616db9a3-cc70-4833-bf82-c0da0893d718\\revisions\\372853fa-ba12-4614-9933-db4922163b59\\pcb\\sv1000.kicad_pcb",
+    "in1_gnd_poured": false,
+    "in2_pwr_poured": false,
+    "gnd_net": "PRI_GND",
+    "pwr_net": "VIN",
+    "layers": [
+      "F.Cu",
+      "In1.Cu",
+      "In2.Cu",
+      "B.Cu"
+    ],
+    "messages": [
+      "In1.Cu ground pour notice: AUDIT INJECTED POUR FAILURE",
+      "In2.Cu power pour notice: AUDIT INJECTED POUR FAILURE"
+    ],
+    "drc": {
+      "error": "AUDIT INJECTED DRC FAILURE"
+    }
+  },
+  "explorer_export_path": {
+    "returned_zip_path": "products/616db9a3-cc70-4833-bf82-c0da0893d718/revisions/372853fa-ba12-4614-9933-db4922163b59/pcb/gerbers/sv1000_gerbers.zip",
+    "exists_as_workspace_relative": false,
+    "exists_as_data_root_relative": true
+  },
+  "canonical_counts": {
+    "segments": 145,
+    "vias": 24,
+    "footprints": 32,
+    "pads": 81
+  }
+}

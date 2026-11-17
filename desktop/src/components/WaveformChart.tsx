@@ -50,6 +50,7 @@ interface WaveformChartProps {
   relativePath: string;
   title?: string;
   onOpenNative?: () => void;
+  onOpenSchematic?: () => void;
   targetRippleMaxMv?: number | null;
 }
 
@@ -75,6 +76,7 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
   relativePath,
   title = 'LTspice Transient Waveform Analysis',
   onOpenNative,
+  onOpenSchematic,
   targetRippleMaxMv,
 }) => {
   // --- View Mode ---
@@ -705,6 +707,50 @@ export const WaveformChart: React.FC<WaveformChartProps> = ({
           >
             <Download size={13} /> SVG
           </button>
+
+          {onOpenSchematic && (
+            <button
+              onClick={onOpenSchematic}
+              style={{
+                background: '#1d4ed8',
+                border: 'none',
+                color: '#ffffff',
+                padding: '6px 12px',
+                borderRadius: 6,
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+              }}
+              title="Open schematic (.asc) in installed ADI LTspice"
+            >
+              <Activity size={13} /> Open Schematic (.asc)
+            </button>
+          )}
+
+          {onOpenNative && (
+            <button
+              onClick={onOpenNative}
+              style={{
+                background: '#1e293b',
+                border: '1px solid #3b82f6',
+                color: '#60a5fa',
+                padding: '6px 12px',
+                borderRadius: 6,
+                fontSize: 12,
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+              }}
+              title="Open raw waveform in installed native LTspice"
+            >
+              <ExternalLink size={13} /> Open in LTspice
+            </button>
+          )}
 
           <button
             onClick={loadWaveform}

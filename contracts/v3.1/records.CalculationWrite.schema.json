@@ -47,7 +47,11 @@
         "dowell",
         "losses",
         "steinmetz",
-        "flyback"
+        "flyback",
+        "semiconductor_thermal",
+        "magnetic_thermal",
+        "ipc2152_thermal",
+        "power_thermal"
       ],
       "title": "Calculation",
       "type": "string"

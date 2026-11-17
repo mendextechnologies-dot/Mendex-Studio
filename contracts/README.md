@@ -1,5 +1,22 @@
 # Application service contract v0.1
 
+Power analysis update (16 November 2026): canonical `AnalysisRequest` is exported
+as `v3.1/records.AnalysisRequest.schema.json`; `CalculationWrite.calculation` adds
+`power_thermal`. Desktop `analyze_power_thermal` accepts revision_id and parameters;
+`record_power_thermal` delegates the strict stage-bound CalculationWrite subset to
+the same record service. CLI `power-analysis` and MCP `run_engineering_calculations`
+use the same core engine. Computed values remain engineering NOT_EVALUATED; missing
+or out-of-domain results carry reasons and no synthetic numeric placeholders.
+See `docs/POWER_THERMAL_ANALYSIS.md` for units, source and applicability requirements.
+
+Dynamic power-analysis fields are additive: LossPoint.voltage_v is optional for
+legacy fixed-voltage tables; complete multi-voltage tables enable interpolation.
+DeviceModel adds mpn/manufacturer/component_reference and AnalysisRequest adds
+model_library/expected_component_hash. Scoped previews resolve current identities;
+standalone bound requests remain NOT_EVALUATED. Read-only component context is
+available from desktop power_analysis_context, CLI power-components and MCP
+get_power_analysis_context. MCP power_thermal previews accept optional revision_id.
+
 Desktop review update (13 November 2026): `submit_review` now takes reviewer_name,
 required comments and the displayed expected_document_hashes / expected_evidence_hashes,
 along with existing revision/stage/attempt/digest/decision fields. It calls the shared

@@ -1,0 +1,49 @@
+** Drc report for sv1000.kicad_pcb **
+** Created on 2026-11-15T17:53:22 **
+** Report includes: Errors, Warnings **
+
+** Found 9 DRC violations **
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(140.8000 mm, 104.0000 mm): Rectangle on Edge.Cuts
+    @(137.5000 mm, 115.0000 mm): Reference field of ROPTOPULL
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(140.8000 mm, 104.0000 mm): Rectangle on Edge.Cuts
+    @(145.3000 mm, 135.5000 mm): Reference field of CAUX
+[lib_footprint_mismatch]: Footprint 'TO-252-2' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(135.0000 mm, 139.5000 mm): Footprint Q1
+[lib_footprint_mismatch]: Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'
+    Local override; warning
+    @(103.5000 mm, 103.5000 mm): Footprint H1
+[lib_footprint_mismatch]: Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'
+    Local override; warning
+    @(181.5000 mm, 103.5000 mm): Footprint H2
+[lib_footprint_mismatch]: Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'
+    Local override; warning
+    @(103.5000 mm, 161.5000 mm): Footprint H3
+[lib_footprint_mismatch]: Footprint 'MountingHole_3.2mm_M3' does not match copy in library 'MountingHole'
+    Local override; warning
+    @(181.5000 mm, 161.5000 mm): Footprint H4
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(137.5000 mm, 115.0000 mm): Reference field of ROPTOPULL
+    @(134.0000 mm, 115.5875 mm): Pad 2 [/RT_CT] of RT on F.Cu
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(137.5000 mm, 115.0000 mm): Reference field of ROPTOPULL
+    @(137.0000 mm, 114.4125 mm): Pad 2 [/OPTO_A] of ROPTOBIAS on F.Cu
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

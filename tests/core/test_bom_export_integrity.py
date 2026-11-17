@@ -63,16 +63,29 @@ def test_archived_revision_cannot_receive_bom_exports(context):
     assert not source.parent.exists()
 
 
-def test_emc100_reference_design_bom_compilation():
+def test_emc100_reference_design_bom_compilation(tmp_path, monkeypatch):
     from pathlib import Path
     from mendex_core.desktop.service import DesktopService
-    studio = StudioService(Path("."))
-    product = studio.get_product("5b0852dd-7920-4451-b869-049f46254387")
+    monkeypatch.setattr(bom_generator, 'convert_docx_to_pdf_via_word_com', lambda *args: False)
+    studio = StudioService(tmp_path)
+    product = studio.create_product("EMC-100", "Electromagnet Driver", "dc_dc_converter", "Test Engineer")
     rev = studio.get_revision(product.active_revision_id)
     ws_dir = studio.workspace_path(rev)
-    bom_file = ws_dir / "bom" / "bom.json"
-    assert bom_file.exists()
-    items = json.loads(bom_file.read_bytes())
+    bom_dir = ws_dir / "bom"
+    bom_dir.mkdir(parents=True, exist_ok=True)
+    items = [
+        {"item": i, "designator": f"R{i}", "quantity": 1, "description": f"Component {i}",
+         "manufacturer": "Vendor", "mpn": f"PART-{i}", "package": "0603", "source": "Synthetic fixture"}
+        for i in range(1, 31)
+    ]
+    items[0]["designator"] = "Q1"
+    items[1]["designator"] = "U3"
+    items[2]["designator"] = "U2A"
+    items[3]["designator"] = "C4"
+    items[4]["designator"] = "D4"
+    (bom_dir / "bom.json").write_text(json.dumps(items), encoding="utf-8")
+
+    assert (bom_dir / "bom.json").exists()
     assert len(items) == 30
     assert all(item["quantity"] > 0 for item in items)
     designators = {item["designator"] for item in items}

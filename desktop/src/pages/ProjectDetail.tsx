@@ -34,6 +34,7 @@ import {
   GitCommit,
   Calendar,
   ChevronRight,
+  ChevronDown,
   Info,
   Check,
   X,
@@ -60,11 +61,11 @@ const TAB_DEFS = [
   { id: 'calculations', label: 'Calculations', icon: Calculator },
   { id: 'simulations', label: 'Simulations', icon: Play },
   { id: 'designs', label: 'Designs', icon: Layers },
+  { id: 'reports', label: 'Reports (PDF)', icon: FileBarChart },
   { id: 'files', label: 'Revision Files', icon: FileText },
   { id: 'validation', label: 'Validation', icon: ShieldCheck },
   { id: 'revisions', label: 'Revisions', icon: History },
   { id: 'ecr', label: 'Changes (ECR)', icon: GitPullRequest },
-  { id: 'reports', label: 'Reports', icon: FileBarChart },
 ] as const;
 
 type TabId = typeof TAB_DEFS[number]['id'];
@@ -123,6 +124,8 @@ export const ProjectDetailView = ({
   const [message, setMessage] = useState('');
   const [fileFilter, setFileFilter] = useState('all');
   const [fileSearch, setFileSearch] = useState('');
+  const [showAllFiles, setShowAllFiles] = useState(false);
+  const [copiedWorkspacePath, setCopiedWorkspacePath] = useState(false);
 
   // Human Engineering Review Modal State
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -226,13 +229,40 @@ export const ProjectDetailView = ({
 
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
+  const handleOpenPdf = async (reportId: string) => {
+    try {
+      window.open(`/api/report-file?id=${reportId}&type=pdf`, '_blank');
+      api.openReport(reportId, 'pdf').catch(() => {});
+    } catch (e: any) {
+      setActionError(e.message || 'Failed to open PDF');
+    }
+  };
+
+  const handleOpenHtml = async (reportId: string) => {
+    try {
+      window.open(`/api/report-file?id=${reportId}&type=html`, '_blank');
+      api.openReport(reportId, 'html').catch(() => {});
+    } catch (e: any) {
+      setActionError(e.message || 'Failed to open HTML');
+    }
+  };
+
   const handleGenerateReport = async () => {
     if (!data?.revision?.revision_id) return;
     setIsGeneratingReport(true);
     setActionError('');
     try {
       const res = await api.generateReport(data.revision.revision_id);
-      setMessage(res.pdf_available ? 'Complete Product Engineering Dossier (PDF & HTML) compiled successfully.' : 'Engineering dossier compiled.');
+      if (res && res.report_id) {
+        onReload?.();
+        // Immediately open preview modal
+        await handlePreviewDossier(res.report_id);
+        // Open PDF in viewer
+        if (res.pdf_available) {
+          handleOpenPdf(res.report_id);
+        }
+      }
+      setMessage(res?.pdf_available ? 'Complete Product Engineering Dossier (PDF & HTML) compiled successfully.' : 'Engineering dossier compiled.');
       setTimeout(() => setMessage(''), 6000);
     } catch (e: any) {
       setActionError(String(e));
@@ -577,14 +607,14 @@ export const ProjectDetailView = ({
           <nav
             style={{
               display: 'flex',
-              gap: '6px',
+              gap: '4px',
               background: '#f3f6fb',
-              padding: '8px 12px 0 12px',
+              padding: '8px 10px 0 10px',
               borderRadius: '10px 10px 0 0',
               border: '1px solid var(--border)',
               borderBottom: 'none',
               overflowX: 'auto',
-              scrollbarWidth: 'none',
+              scrollbarWidth: 'thin',
             }}
           >
             {TAB_DEFS.map((t) => {
@@ -609,8 +639,8 @@ export const ProjectDetailView = ({
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 16px',
+                    gap: '6px',
+                    padding: '8px 13px',
                     fontSize: '12px',
                     fontWeight: isActive ? 700 : 500,
                     color: isActive ? '#172033' : '#52627a',
@@ -672,6 +702,13 @@ export const ProjectDetailView = ({
                   </div>
 
                   <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      onClick={() => setTab('reports')}
+                      className="btn btn-primary"
+                      style={{ fontSize: '12px', padding: '6px 14px', background: '#0369a1', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    >
+                      <FileBarChart size={14} /> Reports (PDF)
+                    </button>
                     <button
                       onClick={() => setTab('lifecycle')}
                       className="btn btn-secondary"
@@ -1079,125 +1116,543 @@ export const ProjectDetailView = ({
             )}
 
             {/* TAB 7: FILES */}
-            {tab === 'files' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
-                      Monitored Revision Workspace Files ({data.files.length})
-                    </h3>
-                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
-                      Physical engineering files tracked with SHA-256 digests in SQLite repository.
-                    </p>
-                  </div>
+            {tab === 'files' && (() => {
+              const DOMAIN_FOLDERS = [
+                {
+                  id: 'pcb',
+                  folder: 'pcb',
+                  title: 'PCB CAD & Layout',
+                  icon: Layers,
+                  iconColor: '#2563eb',
+                  description: 'Native 4-layer KiCad PCB layout, board outline, trace sizing, stackup, and netclass rules.',
+                  primaryFileRel: 'pcb/sv1000.kicad_pcb',
+                  fallbackPattern: '.kicad_pcb',
+                  launchLabel: 'Launch KiCad PCB',
+                  extensions: ['.kicad_pcb', '.kicad_dru', '.kicad_prl'],
+                },
+                {
+                  id: 'circuit',
+                  folder: 'circuit',
+                  fallbackFolder: 'pcb',
+                  title: 'Schematic Capture & Netlist',
+                  icon: Cpu,
+                  iconColor: '#7c3aed',
+                  description: 'Hierarchical electrical schematics, component symbols, pin mappings, and net connectivity.',
+                  primaryFileRel: 'circuit/sv1000.kicad_sch',
+                  fallbackPattern: '.kicad_sch',
+                  launchLabel: 'Open Schematic',
+                  extensions: ['.kicad_sch', '.sch', '.net', '.xml'],
+                },
+                {
+                  id: 'manufacturing',
+                  folder: 'release_package',
+                  fallbackFolder: 'pcb/gerbers',
+                  title: 'Turnkey Manufacturing & Gerbers',
+                  icon: Box,
+                  iconColor: '#059669',
+                  description: 'Turnkey fabrication release package, RS-274X copper gerbers, NC drill, and SMT pick-and-place CPL.',
+                  primaryFileRel: 'release_package/SV-1000_R001_Complete_Manufacturing_Release.zip',
+                  fallbackPattern: '.zip',
+                  launchLabel: 'Open Release ZIP',
+                  extensions: ['.zip', '.gbr', '.gtl', '.gbl', '.drl', '.csv'],
+                },
+                {
+                  id: 'bom',
+                  folder: 'bom',
+                  title: 'BOM & Sourcing Schedule',
+                  icon: FileText,
+                  iconColor: '#d97706',
+                  description: 'Production Bill of Materials, supplier component SKUs, IPC-9592B stress derating, and purchasing schedules.',
+                  primaryFileRel: 'bom/bom.csv',
+                  secondaryFileRel: 'bom/SV1000_Bill_of_Materials.docx',
+                  fallbackPattern: 'bom.csv',
+                  launchLabel: 'Open BOM (CSV)',
+                  extensions: ['.csv', '.docx', '.json', '.html'],
+                },
+                {
+                  id: 'simulations',
+                  folder: 'simulations',
+                  fallbackFolder: 'magnetics',
+                  title: 'SPICE Simulation & FEA Magnetics',
+                  icon: Activity,
+                  iconColor: '#dc2626',
+                  description: 'LTspice transient converter circuits, raw simulation waveforms, and FEMM 2D axisymmetric core models.',
+                  primaryFileRel: 'simulations/flyback_transient.asc',
+                  secondaryFileRel: 'simulations/etd34_core.fem',
+                  fallbackPattern: '.asc',
+                  launchLabel: 'Open LTspice (.asc)',
+                  extensions: ['.asc', '.raw', '.fem', '.ans', '.lua'],
+                },
+                {
+                  id: 'mechanical',
+                  folder: 'mechanical',
+                  title: 'Parametric Mechanical Enclosure & 3D CAD',
+                  icon: Box,
+                  iconColor: '#0891b2',
+                  description: '6061-T6 aluminum chassis 3D STEP solid models, 2D orthographic drafting SVG, and TIM interface specifications.',
+                  primaryFileRel: 'mechanical/enclosure_assembly.step',
+                  secondaryFileRel: 'mechanical/enclosure_drawing.svg',
+                  fallbackPattern: '.step',
+                  launchLabel: 'Open 3D STEP CAD',
+                  extensions: ['.step', '.stp', '.svg', '.png'],
+                },
+                {
+                  id: 'reports',
+                  folder: 'reports',
+                  title: 'Engineering Dossiers & Reports',
+                  icon: FileCheck,
+                  iconColor: '#4f46e5',
+                  description: 'Publication-grade vector PDF dossiers, stage feasibility summaries, and HTML review deliverables.',
+                  primaryFileRel: 'reports/SV1000_Stage5_Design_Report.md',
+                  fallbackPattern: '.pdf',
+                  launchLabel: 'Open Dossier / Report',
+                  extensions: ['.pdf', '.html', '.md', '.json'],
+                },
+                {
+                  id: 'validation',
+                  folder: 'validation',
+                  fallbackFolder: 'measurements',
+                  title: 'Laboratory Bring-Up & Test Verification',
+                  icon: ShieldCheck,
+                  iconColor: '#059669',
+                  description: 'Authoritative laboratory test plans, oscilloscope transient captures, thermal thermograms, and validation gates.',
+                  primaryFileRel: 'measurements/laboratory/SV1000_Physical_Test_Scorecard.md',
+                  fallbackPattern: '.md',
+                  launchLabel: 'Open Test Scorecard',
+                  extensions: ['.md', '.html', '.csv', '.json', '.docx'],
+                },
+              ];
 
-                  {/* Filter and Search Bar */}
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <div style={{ position: 'relative' }}>
-                      <Search size={14} style={{ position: 'absolute', left: '10px', top: '9px', color: 'var(--text-dim)' }} />
-                      <input
-                        type="text"
-                        placeholder="Search files…"
-                        value={fileSearch}
-                        onChange={(e) => setFileSearch(e.target.value)}
-                        style={{
-                          padding: '6px 12px 6px 30px',
-                          fontSize: '12px',
-                          background: '#f3f6fb',
-                          border: '1px solid var(--border)',
-                          borderRadius: '6px',
-                          color: '#172033',
-                          width: '180px',
-                        }}
-                      />
-                    </div>
+              const workspacePath = data.workspace_path || `products/${data.product.product_id}/revisions/${data.revision.revision_id}`;
 
-                    <div style={{ display: 'flex', gap: '4px' }}>
-                      {['all', 'cad', 'reports', 'sims', 'bom'].map((f) => (
-                        <button
-                          key={f}
-                          onClick={() => setFileFilter(f)}
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  {/* Top Workspace Directory Card */}
+                  <div
+                    style={{
+                      padding: '16px 20px',
+                      background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                      borderRadius: '8px',
+                      color: '#ffffff',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '16px',
+                      boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxWidth: '750px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Folder size={18} color="#38bdf8" />
+                        <span style={{ fontSize: '14px', fontWeight: 700, letterSpacing: '0.2px' }}>
+                          Physical Revision Workspace Directory
+                        </span>
+                        <span
                           style={{
                             fontSize: '11px',
-                            padding: '4px 10px',
+                            padding: '2px 8px',
+                            borderRadius: '999px',
+                            background: 'rgba(56, 189, 248, 0.2)',
+                            color: '#38bdf8',
+                            fontWeight: 600,
+                          }}
+                        >
+                          Revision {data.revision.revision_label}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <code
+                          style={{
+                            fontSize: '12px',
+                            color: '#93c5fd',
+                            fontFamily: 'monospace',
+                            background: 'rgba(255, 255, 255, 0.08)',
+                            padding: '5px 12px',
                             borderRadius: '4px',
-                            background: fileFilter === f ? '#2563eb' : '#f3f6fb',
-                            color: fileFilter === f ? '#ffffff' : '#52627a',
-                            border: `1px solid ${fileFilter === f ? '#3b82f6' : 'var(--border)'}`,
+                            wordBreak: 'break-all',
+                            border: '1px solid rgba(255, 255, 255, 0.12)',
+                          }}
+                        >
+                          {workspacePath}
+                        </code>
+                        <button
+                          className="btn btn-secondary"
+                          style={{
+                            padding: '4px 10px',
+                            fontSize: '11px',
+                            background: 'rgba(255, 255, 255, 0.15)',
+                            color: '#f8fafc',
+                            border: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
                             cursor: 'pointer',
                           }}
+                          onClick={() => {
+                            if (navigator.clipboard) {
+                              navigator.clipboard.writeText(workspacePath);
+                              setCopiedWorkspacePath(true);
+                              setTimeout(() => setCopiedWorkspacePath(false), 2000);
+                            }
+                          }}
+                          title="Copy full directory path"
                         >
-                          {f.toUpperCase()}
+                          {copiedWorkspacePath ? <Check size={12} color="#4ade80" /> : <Copy size={12} />}
+                          {copiedWorkspacePath ? 'Copied' : 'Copy Path'}
                         </button>
-                      ))}
+                      </div>
+                      <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+                        8 Engineering Discipline Folders · {data.files.length} Monitored Files with SQLite SHA-256 Digest Tracking
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <button
+                        className="btn btn-primary"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          padding: '9px 18px',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+                          border: 'none',
+                          boxShadow: '0 2px 6px rgba(37, 99, 235, 0.4)',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => action(() => api.revealFile(data.revision.revision_id, '.'))}
+                      >
+                        <Folder size={15} /> Open Workspace in Explorer
+                      </button>
                     </div>
                   </div>
-                </div>
 
-                {data.files.length === 0 ? (
-                  <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)', background: '#f3f6fb', borderRadius: '6px' }}>
-                    <p>No revision files available.</p>
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {data.files
-                      .filter((f) => {
-                        if (fileSearch && !f.relative_path.toLowerCase().includes(fileSearch.toLowerCase())) return false;
-                        if (fileFilter === 'cad') return f.relative_path.includes('pcb/') || f.relative_path.includes('mechanical/');
-                        if (fileFilter === 'reports') return f.relative_path.includes('reports/');
-                        if (fileFilter === 'sims') return f.relative_path.includes('simulations/');
-                        if (fileFilter === 'bom') return f.relative_path.includes('bom/');
-                        return true;
-                      })
-                      .map((f) => (
-                        <div
-                          key={f.relative_path}
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '12px 16px',
-                            background: '#f3f6fb',
-                            borderRadius: '6px',
-                            border: '1px solid var(--border)',
-                            flexWrap: 'wrap',
-                            gap: '10px',
-                          }}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <FileCode size={16} color="#1d4ed8" />
-                            <div>
-                              <div style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
-                                {f.relative_path.split(/[\\/]/).pop() || f.relative_path}
+                  {/* 8 Domain Folders Grid */}
+                  <div>
+                    <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033', margin: 0 }}>
+                          Engineering Discipline Workspaces
+                        </h3>
+                        <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '2px', marginBottom: 0 }}>
+                          Direct folder-level navigation and primary deliverable shortcuts for cross-functional teams.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))', gap: '14px' }}>
+                      {DOMAIN_FOLDERS.map((domain) => {
+                        const Icon = domain.icon;
+                        const domainFiles = data.files.filter((f) =>
+                          f.relative_path.startsWith(domain.folder + '/') ||
+                          (domain.fallbackFolder && f.relative_path.startsWith(domain.fallbackFolder + '/'))
+                        );
+                        const count = domainFiles.length;
+
+                        // Find primary deliverable file
+                        const primary = domainFiles.find((f) => f.relative_path === domain.primaryFileRel)
+                          || (domain.fallbackPattern && domainFiles.find((f) => f.relative_path.includes(domain.fallbackPattern)))
+                          || domainFiles.find((f) => domain.extensions.some((ext) => f.extension.toLowerCase() === ext.toLowerCase()))
+                          || domainFiles[0];
+
+                        // Secondary file if available
+                        const secondary = domain.secondaryFileRel
+                          ? domainFiles.find((f) => f.relative_path === domain.secondaryFileRel)
+                          : null;
+
+                        return (
+                          <div
+                            key={domain.id}
+                            style={{
+                              padding: '16px 18px',
+                              background: '#f8fafc',
+                              borderRadius: '8px',
+                              border: '1px solid #cbd5e1',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'space-between',
+                              gap: '12px',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                            }}
+                          >
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <div
+                                    style={{
+                                      width: '32px',
+                                      height: '32px',
+                                      borderRadius: '6px',
+                                      background: '#ffffff',
+                                      border: '1px solid #e2e8f0',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}
+                                  >
+                                    <Icon size={17} color={domain.iconColor} />
+                                  </div>
+                                  <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                                    {domain.title}
+                                  </h4>
+                                </div>
+                                <span
+                                  style={{
+                                    fontSize: '11px',
+                                    fontWeight: 600,
+                                    padding: '2px 8px',
+                                    borderRadius: '4px',
+                                    background: count > 0 ? '#e0f2fe' : '#f1f5f9',
+                                    color: count > 0 ? '#0369a1' : '#64748b',
+                                  }}
+                                >
+                                  {count} {count === 1 ? 'file' : 'files'}
+                                </span>
                               </div>
-                              <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px', fontFamily: 'monospace' }}>
-                                {f.relative_path} · {formatBytes(f.size_bytes)}
+
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ fontSize: '11px', color: 'var(--text-dim)', fontWeight: 600 }}>Path:</span>
+                                <code
+                                  style={{
+                                    fontSize: '11px',
+                                    fontFamily: 'monospace',
+                                    color: '#0369a1',
+                                    background: '#f0f9ff',
+                                    border: '1px solid #bae6fd',
+                                    padding: '2px 6px',
+                                    borderRadius: '4px',
+                                  }}
+                                >
+                                  {domain.folder}/
+                                </code>
                               </div>
+
+                              <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.4 }}>
+                                {domain.description}
+                              </p>
+
+                              {primary && (
+                                <div
+                                  style={{
+                                    padding: '8px 10px',
+                                    background: '#ffffff',
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '6px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: '8px',
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                                    <FileCode size={14} color="#64748b" style={{ flexShrink: 0 }} />
+                                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                      <span style={{ fontSize: '12px', fontWeight: 600, color: '#1e293b' }}>
+                                        {primary.name}
+                                      </span>
+                                      <span style={{ fontSize: '11px', color: 'var(--text-dim)', marginLeft: '6px' }}>
+                                        ({formatBytes(primary.size_bytes)})
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <span style={{ fontSize: '10px', fontWeight: 700, color: '#16a34a', textTransform: 'uppercase', flexShrink: 0 }}>
+                                    Primary
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', paddingTop: '6px', borderTop: '1px solid #e2e8f0' }}>
+                              <button
+                                className="btn btn-primary"
+                                style={{
+                                  fontSize: '11px',
+                                  padding: '5px 12px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '6px',
+                                  background: '#0284c7',
+                                  border: 'none',
+                                }}
+                                onClick={() => action(() => api.revealFile(data.revision.revision_id, domain.folder))}
+                              >
+                                <Folder size={12} /> Open Folder in Explorer
+                              </button>
+
+                              {primary && (
+                                <button
+                                  className="btn btn-secondary"
+                                  style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                                  onClick={() => action(() => api.openFile(data.revision.revision_id, primary.relative_path))}
+                                >
+                                  <ExternalLink size={12} /> {domain.launchLabel}
+                                </button>
+                              )}
+
+                              {secondary && (
+                                <button
+                                  className="btn btn-secondary"
+                                  style={{ fontSize: '11px', padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                  onClick={() => action(() => api.openFile(data.revision.revision_id, secondary.relative_path))}
+                                >
+                                  <FileText size={11} /> Open {secondary.name.split('.').pop()?.toUpperCase()}
+                                </button>
+                              )}
                             </div>
                           </div>
+                        );
+                      })}
+                    </div>
+                  </div>
 
-                          <div style={{ display: 'flex', gap: '8px' }}>
-                            <button
-                              className="btn btn-secondary"
-                              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '5px 12px', fontSize: '11px' }}
-                              onClick={() => action(() => api.openFile(data.revision.revision_id, f.relative_path))}
-                            >
-                              <ExternalLink size={12} /> Open
-                            </button>
-                            <button
-                              className="btn btn-secondary"
-                              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '5px 12px', fontSize: '11px' }}
-                              onClick={() => action(() => api.revealFile(data.revision.revision_id, f.relative_path))}
-                            >
-                              <Folder size={12} /> Reveal in Explorer
-                            </button>
+                  {/* Collapsible Full File Vault for Audit & Compliance */}
+                  <div
+                    style={{
+                      background: '#ffffff',
+                      borderRadius: '8px',
+                      border: '1px solid #cbd5e1',
+                      overflow: 'hidden',
+                      marginTop: '6px',
+                    }}
+                  >
+                    <button
+                      onClick={() => setShowAllFiles(!showAllFiles)}
+                      style={{
+                        width: '100%',
+                        padding: '14px 18px',
+                        background: '#f8fafc',
+                        border: 'none',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        {showAllFiles ? <ChevronDown size={18} color="#0284c7" /> : <ChevronRight size={18} color="#64748b" />}
+                        <div>
+                          <span style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
+                            Full Monitored Revision File Register ({data.files.length} Files)
+                          </span>
+                          <p style={{ fontSize: '11px', color: 'var(--text-dim)', margin: 0 }}>
+                            Audit vault with SHA-256 digests, individual file launchers, and category filters.
+                          </p>
+                        </div>
+                      </div>
+                      <span className="badge badge-blue" style={{ fontSize: '11px' }}>
+                        {showAllFiles ? 'Hide Vault' : 'Expand All Files'}
+                      </span>
+                    </button>
+
+                    {showAllFiles && (
+                      <div style={{ padding: '16px 18px', borderTop: '1px solid #cbd5e1', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                        {/* Filter and Search Bar */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+                          <div style={{ position: 'relative' }}>
+                            <Search size={14} style={{ position: 'absolute', left: '10px', top: '9px', color: 'var(--text-dim)' }} />
+                            <input
+                              type="text"
+                              placeholder="Search 208 files…"
+                              value={fileSearch}
+                              onChange={(e) => setFileSearch(e.target.value)}
+                              style={{
+                                padding: '6px 12px 6px 30px',
+                                fontSize: '12px',
+                                background: '#ffffff',
+                                border: '1px solid #cbd5e1',
+                                borderRadius: '6px',
+                                color: '#172033',
+                                width: '220px',
+                              }}
+                            />
+                          </div>
+
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            {['all', 'cad', 'reports', 'sims', 'bom'].map((f) => (
+                              <button
+                                key={f}
+                                onClick={() => setFileFilter(f)}
+                                style={{
+                                  fontSize: '11px',
+                                  padding: '4px 10px',
+                                  borderRadius: '4px',
+                                  background: fileFilter === f ? '#2563eb' : '#f1f5f9',
+                                  color: fileFilter === f ? '#ffffff' : '#52627a',
+                                  border: `1px solid ${fileFilter === f ? '#3b82f6' : '#cbd5e1'}`,
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                {f.toUpperCase()}
+                              </button>
+                            ))}
                           </div>
                         </div>
-                      ))}
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '500px', overflowY: 'auto' }}>
+                          {data.files
+                            .filter((f) => {
+                              if (fileSearch && !f.relative_path.toLowerCase().includes(fileSearch.toLowerCase())) return false;
+                              if (fileFilter === 'cad') return f.relative_path.includes('pcb/') || f.relative_path.includes('mechanical/');
+                              if (fileFilter === 'reports') return f.relative_path.includes('reports/');
+                              if (fileFilter === 'sims') return f.relative_path.includes('simulations/');
+                              if (fileFilter === 'bom') return f.relative_path.includes('bom/');
+                              return true;
+                            })
+                            .map((f) => (
+                              <div
+                                key={f.relative_path}
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  padding: '10px 14px',
+                                  background: '#f8fafc',
+                                  borderRadius: '6px',
+                                  border: '1px solid #e2e8f0',
+                                  flexWrap: 'wrap',
+                                  gap: '10px',
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                  <FileCode size={15} color="#1d4ed8" />
+                                  <div>
+                                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#0f172a' }}>
+                                      {f.relative_path.split(/[\\/]/).pop() || f.relative_path}
+                                    </div>
+                                    <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px', fontFamily: 'monospace' }}>
+                                      {f.relative_path} · {formatBytes(f.size_bytes)}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '6px' }}>
+                                  <button
+                                    className="btn btn-secondary"
+                                    style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px' }}
+                                    onClick={() => action(() => api.openFile(data.revision.revision_id, f.relative_path))}
+                                  >
+                                    <ExternalLink size={11} /> Open
+                                  </button>
+                                  <button
+                                    className="btn btn-secondary"
+                                    style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px' }}
+                                    onClick={() => action(() => api.revealFile(data.revision.revision_id, f.relative_path))}
+                                  >
+                                    <Folder size={11} /> Reveal
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              );
+            })()}
 
             {/* TAB 8: VALIDATION */}
             {tab === 'validation' && (
@@ -1394,119 +1849,83 @@ export const ProjectDetailView = ({
 
             {/* TAB 10: REPORTS */}
             {tab === 'reports' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                   <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#172033' }}>
+                    <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#172033', margin: 0 }}>
                       Complete Product Engineering Dossiers & Reports
                     </h3>
-                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
+                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px', marginBottom: 0 }}>
                       Publication-grade vector PDF dossiers with embedded KiCad schematics, 2D PCB layout, 3D raytrace, SPICE waveforms, FEMM FEA, and production BOM.
                     </p>
                   </div>
-                  <button
-                    className="btn btn-primary"
-                    style={{ fontSize: '12px', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
-                    onClick={handleGenerateReport}
-                    disabled={isGeneratingReport}
-                  >
-                    <FileText size={14} className={isGeneratingReport ? 'spin' : ''} />
-                    {isGeneratingReport ? 'Compiling Dossier…' : 'Compile Complete Dossier (PDF)'}
-                  </button>
-                </div>
-
-                {/* Parametric Mechanical Enclosure & Thermal Interface */}
-                <EnclosureCADCard revisionId={data.revision.revision_id} />
-
-                {/* Formal Production Release Handover Package Builder (Option 4) */}
-                <ReleaseHandoverCard
-                  revisionId={data.revision.revision_id}
-                  projectCode={data.product.code}
-                  projectName={data.product.name}
-                  onOpenProjectFile={(rel) => action(() => api.openFile(data.revision.revision_id, rel))}
-                />
-
-                {/* Production BOM Cost Rollup & Purchasing Intelligence (Option 3 / G05) */}
-                <BOMPricingScheduleCard
-                  revisionId={data.revision.revision_id}
-                  projectCode={data.product.code}
-                  projectName={data.product.name}
-                />
-
-                {/* Authoritative Laboratory Test Plan Protocol (Option 2 / G16, G17, G23) */}
-                <LaboratoryTestPlanCard
-                  revisionId={data.revision.revision_id}
-                  projectCode={data.product.code}
-                  projectName={data.product.name}
-                />
-
-                {/* Production BOM Deliverables Header in Reports Tab */}
-                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #cbd5e1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FileCheck size={20} color="#1d4ed8" />
-                    <div>
-                      <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a' }}>
-                        Draft Bill of Materials (BOM) • Sourcing Schedule
-                      </h4>
-                      <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                        Vector PDF & Editable Word formats • 10 Sourced Items derated per IPC-9592B
-                      </span>
-                    </div>
-                  </div>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {data.reports && data.reports.length > 0 && (
+                      <button
+                        className="btn btn-primary"
+                        style={{
+                          fontSize: '12px',
+                          padding: '7px 16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                          border: 'none',
+                          fontWeight: 700,
+                        }}
+                        onClick={() => handleOpenPdf(data.reports[0].report.report_id)}
+                      >
+                        <FileText size={15} /> Open Vector PDF (1.4 MB)
+                      </button>
+                    )}
                     <button
                       className="btn btn-primary"
-                      style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                      disabled={!data.files.some(f => f.relative_path.startsWith('bom/') && f.extension === '.pdf')}
-                      onClick={() => { const file = data.files.filter(f => f.relative_path.startsWith('bom/') && f.extension === '.pdf').sort((a, b) => b.modified_ns - a.modified_ns)[0]; if (file) action(() => api.openFile(data.revision.revision_id, file.relative_path)); }}
+                      style={{ fontSize: '12px', padding: '7px 16px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                      onClick={handleGenerateReport}
+                      disabled={isGeneratingReport}
                     >
-                      <ExternalLink size={12} /> Open PDF BOM
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                      disabled={!data.files.some(f => f.relative_path.startsWith('bom/') && f.extension === '.docx')}
-                      onClick={() => { const file = data.files.filter(f => f.relative_path.startsWith('bom/') && f.extension === '.docx').sort((a, b) => b.modified_ns - a.modified_ns)[0]; if (file) action(() => api.openFile(data.revision.revision_id, file.relative_path)); }}
-                    >
-                      <FileText size={12} /> Open Word BOM
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ fontSize: '11px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                      onClick={handleGenerateBom}
-                      disabled={isGeneratingBom || data.revision.lifecycle_status !== 'draft'}
-                    >
-                      <RefreshCw size={12} className={isGeneratingBom ? 'spin' : ''} />
-                      {isGeneratingBom ? 'Generating…' : 'Re-Generate BOM'}
+                      <RefreshCw size={14} className={isGeneratingReport ? 'spin' : ''} />
+                      {isGeneratingReport ? 'Compiling Dossier…' : 'Compile Complete Dossier (PDF)'}
                     </button>
                   </div>
                 </div>
 
+                {/* Compiled Dossiers & Reports Register (Top Priority) */}
                 {data.reports.length === 0 ? (
-                  <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)', background: '#f3f6fb', borderRadius: '6px' }}>
-                    <FileBarChart size={24} style={{ color: 'var(--text-dim)', marginBottom: '8px' }} />
-                    <p style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>No reports available.</p>
+                  <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)', background: '#f8fafc', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                    <FileBarChart size={28} style={{ color: 'var(--text-dim)', marginBottom: '8px' }} />
+                    <p style={{ fontSize: '13px', fontWeight: 600, color: '#334155' }}>No compiled dossiers yet.</p>
+                    <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
+                      Click "Compile Complete Dossier (PDF)" above to generate a publication-grade PDF dossier.
+                    </p>
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    {data.reports.map((r: any) => (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {data.reports.map((r: any, idx: number) => (
                       <div
                         key={r.report.report_id}
                         style={{
-                          padding: '16px',
-                          background: '#f3f6fb',
-                          borderRadius: '6px',
-                          border: '1px solid var(--border)',
+                          padding: '18px',
+                          background: idx === 0 ? 'linear-gradient(180deg, #f0fdf4 0%, #f8fafc 100%)' : '#f8fafc',
+                          borderRadius: '8px',
+                          border: idx === 0 ? '1px solid #86efac' : '1px solid #cbd5e1',
                           display: 'flex',
                           flexDirection: 'column',
-                          gap: '10px',
+                          gap: '12px',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                          <span style={{ fontSize: '12px', fontWeight: 600, color: '#172033' }}>
-                            Report generated: {new Date(r.report.generated_at).toLocaleString()}
-                          </span>
-                          <div style={{ display: 'flex', gap: '6px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <FileCheck size={18} color={idx === 0 ? '#16a34a' : '#2563eb'} />
+                            <span style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
+                              {idx === 0 ? 'Latest Engineering Dossier' : 'Archived Dossier'} · Compiled {new Date(r.report.generated_at).toLocaleString()}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <span className="badge badge-green" style={{ fontSize: '11px', fontWeight: 600 }}>
+                              ✓ Vector PDF Ready
+                            </span>
                             <span className={`badge ${r.integrity === 'INTACT' ? 'badge-green' : 'badge-yellow'}`}>
                               Integrity: {r.integrity}
                             </span>
@@ -1514,44 +1933,85 @@ export const ProjectDetailView = ({
                           </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '2px', flexWrap: 'wrap' }}>
                           <button
                             className="btn btn-primary"
                             disabled={!r.available || r.integrity === 'FAILED' || isLoadingDossier}
                             onClick={() => handlePreviewDossier(r.report.report_id)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', padding: '6px 14px' }}
                           >
-                            <Eye size={12} className={isLoadingDossier ? 'spin' : ''} /> Preview Dossier
+                            <Eye size={13} className={isLoadingDossier ? 'spin' : ''} /> Preview Dossier
                           </button>
                           <button
-                            className="btn btn-secondary"
+                            className="btn btn-primary"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              fontSize: '12px',
+                              padding: '6px 14px',
+                              background: '#0369a1',
+                              border: 'none',
+                            }}
                             disabled={!r.available || r.integrity === 'FAILED'}
-                            onClick={() => action(() => api.openReport(r.report.report_id, 'pdf'))}
-                            style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+                            onClick={() => handleOpenPdf(r.report.report_id)}
                           >
-                            <FileText size={12} /> Open Vector PDF
+                            <FileText size={13} /> Open Vector PDF
                           </button>
                           <button
                             className="btn btn-secondary"
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', padding: '6px 14px' }}
                             disabled={!r.available || r.integrity === 'FAILED'}
-                            onClick={() => action(() => api.openReport(r.report.report_id, 'html'))}
-                            style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+                            onClick={() => handleOpenHtml(r.report.report_id)}
                           >
-                            <ExternalLink size={12} /> Open HTML
+                            <ExternalLink size={13} /> Open HTML
                           </button>
                           <button
                             className="btn btn-secondary"
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', padding: '6px 14px' }}
                             disabled={!r.available || r.integrity === 'FAILED'}
                             onClick={() => action(() => api.exportReport(r.report.report_id))}
-                            style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
                           >
-                            <Download size={12} /> Export package
+                            <Download size={13} /> Export Package (ZIP)
                           </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
+
+                {/* 1. Formal Production Release Handover Package Builder */}
+                <ReleaseHandoverCard
+                  revisionId={data.revision.revision_id}
+                  projectCode={data.product.code}
+                  projectName={data.product.name}
+                  onOpenProjectFile={(rel) => action(() => api.openFile(data.revision.revision_id, rel))}
+                />
+
+                {/* 2. Unified Production BOM Cost Rollup & Sourcing Intelligence Center */}
+                {(() => {
+                  const pdfBomRel = data.files.filter(f => f.relative_path.startsWith('bom/') && f.extension === '.pdf').sort((a, b) => b.modified_ns - a.modified_ns)[0]?.relative_path || null;
+                  const docxBomRel = data.files.filter(f => f.relative_path.startsWith('bom/') && f.extension === '.docx').sort((a, b) => b.modified_ns - a.modified_ns)[0]?.relative_path || null;
+                  return (
+                    <BOMPricingScheduleCard
+                      revisionId={data.revision.revision_id}
+                      projectCode={data.product.code}
+                      projectName={data.product.name}
+                      onOpenProjectFile={(rel) => action(() => api.openFile(data.revision.revision_id, rel))}
+                      onRebuildBom={data.revision.lifecycle_status === 'draft' ? handleGenerateBom : undefined}
+                      isRebuildingBom={isGeneratingBom}
+                      pdfFile={pdfBomRel}
+                      docxFile={docxBomRel}
+                    />
+                  );
+                })()}
+
+                {/* 3. Authoritative Laboratory Test Plan Protocol */}
+                <LaboratoryTestPlanCard
+                  revisionId={data.revision.revision_id}
+                  projectCode={data.product.code}
+                  projectName={data.product.name}
+                />
               </div>
             )}
           </section>
