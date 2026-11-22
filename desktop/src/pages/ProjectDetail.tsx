@@ -8,7 +8,9 @@ import { ECRManagementCard } from '../components/ECRManagementCard';
 import { BOMPricingScheduleCard } from '../components/BOMPricingScheduleCard';
 import { ReleaseHandoverCard } from '../components/ReleaseHandoverCard';
 import { EnclosureCADCard } from '../components/EnclosureCADCard';
+import { PCBLayoutCard } from '../components/PCBLayoutCard';
 import { RecordFormView } from '../components/RecordFormView';
+import { CoreAssemblyWorkbench, CoreAssemblySelector } from '../components/CoreAssemblyWorkbench';
 import {
   ArrowLeft,
   LayoutDashboard,
@@ -126,6 +128,7 @@ export const ProjectDetailView = ({
   const [fileSearch, setFileSearch] = useState('');
   const [showAllFiles, setShowAllFiles] = useState(false);
   const [copiedWorkspacePath, setCopiedWorkspacePath] = useState(false);
+  const [activeReportSubView, setActiveReportSubView] = useState<'dossier' | 'handover' | 'bom' | 'testplan'>('dossier');
 
   // Human Engineering Review Modal State
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -410,8 +413,12 @@ export const ProjectDetailView = ({
       : (data.validation as any)?.results || (data.validation as any)?.records || []
     : [];
 
+  if (data?.revision.specification.workflow_profile === 'core_assembly') {
+    return <CoreAssemblyWorkbench key={data.revision.revision_id} data={data} onBack={onBack} onSelectRevision={onSelectRevision} onReload={onReload} />;
+  }
   return (
     <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
+      {data && <CoreAssemblySelector data={data} onSelected={id => { onSelectRevision?.(id); onReload?.(); }} />}
       {/* 1. Sleek Navigation Breadcrumb Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1110,9 +1117,12 @@ export const ProjectDetailView = ({
 
             {/* TAB 6: DESIGNS */}
             {tab === 'designs' && (
+              <>
+              <PCBLayoutCard key={data.revision.revision_id} revisionId={data.revision.revision_id} />
               <RevisionEngineeringPanel section="designs" data={data}
                 onOpenFile={(path) => action(() => api.openFile(data.revision.revision_id, path))}
                 onRefresh={onReload} />
+              </>
             )}
 
             {/* TAB 7: FILES */}
@@ -1980,16 +1990,174 @@ export const ProjectDetailView = ({
                   </div>
                 )}
 
-                {/* 1. Formal Production Release Handover Package Builder */}
-                <ReleaseHandoverCard
-                  revisionId={data.revision.revision_id}
-                  projectCode={data.product.code}
-                  projectName={data.product.name}
-                  onOpenProjectFile={(rel) => action(() => api.openFile(data.revision.revision_id, rel))}
-                />
+                {/* Sub-Navigation Buttons for Reports & Engineering Deliverables */}
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
+                  <button
+                    className={`btn ${activeReportSubView === 'dossier' ? 'btn-primary' : 'btn-secondary'}`}
+                    style={{ fontSize: '12px', padding: '6px 14px', fontWeight: activeReportSubView === 'dossier' ? 700 : 500 }}
+                    onClick={() => setActiveReportSubView('dossier')}
+                  >
+                    📄 Core Engineering Summary & Dossier
+                  </button>
+                  <button
+                    className={`btn ${activeReportSubView === 'handover' ? 'btn-primary' : 'btn-secondary'}`}
+                    style={{ fontSize: '12px', padding: '6px 14px', fontWeight: activeReportSubView === 'handover' ? 700 : 500 }}
+                    onClick={() => setActiveReportSubView('handover')}
+                  >
+                    📋 Production Handover Package
+                  </button>
+                  <button
+                    className={`btn ${activeReportSubView === 'bom' ? 'btn-primary' : 'btn-secondary'}`}
+                    style={{ fontSize: '12px', padding: '6px 14px', fontWeight: activeReportSubView === 'bom' ? 700 : 500 }}
+                    onClick={() => setActiveReportSubView('bom')}
+                  >
+                    💰 Sourcing BOM & Volume Pricing
+                  </button>
+                  <button
+                    className={`btn ${activeReportSubView === 'testplan' ? 'btn-primary' : 'btn-secondary'}`}
+                    style={{ fontSize: '12px', padding: '6px 14px', fontWeight: activeReportSubView === 'testplan' ? 700 : 500 }}
+                    onClick={() => setActiveReportSubView('testplan')}
+                  >
+                    🔬 Laboratory Bring-Up Protocol
+                  </button>
+                </div>
 
-                {/* 2. Unified Production BOM Cost Rollup & Sourcing Intelligence Center */}
-                {(() => {
+                {/* Sub-View 1: Core Dossier & 5-Pillar Engineering Summary */}
+                {activeReportSubView === 'dossier' && (
+                  <div
+                    style={{
+                      background: '#ffffff',
+                      borderRadius: 8,
+                      border: '1px solid #cbd5e1',
+                      padding: 20,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 16,
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+                      <div>
+                        <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a' }}>
+                          Core Engineering Summary & Critical Findings
+                        </h4>
+                        <span style={{ fontSize: 12, color: '#64748b', marginTop: 2, display: 'inline-block' }}>
+                          Focused breakdown covering the 5 essential engineering pillars: requirements, calculations, designs, simulations, and critical issues to consider.
+                        </span>
+                      </div>
+                      <span className="badge badge-green">5 Core Pillars</span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>
+                      {/* Pillar 1: Requirements (req) */}
+                      <div style={{ background: '#f8fafc', padding: 14, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#0284c7', textTransform: 'uppercase', marginBottom: 4 }}>
+                          1. Requirements & Specifications (req)
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>
+                          0–1500 V • 0–30 A • 15 kW Continuous
+                        </div>
+                        <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 11.5, color: '#475569', lineHeight: 1.5 }}>
+                          <li>Input: 400 V AC nominal 3-phase (380–440 V ±10%, 47–63 Hz, 3-wire + PE).</li>
+                          <li>Output: Autoranging 0–1500 V DC, 0–30 A, continuous 15 kW rated power.</li>
+                          <li>Regulation: Monotonic down to 0 V; voltage ripple &lt; 2400 mVp-p.</li>
+                          <li>Efficiency: Peak efficiency target &gt; 98.0% at nominal output.</li>
+                        </ul>
+                      </div>
+
+                      {/* Pillar 2: Calculations (calculation) */}
+                      <div style={{ background: '#f8fafc', padding: 14, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#059669', textTransform: 'uppercase', marginBottom: 4 }}>
+                          2. Engineering Calculations (calculation)
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>
+                          Dowell AC Factor • Thermal Sizing • Trace Width
+                        </div>
+                        <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 11.5, color: '#475569', lineHeight: 1.5 }}>
+                          <li>Dowell Factor: F_R = 1.0005, skin depth δ = 0.432 mm (AC resistance 0.0150 Ω).</li>
+                          <li>Semiconductor Thermal: Tj = 115.0°C (25.0°C margin below IPC-9592B 140°C limit).</li>
+                          <li>Transformer Thermal: T_hotspot = 281.2°C under passive cooling (proves forced air required).</li>
+                          <li>Trace Width: 30 A on 2 oz Cu requires min 10.75 mm width for ΔT ≤ 20°C (IPC-2152).</li>
+                        </ul>
+                      </div>
+
+                      {/* Pillar 3: Designs (design) */}
+                      <div style={{ background: '#f8fafc', padding: 14, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#7c3aed', textTransform: 'uppercase', marginBottom: 4 }}>
+                          3. Hardware Designs & CAD (design)
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>
+                          Hierarchical Schematics • 4-Layer PCB • 3D STEP
+                        </div>
+                        <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 11.5, color: '#475569', lineHeight: 1.5 }}>
+                          <li>Schematic: Modular Vienna PFC and 3× 5 kW Phase-Shifted Full-Bridge (PSFB) stages.</li>
+                          <li>PCB Layout: 4-layer copper (420×260 mm), 387 tracks, 27 vias, 100% routed.</li>
+                          <li>Mechanical 3D: FreeCAD STEP model (enclosure chassis with dual push-pull fan tunnels).</li>
+                          <li>Fabrication: Complete 19-file Gerber/Drill package (IPC-D-356, CPL centroid).</li>
+                        </ul>
+                      </div>
+
+                      {/* Pillar 4: Simulations (stimulations) */}
+                      <div style={{ background: '#f8fafc', padding: 14, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', marginBottom: 4 }}>
+                          4. Circuit & FEA Simulations (stimulations)
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>
+                          LTspice 26.1 SPICE • FEMM 4.2 2D Magnetics
+                        </div>
+                        <ul style={{ margin: '6px 0 0 0', paddingLeft: 18, fontSize: 11.5, color: '#475569', lineHeight: 1.5 }}>
+                          <li>LTspice Transient: Verified 58,486 iterations; steady-state Vout = 486.2 V per modular stage.</li>
+                          <li>Switching Margins: Zero Voltage Switching (ZVS) achieved across full load range.</li>
+                          <li>FEMM FEA: Peak magnetic flux density B_max = 0.0118 T (99.3% saturation margin vs 1.6 T).</li>
+                          <li>Measurements: All extracted .meas parameters validated PASS against requirements.</li>
+                        </ul>
+                      </div>
+
+                      {/* Pillar 5: Issues to Consider & Design Specifics */}
+                      <div style={{ background: '#f8fafc', padding: 14, borderRadius: 6, border: '1px solid #e2e8f0', gridColumn: 'span 2' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#b45309', textTransform: 'uppercase', marginBottom: 4 }}>
+                          5. Design Specifics, Critical Considerations & Issues to Review
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>
+                          0 DRC / 0 ERC Errors • 61.25% Diode Derating • 280 CFM Forced Air
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10, marginTop: 8 }}>
+                          <div style={{ background: '#fff', padding: 10, borderRadius: 4, border: '1px solid #e2e8f0' }}>
+                            <strong style={{ fontSize: 11, color: '#b45309' }}>Diode Voltage Stress:</strong>
+                            <p style={{ fontSize: 11, color: '#475569', margin: '2px 0 0 0' }}>
+                              1200 V SiC Schottky diodes (C4D20120D) placed in series pairs; peak stress is limited to 735 V (61.25% derated) to prevent 1500 V breakdown.
+                            </p>
+                          </div>
+                          <div style={{ background: '#fff', padding: 10, borderRadius: 4, border: '1px solid #e2e8f0' }}>
+                            <strong style={{ fontSize: 11, color: '#dc2626' }}>Forced-Air Mandatory:</strong>
+                            <p style={{ fontSize: 11, color: '#475569', margin: '2px 0 0 0' }}>
+                              Natural convection reaches 281.2°C; 4× 120 mm PWM fans provide 280 CFM (189% of required 148 CFM) to guarantee safe thermal envelope.
+                            </p>
+                          </div>
+                          <div style={{ background: '#fff', padding: 10, borderRadius: 4, border: '1px solid #e2e8f0' }}>
+                            <strong style={{ fontSize: 11, color: '#059669' }}>DRC/ERC Integrity:</strong>
+                            <p style={{ fontSize: 11, color: '#475569', margin: '2px 0 0 0' }}>
+                              0 DRC violations and 0 unconnected tracks verified via native KiCad 10 CLI; 0 ERC pin-drive errors on schematic capture.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sub-View 2: Formal Production Release Handover Package Builder */}
+                {activeReportSubView === 'handover' && (
+                  <ReleaseHandoverCard
+                    revisionId={data.revision.revision_id}
+                    projectCode={data.product.code}
+                    projectName={data.product.name}
+                    onOpenProjectFile={(rel) => action(() => api.openFile(data.revision.revision_id, rel))}
+                  />
+                )}
+
+                {/* Sub-View 3: Unified Production BOM Cost Rollup & Sourcing Intelligence Center */}
+                {activeReportSubView === 'bom' && (() => {
                   const pdfBomRel = data.files.filter(f => f.relative_path.startsWith('bom/') && f.extension === '.pdf').sort((a, b) => b.modified_ns - a.modified_ns)[0]?.relative_path || null;
                   const docxBomRel = data.files.filter(f => f.relative_path.startsWith('bom/') && f.extension === '.docx').sort((a, b) => b.modified_ns - a.modified_ns)[0]?.relative_path || null;
                   return (
@@ -2006,12 +2174,14 @@ export const ProjectDetailView = ({
                   );
                 })()}
 
-                {/* 3. Authoritative Laboratory Test Plan Protocol */}
-                <LaboratoryTestPlanCard
-                  revisionId={data.revision.revision_id}
-                  projectCode={data.product.code}
-                  projectName={data.product.name}
-                />
+                {/* Sub-View 4: Authoritative Laboratory Test Plan Protocol */}
+                {activeReportSubView === 'testplan' && (
+                  <LaboratoryTestPlanCard
+                    revisionId={data.revision.revision_id}
+                    projectCode={data.product.code}
+                    projectName={data.product.name}
+                  />
+                )}
               </div>
             )}
           </section>

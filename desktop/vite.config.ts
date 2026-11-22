@@ -222,6 +222,10 @@ function pythonDesktopBridgePlugin() {
           else if (ext === '.csv') res.setHeader('Content-Type', 'text/csv; charset=utf-8');
           else if (ext === '.json') res.setHeader('Content-Type', 'application/json');
           else if (ext === '.pdf') res.setHeader('Content-Type', 'application/pdf');
+          else if (ext === '.png') res.setHeader('Content-Type', 'image/png');
+          else if (ext === '.jpg' || ext === '.jpeg') res.setHeader('Content-Type', 'image/jpeg');
+          else if (ext === '.svg') res.setHeader('Content-Type', 'image/svg+xml');
+          else if (ext === '.webp') res.setHeader('Content-Type', 'image/webp');
           else res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 
           fs.createReadStream(targetPath).pipe(res);

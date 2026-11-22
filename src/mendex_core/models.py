@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from enum import StrEnum
+from typing import Literal
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -28,12 +29,14 @@ class Lifecycle(StrEnum):
 
 
 class Specification(Model):
+    workflow_profile: Literal["electronics", "core_assembly"] = "electronics"
     schema_version: str = Field(default="1.0", pattern=r"^1\.0$")
     vin_min_v: float | None = Field(default=None, gt=0)
     vin_nom_v: float | None = Field(default=None, gt=0)
     vin_max_v: float | None = Field(default=None, gt=0)
     vout_v: float | None = Field(default=None, gt=0)
     iout_a: float | None = Field(default=None, ge=0)
+    pout_w: float | None = Field(default=None, gt=0)
     switching_frequency_hz: float | None = Field(default=None, gt=0)
     ambient_temperature_k: float | None = Field(default=None, gt=0)
     ambient_temperature_c: float | None = Field(default=None, ge=-273.15)

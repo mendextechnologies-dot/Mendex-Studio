@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "disposition": {
+      "default": "",
+      "maxLength": 4000,
+      "title": "Disposition",
+      "type": "string"
+    },
+    "owner": {
+      "default": "",
+      "maxLength": 200,
+      "title": "Owner",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "description",
+    "source"
+  ],
+  "title": "AssemblyIssue",
+  "type": "object"
+}

@@ -32,6 +32,9 @@ def main(argv=None):
     parser.add_argument("--json", action="store_true", help="Ensure JSON output")
 
     commands = parser.add_subparsers(dest="command", required=True)
+    assembly = commands.add_parser("core-assembly", help="Core/support assembly workflow and sourced mechanical design")
+    assembly.add_argument("operation", choices=["show", "preview", "create-revision", "save-design"])
+    assembly.add_argument("request", type=Path, help="JSON request: revision_id for show; typed workflow/design request for writes")
     power = commands.add_parser("power-analysis", help="Sourced loss/thermal device comparison, sweeps and mission profiles")
     power.add_argument("request", type=Path, help="AnalysisRequest JSON; SI units and model sources required")
     power.add_argument("--revision", type=UUID, default=None)
@@ -89,6 +92,13 @@ def main(argv=None):
             pcb.add_argument("--kind", choices=("erc", "drc"), required=True)
         if name == "pcb-notes":
             pcb.add_argument("--file", type=Path, help="UTF-8 notes to save; omit to read notes")
+
+    layout = commands.add_parser("pcb-layout", help="Structural board analysis and isolated draft layout candidates")
+    layout.add_argument("operation", choices=("analyze", "preview", "create", "list", "read"))
+    layout.add_argument("--revision", required=True, type=UUID)
+    layout.add_argument("--path", help="Revision-relative PCB path for analysis")
+    layout.add_argument("--request", type=Path, help="LayoutPlan JSON file for placement preview or candidate creation")
+    layout.add_argument("--candidate", type=UUID, help="Candidate identifier for read")
 
     create = commands.add_parser("create")
     create.add_argument("code")
@@ -381,6 +391,18 @@ def _parse_json_or_file(text: str) -> Dict[str, Any]:
 def execute(args):
     root = getattr(args, "doctor_root", None) or args.root or default_data_root()
     service = StudioService(root)
+    if args.command == "core-assembly":
+        request = json.loads(args.request.read_text(encoding="utf-8-sig"))
+        if args.operation in ("show", "preview"):
+            from .engineering_records.models import RevisionQuery
+            revision_id = RevisionQuery.model_validate(request).revision_id
+            result = service.core_assembly.overview(revision_id) if args.operation == "show" else service.core_assembly.assembly_preview(revision_id)
+        elif args.operation == "create-revision":
+            result = service.core_assembly.create_revision(request)
+        else:
+            result = service.core_assembly.save_design(request)
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0
     if args.command == "power-components":
         print(json.dumps(service.power_analysis_context(args.revision), indent=2, allow_nan=False))
         return 0
@@ -739,6 +761,24 @@ def execute(args):
         if not rev_id:
             raise ValueError("No revision specified or available to generate report.")
         print(service.generate_report(rev_id).model_dump_json(indent=2))
+    elif args.command == "pcb-layout":
+        if args.operation == "analyze":
+            if not args.path:
+                raise ValueError("analyze requires --path")
+            result = service.pcb_layout.analyze(args.revision, args.path)
+        elif args.operation in {"preview", "create"}:
+            if not args.request:
+                raise ValueError(args.operation + " requires --request")
+            operation = service.pcb_layout.preview_plan if args.operation == "preview" else service.pcb_layout.create_candidate
+            result = operation(args.revision, json.loads(args.request.read_text(encoding="utf-8-sig")))
+        elif args.operation == "read":
+            if not args.candidate:
+                raise ValueError("read requires --candidate")
+            result = service.pcb_layout.read_candidate(args.revision, args.candidate)
+        else:
+            result = service.pcb_layout.list_candidates(args.revision)
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0
     elif args.command == "pcb-files":
         print(json.dumps(service.pcb.overview(args.revision), indent=2))
     elif args.command == "pcb-checks":

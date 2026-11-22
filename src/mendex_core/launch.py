@@ -74,10 +74,15 @@ def _activate_window(top_hwnd: int) -> bool:
             if fg_thread and curr_thread and fg_thread != curr_thread:
                 ret_attach = bool(user32.AttachThreadInput(curr_thread, fg_thread, True))
 
-        # 1. Restore if iconic, then maximize
+        # 1. Restore if iconic, then show
         if user32.IsIconic(top_hwnd):
             user32.ShowWindow(top_hwnd, 9)  # SW_RESTORE
-        user32.ShowWindow(top_hwnd, 3)      # SW_SHOWMAXIMIZED
+        else:
+            style = user32.GetWindowLongW(top_hwnd, -16)
+            if style & 0x00010000:  # WS_MAXIMIZEBOX
+                user32.ShowWindow(top_hwnd, 3)  # SW_SHOWMAXIMIZED
+            else:
+                user32.ShowWindow(top_hwnd, 1)  # SW_SHOWNORMAL
 
         # 2. Synthesize Alt key down + up to unlock Windows foreground lockout
         VK_MENU = 0x12
@@ -145,16 +150,20 @@ def _find_window_on_desktop(
             user32.GetWindowTextW(hwnd, buf, length + 1)
             title = buf.value
             if title not in ("Default IME", "MSCTFIME UI"):
-                matched = False
-                if target_pid and p_id.value == target_pid:
-                    matched = True
-                elif required_hints:
-                    if all(req.lower() in title.lower() for req in required_hints):
+                style = user32.GetWindowLongW(hwnd, -16)
+                # Filter out frameless Qt splash screens and popups (e.g. FreeCAD splash)
+                is_splash = (title.lower() == "freecad" and not (style & 0x00010000))
+                if not is_splash:
+                    matched = False
+                    if target_pid and p_id.value == target_pid:
                         matched = True
-                elif hints and any(h.lower() in title.lower() for h in hints if len(h) >= 3):
-                    matched = True
-                if matched:
-                    found_hwnds.append(hwnd)
+                    elif required_hints:
+                        if all(req.lower() in title.lower() for req in required_hints):
+                            matched = True
+                    elif hints and any(h.lower() in title.lower() for h in hints if len(h) >= 3):
+                        matched = True
+                    if matched:
+                        found_hwnds.append(hwnd)
         return True
 
     try:
@@ -208,7 +217,7 @@ def _spawn_on_desktop(
     si.cb = ctypes.sizeof(_STARTUPINFO)
     si.lpDesktop = r"WinSta0\Default"
     si.dwFlags = 0x00000001
-    si.wShowWindow = 3
+    si.wShowWindow = 1
     pi = _PROCESS_INFORMATION()
 
     creation_flags = 0x00000200
@@ -333,7 +342,11 @@ def _spawn_gui(exe: Path, target: Path | None = None, work_dir: Path | None = No
     # Native applications own editing locks and crash recovery. Launching must
     # never delete potentially active locks or recoverable unsaved documents.
     cwd = str(work_dir or (target.parent if target else exe.parent))
-    cmd_line = f'"{exe}" "{target}"' if target else f'"{exe}"'
+    stem_lower = exe.stem.lower()
+    if "freecad" in stem_lower:
+        cmd_line = f'"{exe}" --single-instance "{target}"' if target else f'"{exe}" --single-instance'
+    else:
+        cmd_line = f'"{exe}" "{target}"' if target else f'"{exe}"'
 
     required_hints: list[str] = []
     window_hints = list(hints) if hints else []
@@ -666,6 +679,15 @@ def open_native(path: Path):
         _open_document(p)
         return
 
+    # Route Image graphics (.png, .jpg, .jpeg, .svg, .bmp, .webp)
+    if ext in (".png", ".jpg", ".jpeg", ".svg", ".bmp", ".webp"):
+        try:
+            os.startfile(str(p))
+            return
+        except Exception:
+            _open_document(p)
+            return
+
     raise ValueError(
         f"Unsupported or unrecognized engineering file type '{ext}' for file '{p.name}'. "
         "Native tool routing only dispatches recognized CAD, EDA, SPICE, FEA, and system simulation artifacts."
@@ -679,6 +701,7 @@ NATIVE_EXTENSIONS = {
     ".gbr", ".gtl", ".gbl", ".gts", ".gbs", ".gto", ".gbo", ".gm1", ".drl",
     ".txt", ".json", ".md", ".csv", ".html", ".htm", ".pdf", ".log",
     ".lua", ".docx", ".xlsx", ".xml", ".zip",
+    ".png", ".jpg", ".jpeg", ".svg", ".bmp", ".webp",
 }
 
 
@@ -707,6 +730,11 @@ def get_tool_for_extension(path: Path | str) -> tuple[str, str] | None:
         ".moe": ("omedit", "OpenModelica OMEdit"),
         ".gbr": ("kicad_gerbview", "KiCad GerbView"),
         ".drl": ("kicad_gerbview", "KiCad GerbView"),
+        ".png": ("image", "Image Viewer"),
+        ".jpg": ("image", "Image Viewer"),
+        ".jpeg": ("image", "Image Viewer"),
+        ".svg": ("image", "Vector Image Viewer"),
+        ".pdf": ("pdf", "PDF Document Viewer"),
     }
     return mapping.get(ext)
 

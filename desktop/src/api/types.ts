@@ -489,11 +489,14 @@ export interface PCBThermalFieldReport {
 }
 
 export interface EnclosureModelReport {
-  success: boolean;
-  product_code: string;
-  revision_label: string;
-  revision_id: string;
-  dimensions: {
+  success?: boolean;
+  available?: boolean;
+  status?: string;
+  message?: string;
+  product_code?: string;
+  revision_label?: string;
+  revision_id?: string;
+  dimensions?: {
     outer_length_mm: number;
     outer_width_mm: number;
     total_height_mm: number;
@@ -502,7 +505,7 @@ export interface EnclosureModelReport {
     material: string;
     weight_approx_grams: number;
   };
-  thermal_interface: {
+  thermal_interface?: {
     tim_part: string;
     tim_conductivity_w_mk: number;
     tim_thickness_mm: number;
@@ -512,14 +515,14 @@ export interface EnclosureModelReport {
     junction_temp_chassis_c: number;
     delta_t_benefit_c: number;
   };
-  step_generated: boolean;
-  files: {
-    svg_drawing: string;
-    tim_specification: string;
-    freecad_script: string;
-    step_assembly: string | null;
-    step_base: string | null;
-    step_lid: string | null;
+  step_generated?: boolean;
+  files?: {
+    svg_drawing?: string;
+    tim_specification?: string;
+    freecad_script?: string;
+    step_assembly?: string | null;
+    step_base?: string | null;
+    step_lid?: string | null;
   };
   svg_drawing_content?: string;
   tim_specification_content?: string;

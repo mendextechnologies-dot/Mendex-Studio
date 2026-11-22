@@ -348,6 +348,62 @@ def test_auto_route_heavy_copper_thermal_relief_rpc(tmp_path):
     assert kwargs["zone_clearance"] == 0.6
 
 
+def test_download_cad_pdf_schematic_and_pcb(tmp_path):
+    """Verifies that download_cad_pdf exports base64 data URIs for both schematic and PCB."""
+    controller = MendexEngineeringController(tmp_path)
+    proj = controller.create_project("CAD PDF Test Proj", code="CPTP", auto_enroll=True)
+    studio = controller.service
+    product = studio.get_product(proj["project_id"])
+    rev = studio.get_revision(product.active_revision_id)
+    ws = studio.workspace_path(rev)
+    pcb_dir = ws / "pcb"
+    pcb_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. Write minimal schematic
+    sample_sch = """(kicad_sch
+  (version 20231120)
+  (generator "eeschema")
+  (paper "A4")
+  (title_block (title "Test Sch"))
+  (sheet_instances (path "/" (page "1")))
+)"""
+    (pcb_dir / "test.kicad_sch").write_text(sample_sch, encoding="utf-8")
+
+    # 2. Write minimal pcb
+    sample_pcb = """(kicad_pcb
+  (version 20240108)
+  (general (thickness 1.6))
+  (gr_rect (start 10.0 10.0) (end 50.0 50.0) (stroke (width 0.15) (type solid)) (layer "Edge.Cuts"))
+)"""
+    (pcb_dir / "test.kicad_pcb").write_text(sample_pcb, encoding="utf-8")
+
+    desktop = DesktopService(studio)
+
+    # Test Schematic PDF download
+    res_sch = desktop.dispatch("download_cad_pdf", {
+        "revision_id": str(rev.revision_id),
+        "target": "schematic",
+    })
+    assert res_sch["success"] is True
+    assert res_sch["filename"] == "test_schematic.pdf"
+    assert res_sch["target"] == "schematic"
+    assert res_sch["bytes"] > 0
+    assert res_sch["data_uri"].startswith("data:application/pdf;base64,")
+
+    # Test PCB PDF download
+    res_pcb = desktop.dispatch("download_cad_pdf", {
+        "revision_id": str(rev.revision_id),
+        "target": "pcb",
+        "mode": "single",
+    })
+    assert res_pcb["success"] is True
+    assert res_pcb["filename"] == "test_pcb_single.pdf"
+    assert res_pcb["target"] == "pcb"
+    assert res_pcb["bytes"] > 0
+    assert res_pcb["data_uri"].startswith("data:application/pdf;base64,")
+
+
+
 def test_mill_isolation_slot_dispatch_and_cad_preview(tmp_path):
     """Verifies physical Edge.Cuts isolation air slot milling and detection by 2D CAD preview."""
     controller = MendexEngineeringController(tmp_path)
@@ -471,3 +527,60 @@ def test_setup_four_layer_power_planes_dispatch_and_cad_preview(tmp_path):
     zone_layers = [z["layer"] for z in preview["zones"]]
     assert "In1.Cu" in zone_layers
     assert "In2.Cu" in zone_layers
+
+
+def test_analyze_hv_clearance_service(tmp_path):
+    controller = MendexEngineeringController(tmp_path)
+    proj = controller.create_project("HV Test Proj", code="HVTP", auto_enroll=True)
+    studio = controller.service
+    product = studio.get_product(proj["project_id"])
+    rev = studio.get_revision(product.active_revision_id)
+    ws = studio.workspace_path(rev)
+    pcb_dir = ws / "pcb"
+    pcb_dir.mkdir(parents=True, exist_ok=True)
+
+    # Write a test PCB with HV nets
+    sample_pcb = """(kicad_pcb
+  (version 20240108)
+  (general (thickness 1.6))
+  (net 0 "")
+  (net 1 "HV_OUT_POS")
+  (net 2 "HV_OUT_NEG")
+  (net 3 "AC_L1")
+  (segment (start 10.0 10.0) (end 50.0 10.0) (width 1.0) (layer "F.Cu") (net 1))
+  (segment (start 10.0 20.0) (end 50.0 20.0) (width 1.0) (layer "F.Cu") (net 2))
+  (segment (start 10.0 30.0) (end 50.0 30.0) (width 1.0) (layer "F.Cu") (net 3))
+)"""
+    (pcb_dir / "board.kicad_pcb").write_text(sample_pcb, encoding="utf-8")
+
+    desktop = DesktopService(studio)
+
+    # 1. Coated mode evaluation
+    res_coated = desktop.dispatch("analyze_hv_clearance", {
+        "revision_id": str(rev.revision_id),
+        "coating": "coated"
+    })
+
+    assert res_coated["success"] is True
+    assert "IPC-2221B" in res_coated["standard"]
+    assert res_coated["max_board_voltage_v"] == 1500.0
+    assert res_coated["overall_status"] == "CLEAR"
+    assert res_coated["conformal_coating_mandatory"] is True
+    assert res_coated["isolation_barrier"]["dielectric_withstand_kv"] == 5.0
+    assert res_coated["isolation_barrier"]["isolation_distance_mm"] == 15.0
+    assert len(res_coated["results"]) >= 2
+    hv_pos = next(r for r in res_coated["results"] if r["net"] == "HV_OUT_POS")
+    assert hv_pos["voltage_v"] == 1500.0
+    assert hv_pos["status"] == "CLEAR"
+
+    # 2. Uncoated mode evaluation
+    res_uncoated = desktop.dispatch("analyze_hv_clearance", {
+        "revision_id": str(rev.revision_id),
+        "coating": "uncoated"
+    })
+
+    assert res_uncoated["success"] is True
+    assert res_uncoated["coating_mode"] == "uncoated"
+    assert res_uncoated["overall_status"] == "ACTION_REQUIRED"
+    hv_uncoated = next(r for r in res_uncoated["results"] if r["net"] == "HV_OUT_POS")
+    assert hv_uncoated["status"] == "REQUIRES_COATING"

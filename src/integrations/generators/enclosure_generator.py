@@ -185,8 +185,8 @@ def generate_enclosure_svg_drawing(
     revision_label: str = "R001",
 ) -> str:
     """Generates an engineering 2D mechanical drafting SVG with orthographic views,
-
     dimension callouts, standoff coordinates, thermal boss, and title block.
+    Dynamically scales and fits any PCB envelope without viewport overflow.
     """
     inner_l = pcb_length_mm + 2 * clearance_xy_mm
     inner_w = pcb_width_mm + 2 * clearance_xy_mm
@@ -194,16 +194,52 @@ def generate_enclosure_svg_drawing(
     outer_w = inner_w + 2 * wall_thickness_mm
     total_h = wall_thickness_mm + standoff_height_mm + pcb_thickness_mm + max_component_height_mm + top_clearance_mm + wall_thickness_mm
 
-    scale = 3.2  # pixels per mm
+    # Standard A3-proportioned CAD drafting canvas
+    canvas_w = 1200
+    canvas_h = 860
+
+    # Usable drafting area inside border and title block
+    border_inset = 20
+    title_block_h = 75
+    usable_w = canvas_w - (border_inset * 2) - 160  # Leave 160px for right-side dimension callouts
+    usable_h = canvas_h - (border_inset * 2) - title_block_h - 170  # Leave room for titles, dimensions, and inter-view spacing
+
+    # Dynamically fit scale to ensure zero overflow for both small and large enclosures
+    scale_x = usable_w / max(outer_l, 10.0)
+    scale_y = usable_h / max(outer_w + total_h, 10.0)
+    scale = max(0.8, min(3.2, min(scale_x, scale_y)))
+
     top_w = outer_l * scale
     top_h = outer_w * scale
     side_w = outer_l * scale
     side_h = total_h * scale
 
-    canvas_w = 900
-    canvas_h = 750
+    # Subsystem product context labels
+    if any(k in product_code for k in ("PDC", "1500", "15K")):
+        j1_label = "J1: 3-PHASE AC MAINS (400V AC)"
+        j2_label = "J2: DC OUTPUT (0-1500V / 30A)"
+        chassis_desc = "DUAL-CHAMBER 6061-T6 ANODIZED INDUSTRIAL POWER ENCLOSURE"
+    elif any(k in product_code for k in ("HV", "1000", "500")):
+        j1_label = "J1: PRIMARY POWER INPUT"
+        j2_label = "J2: HIGH-VOLTAGE DC OUTPUT"
+        chassis_desc = "DUAL-CHAMBER ANODIZED 6061-T6 ALUMINUM ENCLOSURE"
+    else:
+        j1_label = "J1: POWER INPUT PORT"
+        j2_label = "J2: REGULATED DC OUTPUT PORT"
+        chassis_desc = "ANODIZED 6061-T6 ALUMINUM ENCLOSURE"
 
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_w} {canvas_h}" width="100%" height="100%" style="background:#0f172a; font-family:'JetBrains Mono', Consolas, monospace;">
+    # View positions
+    view_a_x = 55
+    view_a_y = 75
+    view_b_x = 55
+    view_b_y = view_a_y + top_h + 85  # Dynamically positioned below View A + dimensions
+
+    # Standoffs in View B (Section elevation)
+    st_w = max(12.0, min(18.0, 10.0 * scale))
+    st1_x = (wall_thickness_mm + clearance_xy_mm + 2.0) * scale
+    st2_x = side_w - (wall_thickness_mm + clearance_xy_mm + 2.0) * scale - st_w
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_w} {canvas_h}" width="100%" height="100%" style="background:#0f172a; font-family:'JetBrains Mono', Consolas, monospace; display:block; max-width:100%;">
   <defs>
     <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
       <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e293b" stroke-width="0.7"/>
@@ -223,16 +259,16 @@ def generate_enclosure_svg_drawing(
   <rect width="100%" height="100%" fill="url(#grid)" />
 
   <!-- Drawing Border & Title Block -->
-  <rect x="25" y="25" width="{canvas_w - 50}" height="{canvas_h - 50}" fill="none" stroke="#475569" stroke-width="2"/>
-  <rect x="25" y="{canvas_h - 95}" width="{canvas_w - 50}" height="70" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
-  <text x="45" y="{canvas_h - 65}" fill="#38bdf8" font-size="14" font-weight="bold">MENDEX ENGINEERING STUDIO · MECHANICAL SPECIFICATION</text>
-  <text x="45" y="{canvas_h - 42}" fill="#94a3b8" font-size="11">PRODUCT: {product_code} ({revision_label}) · DUAL-CHAMBER ANODIZED 6061-T6 ALUMINUM ENCLOSURE</text>
-  <text x="{canvas_w - 280}" y="{canvas_h - 65}" fill="#cbd5e1" font-size="11">UNITS: MILLIMETERS (mm)</text>
-  <text x="{canvas_w - 280}" y="{canvas_h - 42}" fill="#e2e8f0" font-size="11">TOLERANCE: ±0.15 mm · SCALE 1:1</text>
+  <rect x="{border_inset}" y="{border_inset}" width="{canvas_w - (border_inset * 2)}" height="{canvas_h - (border_inset * 2)}" fill="none" stroke="#475569" stroke-width="2"/>
+  <rect x="{border_inset}" y="{canvas_h - border_inset - title_block_h}" width="{canvas_w - (border_inset * 2)}" height="{title_block_h}" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+  <text x="{border_inset + 20}" y="{canvas_h - border_inset - 46}" fill="#38bdf8" font-size="13" font-weight="bold">MENDEX ENGINEERING STUDIO · MECHANICAL SPECIFICATION</text>
+  <text x="{border_inset + 20}" y="{canvas_h - border_inset - 24}" fill="#94a3b8" font-size="10.5">PRODUCT: {product_code} ({revision_label}) · {chassis_desc}</text>
+  <text x="{canvas_w - border_inset - 320}" y="{canvas_h - border_inset - 46}" fill="#cbd5e1" font-size="10.5">UNITS: MILLIMETERS (mm) · SCALE: {scale:.2f}:1 (FIT)</text>
+  <text x="{canvas_w - border_inset - 320}" y="{canvas_h - border_inset - 24}" fill="#e2e8f0" font-size="10.5">ENCLOSURE: {outer_l:.1f} × {outer_w:.1f} × {total_h:.1f} mm · TOL: ±0.15 mm</text>
 
   <!-- VIEW 1: TOP PLAN VIEW (Enclosure Base + PCB Mounting) -->
-  <g transform="translate(60, 60)">
-    <text x="0" y="-12" fill="#38bdf8" font-size="12" font-weight="bold">VIEW A: TOP ORTHOGRAPHIC PLAN VIEW (OPEN TUB)</text>
+  <g transform="translate({view_a_x}, {view_a_y})">
+    <text x="0" y="-32" fill="#38bdf8" font-size="11.5" font-weight="bold">VIEW A: TOP ORTHOGRAPHIC PLAN VIEW (OPEN TUB)</text>
 
     <!-- Outer Aluminum Shell -->
     <rect x="0" y="0" width="{top_w}" height="{top_h}" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
@@ -242,47 +278,48 @@ def generate_enclosure_svg_drawing(
 
     <!-- PCB Outline Ghost -->
     <rect x="{(wall_thickness_mm + clearance_xy_mm) * scale}" y="{(wall_thickness_mm + clearance_xy_mm) * scale}" width="{pcb_length_mm * scale}" height="{pcb_width_mm * scale}" rx="2" fill="#065f46" fill-opacity="0.25" stroke="#10b981" stroke-width="1.5"/>
-    <text x="{(wall_thickness_mm + clearance_xy_mm + 4) * scale}" y="{(wall_thickness_mm + clearance_xy_mm + 8) * scale}" fill="#10b981" font-size="10">PCB: {pcb_length_mm} × {pcb_width_mm} mm</text>
+    <text x="{(wall_thickness_mm + clearance_xy_mm + 4) * scale}" y="{(wall_thickness_mm + clearance_xy_mm + 8) * scale}" fill="#10b981" font-size="9.5">PCB: {pcb_length_mm:.1f} × {pcb_width_mm:.1f} mm</text>
 
     <!-- 4 M3 Standoff Bosses -->
-    <circle cx="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" r="10" fill="#334155" stroke="#38bdf8" stroke-width="1.5"/>
-    <circle cx="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" r="4" fill="#0f172a" stroke="#f8fafc" stroke-width="1"/>
+    <circle cx="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" r="{max(6.0, 4.0 * scale)}" fill="#334155" stroke="#38bdf8" stroke-width="1.5"/>
+    <circle cx="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" r="{max(2.5, 1.8 * scale)}" fill="#0f172a" stroke="#f8fafc" stroke-width="1"/>
 
-    <circle cx="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" r="10" fill="#334155" stroke="#38bdf8" stroke-width="1.5"/>
-    <circle cx="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" r="4" fill="#0f172a" stroke="#f8fafc" stroke-width="1"/>
+    <circle cx="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" r="{max(6.0, 4.0 * scale)}" fill="#334155" stroke="#38bdf8" stroke-width="1.5"/>
+    <circle cx="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" r="{max(2.5, 1.8 * scale)}" fill="#0f172a" stroke="#f8fafc" stroke-width="1"/>
 
-    <circle cx="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + pcb_width_mm - 5.0) * scale}" r="10" fill="#334155" stroke="#38bdf8" stroke-width="1.5"/>
-    <circle cx="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + pcb_width_mm - 5.0) * scale}" r="4" fill="#0f172a" stroke="#f8fafc" stroke-width="1"/>
+    <circle cx="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + pcb_width_mm - 5.0) * scale}" r="{max(6.0, 4.0 * scale)}" fill="#334155" stroke="#38bdf8" stroke-width="1.5"/>
+    <circle cx="{(wall_thickness_mm + clearance_xy_mm + 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + pcb_width_mm - 5.0) * scale}" r="{max(2.5, 1.8 * scale)}" fill="#0f172a" stroke="#f8fafc" stroke-width="1"/>
 
-    <circle cx="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + pcb_width_mm - 5.0) * scale}" r="10" fill="#334155" stroke="#38bdf8" stroke-width="1.5"/>
-    <circle cx="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + pcb_width_mm - 5.0) * scale}" r="4" fill="#0f172a" stroke="#f8fafc" stroke-width="1"/>
+    <circle cx="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + pcb_width_mm - 5.0) * scale}" r="{max(6.0, 4.0 * scale)}" fill="#334155" stroke="#38bdf8" stroke-width="1.5"/>
+    <circle cx="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 5.0) * scale}" cy="{(wall_thickness_mm + clearance_xy_mm + pcb_width_mm - 5.0) * scale}" r="{max(2.5, 1.8 * scale)}" fill="#0f172a" stroke="#f8fafc" stroke-width="1"/>
 
     <!-- Thermal Pedestal Boss (Under Q1) -->
     <rect x="{(wall_thickness_mm + clearance_xy_mm + 28.0) * scale}" y="{(wall_thickness_mm + clearance_xy_mm + 35.0) * scale}" width="{thermal_boss_size_mm * scale}" height="{thermal_boss_size_mm * scale}" rx="2" fill="url(#tim-glow)" fill-opacity="0.3" stroke="#f97316" stroke-width="2"/>
-    <text x="{(wall_thickness_mm + clearance_xy_mm + 29.0) * scale}" y="{(wall_thickness_mm + clearance_xy_mm + 47.0) * scale}" fill="#f97316" font-size="9" font-weight="bold">Q1 TIM BOSS ({thermal_boss_size_mm}×{thermal_boss_size_mm})</text>
+    <text x="{(wall_thickness_mm + clearance_xy_mm + 29.0) * scale}" y="{(wall_thickness_mm + clearance_xy_mm + 35.0 + thermal_boss_size_mm / 2.0 + 3.0) * scale}" fill="#f97316" font-size="8.5" font-weight="bold">Q1 TIM BOSS ({thermal_boss_size_mm:.0f}×{thermal_boss_size_mm:.0f})</text>
 
-    <!-- Connector Ports -->
-    <rect x="{(wall_thickness_mm + clearance_xy_mm + 10.0) * scale}" y="-4" width="{16.0 * scale}" height="8" fill="#e11d48" stroke="#f43f5e" stroke-width="1"/>
-    <text x="{(wall_thickness_mm + clearance_xy_mm + 11.0) * scale}" y="-8" fill="#f43f5e" font-size="9">J1 PORT (24V)</text>
+    <!-- Connector Ports (Carefully positioned to avoid text collisions) -->
+    <rect x="{(wall_thickness_mm + clearance_xy_mm + 12.0) * scale}" y="-4" width="{max(20.0, 16.0 * scale)}" height="{max(6.0, wall_thickness_mm * scale + 2)}" fill="#e11d48" stroke="#f43f5e" stroke-width="1"/>
+    <text x="{(wall_thickness_mm + clearance_xy_mm + 12.0) * scale}" y="-10" fill="#f43f5e" font-size="8.5" font-weight="600">{j1_label}</text>
 
-    <rect x="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 26.0) * scale}" y="{top_h - 4}" width="{16.0 * scale}" height="8" fill="#e11d48" stroke="#f43f5e" stroke-width="1"/>
-    <text x="{(wall_thickness_mm + clearance_xy_mm + pcb_length_mm - 27.0) * scale}" y="{top_h + 16}" fill="#f43f5e" font-size="9">J2 PORT (1000V)</text>
+    <rect x="{top_w - (wall_thickness_mm + clearance_xy_mm + 36.0) * scale}" y="{top_h - 4}" width="{max(20.0, 16.0 * scale)}" height="{max(6.0, wall_thickness_mm * scale + 2)}" fill="#e11d48" stroke="#f43f5e" stroke-width="1"/>
+    <text x="{top_w - (wall_thickness_mm + clearance_xy_mm + 36.0) * scale}" y="{top_h + 16}" fill="#f43f5e" font-size="8.5" font-weight="600">{j2_label}</text>
 
-    <!-- Dimension Lines -->
+    <!-- Dimension Lines: Length -->
     <line x1="0" y1="{top_h + 30}" x2="{top_w}" y2="{top_h + 30}" stroke="#94a3b8" stroke-width="1.2"/>
-    <line x1="0" y1="{top_h + 25}" x2="0" y2="{top_h + 35}" stroke="#94a3b8" stroke-width="1.2"/>
-    <line x1="{top_w}" y1="{top_h + 25}" x2="{top_w}" y2="{top_h + 35}" stroke="#94a3b8" stroke-width="1.2"/>
-    <text x="{top_w / 2 - 25}" y="{top_h + 45}" fill="#cbd5e1" font-size="11">{outer_l:.1f} mm (OUTER)</text>
+    <line x1="0" y1="{top_h + 24}" x2="0" y2="{top_h + 36}" stroke="#94a3b8" stroke-width="1.2"/>
+    <line x1="{top_w}" y1="{top_h + 24}" x2="{top_w}" y2="{top_h + 36}" stroke="#94a3b8" stroke-width="1.2"/>
+    <text x="{top_w / 2.0 - 45}" y="{top_h + 44}" fill="#cbd5e1" font-size="10.5">{outer_l:.1f} mm (OUTER LENGTH)</text>
 
-    <line x1="{top_w + 30}" y1="0" x2="{top_w + 30}" y2="{top_h}" stroke="#94a3b8" stroke-width="1.2"/>
-    <line x1="{top_w + 25}" y1="0" x2="{top_w + 35}" y2="0" stroke="#94a3b8" stroke-width="1.2"/>
-    <line x1="{top_w + 25}" y1="{top_h}" x2="{top_w + 35}" y2="{top_h}" stroke="#94a3b8" stroke-width="1.2"/>
-    <text x="{top_w + 40}" y="{top_h / 2 + 4}" fill="#cbd5e1" font-size="11">{outer_w:.1f} mm</text>
+    <!-- Dimension Lines: Width -->
+    <line x1="{top_w + 25}" y1="0" x2="{top_w + 25}" y2="{top_h}" stroke="#94a3b8" stroke-width="1.2"/>
+    <line x1="{top_w + 19}" y1="0" x2="{top_w + 31}" y2="0" stroke="#94a3b8" stroke-width="1.2"/>
+    <line x1="{top_w + 19}" y1="{top_h}" x2="{top_w + 31}" y2="{top_h}" stroke="#94a3b8" stroke-width="1.2"/>
+    <text x="{top_w + 35}" y="{top_h / 2.0 + 4}" fill="#cbd5e1" font-size="10.5">{outer_w:.1f} mm</text>
   </g>
 
   <!-- VIEW 2: FRONT SECTIONAL ELEVATION VIEW -->
-  <g transform="translate(60, 420)">
-    <text x="0" y="-12" fill="#38bdf8" font-size="12" font-weight="bold">VIEW B: CROSS-SECTIONAL ELEVATION (THERMAL SINK PATH &amp; HV CLEARANCE)</text>
+  <g transform="translate({view_b_x}, {view_b_y})">
+    <text x="0" y="-20" fill="#38bdf8" font-size="11.5" font-weight="bold">VIEW B: CROSS-SECTIONAL ELEVATION (THERMAL SINK PATH &amp; HV CLEARANCE)</text>
 
     <!-- Enclosure Base Cut Profile -->
     <path d="M 0 0 L {side_w} 0 L {side_w} {side_h} L 0 {side_h} Z" fill="none" stroke="#475569" stroke-width="1.5"/>
@@ -296,37 +333,37 @@ def generate_enclosure_svg_drawing(
     <!-- Top Lid -->
     <rect x="0" y="0" width="{side_w}" height="{wall_thickness_mm * scale}" fill="#334155" stroke="#38bdf8" stroke-width="1"/>
     <!-- Nomex HV Dielectric Sheet -->
-    <rect x="{wall_thickness_mm * scale}" y="{wall_thickness_mm * scale}" width="{inner_l * scale}" height="3" fill="#eab308" stroke="none"/>
-    <text x="{side_w - 240}" y="18" fill="#eab308" font-size="9">NOMEX 410 DIELECTRIC SHIELD (7.5 kV)</text>
+    <rect x="{wall_thickness_mm * scale}" y="{wall_thickness_mm * scale}" width="{inner_l * scale}" height="{max(2.5, 1.5 * scale)}" fill="#eab308" stroke="none"/>
+    <text x="{max(30.0, side_w - 260.0)}" y="{wall_thickness_mm * scale + 14}" fill="#eab308" font-size="8.5" font-weight="600">NOMEX 410 DIELECTRIC SHIELD (7.5 kV)</text>
 
-    <!-- M3 Standoffs (6mm) -->
-    <rect x="{(wall_thickness_mm + clearance_xy_mm + 2) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm) * scale}" width="16" height="{standoff_height_mm * scale}" fill="#64748b" stroke="#cbd5e1" stroke-width="1"/>
-    <rect x="{(side_w - wall_thickness_mm - clearance_xy_mm - 7) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm) * scale}" width="16" height="{standoff_height_mm * scale}" fill="#64748b" stroke="#cbd5e1" stroke-width="1"/>
+    <!-- M3 Standoffs (Symmetrically aligned inside PCB footprint) -->
+    <rect x="{st1_x}" y="{side_h - (wall_thickness_mm + standoff_height_mm) * scale}" width="{st_w}" height="{standoff_height_mm * scale}" fill="#64748b" stroke="#cbd5e1" stroke-width="1"/>
+    <rect x="{st2_x}" y="{side_h - (wall_thickness_mm + standoff_height_mm) * scale}" width="{st_w}" height="{standoff_height_mm * scale}" fill="#64748b" stroke="#cbd5e1" stroke-width="1"/>
 
     <!-- Raised Aluminum Thermal Pedestal (4.5mm) -->
     <rect x="{(wall_thickness_mm + clearance_xy_mm + 28.0) * scale}" y="{side_h - (wall_thickness_mm + thermal_boss_height_mm) * scale}" width="{thermal_boss_size_mm * scale}" height="{thermal_boss_height_mm * scale}" fill="#475569" stroke="#38bdf8" stroke-width="1.5"/>
-    <text x="{(wall_thickness_mm + clearance_xy_mm + 29.0) * scale}" y="{side_h - 4}" fill="#38bdf8" font-size="8">4.5mm CHASSIS BOSS</text>
+    <text x="{(wall_thickness_mm + clearance_xy_mm + 29.0) * scale}" y="{side_h - (wall_thickness_mm + thermal_boss_height_mm / 2.0) * scale + 3}" fill="#38bdf8" font-size="8">4.5mm CHASSIS BOSS</text>
 
     <!-- Bergquist Thermal Gap Pad (1.5mm nominal / 1.2mm compressed) -->
     <rect x="{(wall_thickness_mm + clearance_xy_mm + 28.0) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm) * scale}" width="{thermal_boss_size_mm * scale}" height="{(standoff_height_mm - thermal_boss_height_mm) * scale}" fill="#f97316" stroke="#fb923c" stroke-width="1"/>
-    <text x="{(wall_thickness_mm + clearance_xy_mm + 29.0) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm - 4) * scale}" fill="#f97316" font-size="8" font-weight="bold">1.5mm TIM GAP PAD</text>
+    <text x="{(wall_thickness_mm + clearance_xy_mm + 29.0) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm) * scale - 4}" fill="#f97316" font-size="8" font-weight="bold">1.5mm TIM GAP PAD</text>
 
     <!-- PCB Board Elevation -->
-    <rect x="{(wall_thickness_mm + clearance_xy_mm) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm) * scale}" width="{pcb_length_mm * scale}" height="{pcb_thickness_mm * scale}" fill="#10b981" stroke="#059669" stroke-width="1"/>
+    <rect x="{(wall_thickness_mm + clearance_xy_mm) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm) * scale}" width="{pcb_length_mm * scale}" height="{max(3.0, pcb_thickness_mm * scale)}" fill="#10b981" stroke="#059669" stroke-width="1"/>
 
-    <!-- Transformer T1 Tallest Component Profile (30mm) -->
-    <rect x="{(wall_thickness_mm + clearance_xy_mm + 40.0) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm + max_component_height_mm) * scale}" width="{28.0 * scale}" height="{max_component_height_mm * scale}" fill="#6366f1" fill-opacity="0.3" stroke="#818cf8" stroke-width="1.5"/>
-    <text x="{(wall_thickness_mm + clearance_xy_mm + 42.0) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm + max_component_height_mm - 12) * scale}" fill="#818cf8" font-size="9">T1 TRANSFORMER (30mm)</text>
+    <!-- Tallest Power Component Profile (e.g. Planar Transformer or Inductor) -->
+    <rect x="{(wall_thickness_mm + clearance_xy_mm + 50.0) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm + max_component_height_mm) * scale}" width="{max(35.0, 24.0 * scale)}" height="{max_component_height_mm * scale}" fill="#6366f1" fill-opacity="0.3" stroke="#818cf8" stroke-width="1.5"/>
+    <text x="{(wall_thickness_mm + clearance_xy_mm + 52.0) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm + max_component_height_mm / 2.0) * scale + 3}" fill="#818cf8" font-size="8.5">T1 TRANSFORMER ({max_component_height_mm:.0f}mm)</text>
 
     <!-- Air Headroom Callout -->
-    <line x1="{(wall_thickness_mm + clearance_xy_mm + 54.0) * scale}" y1="{wall_thickness_mm * scale + 3}" x2="{(wall_thickness_mm + clearance_xy_mm + 54.0) * scale}" y2="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm + max_component_height_mm) * scale}" stroke="#eab308" stroke-width="1.2" stroke-dasharray="2,2"/>
-    <text x="{(wall_thickness_mm + clearance_xy_mm + 58.0) * scale}" y="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm + max_component_height_mm + 12) * scale}" fill="#eab308" font-size="9">HV AIR CLEARANCE: {top_clearance_mm:.1f} mm (PASS)</text>
+    <line x1="{(wall_thickness_mm + clearance_xy_mm + 62.0) * scale}" y1="{wall_thickness_mm * scale + 3}" x2="{(wall_thickness_mm + clearance_xy_mm + 62.0) * scale}" y2="{side_h - (wall_thickness_mm + standoff_height_mm + pcb_thickness_mm + max_component_height_mm) * scale}" stroke="#eab308" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <text x="{(wall_thickness_mm + clearance_xy_mm + 66.0) * scale}" y="{wall_thickness_mm * scale + 18}" fill="#eab308" font-size="8.5">HV AIR CLEARANCE: {top_clearance_mm:.1f} mm (PASS)</text>
 
     <!-- Dimension Line: Total Height -->
     <line x1="{side_w + 25}" y1="0" x2="{side_w + 25}" y2="{side_h}" stroke="#94a3b8" stroke-width="1.2"/>
-    <line x1="{side_w + 20}" y1="0" x2="{side_w + 30}" y2="0" stroke="#94a3b8" stroke-width="1.2"/>
-    <line x1="{side_w + 20}" y1="{side_h}" x2="{side_w + 30}" y2="{side_h}" stroke="#94a3b8" stroke-width="1.2"/>
-    <text x="{side_w + 35}" y="{side_h / 2 + 4}" fill="#cbd5e1" font-size="11">{total_h:.1f} mm TOTAL HEIGHT</text>
+    <line x1="{side_w + 19}" y1="0" x2="{side_w + 31}" y2="0" stroke="#94a3b8" stroke-width="1.2"/>
+    <line x1="{side_w + 19}" y1="{side_h}" x2="{side_w + 31}" y2="{side_h}" stroke="#94a3b8" stroke-width="1.2"/>
+    <text x="{side_w + 35}" y="{side_h / 2.0 + 4}" fill="#cbd5e1" font-size="10.5">{total_h:.1f} mm TOTAL HEIGHT</text>
   </g>
 </svg>
 """

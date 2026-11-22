@@ -52,6 +52,15 @@ export async function rpcCall<T = any>(method: string, params: Record<string, an
 }
 
 export const api = {
+  coreAssembly: (revisionId: string) => rpcCall<any>('core_assembly', { revision_id: revisionId }),
+  coreAssemblyPreview: (revisionId: string) => rpcCall<any>('core_assembly_preview', { revision_id: revisionId }),
+  saveCoreAssembly: (request: Record<string, unknown>) => rpcCall<any>('save_core_assembly', request),
+  createCoreAssemblyRevision: (revisionId: string, revisionLabel: string, inputHash: string) =>
+    rpcCall<any>('create_core_assembly_revision', { revision_id: revisionId, revision_label: revisionLabel, expected_input_hash: inputHash }),
+  applyStage: (revisionId: string, stageId: string, action: string, expectedSequence?: number) => rpcCall<any>('apply_stage', {
+    revision_id: revisionId, stage_id: stageId, action, expected_sequence: expectedSequence,
+    source: 'Studio assembly workspace', reason: 'Engineer requested assembly stage transition', idempotency_key: crypto.randomUUID(),
+  }),
   handshake: () => rpcCall<HandshakeData>('handshake'),
   overview: () => rpcCall<OverviewData>('overview'),
   projects: () => rpcCall<ProjectRecord[]>('projects'),
@@ -142,6 +151,64 @@ export const api = {
       data_uri: string;
       error?: string;
     }>('download_gerbers', { revision_id: revisionId, package_type: packageType }),
+  downloadCadPdf: (revisionId: string, target: 'schematic' | 'pcb', mode: string = 'single') =>
+    rpcCall<{
+      success: boolean;
+      filename: string;
+      data_uri: string;
+      sha256: string;
+      bytes: number;
+      target: string;
+      mime_type: string;
+      error?: string;
+    }>('download_cad_pdf', { revision_id: revisionId, target, mode }),
+  analyzeHvClearance: (revisionId: string, coating: string = 'coated') =>
+    rpcCall<{
+      success: boolean;
+      standard: string;
+      coating_mode: string;
+      conformal_coating_mandatory: boolean;
+      conformal_coating_standard: string;
+      max_board_voltage_v: number;
+      overall_status: string;
+      results: Array<{
+        net: string;
+        domain: string;
+        voltage_v: number;
+        tier: string;
+        color: string;
+        ipc_internal_mm: number;
+        ipc_coated_mm: number;
+        ipc_uncoated_mm: number;
+        required_clearance_mm: number;
+        measured_spacing_mm: number;
+        margin_mm: number;
+        closest_net: string;
+        status: string;
+        recommendation: string;
+      }>;
+      isolation_barrier: {
+        isolation_slot_milled: boolean;
+        isolation_distance_mm: number;
+        dielectric_withstand_kv: number;
+        barrier_boundary_x: number;
+        primary_domain: string;
+        secondary_domain: string;
+        status: string;
+      };
+      halos: Array<{
+        x: number;
+        y: number;
+        radius: number;
+        net: string;
+        tier: string;
+        color: string;
+        voltage: number;
+      }>;
+      total_halos: number;
+      disclaimer: string;
+      error?: string;
+    }>('analyze_hv_clearance', { revision_id: revisionId, coating }),
   inspectGerberLayers: (revisionId: string, autoExport: boolean = true) =>
     rpcCall<{
       success: boolean;

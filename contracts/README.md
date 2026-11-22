@@ -1,5 +1,28 @@
 # Application service contract v0.1
 
+PCB layout experiments (20 November 2026): `StudioService.pcb_layout` exposes
+`analyze(revision_id, relative_path)`, `create_candidate(revision_id, LayoutPlan)`,
+`preview_plan(revision_id, LayoutPlan)`, `read_candidate(revision_id, candidate_id)`
+and `list_candidates(revision_id)`.
+Canonical strict request: `pcb-layout/LayoutPlan.schema.json` (SI coordinates,
+expected context digest, rationale, optional unique fixed_references). Desktop RPC
+(`pcb_layout_preview` included) and `pcb-layout` CLI (`preview` included) share the
+service. Candidate state is separate from engineering evaluation, which remains
+NOT_EVALUATED. Per-check drawn-geometry reports carry separate CLEAR/ISSUES_FOUND/
+NOT_EVALUATED status and completeness. Moved candidates require complete CLEAR
+geometry. Old records without reports remain effectively NOT_EVALUATED; stale or
+damaged evidence cannot retain a current geometric result. No candidate application, routing or approval contract is
+implemented. Details: `docs/PCB_LAYOUT_EXPERIMENTS.md`.
+
+Core/support assembly extension (18 November 2026): additive typed contracts and
+the seven-stage lifecycle are in `core-assembly/`. The current Specification schema
+there includes optional `workflow_profile` (`electronics` default, `core_assembly`
+explicit). Default electronics specification hashes retain their previous values.
+`StudioService.core_assembly` is shared by desktop and `core-assembly` CLI commands.
+Design writes require stage/specification/current-design context and preserve
+append-only snapshots with linked CAD hashes. Existing schemas remain historical.
+See `docs/CORE_ASSEMBLY_WORKFLOW.md` for requests and limits.
+
 Power analysis update (16 November 2026): canonical `AnalysisRequest` is exported
 as `v3.1/records.AnalysisRequest.schema.json`; `CalculationWrite.calculation` adds
 `power_thermal`. Desktop `analyze_power_thermal` accepts revision_id and parameters;

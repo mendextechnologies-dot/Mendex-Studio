@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MPECLModulePackage",
+  "description": "Standardized metadata and artifact manifest schema for Mendex Power Electronics Core Library modules",
+  "type": "object",
+  "required": [
+    "module_id",
+    "name",
+    "version",
+    "status",
+    "type",
+    "lead_architect",
+    "created_date",
+    "supported_tiers",
+    "interfaces",
+    "electrical_envelope",
+    "artifacts",
+    "verification_status"
+  ],
+  "properties": {
+    "module_id": {
+      "type": "string",
+      "pattern": "^M[A-Z]{2}-[0-9]{3}$",
+      "description": "Unique module identifier, e.g., MDC-100, MPS-100"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable module title"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+(\\.[0-9]+)?(-[a-zA-Z0-9]+)?$",
+      "description": "Semantic versioning string, e.g., v1.0.0-DRAFT"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "UNDER_REVIEW",
+        "APPROVED_FOR_DESIGN",
+        "IMPLEMENTED",
+        "VERIFIED",
+        "RELEASED",
+        "OBSOLETE"
+      ],
+      "description": "Six-stage immutable lifecycle status"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "PHYSICAL_DAUGHTERCARD",
+        "SCHEMATIC_IP_BLOCK",
+        "FIRMWARE_CORE",
+        "FILTER_SUBSYSTEM",
+        "TEST_HARNESS"
+      ]
+    },
+    "lead_architect": {
+      "type": "string",
+      "description": "Responsible lead engineer name or role"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "supported_tiers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["TIER_1_LV", "TIER_2_MID", "TIER_3_HV"]
+      },
+      "minItems": 1
+    },
+    "interfaces": {
+      "type": "object",
+      "required": ["standard", "pin_count", "signal_classes"],
+      "properties": {
+        "standard": {
+          "type": "string",
+          "enum": ["MCMIS-120", "MCMIS-40", "MCMIS-IP-BLOCK", "MHM-RIBBON-10"]
+        },
+        "pin_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "signal_classes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["CLASS_A", "CLASS_B", "CLASS_C", "CLASS_D", "CLASS_E"]
+          }
+        }
+      }
+    },
+    "electrical_envelope": {
+      "type": "object",
+      "required": ["input_voltage_range_v", "continuous_power_w", "isolation_rating_vrms"],
+      "properties": {
+        "input_voltage_range_v": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "output_voltage_range_v": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "continuous_power_w": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "isolation_rating_vrms": {
+          "type": "number",
+          "minimum": 0.0
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "specification_md": { "type": "string" },
+        "kicad_schematic": { "type": "string" },
+        "kicad_pcb": { "type": "string" },
+        "ltspice_model": { "type": "string" },
+        "bom_json": { "type": "string" },
+        "firmware_dir": { "type": "string" }
+      }
+    },
+    "verification_status": {
+      "type": "object",
+      "required": ["analytical_evaluated", "simulation_evaluated", "physical_evaluated"],
+      "properties": {
+        "analytical_evaluated": { "type": "boolean" },
+        "simulation_evaluated": { "type": "boolean" },
+        "physical_evaluated": { "type": "boolean" },
+        "compliance_accredited_evaluated": { "type": "boolean" },
+        "last_evidence_digest": { "type": "string" }
+      }
+    }
+  }
+}

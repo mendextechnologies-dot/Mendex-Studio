@@ -1483,6 +1483,80 @@ class DesktopService:
             "data_uri": f"data:application/zip;base64,{b64_data}",
         }
 
+    def download_cad_pdf(self, request):
+        """Generates and returns base64 data URI for KiCad Schematic or PCB PDF export."""
+        import base64
+        import hashlib
+        revision = self.studio.get_revision(request.revision_id)
+        ws_dir = self.studio.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+        cache_dir = self.studio.root / ".mendex" / "previews" / str(revision.revision_id)
+        cache_dir.mkdir(parents=True, exist_ok=True)
+
+        from ..lifecycle.kicad_service import KiCadLifecycleService
+        kicad_srv = getattr(getattr(self.studio, "engineering_lifecycle", None), "kicad", None) or KiCadLifecycleService()
+        if not kicad_srv.is_available():
+            return {"success": False, "error": "KiCad CLI is not installed on this workstation."}
+
+        target = getattr(request, "target", "schematic")
+        mode = getattr(request, "mode", "single") or "single"
+
+        if target == "schematic":
+            sch_files = list(pcb_dir.glob("*.kicad_sch")) if pcb_dir.exists() else []
+            if not sch_files:
+                sch_files = list(ws_dir.glob("*.kicad_sch"))
+            if not sch_files:
+                return {"success": False, "error": "No .kicad_sch file found in this revision"}
+            sch_path = sch_files[0]
+            pdf_path = cache_dir / f"{sch_path.stem}.pdf"
+            if not pdf_path.exists() or pdf_path.stat().st_size == 0 or pdf_path.stat().st_mtime < sch_path.stat().st_mtime:
+                kicad_srv.export_schematic_pdf(sch_path, output_pdf=pdf_path)
+            out_filename = f"{sch_path.stem}_schematic.pdf"
+        else:
+            pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+            if not pcb_files:
+                pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+            if not pcb_files:
+                return {"success": False, "error": "No .kicad_pcb file found in this revision"}
+            pcb_path = pcb_files[0]
+            pdf_path = cache_dir / f"{pcb_path.stem}_{mode}.pdf"
+            if not pdf_path.exists() or pdf_path.stat().st_size == 0 or pdf_path.stat().st_mtime < pcb_path.stat().st_mtime:
+                kicad_srv.export_pcb_pdf(pcb_path, output_pdf=pdf_path, mode=mode)
+            out_filename = f"{pcb_path.stem}_pcb_{mode}.pdf"
+
+        if not pdf_path.exists() or pdf_path.stat().st_size == 0:
+            return {"success": False, "error": f"Failed to generate {target} PDF"}
+
+        pdf_bytes = pdf_path.read_bytes()
+        digest = hashlib.sha256(pdf_bytes).hexdigest()
+        b64_data = base64.b64encode(pdf_bytes).decode("ascii")
+        data_uri = f"data:application/pdf;base64,{b64_data}"
+
+        return {
+            "success": True,
+            "filename": out_filename,
+            "data_uri": data_uri,
+            "sha256": digest,
+            "bytes": len(pdf_bytes),
+            "target": target,
+            "mime_type": "application/pdf",
+        }
+
+    def analyze_hv_clearance(self, request):
+        """Evaluates high-voltage conductor clearance against IPC-2221B Table 6-1."""
+        revision = self.studio.get_revision(request.revision_id)
+        ws_dir = self.studio.workspace_path(revision)
+        pcb_dir = ws_dir / "pcb"
+        pcb_files = list(pcb_dir.glob("*.kicad_pcb")) if pcb_dir.exists() else []
+        if not pcb_files:
+            pcb_files = list(ws_dir.glob("*.kicad_pcb"))
+        if not pcb_files:
+            return {"success": False, "error": "No .kicad_pcb file found in this revision"}
+
+        from ..design.hv_clearance import evaluate_high_voltage_clearance
+        coating = getattr(request, "coating", "coated") or "coated"
+        return evaluate_high_voltage_clearance(pcb_files[0], coating=coating)
+
     @staticmethod
     def _parse_excellon_file(drl_text: str):
         tools = {}
@@ -2398,6 +2472,16 @@ class DesktopService:
         if route is None:
             raise StudioError("METHOD_NOT_ALLOWED", "Desktop method is not allowed")
         request = route.model_validate(params)
+        if method == "core_assembly":
+            return self.studio.core_assembly.overview(request.revision_id)
+        if method == "core_assembly_preview":
+            return self.studio.core_assembly.assembly_preview(request.revision_id)
+        if method == "save_core_assembly":
+            return self.studio.core_assembly.save_design(request)
+        if method == "create_core_assembly_revision":
+            return self.studio.core_assembly.create_revision(request)
+        if method == "apply_stage":
+            return self.studio.engineering_lifecycle.apply(request)
         if method == "analyze_power_thermal":
             return self.studio.analyze_power_thermal(request.parameters, request.revision_id)
         if method == "power_analysis_context":
@@ -2472,6 +2556,19 @@ class DesktopService:
             return self.studio.reviews.request_review(request.model_dump())
         if method == "submit_review":
             return self.studio.reviews.record_manual_decision(request.model_dump())
+        if method == "pcb_layout_files":
+            overview = self.studio.pcb.overview(request.revision_id)
+            return {"editable": overview["editable"], "files": [f for f in overview["files"] if f["kind"] == "pcb"]}
+        if method == "pcb_layout_analyze":
+            return self.studio.pcb_layout.analyze(request.revision_id, request.relative_path)
+        if method == "pcb_layout_create":
+            return self.studio.pcb_layout.create_candidate(request.revision_id, request.model_dump(exclude={"revision_id"}))
+        if method == "pcb_layout_preview":
+            return self.studio.pcb_layout.preview_plan(request.revision_id, request.model_dump(exclude={"revision_id"}))
+        if method == "pcb_layout_candidates":
+            return self.studio.pcb_layout.list_candidates(request.revision_id)
+        if method == "pcb_layout_read":
+            return self.studio.pcb_layout.read_candidate(request.revision_id, request.candidate_id)
         if method == "cad_preview":
             return self.cad_preview(request)
         if method == "render_3d_pcb":
@@ -2488,6 +2585,10 @@ class DesktopService:
             return self.export_gerbers(request)
         if method == "download_gerbers":
             return self.download_gerbers(request)
+        if method == "download_cad_pdf":
+            return self.download_cad_pdf(request)
+        if method == "analyze_hv_clearance":
+            return self.analyze_hv_clearance(request)
         if method == "export_cad_step":
             return self.export_cad_step(request)
         if method == "generate_report":
@@ -2639,6 +2740,17 @@ ROUTES = {
     for name in ("handshake", "shutdown", "overview", "projects", "simulations", "components", "tools", "reports", "settings", "list_reviewers")
 }
 ROUTES.update(
+    pcb_layout_files=models.LayoutRevisionQuery,
+    pcb_layout_analyze=models.FileQuery,
+    pcb_layout_create=models.LayoutCandidateQuery,
+    pcb_layout_preview=models.LayoutCandidateQuery,
+    pcb_layout_candidates=models.LayoutRevisionQuery,
+    pcb_layout_read=models.LayoutCandidateReadQuery,
+    core_assembly=models.CADPreviewQuery,
+    core_assembly_preview=models.CADPreviewQuery,
+    save_core_assembly=models.AssemblyWrite,
+    create_core_assembly_revision=models.AssemblyRevision,
+    apply_stage=models.StageCommand,
     analyze_power_thermal=models.PowerAnalysisQuery,
     power_analysis_context=models.CADPreviewQuery,
     record_power_thermal=models.PowerAnalysisRecordQuery,
@@ -2658,6 +2770,8 @@ ROUTES.update(
     setup_4layer_planes=models.FourLayerPlanesQuery,
     export_gerbers=models.GerberExportQuery,
     download_gerbers=models.GerberDownloadQuery,
+    download_cad_pdf=models.CADPdfQuery,
+    analyze_hv_clearance=models.HVClearanceQuery,
     export_cad_step=models.STEPExportQuery,
     generate_report=models.ReportGenerateQuery,
     apply_schematic=models.SchematicApplyQuery,

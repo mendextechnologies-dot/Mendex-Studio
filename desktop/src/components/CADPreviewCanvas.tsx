@@ -40,6 +40,41 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
   const [exportingGerbers, setExportingGerbers] = useState<boolean>(false);
   const [routeStatus, setRouteStatus] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
+  // High-Voltage Creepage & Clearance Inspector State (Feature 2)
+  const [showHvClearance, setShowHvClearance] = useState<boolean>(false);
+  const [hvData, setHvData] = useState<any>(null);
+  const [loadingHv, setLoadingHv] = useState<boolean>(false);
+  const [hvCoatingMode, setHvCoatingMode] = useState<'coated' | 'uncoated'>('coated');
+  const [hvHoverHalo, setHvHoverHalo] = useState<any>(null);
+  const [showHvTable, setShowHvTable] = useState<boolean>(true);
+
+  const fetchHvClearance = async (mode: 'coated' | 'uncoated') => {
+    setLoadingHv(true);
+    try {
+      const data = await api.analyzeHvClearance(revisionId, mode);
+      if (data && data.success) {
+        setHvData(data);
+      }
+    } catch (err) {
+      setRouteStatus({ type: 'error', text: `HV Clearance analysis error: ${String(err)}` });
+    } finally {
+      setLoadingHv(false);
+    }
+  };
+
+  const toggleHvClearance = async () => {
+    const next = !showHvClearance;
+    setShowHvClearance(next);
+    if (next && !hvData) {
+      await fetchHvClearance(hvCoatingMode);
+    }
+  };
+
+  const changeHvCoatingMode = async (mode: 'coated' | 'uncoated') => {
+    setHvCoatingMode(mode);
+    await fetchHvClearance(mode);
+  };
+
   // 2D PCB Thermal Heatmap Overlay State (Option 4)
   const [showThermalOverlay, setShowThermalOverlay] = useState<boolean>(false);
   const [thermalData, setThermalData] = useState<any>(null);
@@ -98,6 +133,24 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
     dataUri?: string;
   } | null>(null);
   const [downloadingGerbers, setDownloadingGerbers] = useState<boolean>(false);
+  const [downloadingPdf, setDownloadingPdf] = useState<'schematic' | 'pcb' | null>(null);
+
+  const handleDownloadPdf = async (target: 'schematic' | 'pcb', mode: string = 'single') => {
+    setDownloadingPdf(target);
+    try {
+      const res = await api.downloadCadPdf(revisionId, target, mode);
+      if (!res.success) throw new Error(res.error || `Failed to export ${target} PDF`);
+      await downloadCandidate(res);
+      setRouteStatus({
+        type: 'success',
+        text: `Downloaded ${target === 'schematic' ? 'Schematic Circuit' : '2D PCB Layout'} PDF (${(res.bytes / 1024).toFixed(1)} KB): ${res.filename}`,
+      });
+    } catch (err: any) {
+      setRouteStatus({ type: 'error', text: `PDF Download failed: ${err.message || String(err)}` });
+    } finally {
+      setDownloadingPdf(null);
+    }
+  };
 
   const handleDownloadGerbers = async () => {
     setDownloadingGerbers(true);
@@ -362,6 +415,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
     if (sourceIdentity.current !== pcb.source_hash) {
       sourceIdentity.current=pcb.source_hash || null;
       setThermalData(null);setShowThermalOverlay(false);setRender3dData(null);
+      setHvData(null);setShowHvClearance(false);
     }
     setPcbData(pcb);setSchData(sch);
     setGerberInfo(pcb.has_gerbers ? {available:true,filename:pcb.gerber_filename,zipPath:pcb.gerber_zip_path,sha256:pcb.gerber_sha256,bytes:pcb.gerber_bytes} : null);
@@ -370,7 +424,7 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
   };
   useEffect(() => {
     ++requestGeneration.current;sourceIdentity.current=null;
-    setPcbData(null);setSchData(null);setRender3dData(null);setGerberInfo(null);setThermalData(null);setShowThermalOverlay(false);setRouteStatus(null);
+    setPcbData(null);setSchData(null);setRender3dData(null);setGerberInfo(null);setThermalData(null);setShowThermalOverlay(false);setHvData(null);setShowHvClearance(false);setRouteStatus(null);
     loadData();
     const timer=setInterval(()=>{ if (!document.hidden) loadData(true); },4000);
     return ()=>{clearInterval(timer);++requestGeneration.current;};
@@ -522,9 +576,9 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
               <span
                 style={{
                   fontSize: 11,
-                  background: activeData.drc_summary.status === 'CLEAR' ? 'rgba(16, 185, 129, 0.15)' : activeData.drc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                  color: activeData.drc_summary.status === 'CLEAR' ? '#34d399' : activeData.drc_summary.status === 'WARNINGS' ? '#fbbf24' : '#f87171',
-                  border: `1px solid ${activeData.drc_summary.status === 'CLEAR' ? 'rgba(16, 185, 129, 0.4)' : activeData.drc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+                  background: (activeData.drc_summary.status === 'CLEAR' || activeData.drc_summary.status === 'PASS') ? 'rgba(16, 185, 129, 0.15)' : activeData.drc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  color: (activeData.drc_summary.status === 'CLEAR' || activeData.drc_summary.status === 'PASS') ? '#34d399' : activeData.drc_summary.status === 'WARNINGS' ? '#fbbf24' : '#f87171',
+                  border: `1px solid ${(activeData.drc_summary.status === 'CLEAR' || activeData.drc_summary.status === 'PASS') ? 'rgba(16, 185, 129, 0.4)' : activeData.drc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
                   padding: '2px 8px',
                   borderRadius: 4,
                   fontWeight: 600,
@@ -540,9 +594,9 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
               <span
                 style={{
                   fontSize: 11,
-                  background: activeData.erc_summary.status === 'CLEAR' ? 'rgba(16, 185, 129, 0.15)' : activeData.erc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                  color: activeData.erc_summary.status === 'CLEAR' ? '#34d399' : activeData.erc_summary.status === 'WARNINGS' ? '#fbbf24' : '#f87171',
-                  border: `1px solid ${activeData.erc_summary.status === 'CLEAR' ? 'rgba(16, 185, 129, 0.4)' : activeData.erc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+                  background: (activeData.erc_summary.status === 'CLEAR' || activeData.erc_summary.status === 'PASS') ? 'rgba(16, 185, 129, 0.15)' : activeData.erc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  color: (activeData.erc_summary.status === 'CLEAR' || activeData.erc_summary.status === 'PASS') ? '#34d399' : activeData.erc_summary.status === 'WARNINGS' ? '#fbbf24' : '#f87171',
+                  border: `1px solid ${(activeData.erc_summary.status === 'CLEAR' || activeData.erc_summary.status === 'PASS') ? 'rgba(16, 185, 129, 0.4)' : activeData.erc_summary.status === 'WARNINGS' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
                   padding: '2px 8px',
                   borderRadius: 4,
                   fontWeight: 600,
@@ -676,6 +730,29 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                 title="Toggle 2D PCB Thermal Loss & Heatmap Diffusion Overlay"
               >
                 <span>🔥</span> Thermal Heatmap
+              </button>
+
+              {/* High-Voltage Creepage & Clearance Inspector Toggle (Feature 2) */}
+              <button
+                type="button"
+                onClick={toggleHvClearance}
+                style={{
+                  background: showHvClearance ? '#0891b2' : '#1e293b',
+                  border: `1px solid ${showHvClearance ? '#06b6d4' : '#334155'}`,
+                  color: '#fff',
+                  padding: '5px 12px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: showHvClearance ? '0 0 12px rgba(6, 182, 212, 0.45)' : 'none',
+                }}
+                title="Toggle High-Voltage Creepage & Clearance Keepout Boundaries (IPC-2221B / IEC 61010-1)"
+              >
+                <span>⚡</span> HV Clearance (IPC-2221B)
               </button>
 
               {/* Copper Weight Toggle */}
@@ -861,6 +938,30 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
               )}
 
               <button
+                type="button"
+                onClick={() => handleDownloadPdf('pcb')}
+                disabled={downloadingPdf === 'pcb'}
+                style={{
+                  background: downloadingPdf === 'pcb' ? '#047857' : '#059669',
+                  border: 'none',
+                  color: '#fff',
+                  padding: '6px 12px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: downloadingPdf === 'pcb' ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: '0 2px 8px rgba(5, 150, 105, 0.4)',
+                }}
+                title="Download publication-grade vector KiCad 2D PCB Layout Diagram as PDF"
+              >
+                <Download size={13} className={downloadingPdf === 'pcb' ? 'spin' : ''} />
+                {downloadingPdf === 'pcb' ? 'Exporting PDF...' : '⬇️ Download PCB PDF'}
+              </button>
+
+              <button
                 onClick={handleExportGerbers}
                 disabled={exportingGerbers || routing || loading}
                 style={{
@@ -903,6 +1004,32 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
             >
               <ExternalLink size={13} />
               Open in KiCad PCB
+            </button>
+          )}
+
+          {viewMode === 'schematic' && (
+            <button
+              type="button"
+              onClick={() => handleDownloadPdf('schematic')}
+              disabled={downloadingPdf === 'schematic'}
+              style={{
+                background: downloadingPdf === 'schematic' ? '#0369a1' : '#0284c7',
+                border: 'none',
+                color: '#fff',
+                padding: '6px 12px',
+                borderRadius: 6,
+                fontSize: 12,
+                fontWeight: 600,
+                cursor: downloadingPdf === 'schematic' ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                boxShadow: '0 2px 8px rgba(2, 132, 199, 0.4)',
+              }}
+              title="Download publication-grade vector KiCad Schematic Circuit Diagram as PDF"
+            >
+              <Download size={13} className={downloadingPdf === 'schematic' ? 'spin' : ''} />
+              {downloadingPdf === 'schematic' ? 'Exporting PDF...' : '⬇️ Download Schematic PDF'}
             </button>
           )}
 
@@ -1451,6 +1578,66 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
                     ))}
                   </g>
                 )}
+
+                {/* High-Voltage Clearance Keepout Halos & Galvanic Isolation Barrier (Feature 2) */}
+                {showHvClearance && viewMode === 'pcb' && hvData && (
+                  <g className="hv-clearance-layer">
+                    {/* 1. Isolation Barrier Milled Slot & Boundary */}
+                    {hvData.isolation_barrier && (
+                      <g className="hv-isolation-barrier">
+                        <line
+                          x1={hvData.isolation_barrier.barrier_boundary_x || 380}
+                          y1={bbox.min_y}
+                          x2={hvData.isolation_barrier.barrier_boundary_x || 380}
+                          y2={bbox.max_y}
+                          stroke="#06b6d4"
+                          strokeWidth="2.5"
+                          strokeDasharray="6,4"
+                          strokeOpacity="0.85"
+                        />
+                        <rect
+                          x={(hvData.isolation_barrier.barrier_boundary_x || 380) - 55}
+                          y={bbox.min_y + 4}
+                          width="110"
+                          height="14"
+                          rx="3"
+                          fill="rgba(8, 51, 68, 0.95)"
+                          stroke="#06b6d4"
+                          strokeWidth="1"
+                        />
+                        <text
+                          x={hvData.isolation_barrier.barrier_boundary_x || 380}
+                          y={bbox.min_y + 13.5}
+                          fontSize="6"
+                          fontWeight="bold"
+                          fill="#38bdf8"
+                          textAnchor="middle"
+                          fontFamily="monospace"
+                        >
+                          ⚡ 5.0 kV ISOLATION BARRIER (15 mm)
+                        </text>
+                      </g>
+                    )}
+
+                    {/* 2. Conductor High-Voltage Keepout Halos */}
+                    {(hvData.halos || []).map((h: any, i: number) => (
+                      <circle
+                        key={`hv-halo-${i}`}
+                        cx={h.x}
+                        cy={h.y}
+                        r={h.radius}
+                        fill={h.color || "#ef4444"}
+                        fillOpacity="0.12"
+                        stroke={h.color || "#ef4444"}
+                        strokeWidth="0.35"
+                        strokeDasharray="1.5,1.5"
+                        style={{ cursor: 'pointer' }}
+                        onMouseEnter={() => setHvHoverHalo(h)}
+                        onMouseLeave={() => setHvHoverHalo(null)}
+                      />
+                    ))}
+                  </g>
+                )}
               </g>
             )}
 
@@ -1694,6 +1881,203 @@ export const CADPreviewCanvas: React.FC<CADPreviewProps> = ({
             <div style={{ fontSize: 10, color: '#94a3b8' }}>
               Derated Margin: {thermalHoverSpot.thermal_margin_c > 0 ? `+${thermalHoverSpot.thermal_margin_c.toFixed(1)}` : thermalHoverSpot.thermal_margin_c.toFixed(1)}°C
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* High-Voltage Clearance & Creepage Inspector HUD Drawer (Feature 2) */}
+      {showHvClearance && viewMode === 'pcb' && hvData && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: '14px 18px',
+            background: 'linear-gradient(180deg, #0e1e2d 0%, #071018 100%)',
+            border: '1px solid #0891b2',
+            borderRadius: 8,
+            color: '#f8fafc',
+            boxShadow: '0 4px 16px rgba(6, 182, 212, 0.15)',
+          }}
+        >
+          {/* Header Bar */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, borderBottom: '1px solid #164e63', paddingBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 20 }}>⚡</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: '#38bdf8', letterSpacing: '0.03em' }}>
+                  HIGH-VOLTAGE CREEPAGE & CLEARANCE INSPECTOR
+                </div>
+                <div style={{ fontSize: 10.5, color: '#94a3b8' }}>
+                  IPC-2221B Table 6-1 & IEC 61010-1 Safety Clearance Verification
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              {/* Conformal Coating Mode Selector */}
+              <div style={{ display: 'inline-flex', background: '#082f49', borderRadius: 6, border: '1px solid #0284c7', padding: 2 }}>
+                <button
+                  type="button"
+                  onClick={() => changeHvCoatingMode('coated')}
+                  disabled={loadingHv}
+                  style={{
+                    background: hvCoatingMode === 'coated' ? '#0284c7' : 'transparent',
+                    border: 'none',
+                    color: '#fff',
+                    fontSize: 11,
+                    padding: '4px 10px',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    fontWeight: hvCoatingMode === 'coated' ? 700 : 400,
+                  }}
+                  title="Class B Conformal Coated (IPC-CC-830, Silicone/Polyurethane/Parylene)"
+                >
+                  🛡️ Coated (IPC-CC-830 B1)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => changeHvCoatingMode('uncoated')}
+                  disabled={loadingHv}
+                  style={{
+                    background: hvCoatingMode === 'uncoated' ? '#b45309' : 'transparent',
+                    border: 'none',
+                    color: '#fff',
+                    fontSize: 11,
+                    padding: '4px 10px',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    fontWeight: hvCoatingMode === 'uncoated' ? 700 : 400,
+                  }}
+                  title="Bare Uncoated Board in Air (IPC-2221B B4, Sea Level to 2000m)"
+                >
+                  🌬️ Uncoated Bare Air (B4)
+                </button>
+              </div>
+
+              {/* Status Badge */}
+              <span
+                style={{
+                  padding: '4px 10px',
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontWeight: 800,
+                  background: hvData.overall_status === 'CLEAR' ? '#065f46' : '#7f1d1d',
+                  border: `1px solid ${hvData.overall_status === 'CLEAR' ? '#10b981' : '#ef4444'}`,
+                  color: '#fff',
+                }}
+              >
+                {hvData.overall_status === 'CLEAR' ? '✓ CLEAR (COATED PASS)' : '⚠ ACTION REQUIRED'}
+              </span>
+
+              {/* Table Toggle */}
+              <button
+                type="button"
+                onClick={() => setShowHvTable(!showHvTable)}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid #164e63',
+                  color: '#94a3b8',
+                  padding: '4px 8px',
+                  borderRadius: 5,
+                  fontSize: 11,
+                  cursor: 'pointer',
+                }}
+              >
+                {showHvTable ? 'Hide Table ▲' : 'Show Table ▼'}
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Stats Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginTop: 12 }}>
+            <div style={{ background: '#082f4940', border: '1px solid #164e63', borderRadius: 6, padding: '8px 12px' }}>
+              <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase' }}>Max Working Voltage</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#ef4444' }}>{hvData.max_board_voltage_v} V DC</div>
+              <div style={{ fontSize: 9.5, color: '#64748b' }}>HV_OUT_POS / NEG Rails</div>
+            </div>
+
+            <div style={{ background: '#082f4940', border: '1px solid #164e63', borderRadius: 6, padding: '8px 12px' }}>
+              <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase' }}>Galvanic Air Slot</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#38bdf8' }}>{hvData.isolation_barrier.isolation_distance_mm} mm Milled</div>
+              <div style={{ fontSize: 9.5, color: '#64748b' }}>Primary ↔ Secondary Split</div>
+            </div>
+
+            <div style={{ background: '#082f4940', border: '1px solid #164e63', borderRadius: 6, padding: '8px 12px' }}>
+              <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase' }}>Dielectric Withstand</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#10b981' }}>{hvData.isolation_barrier.dielectric_withstand_kv} kV Isolation</div>
+              <div style={{ fontSize: 9.5, color: '#64748b' }}>Physical Hipot Req.</div>
+            </div>
+
+            <div style={{ background: '#082f4940', border: '1px solid #164e63', borderRadius: 6, padding: '8px 12px' }}>
+              <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase' }}>Insulation Protection</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: hvCoatingMode === 'coated' ? '#10b981' : '#f59e0b' }}>
+                {hvCoatingMode === 'coated' ? 'IPC-CC-830 Class B' : 'Bare Air (Gap Marginal)'}
+              </div>
+              <div style={{ fontSize: 9.5, color: '#64748b' }}>
+                {hvCoatingMode === 'coated' ? 'Mandatory Silicone / Polyurethane' : 'Requires Conformal Coating'}
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Halo Hover Spot Preview */}
+          {hvHoverHalo && (
+            <div style={{ marginTop: 10, padding: '6px 12px', background: '#0369a120', border: '1px solid #0284c7', borderRadius: 5, fontSize: 11, color: '#e0f2fe' }}>
+              🎯 Conductor Probe: <strong>{hvHoverHalo.net}</strong> ({hvHoverHalo.tier}) — Voltage: <strong>{hvHoverHalo.voltage} V</strong> — IPC Spacing Radius: <strong>{hvHoverHalo.radius} mm</strong>
+            </div>
+          )}
+
+          {/* Detailed Net Clearance Analysis Table */}
+          {showHvTable && (
+            <div style={{ marginTop: 12, overflowX: 'auto' }}>
+              <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #1e3a5f', color: '#94a3b8' }}>
+                    <th style={{ padding: '6px 8px' }}>Net Name</th>
+                    <th style={{ padding: '6px 8px' }}>Circuit Domain</th>
+                    <th style={{ padding: '6px 8px' }}>Voltage</th>
+                    <th style={{ padding: '6px 8px' }}>IPC Coated (B1)</th>
+                    <th style={{ padding: '6px 8px' }}>IPC Bare (B4)</th>
+                    <th style={{ padding: '6px 8px' }}>Measured Spacing</th>
+                    <th style={{ padding: '6px 8px' }}>Margin</th>
+                    <th style={{ padding: '6px 8px' }}>Closest Net</th>
+                    <th style={{ padding: '6px 8px' }}>Status & Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(hvData.results || []).map((r: any) => (
+                    <tr key={r.net} style={{ borderBottom: '1px solid #0f2338' }}>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace', fontWeight: 700, color: r.color || '#38bdf8' }}>{r.net}</td>
+                      <td style={{ padding: '6px 8px', color: '#cbd5e1' }}>{r.domain}</td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace' }}>{r.voltage_v} V</td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace' }}>{r.ipc_coated_mm} mm</td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace' }}>{r.ipc_uncoated_mm} mm</td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace', fontWeight: 700 }}>{r.measured_spacing_mm} mm</td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace', color: r.margin_mm >= 0 ? '#10b981' : '#f59e0b' }}>
+                        {r.margin_mm >= 0 ? `+${r.margin_mm}` : `${r.margin_mm}`} mm
+                      </td>
+                      <td style={{ padding: '6px 8px', fontFamily: 'monospace', color: '#94a3b8' }}>{r.closest_net}</td>
+                      <td style={{ padding: '6px 8px' }}>
+                        <span style={{
+                          padding: '2px 6px',
+                          borderRadius: 4,
+                          fontSize: 9.5,
+                          fontWeight: 700,
+                          background: r.status === 'CLEAR' ? '#065f4680' : '#7f1d1d80',
+                          border: `1px solid ${r.status === 'CLEAR' ? '#10b981' : '#ef4444'}`,
+                          color: r.status === 'CLEAR' ? '#34d399' : '#f87171',
+                        }}>
+                          {r.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Compliance & Engineering Rule Notice */}
+          <div style={{ marginTop: 10, fontSize: 10, color: '#64748b', fontStyle: 'italic', borderTop: '1px solid #164e63', paddingTop: 8 }}>
+            ℹ️ {hvData.disclaimer}
           </div>
         </div>
       )}

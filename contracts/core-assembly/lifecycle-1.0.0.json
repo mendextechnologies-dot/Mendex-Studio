@@ -1,0 +1,160 @@
+{
+  "schema_version": "3.1.0",
+  "id": "core_assembly",
+  "version": "1.0.0",
+  "name": "Transformer core and support assembly",
+  "stages": [
+    {
+      "id": "project_initialization",
+      "name": "Project setup",
+      "purpose": "Establish the assembly project and revision identity.",
+      "required_inputs": [],
+      "expected_outputs": [],
+      "dependencies": [],
+      "optional": false,
+      "review_required": false,
+      "criteria": [
+        {
+          "id": "identity",
+          "description": "Project identity exists",
+          "kind": "project_context",
+          "fields": [],
+          "check_id": null,
+          "evidence_kind": null
+        }
+      ]
+    },
+    {
+      "id": "requirements",
+      "name": "Assembly requirements",
+      "purpose": "Define scope, quantities, dimensions, sources and customer acceptance requirements.",
+      "required_inputs": [],
+      "expected_outputs": [],
+      "dependencies": [
+        "project_initialization"
+      ],
+      "optional": false,
+      "review_required": true,
+      "criteria": [
+        {
+          "id": "review",
+          "description": "Recorded human engineering review required",
+          "kind": "human_review",
+          "fields": [],
+          "check_id": null,
+          "evidence_kind": null
+        }
+      ]
+    },
+    {
+      "id": "materials",
+      "name": "Materials and supplier documentation",
+      "purpose": "Review ferrite identity, material certificates, PTFE and fastener grades.",
+      "required_inputs": [],
+      "expected_outputs": [],
+      "dependencies": [
+        "requirements"
+      ],
+      "optional": false,
+      "review_required": true,
+      "criteria": [
+        {
+          "id": "review",
+          "description": "Recorded human engineering review required",
+          "kind": "human_review",
+          "fields": [],
+          "check_id": null,
+          "evidence_kind": null
+        }
+      ]
+    },
+    {
+      "id": "mechanical_design",
+      "name": "Mechanical design and STEP parts",
+      "purpose": "Review native part geometry, controlled drawings, interfaces and assembly arrangement.",
+      "required_inputs": [],
+      "expected_outputs": [],
+      "dependencies": [
+        "materials"
+      ],
+      "optional": false,
+      "review_required": true,
+      "criteria": [
+        {
+          "id": "review",
+          "description": "Recorded human engineering review required",
+          "kind": "human_review",
+          "fields": [],
+          "check_id": null,
+          "evidence_kind": null
+        }
+      ]
+    },
+    {
+      "id": "fit_review",
+      "name": "Fit and tolerance review",
+      "purpose": "Resolve radial clearance, axial tolerance stack and retention construction.",
+      "required_inputs": [],
+      "expected_outputs": [],
+      "dependencies": [
+        "mechanical_design"
+      ],
+      "optional": false,
+      "review_required": true,
+      "criteria": [
+        {
+          "id": "review",
+          "description": "Recorded human engineering review required",
+          "kind": "human_review",
+          "fields": [],
+          "check_id": null,
+          "evidence_kind": null
+        }
+      ]
+    },
+    {
+      "id": "inspection_plan",
+      "name": "Dimensional inspection planning",
+      "purpose": "Define supplied criteria, methods, traceability and required physical inspection evidence.",
+      "required_inputs": [],
+      "expected_outputs": [],
+      "dependencies": [
+        "fit_review"
+      ],
+      "optional": false,
+      "review_required": true,
+      "criteria": [
+        {
+          "id": "review",
+          "description": "Recorded human engineering review required",
+          "kind": "human_review",
+          "fields": [],
+          "check_id": null,
+          "evidence_kind": null
+        }
+      ]
+    },
+    {
+      "id": "document_review",
+      "name": "Assembly document review",
+      "purpose": "Review the controlled drawing set, supply BOM and outstanding decisions. This does not authorize manufacturing.",
+      "required_inputs": [],
+      "expected_outputs": [],
+      "dependencies": [
+        "inspection_plan"
+      ],
+      "optional": false,
+      "review_required": true,
+      "criteria": [
+        {
+          "id": "review",
+          "description": "Recorded human engineering review required",
+          "kind": "human_review",
+          "fields": [],
+          "check_id": null,
+          "evidence_kind": null
+        }
+      ]
+    }
+  ]
+}

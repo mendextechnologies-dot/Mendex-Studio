@@ -124,6 +124,8 @@ class StudioService:
         self.measurements = MeasurementService(self)
         from .pcb import PCBWorkspaceService
         self.pcb = PCBWorkspaceService(self)
+        from .pcb_layout import PCBLayoutService
+        self.pcb_layout = PCBLayoutService(self)
         from .design import EngineeringDesignService
         self.design = EngineeringDesignService(self.root)
         from .components import ComponentLibraryService
@@ -134,6 +136,8 @@ class StudioService:
         self.engineering_records = EngineeringRecordService(self)
         from .engineering_reviews import EngineeringReviewService
         self.reviews = EngineeringReviewService(self)
+        from .core_assembly import CoreAssemblyService
+        self.core_assembly = CoreAssemblyService(self)
 
     @contextmanager
     def connection(self):
@@ -790,7 +794,7 @@ class StudioService:
             raise
         return report
 
-    def create_revision(self, product_id, label):
+    def create_revision(self, product_id, label, *, specification=None, copy_workspace=False, expected_input_hash=None):
         product = self.get_product(product_id)
         previous = self.get_revision(product.active_revision_id)
         revision = Revision(product_id=product.product_id, revision_label=label, specification=previous.specification.model_copy(deep=True))
@@ -804,7 +808,9 @@ class StudioService:
                 if current.active_revision_id != previous.revision_id:
                     raise StudioError("CONFLICT", "Active revision changed; refresh and retry")
                 previous = Revision.model_validate_json(db.execute("SELECT payload FROM revisions WHERE id=?", (str(current.active_revision_id),)).fetchone()[0])
-                revision.specification = previous.specification.model_copy(deep=True)
+                if expected_input_hash is not None and specification_hash(previous.specification) != expected_input_hash:
+                    raise StudioError("CONFLICT", "Specification changed; refresh before creating the revision")
+                revision.specification = Specification.model_validate(specification) if specification is not None else previous.specification.model_copy(deep=True)
                 previous.lifecycle_status = Lifecycle.ARCHIVED
                 product.active_revision_id = revision.revision_id
                 product.updated_at = now()
@@ -812,6 +818,20 @@ class StudioService:
                 db.execute("UPDATE revisions SET payload=? WHERE id=?", (previous.model_dump_json(), str(previous.revision_id)))
                 db.execute("UPDATE products SET payload=? WHERE id=?", (product.model_dump_json(), str(product_id)))
                 self._workspace(revision)
+                if copy_workspace:
+                    source = self.workspace_path(previous)
+                    for entry in source.rglob("*"):
+                        if entry.is_symlink() or entry.is_junction() or not entry.resolve().is_relative_to(source):
+                            raise StudioError("INVALID_INPUT", "Revision copy rejects linked or escaping paths")
+                        relative = entry.relative_to(source)
+                        if relative.as_posix() == "revision.json":
+                            continue
+                        target = path / relative
+                        if entry.is_dir():
+                            target.mkdir(parents=True, exist_ok=True)
+                        elif entry.is_file():
+                            target.parent.mkdir(parents=True, exist_ok=True)
+                            shutil.copy2(entry, target)
         except Exception:
             if path.exists():
                 shutil.rmtree(path)

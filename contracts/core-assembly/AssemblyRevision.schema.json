@@ -1,0 +1,29 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "revision_id": {
+      "format": "uuid",
+      "title": "Revision Id",
+      "type": "string"
+    },
+    "revision_label": {
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$",
+      "title": "Revision Label",
+      "type": "string"
+    },
+    "expected_input_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Expected Input Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "revision_id",
+    "revision_label",
+    "expected_input_hash"
+  ],
+  "title": "AssemblyRevision",
+  "type": "object"
+}

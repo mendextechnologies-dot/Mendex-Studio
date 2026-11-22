@@ -1,0 +1,125 @@
+{
+  "$defs": {
+    "AssemblyDimension": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "nominal_m": {
+          "exclusiveMinimum": 0,
+          "title": "Nominal M",
+          "type": "number"
+        },
+        "minimum_m": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum M"
+        },
+        "maximum_m": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum M"
+        },
+        "source": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "nominal_m",
+        "source"
+      ],
+      "title": "AssemblyDimension",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "reference": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Reference",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "quantity": {
+      "exclusiveMinimum": 0,
+      "title": "Quantity",
+      "type": "integer"
+    },
+    "material_requirement": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Material Requirement",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "cad_relative_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cad Relative Path"
+    },
+    "notes": {
+      "default": "",
+      "maxLength": 4000,
+      "title": "Notes",
+      "type": "string"
+    },
+    "dimensions": {
+      "items": {
+        "$ref": "#/$defs/AssemblyDimension"
+      },
+      "maxItems": 100,
+      "title": "Dimensions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "reference",
+    "description",
+    "quantity",
+    "source"
+  ],
+  "title": "AssemblyPart",
+  "type": "object"
+}

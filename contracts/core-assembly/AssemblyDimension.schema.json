@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "nominal_m": {
+      "exclusiveMinimum": 0,
+      "title": "Nominal M",
+      "type": "number"
+    },
+    "minimum_m": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Minimum M"
+    },
+    "maximum_m": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Maximum M"
+    },
+    "source": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "nominal_m",
+    "source"
+  ],
+  "title": "AssemblyDimension",
+  "type": "object"
+}

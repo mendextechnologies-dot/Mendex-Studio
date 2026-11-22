@@ -5,6 +5,9 @@ from pydantic import Field, model_validator
 
 from ..models import Model
 from ..engineering_records.models import CalculationWrite
+from ..core_assembly import AssemblyWrite, AssemblyRevision
+from ..pcb_layout import LayoutPlan
+from ..engineering_lifecycle.models import StageCommand
 
 PROTOCOL_VERSION = "3.1.0"
 
@@ -47,6 +50,19 @@ class FileQuery(Model):
         return self
 
 
+class LayoutCandidateQuery(LayoutPlan):
+    revision_id: UUID
+
+
+class LayoutCandidateReadQuery(Model):
+    revision_id: UUID
+    candidate_id: UUID
+
+
+class LayoutRevisionQuery(Model):
+    revision_id: UUID
+
+
 class WaveformQuery(FileQuery):
     start: int = Field(default=0, ge=0, strict=True)
     limit: int = Field(default=10000, ge=1, le=20000, strict=True)
@@ -84,7 +100,20 @@ class CADPreviewQuery(Model):
     idempotency_key: Optional[str] = None
     revision_id: UUID
     kind: Literal["pcb", "schematic", "3d"] = "pcb"
-    view: str = "iso" 
+    view: str = "iso"
+
+
+class CADPdfQuery(Model):
+    idempotency_key: Optional[str] = None
+    revision_id: UUID
+    target: Literal["schematic", "pcb"] = "schematic"
+    mode: Optional[Literal["single", "multipage"]] = "single"
+
+
+class HVClearanceQuery(Model):
+    idempotency_key: Optional[str] = None
+    revision_id: UUID
+    coating: Optional[Literal["coated", "uncoated"]] = "coated"
 
 
 class AutoRouteQuery(Model):
@@ -122,7 +151,7 @@ class FourLayerPlanesQuery(Model):
     pwr_net: str = "VIN"
     zone_clearance: float = 0.5
     thermal_spoke: float = 0.5
-    pad_connection: Literal["tht_thermal", "thermal", "solid", "none"] = "tht_thermal" 
+    pad_connection: Literal["tht_thermal", "thermal", "solid", "none"] = "tht_thermal"
 
 
 class GerberExportQuery(Model):

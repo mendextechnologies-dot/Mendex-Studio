@@ -69,7 +69,9 @@ export const SpecificationDetailCard: React.FC<SpecificationDetailCardProps> = (
   const iout = typeof spec.iout_a === 'number' ? spec.iout_a : null;
   const fsw = typeof spec.switching_frequency_hz === 'number' ? spec.switching_frequency_hz : null;
   const tjMax = typeof spec.max_junction_temperature_c === 'number' ? spec.max_junction_temperature_c : null;
-  const pOut = vout !== null && iout !== null ? vout * iout : null;
+  const pOut = typeof (spec as any).pout_w === 'number'
+    ? (spec as any).pout_w
+    : (vout !== null && iout !== null ? vout * iout : null);
 
   // Ambient temp normalization (handle Kelvin vs Celsius)
   let ambC = spec.ambient_temperature_c;
@@ -168,9 +170,13 @@ export const SpecificationDetailCard: React.FC<SpecificationDetailCardProps> = (
           : 'Not specified',
         unit: 'W',
         category: 'electrical',
-        description: 'Computed continuous/burst output power: P = Vout × Iout',
+        description: (spec as any).pout_w
+          ? 'Continuous autoranging envelope power limit'
+          : 'Computed continuous/burst output power: P = Vout × Iout',
         isAssigned: pOut !== null,
-        statusBadge: pOut !== null ? { label: `${pOut.toFixed(1)} W Rated`, type: 'blue' } : undefined,
+        statusBadge: pOut !== null
+          ? { label: pOut >= 1000 ? `${(pOut / 1000).toFixed(1)} kW Rated` : `${pOut.toFixed(1)} W Rated`, type: 'blue' }
+          : undefined,
       },
       {
         key: 'switching_frequency_hz',
@@ -281,7 +287,11 @@ export const SpecificationDetailCard: React.FC<SpecificationDetailCardProps> = (
         category: 'thermal_mechanical',
         description: 'Active or passive thermal heat rejection mechanism',
         isAssigned: Boolean(spec.cooling_method),
-        statusBadge: { label: 'Passive Convection', type: 'blue' },
+        statusBadge: spec.cooling_method === 'forced_air'
+          ? { label: 'Forced Air (280 CFM)', type: 'blue' }
+          : spec.cooling_method === 'liquid_cooling'
+          ? { label: 'Liquid Cooled', type: 'blue' }
+          : { label: 'Natural Convection', type: 'yellow' },
       },
       {
         key: 'max_pcb_width_mm',
@@ -631,10 +641,16 @@ export const SpecificationDetailCard: React.FC<SpecificationDetailCardProps> = (
               <span className="badge badge-blue" style={{ fontSize: 9 }}>Pout</span>
             </div>
             <div style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', marginTop: 4 }}>
-              {pOut !== null ? `${pOut.toFixed(2)} W` : 'N/A'}
+              {pOut !== null
+                ? pOut >= 1000
+                  ? `${(pOut / 1000).toFixed(1)} kW`
+                  : `${pOut.toFixed(2)} W`
+                : 'N/A'}
             </div>
             <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
-              {pOut !== null ? 'Calculated P = V × I' : 'Power envelope'}
+              {pOut !== null
+                ? ((spec as any).pout_w ? 'Autoranging envelope limit' : 'Calculated P = V × I')
+                : 'Power envelope'}
             </div>
           </div>
 

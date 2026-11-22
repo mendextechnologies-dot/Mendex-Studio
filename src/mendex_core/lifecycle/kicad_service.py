@@ -460,6 +460,76 @@ class KiCadLifecycleService:
             raise FileNotFoundError(f"KiCad CLI did not produce an SVG in {out_dir}")
         return cand_svgs[0]
 
+    def export_schematic_pdf(
+        self,
+        schematic_path: Path,
+        output_pdf: Optional[Path] = None,
+        theme: Optional[str] = None,
+    ) -> Path:
+        """Exports a native vector PDF of a KiCad schematic sheet."""
+        if not self.is_available():
+            raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
+        sch = schematic_path.resolve()
+        if not sch.exists():
+            raise FileNotFoundError(f"Schematic file not found: {sch}")
+
+        out_pdf = output_pdf.resolve() if output_pdf else (sch.parent / f"{sch.stem}.pdf").resolve()
+        out_pdf.parent.mkdir(parents=True, exist_ok=True)
+        cmd = [
+            str(self.kicad_cli),
+            "sch",
+            "export",
+            "pdf",
+            "--output",
+            str(out_pdf),
+        ]
+        if theme:
+            cmd.extend(["--theme", theme])
+        cmd.append(str(sch))
+        subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
+        if not out_pdf.exists() or out_pdf.stat().st_size == 0:
+            raise FileNotFoundError(f"KiCad CLI did not produce a PDF at {out_pdf}")
+        return out_pdf
+
+    def export_pcb_pdf(
+        self,
+        pcb_path: Path,
+        output_pdf: Optional[Path] = None,
+        layers: Optional[str] = None,
+        mode: str = "single",
+        include_border_title: bool = True,
+    ) -> Path:
+        """Exports a native vector PDF of KiCad PCB layout layers."""
+        if not self.is_available():
+            raise RuntimeError("KiCad CLI (kicad-cli) is not installed on this workstation.")
+        pcb = pcb_path.resolve()
+        if not pcb.exists():
+            raise FileNotFoundError(f"PCB file not found: {pcb}")
+
+        out_pdf = output_pdf.resolve() if output_pdf else (pcb.parent / f"{pcb.stem}_pcb.pdf").resolve()
+        out_pdf.parent.mkdir(parents=True, exist_ok=True)
+        layer_list = layers or "F.Cu,B.Cu,In1.Cu,In2.Cu,Edge.Cuts,F.SilkS,B.SilkS"
+        cmd = [
+            str(self.kicad_cli),
+            "pcb",
+            "export",
+            "pdf",
+            f"--mode-{mode}",
+            "--layers",
+            layer_list,
+            "--output",
+            str(out_pdf),
+        ]
+        if include_border_title:
+            cmd.append("--include-border-title")
+        if mode == "multipage":
+            cmd.extend(["--common-layers", "Edge.Cuts"])
+        cmd.append(str(pcb))
+        subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=True)
+        if not out_pdf.exists() or out_pdf.stat().st_size == 0:
+            raise FileNotFoundError(f"KiCad CLI did not produce a PCB PDF at {out_pdf}")
+        return out_pdf
+
     def render_3d(
         self,
         pcb_path: Path,

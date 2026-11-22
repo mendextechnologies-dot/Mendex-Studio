@@ -1,0 +1,218 @@
+{
+  "$defs": {
+    "AssemblyDimension": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "nominal_m": {
+          "exclusiveMinimum": 0,
+          "title": "Nominal M",
+          "type": "number"
+        },
+        "minimum_m": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum M"
+        },
+        "maximum_m": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum M"
+        },
+        "source": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "nominal_m",
+        "source"
+      ],
+      "title": "AssemblyDimension",
+      "type": "object"
+    },
+    "AssemblyIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "source": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "disposition": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Disposition",
+          "type": "string"
+        },
+        "owner": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Owner",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "source"
+      ],
+      "title": "AssemblyIssue",
+      "type": "object"
+    },
+    "AssemblyPart": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Reference",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "quantity": {
+          "exclusiveMinimum": 0,
+          "title": "Quantity",
+          "type": "integer"
+        },
+        "material_requirement": {
+          "default": "",
+          "maxLength": 1000,
+          "title": "Material Requirement",
+          "type": "string"
+        },
+        "source": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "cad_relative_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cad Relative Path"
+        },
+        "notes": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Notes",
+          "type": "string"
+        },
+        "dimensions": {
+          "items": {
+            "$ref": "#/$defs/AssemblyDimension"
+          },
+          "maxItems": 100,
+          "title": "Dimensions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reference",
+        "description",
+        "quantity",
+        "source"
+      ],
+      "title": "AssemblyPart",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "pattern": "^1\\.0$",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scope": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Scope",
+      "type": "string"
+    },
+    "parts": {
+      "items": {
+        "$ref": "#/$defs/AssemblyPart"
+      },
+      "maxItems": 2000,
+      "title": "Parts",
+      "type": "array"
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/AssemblyIssue"
+      },
+      "maxItems": 200,
+      "title": "Issues",
+      "type": "array"
+    },
+    "notes": {
+      "default": "",
+      "maxLength": 12000,
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "scope"
+  ],
+  "title": "AssemblyDesign",
+  "type": "object"
+}

@@ -1,0 +1,79 @@
+{
+  "$defs": {
+    "PlacementMove": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Reference",
+          "type": "string"
+        },
+        "x_m": {
+          "maximum": 10,
+          "minimum": -10,
+          "title": "X M",
+          "type": "number"
+        },
+        "y_m": {
+          "maximum": 10,
+          "minimum": -10,
+          "title": "Y M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "reference",
+        "x_m",
+        "y_m"
+      ],
+      "title": "PlacementMove",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "relative_path": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Relative Path",
+      "type": "string"
+    },
+    "expected_context_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Expected Context Sha256",
+      "type": "string"
+    },
+    "moves": {
+      "items": {
+        "$ref": "#/$defs/PlacementMove"
+      },
+      "maxItems": 10000,
+      "title": "Moves",
+      "type": "array"
+    },
+    "rationale": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Rationale",
+      "type": "string"
+    },
+    "fixed_references": {
+      "items": {
+        "maxLength": 100,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 10000,
+      "title": "Fixed References",
+      "type": "array"
+    }
+  },
+  "required": [
+    "relative_path",
+    "expected_context_sha256",
+    "rationale"
+  ],
+  "title": "LayoutPlan",
+  "type": "object"
+}

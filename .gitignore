@@ -4,6 +4,15 @@ __pycache__/
 .pytest_cache/
 .mendex/
 products/
+/Product Documents/
+/Engineering References/
+/engineering_designs/
+/products_by_name/
+/scratch/
+/tmp/
+/*Customer-Design-Package*/
+/*Customer-Design-Package*.zip
+/*_TOPOLOGY_AND_ENGINEERING_REPORT.pdf
 *.sqlite3*
 build/
 dist/

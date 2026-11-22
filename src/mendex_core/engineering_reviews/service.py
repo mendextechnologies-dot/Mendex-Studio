@@ -179,10 +179,18 @@ class EngineeringReviewService:
 
         # Check specification completeness for high-voltage DC-DC safety
         spec = revision.specification
-        if spec.vin_nom_v is None or spec.vout_v is None:
+        if spec.workflow_profile != "core_assembly" and (spec.vin_nom_v is None or spec.vout_v is None):
             safety_blockers.append("Mandatory voltage specification missing (vin_nom_v or vout_v is undefined)")
-        if not spec.isolation_requirement:
+        if spec.workflow_profile != "core_assembly" and not spec.isolation_requirement:
             safety_blockers.append("High-voltage isolation requirement must be explicitly specified")
+        if spec.workflow_profile == "core_assembly" and stage_id in ("materials", "mechanical_design", "fit_review", "inspection_plan", "document_review"):
+            assembly = self.studio.core_assembly.overview(revision.revision_id)
+            if not assembly["design_integrity"]:
+                safety_blockers.append("Current assembly design record is missing, stale or has failed integrity checks")
+            elif stage_id in ("fit_review", "document_review"):
+                for issue in assembly["design"]["issues"]:
+                    if not issue["disposition"].strip():
+                        safety_blockers.append("Unresolved assembly decision: " + issue["id"] + " " + issue["title"])
 
         # Check each requirement for acceptance criteria & safety
         for req in requirements_list:
@@ -543,6 +551,8 @@ class EngineeringReviewService:
         ws_path = self.studio.workspace_path(revision)
         for rel, expected_hash in record.get("document_hashes", {}).items():
             if is_ephemeral_workspace_file(rel):
+                continue
+            if not is_stage_document(rel, stage_id):
                 continue
             file_p = ws_path / rel
             if not file_p.is_file() or file_hash(file_p) != expected_hash:

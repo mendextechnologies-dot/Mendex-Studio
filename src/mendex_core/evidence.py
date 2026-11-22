@@ -14,7 +14,11 @@ def digest(data: bytes) -> str:
 
 
 def specification_hash(specification: Specification) -> str:
-    return digest(json.dumps(specification.model_dump(mode="json"), sort_keys=True, separators=(",", ":")).encode())
+    payload = specification.model_dump(mode="json")
+    # Preserve pre-profile hashes for every existing electronics revision/evidence record.
+    if payload.get("workflow_profile") == "electronics":
+        payload.pop("workflow_profile", None)
+    return digest(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode())
 
 
 class ValidationStatus(StrEnum):

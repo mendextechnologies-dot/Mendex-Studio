@@ -1,5 +1,26 @@
 # Architecture v0.1
 
+PCB layout experiments (20 November 2026): `StudioService.pcb_layout` owns read-only
+native board analysis and draft-only isolated placement candidates. React desktop
+RPC and CLI delegate to this service. Context/specification digests guard writes;
+unique checksum-covered input/output snapshots live outside product revisions.
+Component moves preserve rotations/layers and reject fixed/outline-owning components
+and boards with existing copper/copper zones. `pcb_placement.py` checks supported
+closed outlines/cutouts, rotated same-side courtyards and footprint keepouts. Preview
+and creation share the checker; moved candidates require complete CLEAR geometry,
+while missing/curved geometry remains NOT_EVALUATED. Stored historical assessments
+are never upgraded; stale reads invalidate their effective constraint status.
+No router, AI provider, electrical-clearance rule or qualification is added.
+See `docs/PCB_LAYOUT_EXPERIMENTS.md` for scope and verification boundaries.
+
+Core/support assembly update (18 November 2026): explicit
+`Specification.workflow_profile=core_assembly` selects a separate desktop workspace
+and immutable seven-stage lifecycle. `StudioService.core_assembly` owns workflow
+revision creation, sourced mechanical design snapshots, CAD content binding and
+optimistic concurrency for desktop and CLI. The default electronics profile retains
+legacy specification hashes. Selecting the workflow preserves the older revision;
+no historical lifecycle assignment is rewritten. See `docs/CORE_ASSEMBLY_WORKFLOW.md`.
+
 Power analysis update (16 November 2026): `StudioService.analyze_power_thermal`
 provides the single analytical device-comparison path for desktop, CLI and MCP.
 `power_analysis.py` owns strict sourced models, bounded loss-table interpolation,
